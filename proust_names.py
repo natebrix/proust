@@ -25,9 +25,10 @@
 # 4) name_frequency_plot(rc, volume_starts)
 
 from bs4 import BeautifulSoup
-import pandas as pd
+from collections import Counter
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import spacy
 from spacy.pipeline import merge_entities, merge_noun_chunks
 from urllib.request import urlopen
@@ -156,10 +157,11 @@ def get_sentences(text):
 
 
 # hacks to help with parsing
-def preprocess(text):
+def preprocess(text, use_aliases=True):
     t = text.replace("; –", ";").replace("– ;", ";")
-    for a in aliases:
-        t = t.replace(a, aliases[a])
+    if use_aliases:
+        for a in aliases:
+            t = t.replace(a, aliases[a])
     return t
 
 
@@ -173,9 +175,9 @@ def get_proust_pages(id_start=1, id_end=486, source='file'):
     return [get_proust_page(id, source) for id in range(id_start, id_end + 1)]
 
 
-def get_proust_chapters(id_start=1, id_end=486, source='file', by_paragraph=True):
+def get_proust_chapters(id_start=1, id_end=486, source='file', use_aliases=True, by_paragraph=True):
     # todo use by_paragraph
-    return [[preprocess(p.text) for p in get_chapter_body(get_proust_page(id, source)).find_all('p')] for id in range(id_start, id_end + 1)]
+    return [[preprocess(p.text, use_aliases) for p in get_chapter_body(get_proust_page(id, source)).find_all('p')] for id in range(id_start, id_end + 1)]
 
 
 def get_paragraphs(chapter):
@@ -187,13 +189,14 @@ def get_paragraphs(chapter):
 
 # get all occurrences of entities within ISLT
 def entity_table(chapters):
+    print(f'Finding entities within {len(chapters)} chapters.')
     rows = []
     for index_chapter, chapter in enumerate(chapters):
         for index_para, para in enumerate(chapter):
             rows.extend([[index_chapter, index_para, e] for e in entities(nlp(para))])
-    names = pd.DataFrame(rows, columns=['chapter', 'paragraph', 'name_core'])
-    names['name_pure'] = names['name_core'].apply(lambda n: n.replace('!', ' ').replace('–', ' ').strip())
-    names['name'] = names['name_pure'].apply(lambda n: aliases[n] if n in aliases else n)
+    names = pd.DataFrame(rows, columns=['chapter', 'paragraph', 'name'])
+    #names['name_pure'] = names['name_core'].apply(lambda n: n.replace('!', ' ').replace('–', ' ').strip())
+    #names['name'] = names['name_pure'].apply(lambda n: aliases[n] if n in aliases else n)
     return names
 
 
@@ -248,11 +251,46 @@ def name_frequency_plot(df, starts):
     plt.tight_layout()
     plt.show()
 
-def count_unique_words(islt):
-    all_c = [" ".join(c) for c in islt]
+# flatten the chapters of ISLT into a single string.
+def flatten_islt(islt):
+    print('Flattening ISLT chapters.')
+    all_c = [" \n".join(c) for c in islt]
     all_islt = " ".join([c for c in all_c])
-    nlp.max_length= len(all_islt)+1 # haha
-    # word_freq_2 = Counter([tok.text.lower() for tok in nlp(all_islt) if tok.is_alpha and not tok.is_stop])
-    word_freq = Counter([tok.text.lower() for tok in nlp(all_islt)]) 
-    #cb = nlp(all_islt).count_by(ORTH) # get a cup of coffee
-    return word_freq
+    return all_islt
+
+
+# return the entire text of ISLT as a single spacy object.
+def get_islt_nlp(nlp, islt):
+    flat_islt = flatten_islt(islt)
+    nlp.max_length = len(flat_islt) + 1 # haha
+    print('Getting spaCy object for ISLT; please wait.')
+    return nlp(flat_islt)
+
+
+# return summary statistics for doc.
+def summary_stats(doc):
+    stats = []
+
+    stats += [('characters', sum([len(i) for i in doc]))]
+    
+    words = [tok.text.lower() for tok in doc if tok.is_alpha]
+    stats += [('words', len(words))]
+
+    toks_no_stop = [tok for tok in doc if tok.is_alpha and not tok.is_stop]
+    words_no_stop = [tok.text.lower() for tok in toks_no_stop]
+    stats += [('words (no stop)', len(words_no_stop))]
+    
+    lemmas = [tok.lemma_.lower() for tok in toks_no_stop]
+    stats += [('lemmas', len(lemmas))]
+
+    word_freq = Counter(words)
+    stats += [('unique words', len(word_freq))]
+
+    word_freq_no_stop = Counter(words_no_stop)
+    stats += [('unique words (no stop)', len(word_freq_no_stop))]
+
+    lemma_freq = Counter(lemmas)
+    stats += [('unique lemma', len(lemma_freq))]
+
+    df = pd.DataFrame(stats)
+    return df, word_freq, word_freq_no_stop, lemma_freq
