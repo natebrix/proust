@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from . import analytics, corpus, nlp as nlp_module
 
