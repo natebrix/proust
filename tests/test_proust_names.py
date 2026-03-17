@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 import proust_names as pn
+from proust import corpus as corpus_module
 
 
 HTML = """
@@ -31,13 +32,13 @@ class FakeToken:
 
 
 def test_preprocess_applies_punctuation_fix_and_aliases(monkeypatch):
-    monkeypatch.setattr(pn, "get_aliases", lambda: {"M. Swann": "Swann"})
+    monkeypatch.setattr(corpus_module, "get_aliases", lambda: {"M. Swann": "Swann"})
     text = "M. Swann ; – arrive – ; vite"
     assert pn.preprocess(text) == "Swann ; arrive ; vite"
 
 
 def test_preprocess_can_skip_aliases(monkeypatch):
-    monkeypatch.setattr(pn, "get_aliases", lambda: {"M. Swann": "Swann"})
+    monkeypatch.setattr(corpus_module, "get_aliases", lambda: {"M. Swann": "Swann"})
     assert pn.preprocess("M. Swann", use_aliases=False) == "M. Swann"
 
 
@@ -57,7 +58,7 @@ def test_get_proust_page_rejects_invalid_source():
 
 def test_get_paragraphs_builds_dataframe(monkeypatch):
     monkeypatch.setattr(
-        pn,
+        corpus_module,
         "get_sentences",
         lambda text: [SimpleNamespace(text=text.upper()), SimpleNamespace(text=text.lower())],
     )

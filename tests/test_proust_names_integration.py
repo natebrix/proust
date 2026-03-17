@@ -9,14 +9,14 @@ import proust_names as pn
 
 @pytest.fixture(scope="module")
 def live_nlp():
-    original_nlp = pn.nlp
+    original_nlp = pn.get_loaded_nlp()
     try:
         nlp = pn.load_spacy("fr_core_news_sm")
     except Exception as exc:
         pytest.skip(f"live spaCy pipeline unavailable: {exc}")
-    pn.nlp = nlp
+    pn.set_nlp(nlp)
     yield nlp
-    pn.nlp = original_nlp
+    pn.set_nlp(original_nlp)
 
 
 def test_load_spacy_builds_live_pipeline(live_nlp):
