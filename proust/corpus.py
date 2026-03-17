@@ -49,14 +49,16 @@ def get_chapter_info(page):
     return soup.body.find("h1").text
 
 
-def get_sentences(text):
-    return [sent for sent in get_nlp()(text).sents]
+def get_sentences(text, nlp=None):
+    pipeline = nlp or get_nlp()
+    return [sent for sent in pipeline(text).sents]
 
 
-def preprocess(text, use_aliases=True):
+def preprocess(text, use_aliases=True, aliases=None):
     text = text.replace("; –", ";").replace("– ;", ";")
     if use_aliases:
-        for source, replacement in get_aliases().items():
+        replacements = aliases if aliases is not None else get_aliases()
+        for source, replacement in replacements.items():
             text = text.replace(source, replacement)
     return text
 
@@ -70,19 +72,22 @@ def get_proust_pages(id_start=1, id_end=486, source="file"):
     return [get_proust_page(id, source) for id in range(id_start, id_end + 1)]
 
 
-def get_proust_chapters(id_start=1, id_end=486, source="file", use_aliases=True, by_paragraph=True):
+def get_proust_chapters(id_start=1, id_end=486, source="file", use_aliases=True, by_paragraph=True, aliases=None):
     del by_paragraph
     return [
-        [preprocess(paragraph.text, use_aliases) for paragraph in get_chapter_body(get_proust_page(id, source)).find_all("p")]
+        [
+            preprocess(paragraph.text, use_aliases, aliases=aliases)
+            for paragraph in get_chapter_body(get_proust_page(id, source)).find_all("p")
+        ]
         for id in range(id_start, id_end + 1)
     ]
 
 
-def get_paragraphs(chapter):
+def get_paragraphs(chapter, nlp=None, aliases=None):
     paragraphs = chapter.find_all("p")
     rows = [
         [paragraph_number, sentence_number, sentence.text]
         for paragraph_number, paragraph in enumerate(paragraphs)
-        for sentence_number, sentence in enumerate(get_sentences(preprocess(paragraph.text)))
+        for sentence_number, sentence in enumerate(get_sentences(preprocess(paragraph.text, aliases=aliases), nlp=nlp))
     ]
     return pd.DataFrame(rows, columns=["paragraph", "sentence", "text"])

@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 import proust_names as pn
+from proust import create_session
 from proust import corpus as corpus_module
 
 
@@ -29,6 +30,15 @@ class FakeToken:
 
     def __len__(self):
         return len(self.text)
+
+
+class FakePipeline:
+    def __call__(self, text):
+        sentences = [segment.strip() for segment in text.split(".") if segment.strip()]
+        return SimpleNamespace(
+            sents=[SimpleNamespace(text=segment + ".") for segment in sentences],
+            ents=[],
+        )
 
 
 def test_preprocess_applies_punctuation_fix_and_aliases(monkeypatch):
@@ -60,7 +70,7 @@ def test_get_paragraphs_builds_dataframe(monkeypatch):
     monkeypatch.setattr(
         corpus_module,
         "get_sentences",
-        lambda text: [SimpleNamespace(text=text.upper()), SimpleNamespace(text=text.lower())],
+        lambda text, nlp=None: [SimpleNamespace(text=text.upper()), SimpleNamespace(text=text.lower())],
     )
     chapter = pn.get_chapter_body(HTML)
     df = pn.get_paragraphs(chapter)
@@ -198,3 +208,13 @@ def test_get_polarity_rank_filters_by_min_count():
     ranked = pn.get_polarity_rank(s_by_n, min_count=100)
     assert ranked.index.tolist() == [1, 2]
     assert ranked.tolist() == [0.5, 1.0]
+
+
+def test_session_uses_explicit_aliases_and_nlp():
+    session = create_session(
+        aliases={"M. Swann": "Swann"},
+        nlp=FakePipeline(),
+    )
+
+    assert session.preprocess("M. Swann ; – arrive") == "Swann ; arrive"
+    assert [sent.text for sent in session.get_sentences("Un. Deux.")] == ["Un.", "Deux."]

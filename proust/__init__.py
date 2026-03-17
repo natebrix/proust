@@ -20,6 +20,7 @@ from .analytics import (
     volume_column,
     word_freq_table,
 )
+from .api import ProustSession, create_session
 from .config import (
     conjunction,
     entity_pos,
@@ -57,7 +58,9 @@ from .nlp import (
 from .state import get_loaded_aliases, get_loaded_nlp, reset_aliases, reset_nlp, set_aliases, set_nlp
 
 __all__ = [
+    "ProustSession",
     "agg_sentiment",
+    "create_session",
     "canonicalize_entity",
     "conjunction",
     "entities",

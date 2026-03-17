@@ -9,23 +9,23 @@ from .corpus import get_proust_chapters
 from .nlp import entities, get_doc_sentiment, get_nlp, sentiment_assessment_count, words_in_list
 
 
-def entity_table(chapters):
+def entity_table(chapters, nlp=None):
     print(f"Finding entities within {len(chapters)} chapters.")
-    nlp = get_nlp()
+    pipeline = nlp or get_nlp()
     rows = []
     for chapter_index, chapter in enumerate(chapters):
         for paragraph_index, paragraph in enumerate(chapter):
-            rows.extend([[chapter_index, paragraph_index, entity] for entity in entities(nlp(paragraph))])
+            rows.extend([[chapter_index, paragraph_index, entity] for entity in entities(pipeline(paragraph))])
     return pd.DataFrame(rows, columns=["chapter", "paragraph", "name"])
 
 
-def word_freq_table(chapters, words):
+def word_freq_table(chapters, words, nlp=None):
     print(f"Finding word frequency within {len(chapters)} chapters.")
-    nlp = get_nlp()
+    pipeline = nlp or get_nlp()
     rows = []
     for chapter_index, chapter in enumerate(chapters):
         for paragraph_index, paragraph in enumerate(chapter):
-            rows.extend([[chapter_index, paragraph_index, word] for word in words_in_list(nlp(paragraph), words)])
+            rows.extend([[chapter_index, paragraph_index, word] for word in words_in_list(pipeline(paragraph), words)])
     return pd.DataFrame(rows, columns=["chapter", "paragraph", "name"])
 
 
@@ -37,9 +37,9 @@ def top_entities(entity_table_, count):
     return entity_count(entity_table_).sort_values("count", ascending=False).head(count)
 
 
-def get_proust_names():
-    chapters = get_proust_chapters()
-    return chapters, entity_table(chapters)
+def get_proust_names(source="file", use_aliases=True, aliases=None, nlp=None):
+    chapters = get_proust_chapters(source=source, use_aliases=use_aliases, aliases=aliases)
+    return chapters, entity_table(chapters, nlp=nlp)
 
 
 def get_references_for_names(entity_table_, names):
@@ -128,10 +128,10 @@ def summary_stats(doc):
     return pd.DataFrame(stats), word_freq, word_freq_no_stop, lemma_freq
 
 
-def get_sentiment(islt):
+def get_sentiment(islt, nlp=None):
     print(f"getting sentiment for {len(islt)} chapters, please wait...")
-    nlp = get_nlp()
-    sentiments = [[(len(paragraph), get_doc_sentiment(nlp(paragraph))) for paragraph in chapter] for chapter in islt]
+    pipeline = nlp or get_nlp()
+    sentiments = [[(len(paragraph), get_doc_sentiment(pipeline(paragraph))) for paragraph in chapter] for chapter in islt]
     print("extracting polarity and subjectivity")
     rows = [
         (

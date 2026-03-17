@@ -77,3 +77,12 @@ def test_get_islt_nlp_flattens_small_text(live_nlp):
     doc = pn.get_islt_nlp(live_nlp, [["Swann rencontre Odette."], ["Odette repond."]])
     assert "Swann rencontre Odette." in doc.text
     assert "Odette repond." in doc.text
+
+
+def test_session_api_uses_live_pipeline(live_nlp):
+    session = pn.ProustSession(model="fr_core_news_sm", aliases={"M. Swann": "Swann"}, nlp=live_nlp)
+    assert session.preprocess("M. Swann revient.") == "Swann revient."
+    assert [sent.text for sent in session.get_sentences("Swann revient. Odette attend.")] == [
+        "Swann revient.",
+        "Odette attend.",
+    ]
