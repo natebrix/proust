@@ -5,7 +5,7 @@ from . import analytics, corpus, nlp as nlp_module
 
 @dataclass
 class ProustSession:
-    model: str = "fr_core_news_lg"
+    model: str = "fr_core_news_sm"
     aliases: dict | None = None
     nlp: object | None = None
     default_source: str = "file"
@@ -74,5 +74,5 @@ class ProustSession:
         return analytics.get_sentiment(chapters, nlp=self.get_nlp())
 
 
-def create_session(model="fr_core_news_lg", aliases=None, nlp=None, default_source="file"):
+def create_session(model="fr_core_news_sm", aliases=None, nlp=None, default_source="file"):
     return ProustSession(model=model, aliases=aliases, nlp=nlp, default_source=default_source)

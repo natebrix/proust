@@ -20,7 +20,9 @@ Core dependencies:
 - `spacytextblob`
 
 French model:
-- `python -m spacy download fr_core_news_lg`
+- repo-local `.venv/` currently uses `fr_core_news_sm`
+- install it with `python -m spacy download fr_core_news_sm`
+- `fr_core_news_lg` is still supported if you want the larger model explicitly
 
 For local development in this repo, there is also a repo-local `.venv/` used by the integration tests.
 
@@ -31,7 +33,7 @@ The entrypoint is the `proust` package with an explicit session object:
 ```python
 from proust import create_session
 
-session = create_session(model="fr_core_news_lg")
+session = create_session(model="fr_core_news_sm")
 
 chapters = session.get_proust_chapters(1, 10)
 entity_table = session.entity_table(chapters)
@@ -43,7 +45,7 @@ A more complete flow:
 ```python
 from proust import create_session, get_ref_count_by_chapter, smooth_ref_count, name_frequency_plot
 
-session = create_session(model="fr_core_news_lg")
+session = create_session(model="fr_core_news_sm")
 
 islt, entity_table = session.get_proust_names()
 names = entity_table.groupby("name").count().sort_values("chapter", ascending=False).head(5).index
@@ -56,7 +58,7 @@ For sentiment:
 ```python
 from proust import create_session
 
-session = create_session(model="fr_core_news_lg")
+session = create_session(model="fr_core_news_sm")
 chapters = session.get_proust_chapters(1, 5)
 sentiment = session.get_sentiment(chapters)
 ```

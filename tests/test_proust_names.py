@@ -218,3 +218,7 @@ def test_session_uses_explicit_aliases_and_nlp():
 
     assert session.preprocess("M. Swann ; – arrive") == "Swann ; arrive"
     assert [sent.text for sent in session.get_sentences("Un. Deux.")] == ["Un.", "Deux."]
+
+
+def test_session_defaults_to_repo_supported_model():
+    assert create_session().model == "fr_core_news_sm"
