@@ -28,17 +28,30 @@
 # plot sentiment as color bar
 
 from bs4 import BeautifulSoup
+import bisect
 from collections import Counter
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import spacy
-from spacytextblob.spacytextblob import SpacyTextBlob
-from spacy.pipeline import merge_entities, merge_noun_chunks
 from urllib.request import urlopen
+
+try:
+    import spacy
+    from spacy.pipeline import merge_entities
+    from spacy.language import Language
+except ModuleNotFoundError:
+    spacy = None
+    merge_entities = None
+    Language = None
+
+try:
+    from spacytextblob.spacytextblob import SpacyTextBlob
+except ModuleNotFoundError:
+    SpacyTextBlob = None
 
 # I encountered situations where long sentences were broken up by spacy
 # at semicolons.
+@Language.component('proust_sentence_start') if Language is not None else (lambda f: f)
 def proust_sentence_start(doc):
     length = len(doc)
     for index, token in enumerate(doc):
@@ -52,20 +65,38 @@ honorific = set(['M.', 'Mme', 'Mlle', 'Monsieur', 'Madame'])
 conjunction = set(['et'])
 
 def read_aliases():
-    aliases = pd.read_csv('aliases.csv', header=None, index_col=0, squeeze=True).to_dict()
+    aliases = pd.read_csv('aliases.csv', header=None, index_col=0).iloc[:, 0].to_dict()
     print(f'{len(aliases)} aliases read from aliases.csv')
     return aliases
 
-aliases = read_aliases()
+aliases = None
+nlp = None
 
 # family name for entity if indirectly determined;
 # e.g. for the "M." in "M. et Mlle Verdurin"
-spacy.tokens.token.Token.set_extension('family', default='', force=True) 
+def get_aliases():
+    global aliases
+    if aliases is None:
+        aliases = read_aliases()
+    return aliases
+
+
+def _require_spacy():
+    if spacy is None:
+        raise ModuleNotFoundError('spaCy is required for this operation')
+    if SpacyTextBlob is None:
+        raise ModuleNotFoundError('spacytextblob is required for this operation')
+
+
+def _ensure_spacy_extensions():
+    _require_spacy()
+    spacy.tokens.token.Token.set_extension('family', default='', force=True)
 
 # This is a bit wonky but sort of works. Annotate tokens so that proper names
 # can be extracted in certain corner cases.
 #
 # e.g. M. et Mme. Foobar should expand to M. Foobar and Mme. Foobar.
+@Language.component('proust_proper_name') if Language is not None else (lambda f: f)
 def proust_proper_name(doc, verbose=False):
     length = len(doc)
     for index, token in enumerate(doc):
@@ -121,16 +152,42 @@ def words_in_list(text, words):
 
 
 def load_spacy(model='fr_core_news_lg'):
+    _require_spacy()
+    _ensure_spacy_extensions()
     print(f'loading spacy model {model}')
-    spacy_text_blob = SpacyTextBlob()
     nlp = spacy.load(model)
-    nlp.add_pipe(proust_sentence_start, before='parser')
-    nlp.add_pipe(proust_proper_name, before='parser')
-    nlp.add_pipe(merge_entities) # ['Saint', 'Loup'] -> ['Saint Loup']
-    nlp.add_pipe(spacy_text_blob) # for sentiment
+    nlp.add_pipe('proust_sentence_start', before='parser')
+    nlp.add_pipe('proust_proper_name', before='parser')
+    nlp.add_pipe('merge_entities') # ['Saint', 'Loup'] -> ['Saint Loup']
+    nlp.add_pipe('spacytextblob') # for sentiment
     return nlp
 
-nlp = load_spacy()
+
+def get_nlp(model='fr_core_news_lg'):
+    global nlp
+    if nlp is None:
+        nlp = load_spacy(model)
+    return nlp
+
+
+def get_doc_sentiment(doc):
+    sentiment = getattr(doc._, 'sentiment', None)
+    if sentiment is not None:
+        return sentiment
+    blob = getattr(doc._, 'blob', None)
+    if blob is None:
+        raise AttributeError('No sentiment extension found on spaCy doc')
+    return blob
+
+
+def sentiment_assessment_count(sentiment):
+    assessments = getattr(sentiment, 'assessments', None)
+    if assessments is not None:
+        return len(assessments)
+    sentiment_assessments = getattr(sentiment, 'sentiment_assessments', None)
+    if sentiment_assessments is not None:
+        return len(sentiment_assessments.assessments)
+    return 0
 
 # get a single HTML page of ISLT, either from 'file' or 'web'.
 def get_proust_page(id, source='file'):
@@ -157,7 +214,7 @@ def write_proust_pages(start=1, end=486, source='web'):
 
             
 def get_chapter_info(page):
-    soup = BeautifulSoup(page)
+    soup = BeautifulSoup(page, features='html.parser')
     title = soup.body.find('h1').text 
     # re.split('\[(.*?)\]', t)
     # this will be either length 3 or length 1. If length 3, have 'book' header
@@ -165,20 +222,20 @@ def get_chapter_info(page):
 
 
 def get_sentences(text):
-    return [sent for sent in nlp(text).sents]
+    return [sent for sent in get_nlp()(text).sents]
 
 
 # hacks to help with parsing
 def preprocess(text, use_aliases=True):
     t = text.replace("; –", ";").replace("– ;", ";")
     if use_aliases:
-        for a in aliases:
-            t = t.replace(a, aliases[a])
+        for a, replacement in get_aliases().items():
+            t = t.replace(a, replacement)
     return t
 
 
 def get_chapter_body(html):
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, features='html.parser')
     chapter = soup.body.find('div', attrs={'class':'field-item'})
     return chapter
 
@@ -202,6 +259,7 @@ def get_paragraphs(chapter):
 # get all occurrences of entities within ISLT
 def entity_table(chapters):
     print(f'Finding entities within {len(chapters)} chapters.')
+    nlp = get_nlp()
     rows = []
     for index_chapter, chapter in enumerate(chapters):
         for index_para, para in enumerate(chapter):
@@ -213,6 +271,7 @@ def entity_table(chapters):
 
 def word_freq_table(chapters, words):
     print(f'Finding word frequency within {len(chapters)} chapters.')
+    nlp = get_nlp()
     rows = []
     for index_chapter, chapter in enumerate(chapters):
         for index_para, para in enumerate(chapter):
@@ -345,9 +404,10 @@ def summary_stats(doc):
 # This takes awhile to run...
 def get_sentiment(islt):
     print(f'getting sentiment for {len(islt)} chapters, please wait...')
-    ss = [[(len(para), nlp(para)._.sentiment) for para in chap] for chap in islt]
+    nlp = get_nlp()
+    ss = [[(len(para), get_doc_sentiment(nlp(para))) for para in chap] for chap in islt]
     print(f'extracting polarity and subjectivity')
-    ss2 = [(c, p, s[1].polarity, s[1].subjectivity, len(s[1].assessments), s[0]) for c, ss_c in enumerate(ss) for p, s in enumerate(ss_c)]
+    ss2 = [(c, p, s[1].polarity, s[1].subjectivity, sentiment_assessment_count(s[1]), s[0]) for c, ss_c in enumerate(ss) for p, s in enumerate(ss_c)]
     return pd.DataFrame(ss2, columns=['chapter', 'paragraph', 'polarity', 'subjectivity', 'assessed', 'length'])
 
 
@@ -389,4 +449,3 @@ def get_sentiment_by_name_volume(et, sentiment, names):
 def get_polarity_rank(s_by_n, min_count=100):
     s_top = s_by_n.query(f'count >= {min_count}')
     return s_top.polarity.rank(pct=True).sort_values()
-
