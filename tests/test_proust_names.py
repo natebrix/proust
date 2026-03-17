@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import pandas as pd
 import pytest
 
-import proust_names as pn
+import proust as pn
 from proust import create_session
 from proust import corpus as corpus_module
 

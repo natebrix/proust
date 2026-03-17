@@ -4,7 +4,7 @@ import pytest
 pytest.importorskip("spacy")
 pytest.importorskip("spacytextblob")
 
-import proust_names as pn
+import proust as pn
 
 
 @pytest.fixture(scope="module")

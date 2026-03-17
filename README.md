@@ -24,9 +24,9 @@ French model:
 
 For local development in this repo, there is also a repo-local `.venv/` used by the integration tests.
 
-## Recommended API
+## API
 
-The modern entrypoint is the `proust` package with an explicit session object:
+The entrypoint is the `proust` package with an explicit session object:
 
 ```python
 from proust import create_session
@@ -60,7 +60,3 @@ session = create_session(model="fr_core_news_lg")
 chapters = session.get_proust_chapters(1, 5)
 sentiment = session.get_sentiment(chapters)
 ```
-
-## Legacy API
-
-`proust_names.py` still exists as a compatibility facade, but it is deprecated. New code should import from `proust` directly and prefer `create_session()` / `ProustSession`.
