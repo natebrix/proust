@@ -52,6 +52,16 @@ class ProustSession:
             aliases=aliases,
         )
 
+    def get_canonical_structure(self, edition="fr-original"):
+        return corpus.get_canonical_structure(edition=edition)
+
+    def get_canonical_chapter(self, chapter_id, edition="fr-original"):
+        return corpus.get_canonical_chapter(chapter_id, edition=edition)
+
+    def get_canonical_chapters(self, edition="fr-original", use_aliases=True):
+        aliases = self.get_aliases() if use_aliases else None
+        return corpus.get_canonical_chapters(edition=edition, use_aliases=use_aliases, aliases=aliases)
+
     def get_paragraphs(self, chapter):
         return corpus.get_paragraphs(chapter, nlp=self.get_nlp(), aliases=self.get_aliases())
 

@@ -137,6 +137,11 @@ def test_volume_column_uses_volume_boundaries():
     assert pn.volume_column(df).tolist() == [1, 1, 2, 7]
 
 
+def test_volume_column_accepts_custom_boundaries():
+    df = pd.DataFrame({"chapter": [0, 2, 3, 17]})
+    assert pn.volume_column(df, starts=pn.canonical_volume_starts).tolist() == [1, 1, 2, 7]
+
+
 def test_flatten_islt_joins_chapters_and_paragraphs():
     islt = [["A", "B"], ["C"]]
     assert pn.flatten_islt(islt) == "A \nB\nC"
@@ -218,6 +223,30 @@ def test_session_uses_explicit_aliases_and_nlp():
 
     assert session.preprocess("M. Swann ; – arrive") == "Swann ; arrive"
     assert [sent.text for sent in session.get_sentences("Un. Deux.")] == ["Un.", "Deux."]
+
+
+def test_canonical_structure_and_chapter_loading_smoke():
+    structure = pn.get_canonical_structure()
+    assert len(structure) == 18
+    assert structure[0]["id"] == "v1-p1-combray"
+    assert structure[-1]["id"] == "v7-p4-le-bal-de-tetes"
+
+    chapter = pn.get_canonical_chapter("v1-p1-combray")
+    assert chapter["chapterId"] == "v1-p1-combray"
+    assert chapter["sourceChapterRange"] == {"start": "001", "end": "043"}
+
+
+def test_get_canonical_chapters_returns_18_canonical_units():
+    chapters = pn.get_canonical_chapters(use_aliases=False)
+    assert len(chapters) == 18
+    assert chapters[0][0].startswith("Longtemps, je me suis couché de bonne heure.")
+
+
+def test_session_exposes_canonical_dataset():
+    session = create_session(aliases={}, nlp=FakePipeline())
+    chapters = session.get_canonical_chapters(use_aliases=False)
+    assert len(chapters) == 18
+    assert session.get_canonical_structure()[0]["volumeNumber"] == 1
 
 
 def test_session_defaults_to_repo_supported_model():

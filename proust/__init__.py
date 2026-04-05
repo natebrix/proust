@@ -22,6 +22,7 @@ from .analytics import (
 )
 from .api import ProustSession, create_session
 from .config import (
+    canonical_volume_starts,
     conjunction,
     entity_pos,
     honorific,
@@ -30,6 +31,10 @@ from .config import (
     volume_starts,
 )
 from .corpus import (
+    get_canonical_chapter,
+    get_canonical_chapter_ids,
+    get_canonical_chapters,
+    get_canonical_structure,
     get_aliases,
     get_chapter_body,
     get_chapter_info,
@@ -70,6 +75,7 @@ from .state import get_loaded_aliases, get_loaded_nlp, reset_aliases, reset_nlp,
 __all__ = [
     "ProustSession",
     "agg_sentiment",
+    "canonical_volume_starts",
     "create_session",
     "canonicalize_entity",
     "conjunction",
@@ -79,6 +85,10 @@ __all__ = [
     "entity_table",
     "export_reader_dataset",
     "flatten_islt",
+    "get_canonical_chapter",
+    "get_canonical_chapter_ids",
+    "get_canonical_chapters",
+    "get_canonical_structure",
     "get_aliases",
     "get_chapter_body",
     "get_chapter_info",

@@ -1,10 +1,11 @@
+import json
 from urllib.request import urlopen
 
 import pandas as pd
 from bs4 import BeautifulSoup
 
 from .nlp import get_nlp
-from .paths import ALIASES_CSV, DATA_DIR
+from .paths import ALIASES_CSV, DATA_DIR, ISLT_EDITIONS_DIR, REPO_ROOT
 from .state import get_loaded_aliases
 from .state import set_aliases
 
@@ -13,6 +14,10 @@ def read_aliases(path=ALIASES_CSV):
     aliases = pd.read_csv(path, header=None, index_col=0).iloc[:, 0].to_dict()
     print(f"{len(aliases)} aliases read from aliases.csv")
     return aliases
+
+
+def read_json(path):
+    return json.loads(path.read_text())
 
 
 def get_aliases():
@@ -91,3 +96,30 @@ def get_paragraphs(chapter, nlp=None, aliases=None):
         for sentence_number, sentence in enumerate(get_sentences(preprocess(paragraph.text, aliases=aliases), nlp=nlp))
     ]
     return pd.DataFrame(rows, columns=["paragraph", "sentence", "text"])
+
+
+def get_canonical_structure(edition="fr-original"):
+    structure_path = ISLT_EDITIONS_DIR / edition / "canonical-structure.json"
+    print(f"Loading canonical structure from file: {structure_path.relative_to(REPO_ROOT)}")
+    return read_json(structure_path)
+
+
+def get_canonical_chapter(chapter_id, edition="fr-original"):
+    chapter_path = ISLT_EDITIONS_DIR / edition / "chapters" / f"{chapter_id}.json"
+    print(f"Loading canonical chapter from file: {chapter_path.relative_to(REPO_ROOT)}")
+    return read_json(chapter_path)
+
+
+def get_canonical_chapter_ids(edition="fr-original"):
+    return [chapter["id"] for chapter in get_canonical_structure(edition=edition)]
+
+
+def get_canonical_chapters(edition="fr-original", use_aliases=True, aliases=None):
+    chapter_ids = get_canonical_chapter_ids(edition=edition)
+    return [
+        [
+            preprocess(paragraph["text"], use_aliases=use_aliases, aliases=aliases)
+            for paragraph in get_canonical_chapter(chapter_id, edition=edition)["paragraphs"]
+        ]
+        for chapter_id in chapter_ids
+    ]

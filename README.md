@@ -62,3 +62,17 @@ session = create_session(model="fr_core_news_sm")
 chapters = session.get_proust_chapters(1, 5)
 sentiment = session.get_sentiment(chapters)
 ```
+
+For the canonical 18-part French structure copied from the website reader data:
+
+```python
+from proust import create_session, canonical_volume_starts, volume_column
+
+session = create_session(model="fr_core_news_sm")
+
+chapters = session.get_canonical_chapters()
+structure = session.get_canonical_structure()
+chapter = session.get_canonical_chapter("v1-p1-combray")
+```
+
+The legacy HTML-backed API remains available. The canonical dataset lives under `data/islt/editions/fr-original/`.

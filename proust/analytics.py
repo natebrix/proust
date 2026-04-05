@@ -59,9 +59,10 @@ def smooth_ref_count(ref_count, window=3):
     return smoothed
 
 
-def volume_column(df, chapter="chapter", volume="volume"):
+def volume_column(df, chapter="chapter", volume="volume", starts=None):
     del volume
-    return df[chapter].apply(lambda current_chapter: bisect.bisect_left(volume_starts, current_chapter + 1))
+    boundaries = starts or volume_starts
+    return df[chapter].apply(lambda current_chapter: bisect.bisect_left(boundaries, current_chapter + 1))
 
 
 def name_frequency_plot(df, labels=short_labels, starts=volume_starts[:7], transform=None, color_map="Blues", norm=None):
