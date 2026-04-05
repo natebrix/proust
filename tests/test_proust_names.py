@@ -133,13 +133,13 @@ def test_smooth_ref_count_preserves_chapter_column():
 
 
 def test_volume_column_uses_volume_boundaries():
-    df = pd.DataFrame({"chapter": [0, 101, 102, 485]})
+    df = pd.DataFrame({"chapter": [0, 2, 3, 17]})
     assert pn.volume_column(df).tolist() == [1, 1, 2, 7]
 
 
 def test_volume_column_accepts_custom_boundaries():
-    df = pd.DataFrame({"chapter": [0, 2, 3, 17]})
-    assert pn.volume_column(df, starts=pn.canonical_volume_starts).tolist() == [1, 1, 2, 7]
+    df = pd.DataFrame({"chapter": [0, 101, 102, 485]})
+    assert pn.volume_column(df, starts=pn.legacy_volume_starts).tolist() == [1, 1, 2, 7]
 
 
 def test_flatten_islt_joins_chapters_and_paragraphs():
@@ -240,6 +240,19 @@ def test_get_canonical_chapters_returns_18_canonical_units():
     chapters = pn.get_canonical_chapters(use_aliases=False)
     assert len(chapters) == 18
     assert chapters[0][0].startswith("Longtemps, je me suis couché de bonne heure.")
+
+
+def test_get_proust_chapters_defaults_to_canonical_units():
+    chapters = pn.get_proust_chapters(1, 1, source="file", use_aliases=False)
+    assert len(chapters) == 1
+    assert chapters[0][0].startswith("Longtemps, je me suis couché de bonne heure.")
+
+
+def test_get_proust_chapters_can_still_use_legacy_files():
+    chapters = pn.get_proust_chapters(1, 1, source="legacy-file")
+    assert len(chapters) == 1
+    assert chapters[0][0] == "Du Côté de Chez Swann - Première partie"
+    assert chapters[0][1] == "Combray"
 
 
 def test_session_exposes_canonical_dataset():

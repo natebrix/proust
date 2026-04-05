@@ -41,7 +41,7 @@ class ProustSession:
     def get_proust_pages(self, id_start=1, id_end=486, source=None):
         return corpus.get_proust_pages(id_start=id_start, id_end=id_end, source=source or self.default_source)
 
-    def get_proust_chapters(self, id_start=1, id_end=486, source=None, use_aliases=True, by_paragraph=True):
+    def get_proust_chapters(self, id_start=1, id_end=None, source=None, use_aliases=True, by_paragraph=True):
         aliases = self.get_aliases() if use_aliases else None
         return corpus.get_proust_chapters(
             id_start=id_start,
@@ -58,9 +58,15 @@ class ProustSession:
     def get_canonical_chapter(self, chapter_id, edition="fr-original"):
         return corpus.get_canonical_chapter(chapter_id, edition=edition)
 
-    def get_canonical_chapters(self, edition="fr-original", use_aliases=True):
+    def get_canonical_chapters(self, id_start=1, id_end=None, edition="fr-original", use_aliases=True):
         aliases = self.get_aliases() if use_aliases else None
-        return corpus.get_canonical_chapters(edition=edition, use_aliases=use_aliases, aliases=aliases)
+        return corpus.get_canonical_chapters(
+            id_start=id_start,
+            id_end=id_end,
+            edition=edition,
+            use_aliases=use_aliases,
+            aliases=aliases,
+        )
 
     def get_paragraphs(self, chapter):
         return corpus.get_paragraphs(chapter, nlp=self.get_nlp(), aliases=self.get_aliases())

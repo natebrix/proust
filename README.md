@@ -63,7 +63,7 @@ chapters = session.get_proust_chapters(1, 5)
 sentiment = session.get_sentiment(chapters)
 ```
 
-For the canonical 18-part French structure copied from the website reader data:
+`get_proust_chapters()` now uses the canonical 18-part French structure copied from the website reader data:
 
 ```python
 from proust import create_session, canonical_volume_starts, volume_column
@@ -75,4 +75,4 @@ structure = session.get_canonical_structure()
 chapter = session.get_canonical_chapter("v1-p1-combray")
 ```
 
-The legacy HTML-backed API remains available. The canonical dataset lives under `data/islt/editions/fr-original/`.
+The raw archived HTML pages remain available explicitly through `get_proust_page()`, `get_proust_pages()`, `write_proust_pages()`, and `get_proust_chapters(..., source="legacy-file")`. The canonical dataset lives under `data/islt/editions/fr-original/`.

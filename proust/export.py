@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .api import create_session
-from .corpus import get_chapter_body, get_chapter_info
+from .corpus import get_canonical_chapter, get_canonical_structure, get_chapter_body, get_chapter_info
 
 
 @dataclass(frozen=True)
@@ -24,7 +24,9 @@ READER_EDITIONS = {
         id="fr-original",
         title="À la recherche du temps perdu",
         language="fr",
-        description="texte intégral",
+        description="texte intégral restructuré selon les divisions canoniques de Proust",
+        source="canonical",
+        chapter_end=18,
     )
 }
 
@@ -39,6 +41,71 @@ def paragraph_id(index):
 
 def sentence_id(index):
     return f"s-{index}"
+
+
+def build_reader_structure(chapter_summaries):
+    volumes = []
+
+    for chapter in chapter_summaries:
+        volume_id = f"v{chapter['volumeNumber']}"
+        volume = next((item for item in volumes if item["id"] == volume_id), None)
+
+        if volume is None:
+            volume = {
+                "id": volume_id,
+                "number": chapter["volumeNumber"],
+                "title": chapter["volumeTitle"],
+                "chapterIds": [],
+                "parts": [],
+            }
+            volumes.append(volume)
+
+        volume["chapterIds"].append(chapter["id"])
+
+        if chapter["partNumber"] is None:
+            continue
+
+        part_id = f"{volume_id}-p{chapter['partNumber']}"
+        part = next((item for item in volume["parts"] if item["id"] == part_id), None)
+
+        if part is None:
+            part = {
+                "id": part_id,
+                "number": chapter["partNumber"],
+                "title": chapter["partTitle"],
+                "chapterIds": [],
+            }
+            volume["parts"].append(part)
+
+        part["chapterIds"].append(chapter["id"])
+
+    return volumes
+
+
+def summarize_reader_chapter(chapter):
+    summary = {
+        "id": chapter["chapterId"],
+        "number": chapter["chapterNumber"],
+        "title": chapter["title"],
+        "paragraphCount": chapter["paragraphCount"],
+        "sentenceCount": chapter["sentenceCount"],
+        "prevChapterId": chapter["prevChapterId"],
+        "nextChapterId": chapter["nextChapterId"],
+    }
+
+    for field in (
+        "volumeNumber",
+        "volumeTitle",
+        "partNumber",
+        "partTitle",
+        "sectionTitle",
+        "sourceChapterRange",
+        "sourceAnchorIds",
+    ):
+        if field in chapter:
+            summary[field] = chapter[field]
+
+    return summary
 
 
 def build_reader_chapter(session, edition, chapter_number, source=None):
@@ -94,6 +161,31 @@ def export_reader_dataset(output_dir, edition_specs=None, default_edition="fr-or
     manifest_editions = []
 
     for spec in specs:
+        if spec.source == "canonical":
+            canonical_structure = get_canonical_structure(edition=spec.id)
+            chapter_summaries = []
+
+            for chapter_id in [chapter["id"] for chapter in canonical_structure]:
+                chapter = get_canonical_chapter(chapter_id, edition=spec.id)
+                chapter_file = output_path / "editions" / spec.id / "chapters" / f"{chapter['chapterId']}.json"
+                chapter_file.parent.mkdir(parents=True, exist_ok=True)
+                chapter_file.write_text(json.dumps(chapter, ensure_ascii=False, indent=2) + "\n")
+                chapter_summaries.append(summarize_reader_chapter(chapter))
+
+            manifest_editions.append(
+                {
+                    "id": spec.id,
+                    "title": spec.title,
+                    "language": spec.language,
+                    "description": spec.description,
+                    "chapterCount": len(chapter_summaries),
+                    "isComplete": True,
+                    "structure": build_reader_structure(chapter_summaries),
+                    "chapters": chapter_summaries,
+                }
+            )
+            continue
+
         session = create_session(model=spec.model, default_source=spec.source)
         chapter_summaries = []
 
@@ -105,29 +197,14 @@ def export_reader_dataset(output_dir, edition_specs=None, default_edition="fr-or
                 source=spec.source,
             )
             previous_chapter = chapter_slug(chapter_number - 1) if chapter_number > spec.chapter_start else None
-            next_chapter = (
-                chapter_slug(chapter_number + 1) if chapter_number < spec.chapter_end else None
-            )
+            next_chapter = chapter_slug(chapter_number + 1) if chapter_number < spec.chapter_end else None
             chapter["prevChapterId"] = previous_chapter
             chapter["nextChapterId"] = next_chapter
 
-            chapter_file = (
-                output_path / "editions" / spec.id / "chapters" / f"{chapter['chapterId']}.json"
-            )
+            chapter_file = output_path / "editions" / spec.id / "chapters" / f"{chapter['chapterId']}.json"
             chapter_file.parent.mkdir(parents=True, exist_ok=True)
             chapter_file.write_text(json.dumps(chapter, ensure_ascii=False, indent=2) + "\n")
-
-            chapter_summaries.append(
-                {
-                    "id": chapter["chapterId"],
-                    "number": chapter_number,
-                    "title": chapter["title"],
-                    "paragraphCount": chapter["paragraphCount"],
-                    "sentenceCount": chapter["sentenceCount"],
-                    "prevChapterId": previous_chapter,
-                    "nextChapterId": next_chapter,
-                }
-            )
+            chapter_summaries.append(summarize_reader_chapter(chapter))
 
         manifest_editions.append(
             {

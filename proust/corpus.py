@@ -77,12 +77,26 @@ def get_proust_pages(id_start=1, id_end=486, source="file"):
     return [get_proust_page(id, source) for id in range(id_start, id_end + 1)]
 
 
-def get_proust_chapters(id_start=1, id_end=486, source="file", use_aliases=True, by_paragraph=True, aliases=None):
+def get_proust_chapters(id_start=1, id_end=None, source="file", use_aliases=True, by_paragraph=True, aliases=None):
     del by_paragraph
+    if source in {"canonical", "file"}:
+        return get_canonical_chapters(
+            id_start=id_start,
+            id_end=id_end,
+            use_aliases=use_aliases,
+            aliases=aliases,
+        )
+
+    if id_end is None:
+        id_end = 486
+
+    if source not in {"legacy-file", "web"}:
+        raise ValueError(f'Invalid source "{source}". Valid sources = canonical, file, legacy-file, web.')
+
     return [
         [
             preprocess(paragraph.text, use_aliases, aliases=aliases)
-            for paragraph in get_chapter_body(get_proust_page(id, source)).find_all("p")
+            for paragraph in get_chapter_body(get_proust_page(id, "file" if source == "legacy-file" else source)).find_all("p")
         ]
         for id in range(id_start, id_end + 1)
     ]
@@ -114,12 +128,18 @@ def get_canonical_chapter_ids(edition="fr-original"):
     return [chapter["id"] for chapter in get_canonical_structure(edition=edition)]
 
 
-def get_canonical_chapters(edition="fr-original", use_aliases=True, aliases=None):
+def get_canonical_chapters(id_start=1, id_end=None, edition="fr-original", use_aliases=True, aliases=None):
     chapter_ids = get_canonical_chapter_ids(edition=edition)
+
+    if id_end is None:
+        id_end = len(chapter_ids)
+
+    selected_ids = chapter_ids[id_start - 1:id_end]
+
     return [
         [
             preprocess(paragraph["text"], use_aliases=use_aliases, aliases=aliases)
             for paragraph in get_canonical_chapter(chapter_id, edition=edition)["paragraphs"]
         ]
-        for chapter_id in chapter_ids
+        for chapter_id in selected_ids
     ]

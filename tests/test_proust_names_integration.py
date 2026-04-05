@@ -68,9 +68,8 @@ def test_live_pipeline_word_freq_and_sentiment(live_nlp):
 def test_file_backed_chapter_loading_smoke(live_nlp):
     chapters = pn.get_proust_chapters(1, 1, source="file")
     assert len(chapters) == 1
-    assert len(chapters[0]) == 11
-    assert chapters[0][0] == "Du Côté de Chez Swann - Première partie"
-    assert chapters[0][1] == "Combray"
+    assert len(chapters[0]) == 371
+    assert chapters[0][0].startswith("Longtemps, je me suis couché de bonne heure.")
 
 
 def test_get_islt_nlp_flattens_small_text(live_nlp):
