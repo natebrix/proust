@@ -3,8 +3,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from .api import create_session
-from .corpus import get_canonical_chapter, get_canonical_structure, get_chapter_body, get_chapter_info
+from .corpus import get_canonical_chapter, get_canonical_structure
 
 
 @dataclass(frozen=True)
@@ -13,10 +12,6 @@ class ReaderEditionSpec:
     title: str
     language: str
     description: str = ""
-    source: str = "file"
-    model: str = "fr_core_news_sm"
-    chapter_start: int = 1
-    chapter_end: int = 486
 
 
 READER_EDITIONS = {
@@ -25,22 +20,8 @@ READER_EDITIONS = {
         title="À la recherche du temps perdu",
         language="fr",
         description="texte intégral restructuré selon les divisions canoniques de Proust",
-        source="canonical",
-        chapter_end=18,
     )
 }
-
-
-def chapter_slug(chapter_number):
-    return f"{chapter_number:03}"
-
-
-def paragraph_id(index):
-    return f"p-{index}"
-
-
-def sentence_id(index):
-    return f"s-{index}"
 
 
 def build_reader_structure(chapter_summaries):
@@ -99,52 +80,11 @@ def summarize_reader_chapter(chapter):
         "partNumber",
         "partTitle",
         "sectionTitle",
-        "sourceChapterRange",
-        "sourceAnchorIds",
     ):
         if field in chapter:
             summary[field] = chapter[field]
 
     return summary
-
-
-def build_reader_chapter(session, edition, chapter_number, source=None):
-    html = session.get_proust_page(chapter_number, source=source)
-    title = get_chapter_info(html)
-    body = get_chapter_body(html)
-    paragraphs = []
-
-    for paragraph_index, paragraph in enumerate(body.find_all("p"), start=1):
-        text = session.preprocess(paragraph.get_text(" ", strip=True))
-        sentence_records = [
-            {
-                "id": sentence_id(sentence_index),
-                "index": sentence_index,
-                "text": sentence.text,
-            }
-            for sentence_index, sentence in enumerate(
-                session.get_sentences(text),
-                start=1,
-            )
-        ]
-        paragraphs.append(
-            {
-                "id": paragraph_id(paragraph_index),
-                "index": paragraph_index,
-                "text": text,
-                "sentences": sentence_records,
-            }
-        )
-
-    return {
-        "edition": edition,
-        "chapterId": chapter_slug(chapter_number),
-        "chapterNumber": chapter_number,
-        "title": title,
-        "paragraphCount": len(paragraphs),
-        "sentenceCount": sum(len(paragraph["sentences"]) for paragraph in paragraphs),
-        "paragraphs": paragraphs,
-    }
 
 
 def build_reader_manifest(editions, default_edition):
@@ -161,46 +101,11 @@ def export_reader_dataset(output_dir, edition_specs=None, default_edition="fr-or
     manifest_editions = []
 
     for spec in specs:
-        if spec.source == "canonical":
-            canonical_structure = get_canonical_structure(edition=spec.id)
-            chapter_summaries = []
-
-            for chapter_id in [chapter["id"] for chapter in canonical_structure]:
-                chapter = get_canonical_chapter(chapter_id, edition=spec.id)
-                chapter_file = output_path / "editions" / spec.id / "chapters" / f"{chapter['chapterId']}.json"
-                chapter_file.parent.mkdir(parents=True, exist_ok=True)
-                chapter_file.write_text(json.dumps(chapter, ensure_ascii=False, indent=2) + "\n")
-                chapter_summaries.append(summarize_reader_chapter(chapter))
-
-            manifest_editions.append(
-                {
-                    "id": spec.id,
-                    "title": spec.title,
-                    "language": spec.language,
-                    "description": spec.description,
-                    "chapterCount": len(chapter_summaries),
-                    "isComplete": True,
-                    "structure": build_reader_structure(chapter_summaries),
-                    "chapters": chapter_summaries,
-                }
-            )
-            continue
-
-        session = create_session(model=spec.model, default_source=spec.source)
+        canonical_structure = get_canonical_structure(edition=spec.id)
         chapter_summaries = []
 
-        for chapter_number in range(spec.chapter_start, spec.chapter_end + 1):
-            chapter = build_reader_chapter(
-                session,
-                edition=spec.id,
-                chapter_number=chapter_number,
-                source=spec.source,
-            )
-            previous_chapter = chapter_slug(chapter_number - 1) if chapter_number > spec.chapter_start else None
-            next_chapter = chapter_slug(chapter_number + 1) if chapter_number < spec.chapter_end else None
-            chapter["prevChapterId"] = previous_chapter
-            chapter["nextChapterId"] = next_chapter
-
+        for chapter_id in [chapter["id"] for chapter in canonical_structure]:
+            chapter = get_canonical_chapter(chapter_id, edition=spec.id)
             chapter_file = output_path / "editions" / spec.id / "chapters" / f"{chapter['chapterId']}.json"
             chapter_file.parent.mkdir(parents=True, exist_ok=True)
             chapter_file.write_text(json.dumps(chapter, ensure_ascii=False, indent=2) + "\n")
@@ -213,6 +118,8 @@ def export_reader_dataset(output_dir, edition_specs=None, default_edition="fr-or
                 "language": spec.language,
                 "description": spec.description,
                 "chapterCount": len(chapter_summaries),
+                "isComplete": True,
+                "structure": build_reader_structure(chapter_summaries),
                 "chapters": chapter_summaries,
             }
         )

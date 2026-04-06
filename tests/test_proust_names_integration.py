@@ -66,7 +66,7 @@ def test_live_pipeline_word_freq_and_sentiment(live_nlp):
 
 
 def test_file_backed_chapter_loading_smoke(live_nlp):
-    chapters = pn.get_proust_chapters(1, 1, source="file")
+    chapters = pn.get_proust_chapters(1, 1)
     assert len(chapters) == 1
     assert len(chapters[0]) == 371
     assert chapters[0][0].startswith("Longtemps, je me suis couché de bonne heure.")

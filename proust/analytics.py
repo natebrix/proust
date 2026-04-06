@@ -37,8 +37,8 @@ def top_entities(entity_table_, count):
     return entity_count(entity_table_).sort_values("count", ascending=False).head(count)
 
 
-def get_proust_names(source="file", use_aliases=True, aliases=None, nlp=None):
-    chapters = get_proust_chapters(source=source, use_aliases=use_aliases, aliases=aliases)
+def get_proust_names(use_aliases=True, aliases=None, nlp=None):
+    chapters = get_proust_chapters(use_aliases=use_aliases, aliases=aliases)
     return chapters, entity_table(chapters, nlp=nlp)
 
 

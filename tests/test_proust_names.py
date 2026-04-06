@@ -1,24 +1,10 @@
 from types import SimpleNamespace
 
 import pandas as pd
-import pytest
 
 import proust as pn
 from proust import create_session
 from proust import corpus as corpus_module
-
-
-HTML = """
-<html>
-  <body>
-    <h1>Du cote de chez Swann</h1>
-    <div class="field-item">
-      <p>Premier paragraphe.</p>
-      <p>Deuxieme paragraphe.</p>
-    </div>
-  </body>
-</html>
-"""
 
 
 class FakeToken:
@@ -50,36 +36,6 @@ def test_preprocess_applies_punctuation_fix_and_aliases(monkeypatch):
 def test_preprocess_can_skip_aliases(monkeypatch):
     monkeypatch.setattr(corpus_module, "get_aliases", lambda: {"M. Swann": "Swann"})
     assert pn.preprocess("M. Swann", use_aliases=False) == "M. Swann"
-
-
-def test_get_chapter_info_and_body():
-    assert pn.get_chapter_info(HTML) == "Du cote de chez Swann"
-    body = pn.get_chapter_body(HTML)
-    assert [p.text for p in body.find_all("p")] == [
-        "Premier paragraphe.",
-        "Deuxieme paragraphe.",
-    ]
-
-
-def test_get_proust_page_rejects_invalid_source():
-    with pytest.raises(ValueError, match='Invalid source "bad"'):
-        pn.get_proust_page(1, source="bad")
-
-
-def test_get_paragraphs_builds_dataframe(monkeypatch):
-    monkeypatch.setattr(
-        corpus_module,
-        "get_sentences",
-        lambda text, nlp=None: [SimpleNamespace(text=text.upper()), SimpleNamespace(text=text.lower())],
-    )
-    chapter = pn.get_chapter_body(HTML)
-    df = pn.get_paragraphs(chapter)
-    assert df.to_dict("records") == [
-        {"paragraph": 0, "sentence": 0, "text": "PREMIER PARAGRAPHE."},
-        {"paragraph": 0, "sentence": 1, "text": "premier paragraphe."},
-        {"paragraph": 1, "sentence": 0, "text": "DEUXIEME PARAGRAPHE."},
-        {"paragraph": 1, "sentence": 1, "text": "deuxieme paragraphe."},
-    ]
 
 
 def test_entity_helpers_and_top_entities():
@@ -138,8 +94,8 @@ def test_volume_column_uses_volume_boundaries():
 
 
 def test_volume_column_accepts_custom_boundaries():
-    df = pd.DataFrame({"chapter": [0, 101, 102, 485]})
-    assert pn.volume_column(df, starts=pn.legacy_volume_starts).tolist() == [1, 1, 2, 7]
+    df = pd.DataFrame({"chapter": [0, 0, 1, 2]})
+    assert pn.volume_column(df, starts=[0, 1, 3]).tolist() == [1, 1, 2, 2]
 
 
 def test_flatten_islt_joins_chapters_and_paragraphs():
@@ -233,7 +189,8 @@ def test_canonical_structure_and_chapter_loading_smoke():
 
     chapter = pn.get_canonical_chapter("v1-p1-combray")
     assert chapter["chapterId"] == "v1-p1-combray"
-    assert chapter["sourceChapterRange"] == {"start": "001", "end": "043"}
+    assert chapter["volumeNumber"] == 1
+    assert chapter["partTitle"] == "Combray"
 
 
 def test_get_canonical_chapters_returns_18_canonical_units():
@@ -243,16 +200,9 @@ def test_get_canonical_chapters_returns_18_canonical_units():
 
 
 def test_get_proust_chapters_defaults_to_canonical_units():
-    chapters = pn.get_proust_chapters(1, 1, source="file", use_aliases=False)
+    chapters = pn.get_proust_chapters(1, 1, use_aliases=False)
     assert len(chapters) == 1
     assert chapters[0][0].startswith("Longtemps, je me suis couché de bonne heure.")
-
-
-def test_get_proust_chapters_can_still_use_legacy_files():
-    chapters = pn.get_proust_chapters(1, 1, source="legacy-file")
-    assert len(chapters) == 1
-    assert chapters[0][0] == "Du Côté de Chez Swann - Première partie"
-    assert chapters[0][1] == "Combray"
 
 
 def test_session_exposes_canonical_dataset():

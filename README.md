@@ -2,7 +2,7 @@
 Text analytics on Proust's In Search of Lost Time. You can read my posts on Proust here: https://nathanbrixius.wordpress.com/category/proust/
 
 This repository contains code to:
-- Download the full public domain French text of «À la recherche du temps perdu» by Marcel Proust
+- Work with a canonical 18-part French text of «À la recherche du temps perdu» by Marcel Proust
 - preprocess the French text with spaCy
 - count occurrences of proper names
 - compute simple sentiment summaries
@@ -13,7 +13,6 @@ I am not an expert in NLP / spaCy, so buyer beware.
 ## Environment
 
 Core dependencies:
-- `beautifulsoup4`
 - `pandas`
 - `matplotlib`
 - `spacy`
@@ -63,7 +62,7 @@ chapters = session.get_proust_chapters(1, 5)
 sentiment = session.get_sentiment(chapters)
 ```
 
-`get_proust_chapters()` now uses the canonical 18-part French structure copied from the website reader data:
+`get_proust_chapters()` and `get_proust_names()` use the canonical 18-part French structure:
 
 ```python
 from proust import create_session, canonical_volume_starts, volume_column
@@ -75,4 +74,4 @@ structure = session.get_canonical_structure()
 chapter = session.get_canonical_chapter("v1-p1-combray")
 ```
 
-The raw archived HTML pages remain available explicitly through `get_proust_page()`, `get_proust_pages()`, `write_proust_pages()`, and `get_proust_chapters(..., source="legacy-file")`. The canonical dataset lives under `data/islt/editions/fr-original/`.
+The canonical dataset lives under `data/islt/editions/fr-original/`.
