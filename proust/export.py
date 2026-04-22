@@ -7,11 +7,48 @@ from .corpus import get_canonical_chapter, get_canonical_structure
 
 
 @dataclass(frozen=True)
+class ReaderChapterSpec:
+    id: str
+    number: int
+    title: str
+    volume_number: int
+    volume_title: str
+    part_number: int | None
+    part_title: str | None
+    section_title: str | None
+    start_chapter_id: int
+    end_chapter_id: int
+
+
+@dataclass(frozen=True)
 class ReaderEditionSpec:
     id: str
     title: str
     language: str
     description: str = ""
+
+
+def _load_canonical_chapter_specs():
+    structure_path = Path(__file__).with_name("canonical_structure.json")
+    entries = json.loads(structure_path.read_text())
+    return tuple(
+        ReaderChapterSpec(
+            id=entry["id"],
+            number=index,
+            title=entry["title"],
+            volume_number=entry["volumeNumber"],
+            volume_title=entry["volumeTitle"],
+            part_number=entry["partNumber"],
+            part_title=entry["partTitle"],
+            section_title=entry["sectionTitle"],
+            start_chapter_id=int(entry["startChapterId"]),
+            end_chapter_id=int(entry["endChapterId"]),
+        )
+        for index, entry in enumerate(entries, start=1)
+    )
+
+
+CANONICAL_CHAPTER_SPECS = _load_canonical_chapter_specs()
 
 
 READER_EDITIONS = {
