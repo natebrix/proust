@@ -183,3 +183,36 @@ The remaining major evidence still to gather is:
 - additional contrasting terrain-transfer proof
 - an adverse-case stress pack
 - an unattended production-style dry run
+
+## Final Production-Corpus Review
+
+The final aggregation review over the accepted contiguous production pass is now complete.
+
+Machine-readable artifact:
+
+- [corpus-review-final.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-final.json:1)
+
+Reviewed corpus:
+
+- `run-285` through `run-556`, including only output runs with annotation JSON files
+- `136` accepted production output runs
+- `1000` declared units
+- `1000` valid annotations
+
+Headline metrics:
+
+- event polarity counts:
+  - positive: `393`
+  - negative: `596`
+  - mixed: `22`
+- cross-lens comparable entries: `1165`
+- label disagreement rate: `0.065`
+- direction disagreement rate: `0.045`
+- positive-versus-negative sign-flip examples: `0`
+
+Final judgment:
+
+- the completed production corpus passes the corpus-level sanity check
+- the aggregate positive and negative character surfaces remain literarily plausible
+- cross-lens disagreement remains bounded and does not show systemic inversion
+- focal narrowness remains the main interpretation caveat, not evidence of corpus corruption

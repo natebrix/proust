@@ -18,7 +18,7 @@ For the longer running history, decisions, and examples, see:
 
 The project is in:
 
-- full-corpus production annotation
+- post-production corpus aggregation review
 
 This now means:
 
@@ -28,15 +28,17 @@ This now means:
 - the first adverse-case stress pack is complete
 - the first production-style dry run is now complete
 - full-corpus automation has now completed the canonical ISLT chapter pass
+- the final production-corpus sanity/aggregation review is complete
 
 The current question is no longer:
 
 - can the prompt and reducer survive new literary terrain?
 - should the project proceed to full-corpus automation?
+- what final corpus-level sanity checks should be run on the completed production corpus?
 
 The current question is:
 
-- what final corpus-level sanity checks and downstream aggregation should be run on the completed production corpus?
+- what downstream analysis or publication artifact should be built from the accepted production corpus?
 
 ## Current stack status
 
@@ -57,8 +59,9 @@ Current read:
 
 - no recurring report-level inversion has appeared
 - cross-lens disagreement remains low at the corpus level
+- the completed production corpus has `0` cross-lens positive/negative sign-flip examples
 - the stress pack did not expose a hidden structural failure class
-- the main watchpoints remain local higher-variance patches and operations, not corpus corruption
+- the main watchpoint remains focal narrowness, not corpus corruption
 - the dry run demonstrated viable unattended chaining, explicit failure visibility, and practical resumability
 - interruption-state handling has now been patched in the runner
 - controlled chapter-internal parallelism has now been repeatedly validated in production chapters
@@ -157,8 +160,8 @@ If work resumes from this checkpoint, the next default move is:
 1. treat the completed output through `run-556` as accepted
 2. treat `v7-p4-le-bal-de-tetes` as complete through `p-141`
 3. treat the canonical ISLT production pass as complete
-4. run the final corpus-level sanity/aggregation review over the accepted production outputs
-5. only reopen unit-level review if the corpus-level reports expose a new recurring failure class
+4. treat `outputs/corpus-review-final.json` as the final production-corpus aggregation checkpoint
+5. only reopen unit-level review if downstream analysis exposes a new recurring failure class
 
 ## Latest checkpoint
 

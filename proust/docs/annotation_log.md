@@ -5316,3 +5316,60 @@ Operational judgment:
 - `v7-p4-le-bal-de-tetes` is now complete through `p-141`
 - the canonical ISLT production pass is now complete through the final exported chapter
 - the next default move is a final corpus-level sanity/aggregation review over the accepted production outputs
+
+## final production-corpus aggregation review
+
+The final corpus-level sanity/aggregation review has now been run over the accepted contiguous production outputs.
+
+Reviewed corpus:
+
+- `run-285` through `run-556`, including only output runs with annotation JSON files
+- `136` accepted production output runs
+- `1000` declared units
+- `1000` valid annotations
+
+Machine-readable artifact:
+
+- [corpus-review-final.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-final.json:1)
+
+Headline aggregate surface:
+
+- event polarity counts:
+  - positive: `393`
+  - negative: `596`
+  - mixed: `22`
+- most common event types:
+  - `narrated_diminishment`: `415`
+  - `narrated_elevation`: `261`
+  - `admiration`: `115`
+  - `snub`: `106`
+  - `blame`: `56`
+
+Cross-lens stability:
+
+- comparable unit-character entries across all three lenses: `1165`
+- label disagreement count: `76`
+- label disagreement rate: `0.065`
+- direction disagreement count: `53`
+- direction disagreement rate: `0.045`
+- positive-versus-negative sign-flip examples: `0`
+
+Corpus-level reading:
+
+- the final aggregate surface remains literarily plausible rather than mechanically noisy
+- strong positive character totals are led by figures such as `duchesse de Guermantes`, `Elstir`, and `Bergotte`
+- strong negative character totals are led by figures such as `Swann`, `Albertine`, `baron de Charlus`, `Bloch`, and `duc de Guermantes`
+- high-volatility characters are exactly the kinds of figures expected to oscillate across the novel:
+  - `Swann`
+  - `baron de Charlus`
+  - `Albertine`
+  - `Mme de Villeparisis`
+  - `Robert de Saint-Loup`
+  - `duc de Guermantes`
+
+Operational judgment:
+
+- the final production corpus passes the aggregation sanity check
+- no hidden sign-flip problem emerged at corpus scale
+- cross-lens disagreement is higher than in the earlier exploratory corpus review, but still bounded and dominated by threshold, neutral, and mixedness cases rather than outright inversion
+- focal narrowness remains the main known watchpoint, but it is now a downstream interpretation caveat rather than a production blocker
