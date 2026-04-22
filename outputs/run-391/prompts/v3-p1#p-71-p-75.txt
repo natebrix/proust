@@ -1,0 +1,1020 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ],
+    "notes": "Swann acquaintance with a nearby estate"
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ],
+    "notes": "Aristocratic social connection mentioned in Swann's prestige world"
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ],
+    "notes": "Narrator's uncle Adolphe"
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ],
+    "notes": "Parisian salon hostess"
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ],
+    "notes": "Guermantes relation obsessed with rank and kinship display"
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ],
+    "notes": "Guermantes aristocrat referenced in the Laumes social orbit"
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ],
+    "notes": "Aristocratic hostess in the Guermantes orbit"
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ],
+    "notes": "Swann social acquaintance considered among suspects"
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ],
+    "notes": "Swann associate/servant mentioned among suspects"
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ],
+    "notes": "Salon attendee who comments after the sonata"
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ],
+    "notes": "Dream-figure standing in for Forcheville in Swann's dream"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ],
+    "notes": "Gilberte Swann, first encountered at the Champs-Elysees"
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ],
+    "notes": "Narrator's family servant"
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ],
+    "notes": "Celebrated actress"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": "Writer admired by the narrator"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois, diplomat and family dinner guest"
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ],
+    "notes": "Narrator's grandmother"
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ],
+    "notes": "Aristocratic hotel guest at Balbec"
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ],
+    "notes": "Headwaiter or maître d'hôtel at the Grand-Hôtel in Balbec"
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ],
+    "notes": "Daughter of M. de Stermaria"
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ],
+    "notes": "Male member of the Cambremer family in the Balbec hotel circle"
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ],
+    "notes": "Aristocratic visitor in the Balbec social scene"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ],
+    "notes": "Narrator's father"
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ],
+    "notes": "Young aristocrat and nephew of Mme de Villeparisis"
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ],
+    "notes": "Father of Saint-Loup"
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ],
+    "notes": "Friend/acquaintance of the narrator; socially performative and often ironic"
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ],
+    "notes": "Guermantes title in the family sequence discussed with Saint-Loup"
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ],
+    "notes": "Bloch's father as remembered and socially evaluated in the narrator's reflections"
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ],
+    "notes": "Grand-Hotel director observed by the narrator"
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ],
+    "notes": "Figure invoked in the political talk reported by Aimé"
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ],
+    "notes": "The sad-looking blonde seen at Rivebelle who begins to crystallize in the narrator's desire"
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ],
+    "notes": "Oriane de Guermantes; now appearing as the duchesse de Guermantes"
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ],
+    "notes": "Neighbor and ally of Françoise in the new Guermantes setting"
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ],
+    "notes": "Princesse de Guermantes-Bavière; hostess of the evening in the opening of v4-p2"
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ],
+    "notes": "Aristocratic young man encountered outside the princesse de Guermantes salon"
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ],
+    "notes": "Diplomat/ambassador figure appearing in the princesse de Guermantes salon"
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ],
+    "notes": "Wife of M. de Vaugoubert"
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ],
+    "notes": "Albertine Simonet; narrator's companion in La Prisonnière"
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ],
+    "notes": "Andrée, one of the Balbec girls and Albertine's friend"
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ],
+    "notes": "Albertine's aunt"
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ],
+    "notes": "Charles Morel, violinist associated with Charlus and the Verdurins"
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ],
+    "notes": "Painter and social/aesthetic authority referenced by Albertine."
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ],
+    "notes": "Prince de Leon, beau-frere de Saint-Loup in the duchesse de Guermantes anecdotes."
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ],
+    "notes": "Aristocratic figure in the duchesse de Guermantes reminiscences."
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ],
+    "notes": "Social rival figure in the Jockey Club episode around the Guermantes."
+  }
+}
+
+### Prior local context (optional)
+
+Devant les « chut » des voisins, les deux jeunes gens qui étaient avec elle tâchèrent de la faire tenir tranquille, et sa fureur ne se déchaînait plus que dans ses yeux. Cette fureur ne pouvait d'ailleurs s'adresser qu'au succès, à la gloire, car la Berma qui avait gagné tant d'argent n'avait que des dettes. Prenant toujours des rendez-vous d'affaires ou d'amitié auxquels elle ne pouvait pas se rendre, elle avait dans toutes les rues des chasseurs qui couraient décommander dans les hôtels des appartements retenus à l'avance et qu'elle ne venait jamais occuper, des océans de parfums pour laver ses chiennes, des dédits à payer à tous les directeurs. À défaut de frais plus considérables, et moins voluptueuse que Cléopâtre, elle aurait trouvé le moyen de manger en pneumatiques et en voitures de l'Urbaine des provinces et des royaumes. Mais la petite dame était une actrice qui n'avait pas eu de chance et avait voué une haine mortelle à la Berma. Celle-ci venait d'entrer en scène. Et alors, ô miracle, comme ces leçons que nous nous sommes vainement épuisés à apprendre le soir et que nous retrouvons en nous, sues par coeur, après que nous avons dormi, comme aussi ces visages des morts que les efforts passionnés de notre mémoire poursuivent sans les retrouver, et qui, quand nous ne pensons plus à eux, sont là devant nos yeux, avec la ressemblance de la vie, le talent de la Berma qui m'avait fui quand je cherchais si avidement à en saisir l'essence, maintenant, après ces années d'oubli, dans cette heure d'indifférence, s'imposait avec la force de l'évidence à mon admiration. Autrefois, pour tâcher d'isoler ce talent, je défalquais en quelque sorte de ce que j'entendais le rôle lui-même, le rôle, partie commune à toutes les actrices qui jouaient Phèdre et que j'avais étudié d'avance pour que je fusse capable de le soustraire, de ne recueillir comme résidu que le talent de Mme la Berma. Mais ce talent que je cherchais à apercevoir en dehors du rôle, il ne faisait qu'un avec lui. Tel pour un grand musicien (il paraît que c'était le cas pour M. Vinteuil quand il jouait du piano), son jeu est d'un si grand pianiste qu'on ne sait même plus si cet artiste est pianiste du tout, parce que (n'interposant pas tout cet appareil d'efforts musculaires, çà et là couronnés de brillants effets, toute cette éclaboussure de notes où du moins l'auditeur qui ne sait où se prendre croit trouver le talent dans sa réalité matérielle, tangible) ce jeu est devenu si transparent, si rempli de ce qu'il interprète, que lui-même on ne le voit plus, et qu'il n'est plus qu'une fenêtre qui donne sur un chef-d'oeuvre. Les intentions entourant comme une bordure majestueuse ou délicate la voix et la mimique d'Aricie, d'Ismène, d'Hippolyte, j'avais pu les distinguer ; mais Phèdre se les était intériorisées, et mon esprit n'avait pas réussi à arracher à la diction et aux attitudes, à appréhender dans l'avare simplicité de leurs surfaces unies, ces trouvailles, ces effets qui n'en dépassaient pas, tant ils s'y étaient profondément résorbés. La voix de la Berma, en laquelle ne subsistait plus un seul déchet de matière inerte et réfractaire à l'esprit, ne laissait pas discerner autour d'elle cet excédent de larmes qu'on voyait couler, parce qu'elles n'avaient pu s'y imbiber, sur la voix de marbre d'Aricie ou d'Ismène, mais avait été délicatement assouplie en ses moindres cellules comme l'instrument d'un grand violoniste chez qui on veut, quand on dit qu'il a un beau son, louer non pas une particularité physique mais une supériorité d'âme ; et comme dans le paysage antique où à la place d'une nymphe disparue il y a une source inanimée, une intention discernable et concrète s'y était changée en quelque qualité du timbre, d'une limpidité étrange, appropriée et froide. Les bras de la Berma que les vers eux-mêmes, de la même émission par laquelle ils faisaient sortir sa voix de ses lèvres, semblaient soulever sur sa poitrine, comme ces feuillages que l'eau déplace en s'échappant ; son attitude en scène qu'elle avait lentement constituée, qu'elle modifierait encore, et qui était faite de raisonnements d'une autre profondeur que ceux dont on apercevait la trace dans les gestes de ses camarades, mais de raisonnements ayant perdu leur origine volontaire, fondus dans une sorte de rayonnement où ils faisaient palpiter, autour du personnage de Phèdre, des éléments riches et complexes, mais que le spectateur fasciné prenait, non pour une réussite de l'artiste mais pour une donnée de la vie ; ces blancs voiles eux-mêmes, qui, exténués et fidèles, semblaient de la matière vivante et avoir été filés par la souffrance mi-païenne, mi-janséniste, autour de laquelle ils se contractaient comme un cocon fragile et frileux ; tout cela, voix, attitudes, gestes, voiles, n'étaient, autour de ce corps d'une idée qu'est un vers (corps qui, au contraire des corps humains, n'est pas devant l'âme comme un obstacle opaque qui empêche de l'apercevoir mais comme un vêtement purifié, vivifié où elle se diffuse et où on la retrouve), que des enveloppes supplémentaires qui, au lieu de la cacher, rendaient plus splendidement l'âme qui se les était assimilées et s'y était répandue, que des coulées de substances diverses, devenues translucides, dont la superposition ne fait que réfracter plus richement le rayon central et prisonnier qui les traverse et rendre plus étendue, plus précieuse et plus belle la matière imbibée de flamme où il est engainé. Telle l'interprétation de la Berma était, autour de l'oeuvre, une seconde oeuvre vivifiée aussi par le génie.
+
+### Passage
+
+Mon impression, à vrai dire, plus agréable que celle d'autrefois, n'était pas différente. Seulement je ne la confrontais plus à une idée préalable, abstraite et fausse, du génie dramatique, et je comprenais que le génie dramatique, c'était justement cela. Je pensais tout à l'heure que, si je n'avais pas eu de plaisir la première fois que j'avais entendu la Berma, c'est que, comme jadis quand je retrouvais Gilberte aux Champs-Élysées, je venais à elle avec un trop grand désir. Entre les deux déceptions il n'y avait peut-être pas seulement cette ressemblance, une autre aussi, plus profonde. L'impression que nous cause une personne, une oeuvre (ou une interprétation) fortement caractérisées, est particulière. Nous avons apporté avec nous les idées de « beauté », « largeur de style », « pathétique », que nous pourrions à la rigueur avoir l'illusion de reconnaître dans la banalité d'un talent, d'un visage corrects, mais notre esprit attentif a devant lui l'insistance d'une forme dont il ne possède pas l'équivalent intellectuel, dont il lui faut dégager l'inconnu. Il entend un son aigu, une intonation bizarrement interrogative. Il se demande : « Est-ce beau ? ce que j'éprouve, est-ce de l'admiration ? est-ce cela la richesse de coloris, la noblesse, la puissance ? » Et ce qui lui répond de nouveau, c'est une voix aiguë, c'est un ton curieusement questionneur, c'est l'impression despotique causée par un être qu'on ne connaît pas, toute matérielle, et dans laquelle aucun espace vide n'est laissé pour la « largeur de l'interprétation ». Et à cause de cela ce sont les oeuvres vraiment belles, si elles sont sincèrement écoutées, qui doivent le plus nous décevoir, parce que, dans la collection de nos idées, il n'y en a aucune qui réponde à une impression individuelle.
+
+C'était précisément ce que me montrait le jeu de la Berma. C'était bien cela, la noblesse, l'intelligence de la diction. Maintenant je me rendais compte des mérites d'une interprétation large, poétique, puissante ; ou plutôt, c'était cela à quoi on a convenu de décerner ces titres, mais comme on donne le nom de Mars, de Vénus, de Saturne à des étoiles qui n'ont rien de mythologique. Nous sentons dans un monde, nous pensons, nous nommons dans un autre, nous pouvons entre les deux établir une concordance mais non combler l'intervalle. C'est bien un peu, cet intervalle, cette faille, que j'avais à franchir quand, le premier jour où j'étais allé voir jouer la Berma, l'ayant écoutée de toutes mes oreilles, j'avais eu quelque peine à rejoindre mes idées de « noblesse d'interprétation », d'« originalité » et n'avais éclaté en applaudissements qu'après un moment de vide, et comme s'ils naissaient non pas de mon impression même, mais comme si je les rattachais à mes idées préalables, au plaisir que j'avais à me dire : « J'entends enfin la Berma. » Et la différence qu'il y a entre une personne, une oeuvre fortement individuelle et l'idée de beauté existe aussi grande entre ce qu'elles nous font ressentir et les idées d'amour, d'admiration. Aussi ne les reconnaît-on pas. Je n'avais pas eu de plaisir à entendre la Berma (pas plus que je n'en avais à voir Gilberte). Je m'étais dit : « Je ne l'admire donc pas. » Mais cependant je ne songeais alors qu'à approfondir le jeu de la Berma, je n'étais préoccupé que de cela, je tâchais d'ouvrir ma pensée le plus largement possible pour recevoir tout ce qu'il contenait. Je comprenais maintenant que c'était justement cela : admirer.
+
+Ce génie dont l'interprétation de la Berma n'était seulement que la révélation, était-ce bien seulement le génie de Racine ?
+
+Je le crus d'abord. Je devais être détrompé, une fois l'acte de Phèdre fini, après les rappels du public, pendant lesquels la vieille actrice rageuse, redressant sa taille minuscule, posant son corps de biais, immobilisa les muscles de son visage, et plaça ses bras en croix sur sa poitrine pour montrer qu'elle ne se mêlait pas aux applaudissements des autres et rendre plus évidente une protestation qu'elle jugeait sensationnelle, mais qui passa inaperçue. La pièce suivante était une des nouveautés qui jadis me semblaient, à cause du défaut de célébrité, devoir paraître minces, particulières, dépourvues qu'elles étaient d'existence en dehors de la représentation qu'on en donnait. Mais je n'avais pas comme pour une pièce classique cette déception de voir l'éternité d'un chef-d'oeuvre ne tenir que la longueur de la rampe et la durée d'une représentation qui l'accomplissait aussi bien qu'une pièce de circonstance. Puis à chaque tirade que je sentais que le public aimait et qui serait un jour fameuse, à défaut de la célébrité qu'elle n'avait pu avoir dans le passé, j'ajoutais celle qu'elle aurait dans l'avenir, par un effort d'esprit inverse de celui qui consiste à se représenter des chefs-d'oeuvre au temps de leur grêle apparition, quand leur titre qu'on n'avait encore jamais entendu ne semblait pas devoir être mis un jour, confondu dans une même lumière, à côté de ceux des autres oeuvres de l'auteur. Et ce rôle serait mis un jour dans la liste de ses plus beaux, auprès de celui de Phèdre. Non qu'en lui-même il ne fût dénué de toute valeur littéraire ; mais la Berma y était aussi sublime que dans Phèdre. Je compris alors que l'oeuvre de l'écrivain n'était pour la tragédienne qu'une matière, à peu près indifférente en soi-même, pour la création de son chef-d'oeuvre d'interprétation, comme le grand le peintre que j'avais connu à Balbec, Elstir, avait trouvé le motif de deux tableaux qui se valent, dans un bâtiment scolaire sans caractère et dans une cathédrale qui est, par elle-même, un chef-d'oeuvre. Et comme le peintre dissout maison, charrette, personnages, dans quelque grand effet de lumière qui les fait homogènes, la Berma étendait de vastes nappes de terreur, de tendresse, sur les mots fondus également, tous aplanis ou relevés, et qu'une artiste médiocre eût détachés l'un après l'autre. Sans doute chacun avait une inflexion propre, et la diction de la Berma n'empêchait pas qu'on perçut le vers. N'est-ce pas déjà un premier élément de complexité ordonnée, de beauté, quand en entendant une rime, c'est-à-dire quelque chose qui est à la fois pareil et autre que la rime précédente, qui est motivé par elle, mais y introduit la variation d'une idée nouvelle, on sent deux systèmes qui se superposent, l'un de pensée, l'autre de métrique ? Mais la Berma faisait pourtant entrer les mots, même les vers, même les « tirades », dans des ensembles plus vastes qu'eux-mêmes, à la frontière desquels c'était un charme de les voir obligés de s'arrêter, s'interrompre ; ainsi un poète prend plaisir à faire hésiter un instant, à la rime, le mot qui va s'élancer et un musicien à confondre les mots divers du livret dans un même rythme qui les contrarie et les entraîne. Ainsi dans les phrases du dramaturge moderne comme dans les vers de Racine, la Berma savait introduire ces vastes images de douleur, de noblesse, de passion, qui étaient ses chefs-d'oeuvre à elle, et où on la reconnaissait comme, dans des portraits qu'il a peints d'après des modèles différents, on reconnaît un le peintre.
+
+Je n'aurais plus souhaité comme autrefois de pouvoir immobiliser les attitudes de la Berma, le bel effet de couleur qu'elle donnait un instant seulement dans un éclairage aussitôt évanoui et qui ne se reproduisait pas, ni lui faire redire cent fois un vers. Je comprenais que mon désir d'autrefois était plus exigeant que la volonté du poète, de la tragédienne, du grand artiste décorateur qu'était son metteur en scène, et que ce charme répandu au vol sur un vers, ces gestes instables perpétuellement transformés, ces tableaux successifs, c'était le résultat fugitif, le but momentané, le mobile chef-d'oeuvre que l'art théâtral se proposait et que détruirait en voulant le fixer l'attention d'un auditeur trop épris. Même je ne tenais pas à venir un autre jour réentendre la Berma ; j'étais satisfait d'elle ; c'est quand j'admirais trop pour ne pas être déçu par l'objet de mon admiration, que cet objet fût Gilberte ou la Berma, que je demandais d'avance à l'impression du lendemain le plaisir que m'avait refusé l'impression de la veille. Sans chercher à approfondir la joie que je venais d'éprouver et dont j'aurais peut-être pu faire un plus fécond usage, je me disais comme autrefois certain de mes camarades de collège : « C'est vraiment la Berma que je mets en premier », tout en sentant confusément que le génie de la Berma n'était peut-être pas traduit très exactement par cette affirmation de ma préférence et par cette place de « première » décernée, quelque calme d'ailleurs qu'elles m'apportassent.

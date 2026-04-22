@@ -1,0 +1,79 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "le père du narrateur",
+      "surface_forms": ["Mon père", "le père du narrateur"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "duc de Guermantes",
+      "surface_forms": ["duc de Guermantes"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "Mme de Villeparisis",
+      "surface_forms": ["Mme de Villeparisis", "Madame de Villeparisis"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "la mère du narrateur",
+      "surface_forms": ["Ma mère"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "duc de Guermantes",
+      "target": "Mme de Villeparisis",
+      "type": "prestige_association",
+      "polarity": "positive",
+      "narrative_stance": "ironized",
+      "confidence": 0.78,
+      "evidence": "« Il m'a dit qu'elle était extraordinairement intelligente. Il a même ajouté qu'elle tenait un bureau d'esprit » ... Ma mère ... s'en fit immédiatement une idée plus avantageuse.",
+      "explanation": "The duke’s endorsement elevates Mme de Villeparisis in the family’s eyes; the narration lightly ironizes the father's being impressed by the vague formula 'bureau d'esprit', but the local effect is an upgraded estimation."
+    },
+    {
+      "event_id": "E2",
+      "source": "unknown",
+      "target": "le père du narrateur",
+      "type": "snub",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "« Mme Sazerat se contenta d'un salut glacé » ... « ne lui tendit pas la main » ... « Dès qu'elle le sut antidreyfusard, elle mit entre elle et lui des continents et des siècles. »",
+      "explanation": "The father is publicly cold-shouldered by Mme Sazerat due to the Dreyfus divide; the narrator frames this as a decisive social distancing amounting to exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Mme de Villeparisis",
+      "dimension": "social_status",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.78,
+      "explanation": "Her local standing rises because the duke’s praise leads the family—especially the mother—to value her more."
+    },
+    {
+      "character": "le père du narrateur",
+      "dimension": "inclusion_exclusion",
+      "delta": -2,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "He is treated as socially untouchable by Mme Sazerat, signaling sharp local exclusion tied to his antidreyfusard stance."
+    },
+    {
+      "character": "la mère du narrateur",
+      "dimension": "inclusion_exclusion",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.8,
+      "explanation": "She also receives a withheld handshake and distant smile, indicating secondary spillover exclusion."
+    }
+  ],
+  "ambiguities": []
+}

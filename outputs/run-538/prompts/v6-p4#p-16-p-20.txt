@@ -1,0 +1,1020 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ],
+    "notes": "Swann acquaintance with a nearby estate"
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ],
+    "notes": "Aristocratic social connection mentioned in Swann's prestige world"
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ],
+    "notes": "Narrator's uncle Adolphe"
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ],
+    "notes": "Parisian salon hostess"
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ],
+    "notes": "Guermantes relation obsessed with rank and kinship display"
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ],
+    "notes": "Guermantes aristocrat referenced in the Laumes social orbit"
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ],
+    "notes": "Aristocratic hostess in the Guermantes orbit"
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ],
+    "notes": "Swann social acquaintance considered among suspects"
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ],
+    "notes": "Swann associate/servant mentioned among suspects"
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ],
+    "notes": "Salon attendee who comments after the sonata"
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ],
+    "notes": "Dream-figure standing in for Forcheville in Swann's dream"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ],
+    "notes": "Gilberte Swann, first encountered at the Champs-Elysees"
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ],
+    "notes": "Narrator's family servant"
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ],
+    "notes": "Celebrated actress"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": "Writer admired by the narrator"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois, diplomat and family dinner guest"
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ],
+    "notes": "Narrator's grandmother"
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ],
+    "notes": "Aristocratic hotel guest at Balbec"
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ],
+    "notes": "Headwaiter or maître d'hôtel at the Grand-Hôtel in Balbec"
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ],
+    "notes": "Daughter of M. de Stermaria"
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ],
+    "notes": "Male member of the Cambremer family in the Balbec hotel circle"
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ],
+    "notes": "Aristocratic visitor in the Balbec social scene"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ],
+    "notes": "Narrator's father"
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ],
+    "notes": "Young aristocrat and nephew of Mme de Villeparisis"
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ],
+    "notes": "Father of Saint-Loup"
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ],
+    "notes": "Friend/acquaintance of the narrator; socially performative and often ironic"
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ],
+    "notes": "Guermantes title in the family sequence discussed with Saint-Loup"
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ],
+    "notes": "Bloch's father as remembered and socially evaluated in the narrator's reflections"
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ],
+    "notes": "Grand-Hotel director observed by the narrator"
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ],
+    "notes": "Figure invoked in the political talk reported by Aimé"
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ],
+    "notes": "The sad-looking blonde seen at Rivebelle who begins to crystallize in the narrator's desire"
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ],
+    "notes": "Oriane de Guermantes; now appearing as the duchesse de Guermantes"
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ],
+    "notes": "Neighbor and ally of Françoise in the new Guermantes setting"
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ],
+    "notes": "Princesse de Guermantes-Bavière; hostess of the evening in the opening of v4-p2"
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ],
+    "notes": "Aristocratic young man encountered outside the princesse de Guermantes salon"
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ],
+    "notes": "Diplomat/ambassador figure appearing in the princesse de Guermantes salon"
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ],
+    "notes": "Wife of M. de Vaugoubert"
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ],
+    "notes": "Albertine Simonet; narrator's companion in La Prisonnière"
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ],
+    "notes": "Andrée, one of the Balbec girls and Albertine's friend"
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ],
+    "notes": "Albertine's aunt"
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ],
+    "notes": "Charles Morel, violinist associated with Charlus and the Verdurins"
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ],
+    "notes": "Painter and social/aesthetic authority referenced by Albertine."
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ],
+    "notes": "Prince de Leon, beau-frere de Saint-Loup in the duchesse de Guermantes anecdotes."
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ],
+    "notes": "Aristocratic figure in the duchesse de Guermantes reminiscences."
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ],
+    "notes": "Social rival figure in the Jockey Club episode around the Guermantes."
+  }
+}
+
+### Prior local context (optional)
+
+J'avais appris que Gilberte était malheureuse, trompée par Robert de Saint-Loup, mais pas de la manière que tout le monde croyait, que peut-être elle-même croyait encore, qu'en tout cas elle disait. Opinion que justifiait l'amour-propre, le désir de tromper les autres, de se tromper soi-même, la connaissance d'ailleurs imparfaite des trahisons, qui est celle de tous les êtres trompés, d'autant plus que Robert de Saint-Loup, en vrai neveu de baron de Charlus, s'affichait avec des femmes qu'il compromettait, que le monde croyait et qu'en somme Gilberte supposait être ses maîtresses. On trouvait même dans le monde qu'il ne se gênait pas assez, ne lâchant pas d'une semelle, dans les soirées, telle femme qu'il ramenait ensuite, laissant Mme de Robert de Saint-Loup rentrer comme elle pouvait. Qui eût dit que l'autre femme qu'il compromettait ainsi n'était pas en réalité sa maîtresse eût passé pour un naïf, aveugle devant l'évidence, mais j'avais été malheureusement aiguillé vers la vérité, vers la vérité qui me fit une peine infinie, par quelques mots échappés à Jupien. Quelle n'avait pas été ma stupéfaction quand, étant allé, quelques mois avant mon départ pour Tansonville, prendre des nouvelles de baron de Charlus, chez lequel certains troubles cardiaques s'étaient manifestés non sans causer de grandes inquiétudes, et parlant à Jupien, que j'avais trouvé seul, d'une correspondance amoureuse adressée à Robert de Saint-Loup et signée Bobette que Mme de Robert de Saint-Loup avait surprise, j'avais appris par l'ancien factotum du baron que la personne qui signait Bobette n'était autre que le violoniste qui avait joué un si grand rôle dans la vie de baron de Charlus. Jupien n'en parlait pas sans indignation : « Ce garçon pouvait agir comme bon lui semblait, il était libre. Mais s'il y a un côté où il n'aurait pas dû regarder, c'est le côté du neveu du baron. D'autant plus que le baron aimait son neveu comme son fils. Il a cherché à désunir le ménage, c'est honteux. Et il a fallu qu'il y mette des ruses diaboliques, car personne n'était plus opposé de nature à ces choses-là que le marquis de Robert de Saint-Loup. A-t-il fait assez de folies pour ses maîtresses ! Non, que ce misérable musicien ait quitté le baron comme il l'a quitté, salement, on peut bien le dire, c'était son affaire. Mais se tourner vers le neveu, il y a des choses qui ne se font pas. » Jupien était sincère dans son indignation ; chez les personnes dites immorales, les indignations morales sont tout aussi fortes que chez les autres et changent seulement un peu d'objet. De plus, les gens dont le coeur n'est pas directement en cause, jugeant toujours les liaisons à éviter, les mauvais mariages, comme si on était libre de choisir ce qu'on aime, ne tiennent pas compte du mirage délicieux que l'amour projette et qui enveloppe si entièrement et si uniquement la personne dont on est amoureux que la « sottise » que fait un homme en épousant une cuisinière ou la maîtresse de son meilleur ami est, en général, le seul acte poétique qu'il accomplisse au cours de son existence.
+
+### Passage
+
+Je compris qu'une séparation avait failli se produire entre Robert de Saint-Loup et sa femme (sans que Gilberte se rendît bien compte encore de quoi il s'agissait) et que c'était Mme de M. de Marsantes, mère aimante, ambitieuse et philosophe qui avait arrangé, imposé la réconciliation. Elle faisait partie de ces milieux où le mélange des sangs qui vont se recroisant sans cesse et l'appauvrissement des patrimoines font refleurir à tout moment dans le domaine des passions, comme dans celui des intérêts, les vices et les compromissions héréditaires. Avec la même énergie qu'elle avait autrefois protégé Odette, elle avait aidé le mariage de la fille de Jupien et fait celui de son propre fils avec Gilberte, usant ainsi pour elle-même, avec une résignation douloureuse, de cette même sagesse atavique dont elle faisait profiter tout le faubourg. Et peut-être n'avait-elle à un certain moment bâclé le mariage de Robert de Saint-Loup avec Gilberte – ce qui lui avait certainement donné moins de mal et coûté moins de pleurs que de le faire rompre avec Rachel – que dans la peur qu'il ne commençât avec une autre cocotte – ou peut-être avec la même, car Robert de Saint-Loup fut long à oublier Rachel – un nouveau collage qui eût peut-être été son salut. Maintenant je comprenais ce que Robert de Saint-Loup avait voulu me dire chez la princesse de Guermantes : « C'est malheureux que ta petite amie de Balbec n'ait pas la fortune exigée par la mère du narrateur, je crois que nous nous serions bien entendus tous les deux. » Il avait voulu dire qu'elle était de Gomorrhe comme lui de Sodome, ou peut-être, s'il n'en était pas encore, ne goûtait-il plus que les femmes qu'il pouvait aimer d'une certaine manière et avec d'autres femmes. Gilberte aussi eût pu me renseigner sur Albertine. Si donc, sauf de rares retours en arrière, je n'avais perdu la curiosité de rien savoir sur mon amie, j'aurais pu interroger sur elle non seulement Gilberte mais son mari. Et, en somme, c'était le même fait qui nous avait donné à Robert de Saint-Loup et à moi le désir d'épouser Albertine (à savoir qu'elle aimait les femmes). Mais les causes de notre désir, comme ses buts aussi, étaient opposés. Moi, c'était par le désespoir où j'avais été de l'apprendre, Robert de Saint-Loup par la satisfaction ; moi pour l'empêcher, grâce à une surveillance perpétuelle, de s'adonner à son goût ; Robert de Saint-Loup pour le cultiver et pour la liberté qu'il lui laisserait afin qu'elle lui amenât des amies. Si Jupien faisait ainsi remonter à très peu de temps la nouvelle orientation, si divergente de la primitive, qu'avaient prise les goûts charnels de Robert de Saint-Loup, une conversation que j'eus avec Aimé, et qui me rendit fort malheureux, me montra que l'ancien maître d'hôtel de Balbec faisait remonter cette divergence, cette inversion, beaucoup plus haut. L'occasion de cette conversation avait été quelques jours que j'avais été passer à Balbec, où Robert de Saint-Loup lui-même était venu avec sa femme que, dans cette première phase, il ne quittait d'un seul pas. J'avais admiré comme l'influence de Rachel se faisait encore sentir sur Robert de Saint-Loup. Un jeune marié qui a eu longtemps une maîtresse sait seul ôter aussi bien le manteau de sa femme avant d'entrer dans un restaurant, avoir avec elle les égards qu'il convient. Il a reçu pendant sa liaison l'instruction que doit avoir un bon mari. Non loin de lui, à une table voisine de la mienne, Bloch, au milieu de prétentieux jeunes universitaires, prenait des airs faussement à l'aise, et criait très fort à un de ses amis, en lui passant avec ostentation la carte avec un geste qui renversa deux carafes d'eau : « Non, non, mon cher, commandez ! De ma vie je n'ai jamais su faire un menu. Je n'ai jamais su commander ! » répétait-il avec un orgueil peu sincère et, mêlant la littérature à la gourmandise, il opina tout de suite pour une bouteille de champagne qu'il aimait à voir « d'une façon tout à fait symbolique » orner une causerie. Robert de Saint-Loup, lui, savait commander. Il était assis à côté de Gilberte – déjà grosse – (il ne devait pas cesser par la suite de lui faire des enfants) comme il couchait à côté d'elle dans leur lit commun à l'hôtel. Il ne parlait qu'à sa femme, le reste de l'hôtel n'avait pas l'air d'exister pour lui, mais, au moment où un garçon prenait une commande, était tout près, il levait rapidement ses yeux clairs et jetait sur lui un regard qui ne durait pas plus de deux secondes, mais dans sa limpide clairvoyance semblait témoigner d'un ordre de curiosités et de recherches entièrement différent de celui qui aurait pu animer n'importe quel client regardant même longtemps un chasseur ou un commis pour faire sur lui des remarques humoristiques ou autres qu'il communiquerait à ses amis. Ce petit regard court, en apparence désintéressé, montrant que le garçon l'intéressait en lui-même, révélait à ceux qui l'eussent observé que cet excellent mari, cet amant jadis passionné de Rachel, avait dans sa vie un autre plan et qui lui paraissait infiniment plus intéressant que celui sur lequel il se mouvait par devoir. Mais on ne le voyait que dans celui-là. Déjà ses yeux étaient revenus sur Gilberte qui n'avait rien vu, il lui présentait un ami au passage et partait se promener avec elle. Or Aimé me parla à ce moment d'un temps bien plus ancien, celui où j'avais fait la connaissance de Robert de Saint-Loup par Mme de Villeparisis, en ce même Balbec. « Mais oui, Monsieur, me dit-il, c'est archiconnu, il y a bien longtemps que je le sais. La première année que Monsieur était à Balbec, M. le marquis s'enferma avec mon liftier, sous prétexte de développer des photographies de Madame la la grand-mère de Monsieur. Le petit voulait se plaindre, nous avons eu toutes les peines du monde à étouffer la chose. Et tenez, Monsieur, Monsieur se rappelle sans doute ce jour où il est venu déjeuner au restaurant avec M. le marquis de Robert de Saint-Loup et sa maîtresse, dont M. le marquis se faisait un paravent. Monsieur se rappelle sans doute que M. le marquis s'en alla en prétextant une crise de colère. Sans doute je ne veux pas dire que Madame avait raison. Elle lui en faisait voir de cruelles. Mais ce jour-là on ne m'ôtera pas de l'idée que la colère de M. le marquis était feinte et qu'il avait besoin d'éloigner Monsieur et Madame. » Pour ce jour-là, du moins, je sais bien que, si Aimé ne mentait pas sciemment, il se trompait du tout au tout. Je me rappelais trop l'état dans lequel était Robert de Saint-Loup, la gifle qu'il avait donnée au journaliste. Et d'ailleurs, pour Balbec, c'était de même : ou le liftier avait menti, ou c'était Aimé qui mentait. Du moins je le crus ; une certitude, je ne pouvais l'avoir, car on ne voit jamais qu'un côté des choses. Si cela ne m'eût pas fait tant de peine, j'eusse trouvé une certaine ironie à ce que, tandis que pour moi la course du lift chez Robert de Saint-Loup avait été le moyen commode de lui faire porter une lettre et d'avoir sa réponse, pour lui cela avait été le moyen de faire la connaissance de quelqu'un qui lui avait plu. Les choses, en effet, sont pour le moins doubles. Sur l'acte le plus insignifiant que nous accomplissons un autre homme embranche une série d'actes entièrement différents ; il est certain que l'aventure de Robert de Saint-Loup et du liftier, si elle eut lieu, ne me semblait pas plus contenue dans le banal envoi de ma lettre que quelqu'un qui ne connaîtrait de Wagner que le duo de Lohengrin ne pourrait prévoir le prélude de Tristan. Certes, pour les hommes, les choses n'offrent qu'un nombre restreint de leurs innombrables attributs, à cause de la pauvreté de leurs sens. Elles sont colorées parce que nous avons des yeux ; combien d'autres épithètes ne mériteraient-elles pas si nous avions des centaines de sens ? Mais cet aspect différent qu'elles pourraient avoir nous est rendu plus facile à comprendre par ce qu'est dans la vie un événement même minime dont nous connaissons une partie que nous croyons le tout, et qu'un autre regarde comme par une fenêtre percée de l'autre côté de la maison et qui donne sur une autre vue. Dans le cas où Aimé ne se fût pas trompé, la rougeur de Robert de Saint-Loup quand Bloch lui avait parlé du lift ne venait peut-être pas de ce que celui-ci prononçait « laift ». Mais j'étais persuadé que l'évolution physiologique de Robert de Saint-Loup n'était pas commencée à cette époque et qu'alors il aimait encore uniquement les femmes. Plus qu'à un autre signe, je pus le discerner rétrospectivement à l'amitié que Robert de Saint-Loup m'avait témoignée à Balbec. Ce n'est que tant qu'il aima les femmes qu'il fut vraiment capable d'amitié. Après cela, au moins pendant quelque temps, les hommes qui ne l'intéressaient pas directement, il leur manifestait une indifférence, sincère, je le crois, en partie – car il était devenu très sec – et qu'il exagérait aussi pour faire croire qu'il ne faisait attention qu'aux femmes. Mais je me rappelle tout de même qu'un jour, à Doncières, comme j'allais dîner chez les M. Verdurin et comme il venait de regarder d'une façon un peu prolongée Morel, il m'avait dit : « C'est curieux, ce petit, il a des choses de Rachel. Cela ne te frappe pas ? Je trouve qu'ils ont des choses identiques. En tout cas cela ne peut pas m'intéresser. » Et tout de même ses yeux étaient ensuite restés longtemps perdus à l'horizon, comme quand on pense, avant de se remettre à une partie de cartes ou de partir dîner en ville, à un de ces lointains voyages qu'on ne fera jamais mais dont on éprouve un instant la nostalgie. Mais si Robert de Saint-Loup trouvait quelque chose de Rachel à Morel, Gilberte, elle, cherchait à avoir quelque chose de Rachel afin de plaire à son mari, mettait comme elle des noeuds de soie ponceau, ou rose, ou jaune, dans ses cheveux, se coiffait de même, car elle croyait que son mari l'aimait encore et elle en était jalouse. Que l'amour de Robert de Saint-Loup eût été par moments sur les confins qui séparent l'amour d'un homme pour une femme et l'amour d'un homme pour un homme, c'était possible. En tout cas, le souvenir de Rachel ne jouait plus à cet égard qu'un rôle esthétique. Il n'est même pas probable qu'il eût pu en jouer d'autres. Un jour, Robert de Saint-Loup était allé lui demander de s'habiller en homme, de laisser pendre une longue mèche de ses cheveux, et pourtant il s'était contenté de la regarder, insatisfait. Il ne lui restait pas moins attaché et lui faisait scrupuleusement, mais sans plaisir, la rente énorme qu'il lui avait promise et qui ne l'empêcha pas d'avoir pour lui par la suite les plus vilains procédés. De cette générosité envers Rachel Gilberte n'eût pas souffert si elle avait su qu'elle était seulement l'accomplissement résigné d'une promesse à laquelle ne correspondait plus aucun amour. Mais de l'amour, c'est au contraire ce qu'il feignait de ressentir pour Rachel. Les homosexuels seraient les meilleurs maris du monde s'ils ne jouaient pas la comédie d'aimer les femmes. Gilberte ne se plaignait d'ailleurs pas. C'est d'avoir cru Robert de Saint-Loup aimé, si longtemps aimé, par Rachel, qui le lui avait fait désirer, l'avait fait renoncer pour lui à des partis plus beaux ; il lui semblait qu'il fît une sorte de concession en l'épousant. Et de fait, les premiers temps, des comparaisons entre les deux femmes (pourtant si inégales comme charme et comme beauté) ne furent pas en faveur de la délicieuse Gilberte. Mais celle-ci grandit ensuite dans l'estime de son mari pendant que Rachel diminuait à vue d'oeil. Une autre personne se démentit : ce fut Odette. Si pour Gilberte, Robert de Saint-Loup avant le mariage était déjà entouré de la double auréole que lui créaient d'une part sa vie avec Rachel perpétuellement dénoncée par les lamentations de Mme de M. de Marsantes, d'autre part le prestige que les Guermantes avaient toujours eu pour son père et qu'elle avait hérité de lui, Mme de comte de Forcheville, en revanche, eût préféré un mariage plus éclatant, peut-être princier (il y avait des familles royales pauvres et qui eussent accepté l'argent – qui se trouva d'ailleurs être fort inférieur aux millions promis – décrassé qu'il était par le nom de comte de Forcheville), et un gendre moins démonétisé par une vie passée loin du monde. Elle n'avait pu triompher de la volonté de Gilberte, s'était plainte amèrement à tout le monde, flétrissant son gendre. Un beau jour tout avait été changé, le gendre était devenu un ange, on ne se moquait plus de lui qu'à la dérobée. C'est que l'âge avait laissé à Odette (devenue Mme de comte de Forcheville) le goût qu'elle avait toujours eu d'être entretenue, mais, par la désertion des admirateurs, lui en avait retiré les moyens. Elle souhaitait chaque jour un nouveau collier, une nouvelle robe brochée de brillants, une plus luxueuse automobile, mais elle avait peu de fortune, comte de Forcheville ayant presque tout mangé, et – quel ascendant israélite gouvernait en cela Gilberte ? – elle avait une fille adorable, mais affreusement avare, comptant l'argent à son mari et naturellement bien plus à sa mère. Or tout à coup le protecteur, elle l'avait flairé, puis trouvé en Robert de Saint-Loup. Qu'elle ne fût plus de la première jeunesse était de peu d'importance aux yeux d'un gendre qui n'aimait pas les femmes. Tout ce qu'il demandait à sa belle-mère, c'était d'aplanir telle ou telle difficulté entre lui et Gilberte, d'obtenir d'elle le consentement qu'il fît un voyage avec Morel. Odette s'y était-elle employée, qu'aussitôt un magnifique rubis l'en récompensait. Pour cela il fallait que Gilberte fût plus généreuse envers son mari. Odette le lui prêchait avec d'autant plus de chaleur que c'était elle qui devait bénéficier de la générosité. Ainsi, grâce à Robert de Saint-Loup, pouvait-elle, au seuil de la cinquantaine (d'aucuns disaient de la soixantaine), éblouir chaque table où elle allait dîner, chaque soirée où elle paraissait, d'un luxe inouï sans avoir besoin d'avoir comme autrefois un « ami » qui maintenant n'eût plus casqué – voire marché. Aussi était-elle entrée pour toujours semblait-il, dans la période de la chasteté finale, et elle n'avait jamais été aussi élégante.
+
+Ce n'était pas seulement la méchanceté, la rancune de l'ancien pauvre contre le maître qui l'a enrichi et lui a d'ailleurs (c'était dans le caractère, et plus encore dans le vocabulaire de baron de Charlus) fait sentir la différence de leurs conditions, qui avait poussé Morel vers Robert de Saint-Loup afin de faire souffrir davantage le baron. C'était peut-être aussi l'intérêt. J'eus l'impression que Robert de Saint-Loup devait lui donner beaucoup d'argent.
+
+Dans une soirée où j'avais rencontré Robert de Saint-Loup avant que je ne partisse pour Combray, et où la façon dont il s'exhibait à côté d'une femme élégante qui passait pour être sa maîtresse, où il s'attachait à elle, ne faisant qu'un avec elle, enveloppé en public dans sa jupe, me faisait penser, avec quelque chose de plus nerveux, de plus tressautant, à une sorte de répétition involontaire d'un geste ancestral que j'avais pu observer chez baron de Charlus, comme enrobé dans les atours de Mme Molé, ou d'une autre, bannière d'une cause gynophile qui n'était pas la sienne, mais qu'il aimait, bien que sans droit à l'arborer ainsi, soit qu'il la trouvât protectrice, ou esthétique, j'avais été frappé, au retour, de voir combien ce garçon, si généreux quand il était bien moins riche, était devenu économe. Qu'on ne tienne qu'à ce qu'on possède, et que tel qui semait l'or qu'il avait si rarement jadis thésaurise maintenant celui dont il est pourvu, c'est sans doute un phénomène assez général, mais qui pourtant me parut prendre là une forme plus particulière. Robert de Saint-Loup refusa de prendre un fiacre, et je vis qu'il avait gardé une correspondance de tramway. Sans doute en ceci Robert de Saint-Loup déployait-il, pour des fins différentes, des talents qu'il avait acquis au cours de sa liaison avec Rachel. Un jeune homme qui a longtemps vécu avec une femme n'est pas aussi inexpérimenté que le puceau pour qui celle qu'il épouse est la première. Pareillement, ayant eu à s'occuper dans les plus minutieux détails du ménage de Rachel, d'une part parce que celle-ci n'y entendait rien, ensuite parce qu'à cause de sa jalousie il voulait garder la haute main sur la domesticité, il put, dans l'administration des biens de sa femme et l'entretien du ménage, continuer ce rôle habile et entendu que peut-être Gilberte n'eût pas su tenir et qu'elle lui abandonnait volontiers. Mais sans doute le faisait-il surtout pour faire bénéficier Morel des moindres économies de bouts de chandelle, l'entretenant, en somme, richement sans que Gilberte s'en aperçût ni en souffrît. Je pleurais en pensant que j'avais eu autrefois pour un Robert de Saint-Loup différent une affection si grande et que je sentais bien, à ses nouvelles manières froides et évasives, qu'il ne me rendait plus, les hommes, dès qu'ils étaient devenus susceptibles de lui donner des désirs, ne pouvant plus lui inspirer d'amitié. Comment cela avait-il pu naître chez un garçon qui avait tellement aimé les femmes que je l'avais vu désespéré jusqu'à craindre qu'il se tuât parce que « Rachel quand du Seigneur » avait voulu le quitter ? La ressemblance entre Morel et Rachel – invisible pour moi – avait-elle été la planche qui avait permis à Robert de Saint-Loup de passer des goûts de son père à ceux de son oncle, afin d'accomplir l'évolution physiologique qui, même chez ce dernier, s'était produite assez tard ? Parfois, pourtant, les paroles d'Aimé revenaient m'inquiéter ; je me rappelais Robert de Saint-Loup cette année-là à Balbec ; il avait en parlant au liftier une façon de ne pas faire attention à lui qui rappelait beaucoup celle de baron de Charlus quand il adressait la parole à certains hommes. Mais Robert de Saint-Loup pouvait très bien tenir cela de baron de Charlus, d'une certaine hauteur et d'une certaine attitude physique des Guermantes, et nullement des goûts spéciaux au baron. C'est ainsi que le duc de Guermantes, qui n'avait aucunement ces goûts, avait la même manière nerveuse que baron de Charlus de tourner son poignet comme s'il crispait autour de celui-ci une manchette de dentelles, et aussi dans la voix des intonations pointues et affectées, toutes manières auxquelles chez baron de Charlus on eût été tenté de donner une autre signification, auxquelles il en avait donné une autre lui-même, l'individu exprimant ses particularités à l'aide de traits impersonnels et ataviques qui ne sont peut-être, d'ailleurs, que des particularités anciennes fixées dans le geste et dans la voix. Dans cette dernière hypothèse, qui confine à l'histoire naturelle, ce ne serait pas baron de Charlus qu'on pourrait appeler un Guermantes affecté d'une tare et l'exprimant en partie à l'aide des traits de la race des Guermantes, mais le duc de Guermantes qui serait, dans une famille pervertie, l'être d'exception que le mal héréditaire a si bien épargné que les stigmates extérieurs qu'il a laissés sur lui y perdent tout sens. Je me rappelais que le premier jour où j'avais aperçu Robert de Saint-Loup à Balbec, si blond, d'une matière si précieuse et si rare, contourner les tables, faisant voler son monocle devant lui, je lui avais trouvé l'air efféminé, qui n'était certes pas un effet de ce que j'apprenais de lui maintenant mais de la grâce particulière aux Guermantes, de la finesse de cette porcelaine de Saxe en laquelle duchesse de Guermantes était modelée aussi. Je me rappelais son affection pour moi, sa manière tendre, sentimentale de l'exprimer et je me disais que cela non plus, qui eût pu tromper quelque autre, signifiait alors tout autre chose, même tout le contraire de ce que j'apprenais aujourd'hui. Mais de quand cela datait-il ? Si c'était de l'année où j'étais retourné à Balbec, comment n'était-il pas venu une seule fois voir le lift, ne m'avait-il jamais parlé de lui ? Et quant à la première année, comment eût-il pu faire attention à lui, passionnément amoureux de Rachel comme il était alors ? Cette première année-là, j'avais trouvé Robert de Saint-Loup particulier, comme étaient les vrais Guermantes. Or il était encore plus spécial que je ne l'avais cru. Mais ce dont nous n'avons pas eu l'intuition directe, ce que nous avons appris seulement par d'autres, nous n'avons plus aucun moyen, l'heure est passée de le faire savoir à notre âme ; ses communications avec le réel sont fermées ; aussi ne pouvons-nous jouir de la découverte, il est trop tard. Du reste, de toutes façons, pour que j'en pusse jouir spirituellement, celle-là me faisait trop de peine. Sans doute, depuis ce que m'avait dit baron de Charlus chez Mme Verdurin à Paris, je ne doutais plus que le cas de Robert de Saint-Loup ne fût celui d'une foule d'honnêtes gens, et même pris parmi les plus intelligents et les meilleurs. L'apprendre de n'importe qui m'eût été indifférent, de n'importe qui excepté de Robert de Saint-Loup. Le doute que me laissaient les paroles d'Aimé ternissait toute notre amitié de Balbec et de Doncières, et bien que je ne crusse pas à l'amitié, ni en avoir jamais véritablement éprouvé pour Robert de Saint-Loup, en repensant à ces histoires du lift et du restaurant où j'avais déjeuné avec Robert de Saint-Loup et Rachel j'étais obligé de faire un effort pour ne pas pleurer.
+
+Je n'aurais d'ailleurs pas à m'arrêter sur ce séjour que je fis du côté de Combray, et qui fut peut-être le moment de ma vie où je pensai le moins à Combray, si, justement par là, il n'avait apporté une vérification au moins provisoire à certaines idées que j'avais eues d'abord du côté de Guermantes, et une vérification aussi à d'autres idées que j'avais eues du côté de Méséglise. Je recommençais chaque soir, dans un autre sens, les promenades que nous faisions à Combray, l'après-midi, quand nous allions du côté de Méséglise. On dînait maintenant, à Tansonville, à une heure où jadis on dormait depuis longtemps à Combray. Et cela à cause de la saison chaude. Et puis, parce que, l'après-midi, Gilberte peignait dans la chapelle du château, on n'allait se promener qu'environ deux heures avant le dîner. Au plaisir de jadis, qui était de voir en rentrant le ciel pourpre encadrer le calvaire ou se baigner dans la Vivonne, succédait celui de partir à la nuit venue, quand on ne rencontrait plus dans le village que le triangle bleuâtre, irrégulier et mouvant, des moutons qui rentraient. Sur une moitié des champs le coucher s'éteignait ; au-dessus de l'astre était déjà allumée la lune qui bientôt les baignerait tout entiers. Il arrivait que Gilberte me laissât aller sans elle et je m'avançais, laissant mon ombre derrière moi, comme une barque qui poursuit sa navigation à travers des étendues enchantées. Mais le plus souvent Gilberte m'accompagnait. Les promenades que nous faisions ainsi, c'était bien souvent celles que je faisais jadis enfant : or comment n'eussé-je pas éprouvé, bien plus vivement encore que jadis du côté de Guermantes, le sentiment que jamais je ne serais capable d'écrire, auquel s'ajoutait celui que mon imagination et ma sensibilité s'étaient affaiblies, quand je vis combien peu j'étais curieux de Combray ? Et j'étais désolé de voir combien peu je revivais mes années d'autrefois. Je trouvais la Vivonne mince et laide au bord du chemin de halage. Non pas que je relevasse des inexactitudes matérielles bien grandes dans ce que je me rappelais. Mais, séparé des lieux qu'il m'arrivait de retraverser par toute une vie différente, il n'y avait pas entre eux et moi cette contiguïté d'où naît, avant même qu'on s'en soit aperçu, l'immédiate, délicieuse et totale déflagration du souvenir. Ne comprenant pas bien, sans doute, quelle était sa nature, je m'attristais de penser que ma faculté de sentir et d'imaginer avait dû diminuer pour que je n'éprouvasse pas plus de plaisir dans ces promenades. Gilberte elle-même, qui me comprenait encore moins bien que je ne faisais moi-même, augmentait ma tristesse en partageant mon étonnement. « Comment, cela ne vous fait rien éprouver, me disait-elle, de prendre ce petit raidillon que vous montiez autrefois ? » Et elle-même avait tant changé que je ne la trouvais plus belle, qu'elle ne l'était plus du tout. Tandis que nous marchions, je voyais le pays changer, il fallait gravir des coteaux, puis des pentes s'abaissaient. Nous causions, très agréablement pour moi – non sans difficulté pourtant. En tant d'êtres il y a différentes couches qui ne sont pas pareilles (c'étaient, chez elle, le caractère de son père, le caractère de sa mère) ; on traverse l'une, puis l'autre. Mais le lendemain l'ordre de superposition est renversé. Et finalement on ne sait pas qui départagera les parties, à qui on peut se fier pour la sentence. Gilberte était comme ces pays avec qui on n'ose pas faire d'alliance parce qu'ils changent trop souvent de gouvernement. Mais au fond c'est un tort. La mémoire de l'être le plus successif établit chez lui une sorte d'identité et fait qu'il ne voudrait pas manquer à des promesses qu'il se rappelle, même s'il ne les eût pas contresignées. Quant à l'intelligence elle était, chez Gilberte, avec quelques absurdités de sa mère, très vive. Je me rappelle que dans ces conversations que nous avions en nous promenant elle me dit des choses qui plusieurs fois m'étonnèrent beaucoup. La première fut : « Si vous n'aviez pas trop faim et s'il n'était pas si tard, en prenant ce chemin à gauche et en tournant ensuite à droite, en moins d'un quart d'heure nous serions à Guermantes. » C'est comme si elle m'avait dit : « Tournez à gauche, prenez ensuite à votre main droite, et vous toucherez l'intangible, vous atteindrez les inaccessibles lointains dont on ne connaît jamais sur terre que la direction, que (ce que j'avais cru jadis que je pourrais connaître seulement de Guermantes, et peut-être, en un sens, je ne me trompais pas) le « côté ». Un de mes autres étonnements fut de voir les « Sources de la Vivonne », que je me représentais comme quelque chose d'aussi extra-terrestre que l'Entrée des Enfers, et qui n'étaient qu'une espèce de lavoir carré où montaient des bulles. Et la troisième fois fut quand Gilberte me dit : « Si vous voulez, nous pourrons tout de même sortir un après-midi et nous pourrons aller à Guermantes, en prenant par Méséglise, c'est la plus jolie façon », – phrase qui, en bouleversant toutes les idées de mon enfance, m'apprit que les deux côtés n'étaient pas aussi inconciliables que j'avais cru. Mais ce qui me frappa le plus, ce fut combien peu, pendant ce séjour, je revécus mes années d'autrefois, désirai peu revoir Combray, trouvai mince et laide la Vivonne. Mais où Gilberte vérifia pour moi des imaginations que j'avais eues du côté de Méséglise, ce fut pendant une de ces promenades en somme nocturnes bien qu'elles eussent lieu avant le dîner – mais elle dînait si tard ! Au moment de descendre dans le mystère d'une vallée parfaite et profonde que tapissait le clair de lune, nous nous arrêtâmes un instant, comme deux insectes qui vont s'enfoncer au coeur d'un calice bleuâtre. Gilberte eut alors, peut-être simplement par bonne grâce de maîtresse de maison qui regrette que vous partiez bientôt et qui aurait voulu mieux vous faire les honneurs de ce pays que vous semblez apprécier, de ces paroles où son habileté de femme du monde sachant tirer parti du silence, de la simplicité, de la sobriété dans l'expression des sentiments, vous fait croire que vous tenez dans sa vie une place que personne ne pourrait occuper. Épanchant brusquement sur elle la tendresse dont j'étais rempli par l'air délicieux, la brise qu'on respirait, je lui dis : « Vous parliez l'autre jour du raidillon, comme je vous aimais alors ! » Elle me répondit : « Pourquoi ne me le disiez-vous pas ? je ne m'en étais pas doutée. Moi je vous aimais. Et même deux fois je me suis jetée à votre tête. – Quand donc ? – La première fois à Tansonville, vous vous promeniez avec votre famille, je rentrais, je n'avais jamais vu un aussi joli petit garçon. J'avais l'habitude, ajouta-t-elle d'un air vague et pudique, d'aller jouer avec de petits amis, dans les ruines du donjon de Roussainville. Et vous me direz que j'étais bien mal élevée, car il y avait là dedans des filles et des garçons de tout genre, qui profitaient de l'obscurité. L'enfant de choeur de l'église de Combray, Théodore qui, il faut l'avouer, était bien gentil (Dieu qu'il était bien !) et qui est devenu très laid (il est maintenant pharmacien à Méséglise), s'y amusait avec toutes les petites paysannes du voisinage. Comme on me laissait sortir seule, dès que je pouvais m'échapper j'y courais. Je ne peux pas vous dire comme j'aurais voulu vous y voir venir ; je me rappelle très bien que, n'ayant qu'une minute pour vous faire comprendre ce que je désirais, au risque d'être vue par vos parents et les miens je vous l'ai indiqué d'une façon tellement crue que j'en ai honte maintenant. Mais vous m'avez regardée d'une façon si méchante que j'ai compris que vous ne vouliez pas. » Et tout d'un coup, je me dis que la vraie Gilberte – la vraie Albertine – c'étaient peut-être celles qui s'étaient au premier instant livrées dans leur regard, l'une devant la haie d'épines roses, l'autre sur la plage. Et c'était moi qui, n'ayant pas su le comprendre, ne l'ayant repris que plus tard dans ma mémoire – après un intervalle où par mes conversations tout un entre-deux de sentiment leur avait fait craindre d'être aussi franches que dans les premières minutes – avais tout gâté par ma maladresse. Je les avais « ratées » plus complètement – bien qu'à vrai dire l'échec relatif avec elles fût moins absurde – pour les mêmes raisons que Robert de Saint-Loup Rachel.
+
+« Et la seconde fois, reprit Gilberte, c'est, bien des années après, quand je vous ai rencontré sous votre porte, l'avant-veille du jour où je vous ai retrouvé chez ma tante duchesse de Guermantes ; je ne vous ai pas reconnu tout de suite, ou plutôt je vous reconnaissais sans le savoir puisque j'avais la même envie qu'à Tansonville. – Dans l'intervalle il y avait eu pourtant les Champs-Élysées. – Oui, mais là vous m'aimiez trop, je sentais une inquisition sur tout ce que je faisais. » Je ne lui demandai pas alors quel était ce jeune homme avec lequel elle descendait l'avenue des Champs-Élysées, le jour où j'étais parti pour la revoir, où je me fusse réconcilié avec elle pendant qu'il en était temps encore, ce jour qui aurait peut-être changé toute ma vie si je n'avais rencontré les deux ombres s'avançant côte à côte dans le crépuscule. Si je le lui avais demandé, me dis-je, elle m'eût peut-être avoué la vérité, comme Albertine si elle eût ressuscité. Et en effet, les femmes qu'on n'aime plus et qu'on rencontre après des années, n'y a-t-il pas entre elles et vous la mort, tout aussi bien que si elles n'étaient plus de ce monde, puisque le fait que notre amour n'existe plus fait de celles qu'elles étaient alors, ou de celui que nous étions, des morts ? Je pensai que peut-être aussi elle ne se fût pas rappelé, ou eût menti. En tout cas cela n'offrait pas d'intérêt pour moi de le savoir, parce que mon coeur avait encore plus changé que le visage de Gilberte. Celui-ci ne me plaisait plus guère, mais surtout je n'étais plus malheureux, je n'aurais pas pu concevoir, si j'y eusse repensé, que j'eusse pu l'être autant de rencontrer Gilberte marchant à petits pas à côté d'un jeune homme, et de me dire : « C'est fini, je renonce à jamais la voir. » De l'état d'âme qui, cette lointaine année-là, n'avait été pour moi qu'une longue torture rien ne subsistait. Car il y a dans ce monde où tout s'use, où tout périt, une chose qui tombe en ruines, qui se détruit encore plus complètement, en laissant encore moins de vestiges que la Beauté : c'est le Chagrin.

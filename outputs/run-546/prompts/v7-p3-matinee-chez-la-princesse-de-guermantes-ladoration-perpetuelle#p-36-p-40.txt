@@ -1,0 +1,1020 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ],
+    "notes": "Swann acquaintance with a nearby estate"
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ],
+    "notes": "Aristocratic social connection mentioned in Swann's prestige world"
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ],
+    "notes": "Narrator's uncle Adolphe"
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ],
+    "notes": "Parisian salon hostess"
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ],
+    "notes": "Guermantes relation obsessed with rank and kinship display"
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ],
+    "notes": "Guermantes aristocrat referenced in the Laumes social orbit"
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ],
+    "notes": "Aristocratic hostess in the Guermantes orbit"
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ],
+    "notes": "Swann social acquaintance considered among suspects"
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ],
+    "notes": "Swann associate/servant mentioned among suspects"
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ],
+    "notes": "Salon attendee who comments after the sonata"
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ],
+    "notes": "Dream-figure standing in for Forcheville in Swann's dream"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ],
+    "notes": "Gilberte Swann, first encountered at the Champs-Elysees"
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ],
+    "notes": "Narrator's family servant"
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ],
+    "notes": "Celebrated actress"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": "Writer admired by the narrator"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois, diplomat and family dinner guest"
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ],
+    "notes": "Narrator's grandmother"
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ],
+    "notes": "Aristocratic hotel guest at Balbec"
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ],
+    "notes": "Headwaiter or maître d'hôtel at the Grand-Hôtel in Balbec"
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ],
+    "notes": "Daughter of M. de Stermaria"
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ],
+    "notes": "Male member of the Cambremer family in the Balbec hotel circle"
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ],
+    "notes": "Aristocratic visitor in the Balbec social scene"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ],
+    "notes": "Narrator's father"
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ],
+    "notes": "Young aristocrat and nephew of Mme de Villeparisis"
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ],
+    "notes": "Father of Saint-Loup"
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ],
+    "notes": "Friend/acquaintance of the narrator; socially performative and often ironic"
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ],
+    "notes": "Guermantes title in the family sequence discussed with Saint-Loup"
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ],
+    "notes": "Bloch's father as remembered and socially evaluated in the narrator's reflections"
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ],
+    "notes": "Grand-Hotel director observed by the narrator"
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ],
+    "notes": "Figure invoked in the political talk reported by Aimé"
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ],
+    "notes": "The sad-looking blonde seen at Rivebelle who begins to crystallize in the narrator's desire"
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ],
+    "notes": "Oriane de Guermantes; now appearing as the duchesse de Guermantes"
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ],
+    "notes": "Neighbor and ally of Françoise in the new Guermantes setting"
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ],
+    "notes": "Princesse de Guermantes-Bavière; hostess of the evening in the opening of v4-p2"
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ],
+    "notes": "Aristocratic young man encountered outside the princesse de Guermantes salon"
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ],
+    "notes": "Diplomat/ambassador figure appearing in the princesse de Guermantes salon"
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ],
+    "notes": "Wife of M. de Vaugoubert"
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ],
+    "notes": "Albertine Simonet; narrator's companion in La Prisonnière"
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ],
+    "notes": "Andrée, one of the Balbec girls and Albertine's friend"
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ],
+    "notes": "Albertine's aunt"
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ],
+    "notes": "Charles Morel, violinist associated with Charlus and the Verdurins"
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ],
+    "notes": "Painter and social/aesthetic authority referenced by Albertine."
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ],
+    "notes": "Prince de Leon, beau-frere de Saint-Loup in the duchesse de Guermantes anecdotes."
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ],
+    "notes": "Aristocratic figure in the duchesse de Guermantes reminiscences."
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ],
+    "notes": "Social rival figure in the Jockey Club episode around the Guermantes."
+  }
+}
+
+### Prior local context (optional)
+
+Il n'est pas certain que, pour créer une oeuvre littéraire, l'imagination et la sensibilité ne soient pas des qualités interchangeables et que la seconde ne puisse sans grand inconvénient être substituée à la première, comme des gens dont l'estomac est incapable de digérer chargent de cette fonction leur intestin. Un homme né sensible et qui n'aurait pas d'imagination pourrait malgré cela écrire des romans admirables. La souffrance que les autres lui causeraient, ses efforts pour la prévenir, les conflits qu'elle et la seconde personne cruelle créeraient, tout cela, interprété par l'intelligence, pourrait faire la matière d'un livre non seulement aussi beau que s'il était imaginé, inventé, mais encore aussi extérieur à la rêverie de l'auteur s'il avait été livré à lui-même et heureux, aussi surprenant pour lui-même, aussi accidentel qu'un caprice fortuit de l'imagination. Les êtres les plus bêtes par leurs gestes, leurs propos, leurs sentiments involontairement exprimés, manifestent des lois qu'ils ne perçoivent pas, mais que l'artiste surprend en eux. À cause de ce genre d'observations, le vulgaire croit l'écrivain méchant, et il le croit à tort, car dans un ridicule l'artiste voit une belle généralité, il ne l'impute pas plus à grief à la personne observée que le chirurgien ne la mésestimerait d'être affectée d'un trouble assez fréquent de la circulation ; aussi se moque-t-il moins que personne des ridicules. Malheureusement il est plus malheureux qu'il n'est méchant quand il s'agit de ses propres passions ; tout en en connaissant aussi bien la généralité, il s'affranchit moins aisément des souffrances personnelles qu'elles causent. Sans doute, quand un insolent nous insulte, nous aurions mieux aimé qu'il nous louât, et surtout, quand une femme que nous adorons nous trahit, que ne donnerions-nous pas pour qu'il en fût autrement. Mais le ressentiment de l'affront, les douleurs de l'abandon auront alors été les terres que nous n'aurions jamais connues, et dont la découverte, si pénible qu'elle soit à l'homme, devient précieuse pour l'artiste. Aussi les méchants et les ingrats, malgré lui, malgré eux, figurent dans son oeuvre. Le pamphlétaire associe involontairement à sa gloire la canaille qu'il a flétrie. On peut reconnaître dans toute oeuvre d'art ceux que l'artiste a le plus haïs et, hélas, même celles qu'il a le plus aimées. Elles-mêmes n'ont fait que poser pour l'écrivain dans le moment même où, bien contre son gré, elles le faisaient le plus souffrir. Quand j'aimais Albertine, je m'étais bien rendu compte qu'elle ne m'aimait pas et j'avais été obligé de me résigner à ce qu'elle me fît seulement connaître ce que c'est qu'éprouver de la souffrance, de l'amour, et même, au commencement, du bonheur. Et quand nous cherchons à extraire la généralité de notre chagrin, à en écrire, nous sommes un peu consolés, peut-être pour une autre raison encore que toutes celles que je donne ici, et qui est que penser d'une façon générale, qu'écrire, est pour l'écrivain une fonction saine et nécessaire dont l'accomplissement rend heureux, comme pour les hommes physiques l'exercice, la sueur et le bain. À vrai dire, contre cela je me révoltais un peu. J'avais beau croire que la vérité suprême de la vie est dans l'art, j'avais beau, d'autre part, n'être pas plus capable de l'effort de souvenir qu'il m'eût fallu pour aimer encore Albertine que pour pleurer encore la grand-mère, je me demandais si tout de même une oeuvre d'art dont elles ne seraient pas conscientes serait pour elles, pour le destin de ces pauvres mortes, un accomplissement. Ma la grand-mère que j'avais, avec tant d'indifférence, vue agoniser et mourir près de moi ! Ô puissé-je, en expiation, quand mon oeuvre serait terminée, blessé sans remède, souffrir de longues heures abandonné de tous, avant de mourir. D'ailleurs, j'avais une pitié infinie même d'êtres moins chers, même d'indifférents, et de tant de destinées dont ma pensée en essayant de les comprendre avait, en somme, utilisé la souffrance, ou même seulement les ridicules. Tous ces êtres, qui m'avaient révélé des vérités et qui n'étaient plus, m'apparaissaient comme ayant vécu une vie qui n'avait profité qu'à moi, et comme s'ils étaient morts pour moi. Il était triste pour moi de penser que mon amour, auquel j'avais tant tenu, serait, dans mon livre, si dégagé d'un être, que des lecteurs divers l'appliqueraient exactement à celui qu'ils avaient éprouvé pour d'autres femmes. Mais devais-je me scandaliser de cette infidélité posthume et que tel ou tel pût donner comme objet à mes sentiments des femmes inconnues, quand cette infidélité, cette division de l'amour entre plusieurs êtres, avait commencé de mon vivant et avant même que j'écrivisse ? J'avais bien souffert successivement pour Gilberte, pour duchesse de Guermantes, pour Albertine. Successivement aussi je les avais oubliées, et seul mon amour, dédié à des êtres différents, avait été durable. La profanation d'un de mes souvenirs par des lecteurs inconnus, je l'avais consommée avant eux. Je n'étais pas loin de me faire horreur comme se le ferait peut-être à lui-même quelque parti nationaliste au nom duquel des hostilités se seraient poursuivies, et à qui seul aurait servi une guerre où tant de nobles victimes auraient souffert et succombé sans même savoir, ce qui, pour la grand-mère du moins, eût été une telle récompense, l'issue de la lutte. Et une seule consolation qu'elle ne sût pas que je me mettais enfin à l'oeuvre était que tel est le lot des morts, si elle ne pouvait jouir de mon progrès elle avait cessé depuis longtemps d'avoir conscience de mon inaction, de ma vie manquée qui avaient été une telle souffrance pour elle. Et certes, il n'y aurait pas que la grand-mère, pas qu'Albertine, mais bien d'autres encore, dont j'avais pu assimiler une parole, un regard, mais qu'en tant que créatures individuelles je ne me rappelais plus ; un livre est un grand cimetière où sur la plupart des tombes on ne peut plus lire les noms effacés. Parfois, au contraire, on se souvient très bien du nom, mais sans savoir si quelque chose de l'être qui le porta survit dans ces pages. Cette jeune fille aux prunelles profondément enfoncées, à la voix traînante, est-elle ici ? Et si elle y repose en effet, dans quelle partie, on ne sait plus, et comment trouver sous les fleurs ? Mais puisque nous vivons loin des êtres individuels, puisque nos sentiments les plus forts, comme avait été mon amour pour la grand-mère, pour Albertine, au bout de quelques années nous ne les connaissons plus, puisqu'ils ne sont plus pour nous qu'un mot incompris, puisque nous pouvons parler de ces morts avec les gens du monde chez qui nous avons encore plaisir à nous trouver quand tout ce que nous aimions pourtant est mort, alors s'il est un moyen pour nous d'apprendre à comprendre ces mots oubliés, ce moyen ne devons-nous pas l'employer, fallût-il pour cela les transcrire d'abord en un langage universel mais qui du moins sera permanent, qui ferait de ceux qui ne sont plus, en leur essence la plus vraie, une acquisition perpétuelle pour toutes les âmes ? Même cette loi du changement, qui nous a rendu ces mots inintelligibles, si nous parvenons à l'expliquer, notre infériorité ne devient-elle pas une force nouvelle ? D'ailleurs, l'oeuvre à laquelle nos chagrins ont collaboré peut être interprétée pour notre avenir à la fois comme un signe néfaste de souffrance et comme un signe heureux de consolation. En effet, si on dit que les amours, les chagrins du poète lui ont servi, qu'ils l'ont aidé à construire son oeuvre, que les inconnues qui s'en doutaient le moins, l'une par une méchanceté, l'autre par une raillerie, ont apporté chacune leur pierre pour l'édification du monument qu'elles ne verront pas, on ne songe pas assez que la vie de l'écrivain n'est pas terminée avec cette oeuvre, que la même nature qui lui a fait avoir telles souffrances, lesquelles sont entrées dans son oeuvre, cette nature continuera de vivre après l'oeuvre terminée, lui fera aimer d'autres femmes dans des conditions qui seraient pareilles, si ne les faisait légèrement dévier tout ce que le temps modifie dans les circonstances, dans le sujet lui-même, dans son appétit d'amour et dans sa résistance à la douleur. À ce premier point de vue, l'oeuvre doit être considérée seulement comme un amour malheureux qui en présage fatalement d'autres et qui fera que la vie ressemblera à l'oeuvre, que le poète n'aura presque plus besoin d'écrire, tant il pourra trouver dans ce qu'il a écrit la figure anticipée de ce qui arrivera. Ainsi mon amour pour Albertine, et tel qu'il en différa, était déjà inscrit dans mon amour pour Gilberte, au milieu des jours heureux duquel j'avais entendu pour la première fois prononcer le nom et faire le portrait d'Albertine par sa tante, sans me douter que ce germe insignifiant se développerait et s'étendrait un jour sur toute ma vie. Mais à un autre point de vue, l'oeuvre est signe de bonheur, parce qu'elle nous apprend que dans tout amour le général gît à côté du particulier, et à passer du second au premier par une gymnastique qui fortifie contre le chagrin en faisant négliger sa cause pour approfondir son essence. En effet, comme je devais l'expérimenter par la suite, même au moment où l'on aime et où on souffre, si la vocation s'est enfin réalisée, dans les heures où on travaille on sent si bien l'être qu'on aime se dissoudre dans une réalité plus vaste qu'on arrive à l'oublier par instants et qu'on ne souffre plus de son amour, en travaillant, que comme de quelque mal purement physique où l'être aimé n'est pour rien, comme d'une sorte de maladie de coeur. Il est vrai que c'est une question d'instants, et que l'effet semble être le contraire si le travail vient plus tard. Car lorsque les êtres qui, par leur méchanceté, leur nullité, étaient arrivés malgré nous à détruire nos illusions, se sont réduits eux-mêmes à rien et séparés de la chimère amoureuse que nous nous étions forgée, si nous nous mettons alors à travailler, notre âme les élève de nouveau, les identifie, pour les besoins de notre analyse de nous-même, à des êtres qui nous auraient aimé, et dans ce cas, la littérature, recommençant le travail défait de l'illusion amoureuse, donne une sorte de survie à des sentiments qui n'existaient plus.
+
+### Passage
+
+Certes, nous sommes obligés de revivre notre souffrance particulière avec le courage du médecin qui recommence sur lui-même la dangereuse piqûre. Mais en même temps il nous faut la penser sous une forme générale qui nous fait dans une certaine mesure échapper à son étreinte, qui fait de tous les copartageants de notre peine, et qui n'est même pas exempte d'une certaine joie. Là où la vie emmure, l'intelligence perce une issue, car, s'il n'est pas de remède à un amour non partagé, on sort de la constatation d'une souffrance, ne fût-ce qu'en en tirant les conséquences qu'elle comporte. L'intelligence ne connaît pas ces situations fermées de la vie sans issue. Aussi fallait-il me résigner, puisque rien ne peut durer qu'en devenant général et si l'esprit ment à soi-même, à l'idée que même les êtres qui furent le plus chers à l'écrivain n'ont fait, en fin de compte, que poser pour lui comme chez les peintres. Parfois, quand un morceau douloureux est resté à l'état d'ébauche, une nouvelle tendresse, une nouvelle souffrance nous arrivent qui nous permettent de le finir, de l'étoffer. Pour ces grands chagrins utiles on ne peut pas encore trop se plaindre, car ils ne manquent pas, ils ne se font pas attendre bien longtemps. Tout de même il faut se dépêcher de profiter d'eux, car ils ne durent pas très longtemps ; c'est qu'on se console, ou bien, quand ils sont trop forts, si le coeur n'est plus très solide, on meurt. En amour, notre rival heureux, autant dire notre ennemi, est notre bienfaiteur. À un être qui n'excitait en nous qu'un insignifiant désir physique il ajoute aussitôt une valeur immense, étrangère, mais que nous confondons avec lui. Si nous n'avions pas de rivaux le plaisir ne se transformerait pas en amour. Si nous n'en avions pas, ou si nous ne croyions pas en avoir. Car il n'est pas nécessaire qu'ils existent réellement. Suffisante pour notre bien est cette vie illusoire que donnent à des rivaux inexistants notre soupçon, notre jalousie. Le bonheur est salutaire pour le corps, mais c'est le chagrin qui développe les forces de l'esprit. D'ailleurs, ne nous découvrît-il pas à chaque fois une loi, qu'il n'en serait pas moins indispensable pour nous remettre chaque fois dans la vérité, nous forcer à prendre les choses au sérieux, arrachant chaque fois les mauvaises herbes de l'habitude, du scepticisme, de la légèreté, de l'indifférence. Il est vrai que cette vérité, qui n'est pas compatible avec le bonheur, avec la santé, ne l'est pas toujours avec la vie. Le chagrin finit par tuer. À chaque nouvelle peine trop forte, nous sentons une veine de plus qui saille et développe sa sinuosité mortelle au long de notre tempe, sous nos yeux. Et c'est ainsi que peu à peu se font ces terribles figures ravagées, du vieux Rembrandt, du vieux Beethoven de qui tout le monde se moquait. Et ce ne serait rien que les poches des yeux et les rides du front s'il n'y avait la souffrance du coeur. Mais puisque les forces peuvent se changer en d'autres forces, puisque l'ardeur qui dure devient lumière et que l'électricité de la foudre peut photographier, puisque notre sourde douleur au coeur peut élever au-dessus d'elle, comme un pavillon, la permanence visible d'une image à chaque nouveau chagrin, acceptons le mal physique qu'il nous donne pour la connaissance spirituelle qu'il nous apporte ; laissons se désagréger notre corps, puisque chaque nouvelle parcelle qui s'en détache vient, cette fois lumineuse et lisible, pour la compléter au prix de souffrances dont d'autres plus doués n'ont pas besoin, pour la rendre plus solide au fur et à mesure que les émotions effritent notre vie, s'ajouter à notre oeuvre. Les idées sont des succédanés des chagrins ; au moment où ceux-ci se changent en idées, ils perdent une partie de leur action nocive sur notre coeur, et même, au premier instant, la transformation elle-même dégage subitement de la joie. Succédanés dans l'ordre du temps seulement, d'ailleurs, car il semble que l'élément premier ce soit l'idée, et le chagrin seulement le mode selon lequel certaines idées entrent d'abord en nous. Mais il y a plusieurs familles dans le groupe des idées, certaines sont tout de suite des joies. Ces réflexions me faisaient trouver un sens plus fort et plus exact à la vérité que j'avais souvent pressentie, notamment quand Mme de Cambremer se demandait comment je pouvais délaisser pour Albertine un homme remarquable comme Elstir. Même au point de vue intellectuel je sentais qu'elle avait tort, mais je ne savais pas que ce qu'elle méconnaissait, c'était les leçons avec lesquelles on fait son apprentissage d'homme de lettres. La valeur objective des arts est peu de chose en cela ; ce qu'il s'agit de faire sortir, d'amener à la lumière, ce sont nos sentiments, nos passions, c'est-à-dire les passions, les sentiments de tous. Une femme dont nous avons besoin nous fait souffrir, tire de nous des séries de sentiments autrement profonds, autrement vitaux qu'un homme supérieur qui nous intéresse. Il reste à savoir, selon le plan où nous vivons, si nous trouvons que telle trahison par laquelle nous a fait souffrir une femme est peu de chose auprès des vérités que cette trahison nous a découvertes et que la femme, heureuse d'avoir fait souffrir, n'aurait guère pu comprendre. En tout cas, ces trahisons ne manquent pas. Un écrivain peut se mettre sans crainte à un long travail. Que l'intelligence commence son ouvrage, en cours de route surviendront bien assez de chagrins qui se chargeront de le finir. Quant au bonheur, il n'a presque qu'une seule utilité, rendre le malheur possible. Il faut que dans le bonheur nous formions des liens bien doux et bien forts de confiance et d'attachement pour que leur rupture nous cause le déchirement si précieux qui s'appelle le malheur. Si l'on n'avait été heureux, ne fût-ce que par l'espérance, les malheurs seraient sans cruauté et par conséquent sans fruit. Et plus qu'au le peintre, à l'écrivain, pour obtenir du volume, de la consistance, de la généralité, de la réalité littéraire, comme il lui faut beaucoup d'églises vues pour en peindre une seule, il lui faut aussi beaucoup d'êtres pour un seul sentiment, car si l'art est long et la vie courte, on peut dire, en revanche, que si l'inspiration est courte les sentiments qu'elle doit peindre ne sont pas beaucoup plus longs. Ce sont nos passions qui esquissent nos livres, le repos d'intervalle qui les écrit. Quand l'inspiration renaît, quand nous pouvons reprendre le travail, la femme qui posait devant nous pour un sentiment ne nous le fait déjà plus éprouver. Il faut continuer à la peindre d'après une autre, et si c'est une trahison pour l'autre, littérairement, grâce à la similitude de nos sentiments qui fait qu'une oeuvre est à la fois le souvenir de nos amours passées et la péripétie de nos amours nouvelles, il n'y a pas grand inconvénient à ces substitutions. C'est une des causes de la vanité des études où on essaye de deviner de qui parle un auteur. Car une oeuvre, même de confession directe, est pour le moins intercalée entre plusieurs épisodes de la vie de l'auteur, ceux antérieurs qui l'ont inspirée, ceux postérieurs qui ne lui ressemblent pas moins, des amours suivantes les particularités étant calquées sur les précédentes. Car à l'être que nous avons le plus aimé nous ne sommes pas si fidèles qu'à nous-même, et nous l'oublions tôt ou tard pour pouvoir – puisque c'est un des traits de nous-même – recommencer d'aimer. Tout au plus, à cet amour celle que nous avons tant aimée a-t-elle ajouté une forme particulière, qui nous fera lui être fidèle même dans l'infidélité. Nous aurons besoin, avec la femme suivante, des mêmes promenades du matin ou de la reconduire de même le soir, ou de lui donner cent fois trop d'argent. (Une chose curieuse que cette circulation de l'argent que nous donnons à des femmes qui, à cause de cela, nous rendent malheureux, c'est-à-dire nous permettent d'écrire des livres – on peut presque dire que les oeuvres, comme dans les puits artésiens, montent d'autant plus haut que la souffrance a plus profondément creusé le coeur.) Ces substitutions ajoutent à l'oeuvre quelque chose de désintéressé, de plus général, qui est aussi une leçon austère que ce n'est pas aux êtres que nous devons nous attacher, que ce ne sont pas les êtres qui existent réellement et sont, par conséquent, susceptibles d'expression, mais les idées. Encore faut-il se hâter et ne pas perdre de temps pendant qu'on a à sa disposition ces modèles. Car ceux qui posent pour le bonheur n'ont généralement pas beaucoup de séances à nous donner. Mais les êtres qui posent pour nous la douleur nous accordent des séances bien fréquentes, dans cet atelier où nous n'allons que dans ces périodes-là et qui est à l'intérieur de nous-même. Ces périodes-là sont comme une image de notre vie avec ses diverses douleurs. Car elles aussi en contiennent de différentes, et au moment où on croyait que c'était calmé, une nouvelle, une nouvelle, dans tous les sens du mot ; peut-être parce que ces situations imprévues nous forcent à entrer plus profondément en contact avec nous-même ; ces dilemmes douloureux que l'amour nous pose à tout instant nous instruisent, nous découvrent successivement la matière dont nous sommes faits.
+
+D'ailleurs, même quand elle ne fournit pas, en nous la découvrant, la matière de notre oeuvre, elle nous est utile en nous y incitant. L'imagination, la pensée, peuvent être des machines admirables en soi, mais elles peuvent être inertes. La souffrance alors les met en marche. Aussi, quand Françoise, voyant Albertine entrer, par toutes les portes ouvertes, chez moi comme un chien, mettre partout le désordre, me ruiner, me causer tant de chagrins, me disait (car à ce moment-là j'avais déjà fait quelques articles et quelques traductions) : « Ah ! si Monsieur à la place de cette fille qui lui fait perdre tout son temps avait pris un petit secrétaire bien élevé qui aurait classé toutes les paperoles de Monsieur ! » j'avais peut-être tort de trouver qu'elle parlait sagement. En me faisant perdre mon temps, en me faisant du chagrin, Albertine m'avait peut-être été plus utile, même au point de vue littéraire, qu'un secrétaire qui eût rangé mes paperoles. Mais tout de même, quand un être est si mal conformé (et peut-être dans la nature cet être est-il l'homme) qu'il ne puisse aimer sans souffrir, et qu'il faille souffrir pour apprendre des vérités, la vie d'un tel être finit par être bien lassante. Les années heureuses sont les années perdues, on attend une souffrance pour travailler. L'idée de la souffrance préalable s'associe à l'idée du travail, on a peur de chaque nouvelle oeuvre en pensant aux douleurs qu'il faudra supporter d'abord pour l'imaginer. Et comme on comprend que la souffrance est la meilleure chose que l'on puisse rencontrer dans la vie, on pense sans effroi, presque comme à une délivrance, à la mort. Pourtant, si cela me révoltait un peu, encore fallait-il prendre garde que bien souvent nous n'avons pas joué avec la vie, profité des êtres pour les livres, mais tout le contraire. Le cas de Werther, si noble, n'était pas, hélas, le mien. Sans croire un instant à l'amour d'Albertine j'avais vingt fois voulu me tuer pour elle, je m'étais ruiné, j'avais détruit ma santé pour elle. Quand il s'agit d'écrire, on est scrupuleux, on regarde de très près, on rejette tout ce qui n'est pas vérité. Mais tant qu'il ne s'agit que de la vie, on se ruine, on se rend malade, on se tue pour des mensonges. Il est vrai que c'est de la gangue de ces mensonges-là que (si l'âge est passé d'être poète) on peut seulement extraire un peu de vérité. Les chagrins sont des serviteurs obscurs, détestés, contre lesquels on lutte, sous l'empire de qui on tombe de plus en plus, des serviteurs atroces, impossibles à remplacer et qui par des voies souterraines nous mènent à la vérité et à la mort. Heureux ceux qui ont rencontré la première avant la seconde, et pour qui, si proches qu'elles doivent être l'une de l'autre, l'heure de la vérité a sonné avant l'heure de la mort.
+
+De ma vie passée je compris encore que les moindres épisodes avaient concouru à me donner la leçon d'idéalisme dont j'allais profiter aujourd'hui. Mes rencontres avec baron de Charlus, par exemple, ne m'avaient-elles pas permis, même avant que sa germanophilie me donnât la même leçon, et mieux encore que mon amour pour duchesse de Guermantes, ou pour Albertine, que l'amour de Robert de Saint-Loup pour Rachel, de me convaincre combien la matière est indifférente et que tout peut y être mis par la pensée, vérité que le phénomène si mal compris, si inutilement blâmé, de l'inversion sexuelle grandit plus encore que celui déjà si instructif de l'amour ; celui-ci nous montre la beauté fuyant la femme que nous n'aimons plus et venant résider dans le visage que les autres trouveraient le plus laid, qui à nous-même aurait pu, pourra un jour nous déplaire ; mais il est encore plus frappant de la voir, obtenant tous les hommages d'un grand seigneur qui délaisse aussitôt une belle princesse, émigrer sous la casquette d'un contrôleur d'omnibus. Mon étonnement, à chaque fois que j'avais revu aux Champs-Élysées, dans la rue, sur la plage, le visage de Gilberte, de duchesse de Guermantes, d'Albertine, ne prouvait-il pas combien un souvenir ne se prolonge que dans une direction divergente de l'impression avec laquelle il a coïncidé d'abord et de laquelle il s'éloigne de plus en plus ? L'écrivain ne doit pas s'offenser que l'inverti donne à ses héroïnes un visage masculin. Cette particularité un peu aberrante permet seule à l'inverti de donner ensuite à ce qu'il lit toute sa généralité. Si baron de Charlus n'avait pas donné à l'« infidèle » sur qui Musset pleure dans la Nuit d'Octobre ou dans le Souvenir le visage de Morel, il n'aurait ni pleuré, ni compris, puisque c'était par cette seule voie, étroite et détournée, qu'il avait accès aux vérités de l'amour. L'écrivain ne dit que par une habitude prise dans le langage insincère des préfaces et des dédicaces : « mon lecteur ». En réalité, chaque lecteur est, quand il lit, le propre lecteur de soi-même. L'ouvrage de l'écrivain n'est qu'une espèce d'instrument optique qu'il offre au lecteur afin de lui permettre de discerner ce que, sans ce livre, il n'eût peut-être pas vu en soi-même. La reconnaissance en soi-même, par le lecteur, de ce que dit le livre est la preuve de la vérité de celui-ci, et vice versa, au moins dans une certaine mesure, la différence entre les deux textes pouvant être souvent imputée non à l'auteur mais au lecteur. De plus, le livre peut être trop savant, trop obscur pour le lecteur naïf et ne lui présenter ainsi qu'un verre trouble, avec lequel il ne pourra pas lire. Mais d'autres particularités (comme l'inversion) peuvent faire que le lecteur ait besoin de lire d'une certaine façon pour bien lire ; l'auteur n'a pas à s'en offenser mais, au contraire, à laisser la plus grande liberté au lecteur en lui disant : « Regardez vous-même si vous voyez mieux avec ce verre-ci, avec celui-là, avec cet autre. »
+
+Si je m'étais toujours tant intéressé aux rêves que l'on a pendant le sommeil, n'est-ce pas parce que, compensant la durée par la puissance, ils nous aident à mieux comprendre ce qu'a de subjectif, par exemple, l'amour ? Et cela par le simple fait que – mais avec une vitesse prodigieuse – ils réalisent ce qu'on appellerait vulgairement nous mettre une femme dans la peau, jusqu'à nous faire passionnément aimer pendant quelques minutes une laide, ce qui dans la vie réelle eût demandé des années d'habitude, de collage et – comme si elles étaient inventées par quelque docteur miraculeux – des piqûres intraveineuses d'amour, aussi bien qu'elles peuvent l'être aussi de souffrance ; avec la même vitesse la suggestion amoureuse qu'ils nous ont inculquée se dissipe, et quelquefois non seulement l'amoureuse nocturne a cessé d'être pour nous comme telle, étant redevenue la laide bien connue, mais quelque chose de plus précieux se dissipe aussi, tout un tableau ravissant de sentiments, de tendresse, de volupté, de regrets vaguement estompés, tout un embarquement pour Cythère de la passion dont nous voudrions noter, pour l'état de veille, les nuances d'une vérité délicieuse, mais qui s'efface comme une toile trop pâlie qu'on ne peut restituer. Eh bien, c'était peut-être aussi par le jeu formidable qu'ils font avec le Temps que les Rêves m'avaient fasciné. N'avais-je pas vu souvent en une nuit, en une minute d'une nuit, des temps bien lointains, relégués à ces distances énormes où nous ne pouvons presque plus rien distinguer des sentiments que nous y éprouvions, fondre à toute vitesse sur nous, nous aveuglant de leur clarté, comme s'ils avaient été des avions géants au lieu des pâles étoiles que nous croyions, nous faire ravoir tout ce qu'ils avaient contenu pour nous, nous donner l'émotion, le choc, la clarté de leur voisinage immédiat, qui ont repris une fois qu'on est réveillé la distance qu'ils avaient miraculeusement franchie, jusqu'à nous faire croire, à tort d'ailleurs, qu'ils étaient un des modes pour retrouver le Temps perdu ?
+
+Je m'étais rendu compte que seule la perception grossière et erronée place tout dans l'objet, quand tout est dans l'esprit ; j'avais perdu la grand-mère en réalité bien des mois après l'avoir perdue en fait, j'avais vu les personnes varier d'aspect selon l'idée que moi ou d'autres s'en faisaient, une seule être plusieurs selon les personnes qui la voyaient (tels les divers Swann du début de cet ouvrage, suivant ceux qui le rencontraient ; la princesse de Luxembourg, suivant qu'elle était vue par le premier président ou par moi), même pour une seule au cours des années (les variations du nom de Guermantes, et les divers Swann pour moi). J'avais vu l'amour placer dans une personne ce qui n'est que dans la personne qui aime. Je m'en étais d'autant mieux rendu compte que j'avais fait varier et s'étendre à l'extrême la distance entre la réalité objective et l'amour (Rachel pour Robert de Saint-Loup et pour moi, Albertine pour moi et Robert de Saint-Loup, Morel ou le conducteur d'omnibus pour baron de Charlus ou d'autres personnes). Enfin, dans une certaine mesure, la germanophilie de baron de Charlus, comme le regard de Robert de Saint-Loup sur la photographie d'Albertine, m'avait aidé à me dégager pour un instant, sinon de ma germanophobie, du moins de ma croyance en la pure objectivité de celle-ci et à me faire penser que peut-être en était-il de la haine comme de l'amour, et que, dans le jugement terrible que porte en ce moment même la France à l'égard de l'Allemagne, qu'elle juge hors de l'humanité, y avait-il surtout une objectivité de sentiments, comme ceux qui faisaient paraître Rachel et Albertine si précieuses, l'une à Robert de Saint-Loup, l'autre à moi. Ce qui rendait possible, en effet, que cette perversité ne fût pas entièrement intrinsèque à l'Allemagne est que, de même qu'individuellement j'avais eu des amours successives, après la fin desquelles l'objet de cet amour m'apparaissait sans valeur, j'avais déjà vu dans mon pays des haines successives qui avaient fait apparaître, par exemple, comme des traîtres – mille fois pires que les Allemands auxquels ils livraient la France – des dreyfusards comme Reinach avec lequel collaboreraient aujourd'hui les patriotes contre un pays dont chaque membre était forcément un menteur, une bête féroce, un imbécile, exception faite des Allemands qui avaient embrassé la cause française, comme le roi de Roumanie ou l'impératrice de Russie. Il est vrai que les antidreyfusards m'eussent répondu : « Ce n'est pas la même chose. » Mais, en effet, ce n'est jamais la même chose, pas plus que ce n'est la même personne, sans cela, devant le même phénomène, celui qui en est la dupe ne pourrait accuser que son état subjectif et ne pourrait croire que les qualités ou les défauts sont dans l'objet.

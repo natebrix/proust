@@ -1,0 +1,511 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin",
+      "la Patronne"
+    ],
+    "notes": ""
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin"
+    ],
+    "notes": ""
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "le docteur",
+      "Cottard",
+      "le docteur Cottard"
+    ],
+    "notes": ""
+  },
+  "le pianiste": {
+    "aliases": [
+      "le jeune artiste",
+      "le jeune pianiste",
+      "le pianiste"
+    ],
+    "notes": "the Verdurins' protected young pianist"
+  }
+}
+
+### Prior local context (optional)
+
+Quand Mme Verdurin avait annoncé qu'on aurait, dans la soirée, Swann : « Swann ? » s'était écrié docteur Cottard d'un accent rendu brutal par la surprise, car la moindre nouvelle prenait toujours plus au dépourvu que quiconque cet homme qui se croyait perpétuellement préparé à tout. Et voyant qu'on ne lui répondait pas : « Swann ? Qui ça, Swann ! » hurla-t-il au comble d'une anxiété qui se détendit soudain quand Mme Verdurin eut dit : « Mais l'ami dont Odette nous avait parlé. » – « Ah ! bon, bon, ça va bien », répondit docteur Cottard apaisé. Quant au peintre il se réjouissait de l'introduction de Swann chez Mme Verdurin, parce qu'il le supposait amoureux d'Odette et qu'il aimait à favoriser les liaisons. « Rien ne m'amuse comme de faire des mariages, confia-t-il, dans l'oreille, au docteur docteur Cottard, j'en ai déjà réussi beaucoup, même entre femmes ! »
+
+### Passage
+
+En disant aux Verdurin que Swann était très « smart », Odette leur avait fait craindre un « ennuyeux ». Il leur fit au contraire une excellente impression dont à leur insu sa fréquentation dans la société élégante était une des causes indirectes. Il avait en effet sur les hommes même intelligents qui ne sont jamais allés dans le monde une des supériorités de ceux qui y ont un peu vécu, qui est de ne plus le transfigurer par le désir ou par l'horreur qu'il inspire à l'imagination, de le considérer comme sans aucune importance. Leur amabilité, séparée de tout snobisme et de la peur de paraître trop aimable, devenue indépendante, a cette aisance, cette grâce des mouvements de ceux dont les membres assouplis exécutent exactement ce qu'ils veulent, sans participation indiscrète et maladroite du reste du corps. La simple gymnastique élémentaire de l'homme du monde tendant la main avec bonne grâce au jeune homme inconnu qu'on lui présente et s'inclinant avec réserve devant l'ambassadeur à qui on le présente, avait fini par passer sans qu'il en fût conscient dans toute l'attitude sociale de Swann, qui vis-à-vis de gens d'un milieu inférieur au sien comme étaient les Verdurin et leurs amis, fit instinctivement montre d'un empressement, se livra à des avances, dont, selon eux, un ennuyeux se fût abstenu. Il n'eut un moment de froideur qu'avec docteur Cottard : en le voyant lui cligner de l'oeil et lui sourire d'un air ambigu avant qu'ils se fussent encore parlé (mimique que docteur Cottard appelait « laisser venir »), Swann crut que docteur Cottard le connaissait sans doute pour s'être trouvé avec lui en quelque lieu de plaisir, bien que lui-même y allât pourtant fort peu, n'ayant jamais vécu dans le monde de la noce. Trouvant l'allusion de mauvais goût, surtout en présence d'Odette qui pourrait en prendre une mauvaise idée de lui, il affecta un air glacial. Mais quand il apprit qu'une dame qui se trouvait près de lui était Mme docteur Cottard, il pensa qu'un mari aussi jeune n'aurait pas cherché à faire allusion devant sa femme à des divertissements de ce genre ; et il cessa de donner à l'air entendu du docteur la signification qu'il redoutait. Le peintre invita tout de suite Swann à venir avec Odette à son atelier, Swann le trouva gentil. « Peut-être qu'on vous favorisera plus que moi, dit Mme Verdurin, sur un ton qui feignait d'être piqué, et qu'on vous montrera le portrait de docteur Cottard (elle l'avait commandé au peintre). Pensez bien, « monsieur » Biche, rappela-t-elle au peintre, à qui c'était une plaisanterie consacrée de dire monsieur, à rendre le joli regard, le petit côté fin, amusant, de l'oeil. Vous savez que ce que je veux surtout avoir, c'est son sourire, ce que je vous ai demandé c'est le portrait de son sourire. » Et comme cette expression lui sembla remarquable elle la répéta très haut pour être sûre que plusieurs invités l'eussent entendue, et même, sous un prétexte vague, en fit d'abord rapprocher quelques-uns. Swann demanda à faire la connaissance de tout le monde, même d'un vieil ami des Verdurin, Saniette, à qui sa timidité, sa simplicité et son bon coeur avaient fait perdre partout la considération que lui avaient value sa science d'archiviste, sa grosse fortune, et la famille distinguée dont il sortait. Il avait dans la bouche, en parlant, une bouillie qui était adorable parce qu'on sentait qu'elle trahissait moins un défaut de la langue qu'une qualité de l'âme, comme un reste de l'innocence du premier âge qu'il n'avait jamais perdue. Toutes les consonnes qu'il ne pouvait prononcer figuraient comme autant de duretés dont il était incapable. En demandant à être présenté à M. Saniette, Swann fit à Mme Verdurin l'effet de renverser les rôles (au point qu'en réponse, elle dit en insistant sur la différence : « Monsieur Swann, voudriez-vous avoir la bonté de me permettre de vous présenter notre ami Saniette »), mais excita chez Saniette une sympathie ardente que d'ailleurs les Verdurin ne révélèrent jamais à Swann, car Saniette les agaçait un peu, et ils ne tenaient pas à lui faire des amis, mais en revanche Swann les toucha infiniment en croyant devoir demander tout de suite à faire la connaissance de la tante du pianiste. En robe noire comme toujours, parce qu'elle croyait qu'en noir on est toujours bien et que c'est ce qu'il y a de plus distingué, elle avait le visage excessivement rouge comme chaque fois qu'elle venait de manger. Elle s'inclina devant Swann avec respect, mais se redressa avec majesté. Comme elle n'avait aucune instruction et avait peur de faire des fautes de français, elle prononçait exprès d'une manière confuse, pensant que si elle lâchait un cuir il serait estompé d'un tel vague qu'on ne pourrait le distinguer avec certitude, de sorte que sa conversation n'était qu'un graillonnement indistinct duquel émergeaient de temps à autre les rares vocables dont elle se sentait sûre. Swann crut pouvoir se moquer légèrement d'elle en parlant à M. Verdurin, lequel au contraire fut piqué.
+
+« C'est une si excellente femme, répondit-il. Je vous accorde qu'elle n'est pas étourdissante ; mais je vous assure qu'elle est agréable quand on cause seul avec elle. » – « Je n'en doute pas, s'empressa de concéder Swann. Je voulais dire qu'elle ne me semblait pas « éminente », ajouta-t-il en détachant cet adjectif, et en somme c'est plutôt un compliment ! » – « Tenez, dit M. Verdurin, je vais vous étonner, elle écrit d'une manière charmante. Vous n'avez jamais entendu son neveu ? c'est admirable, n'est-ce pas, docteur ? Voulez-vous que je lui demande de jouer quelque chose, Monsieur Swann ? »

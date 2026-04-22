@@ -1,0 +1,523 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Mme Swann": {
+    "aliases": [
+      "Mme Swann",
+      "Madame Swann",
+      "la belle Madame Swann"
+    ],
+    "notes": "Odette de Crecy Swann"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte",
+      "la fille de Odette"
+    ],
+    "notes": "Gilberte Swann"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "l'Ambassadeur",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": ""
+  },
+  "le narrateur": {
+    "aliases": [
+      "je",
+      "moi",
+      "mon fils"
+    ],
+    "notes": "include only when the local movement clearly targets or repositions the narrator"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "Monsieur votre père"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "ma mère",
+      "Madame"
+    ],
+    "notes": "use only when clearly referring to the narrator's mother in the dinner conversation"
+  }
+}
+
+### Prior local context (optional)
+
+Ma mère réprima un frémissement, car d'une sensibilité plus prompte que le père du narrateur, elle s'alarmait pour lui de ce qui ne devait le contrarier qu'un instant après. Les désagréments qui lui arrivaient étaient perçus d'abord par elle comme ces mauvaises nouvelles de France qui sont connues plus tôt à l'étranger que chez nous. Mais curieuse de savoir quel genre de personnes les Swann pouvaient recevoir, elle s'enquit auprès de Norpois de celles qu'il y avait rencontrées.
+
+### Passage
+
+– Mon Dieu... c'est une maison où il me semble que vont surtout... des messieurs. Il y avait quelques hommes mariés, mais leurs femmes étaient souffrantes ce soir-là et n'étaient pas venues, répondit Norpois avec une finesse voilée de bonhomie et en jetant autour de lui des regards dont la douceur et la discrétion faisaient mine de tempérer et exagéraient habilement la malice.
+
+– Je dois ajouter, pour être tout à fait juste, qu'il y va cependant des femmes, mais... appartenant plutôt..., comment dirais-le narrateur, au monde républicain qu'à la société de Swann (il prononçait Svann). Qui sait ? Ce sera peut-être un jour un salon politique ou littéraire. Du reste, il semble qu'ils soient contents comme cela. Je trouve que Swann le montre un peu trop. Il nommait les gens chez qui lui et sa femme étaient invités pour la semaine suivante et de l'intimité desquels il n'y a pourtant pas lieu de s'enorgueillir, avec un manque de réserve et de goût, presque de tact, qui m'a étonné chez un homme aussi fin. Il répétait : « Nous n'avons pas un soir de libre », comme si ç'avait été une gloire, et en véritable parvenu, qu'il n'est pas cependant. Car Swann avait beaucoup d'amis et même d'amies, et sans trop m'avancer, ni vouloir commettre d'indiscrétion, le narrateur crois pouvoir dire que non pas toutes, ni même le plus grand nombre, mais l'une au moins, et qui est une fort grande dame, ne se serait peut-être pas montrée entièrement réfractaire à l'idée d'entrer en relations avec Mme Swann, auquel cas, vraisemblablement, plus d'un mouton de Panurge aurait suivi. Mais il semble qu'il n'y ait eu de la part de Swann aucune démarche esquissée en ce sens. Comment ? encore un pudding à la Nasselrode ! Ce ne sera pas de trop de la cure de Carlsbad pour me remettre d'un pareil festin de Lucullus... Peut-être Swann a-t-il senti qu'il y aurait trop de résistances à vaincre. Le mariage, cela est certain, n'a pas plu. On a parlé de la fortune de la femme, ce qui est une grosse bourde. Mais, enfin, tout cela n'a pas paru agréable. Et puis Swann a une tante excessivement riche et admirablement posée, femme d'un homme qui, financièrement parlant, est une puissance. Et non seulement elle a refusé de recevoir Odette, mais elle a mené une campagne en règle pour que ses amies et connaissances en fissent autant. Je n'entends pas par là qu'aucun Parisien de bonne compagnie ait manqué de respect à Mme Swann... Non ! cent fois non ! le mari était d'ailleurs homme à relever le gant. En tous cas, il y a une chose curieuse, c'est de voir combien Swann, qui connaît tant de monde et du plus choisi, montre d'empressement auprès d'une société dont le moins qu'on puisse dire est qu'elle est fort mêlée. Moi qui l'ai connu jadis, j'avoue que j'éprouvais autant de surprise que d'amusement à voir un homme aussi bien élevé, aussi à la mode dans les coteries les plus triées, remercier avec effusion le directeur du Cabinet du ministre des Postes d'être venu chez eux et lui demander si Mme Swann pourrait se permettre d'aller voir sa femme. Il doit pourtant se trouver dépaysé ; évidemment ce n'est plus le même monde. Mais le narrateur ne crois pas cependant que Swann soit malheureux. Il y a eu, il est vrai, dans les années qui précédèrent le mariage, d'assez vilaines manoeuvres de chantage de la part de la femme ; elle privait Swann de sa fille chaque fois qu'il lui refusait quelque chose. Le pauvre Swann, aussi naïf qu'il est pourtant raffiné, croyait chaque fois que l'enlèvement de sa fille était une coïncidence et ne voulait pas voir la réalité. Elle lui faisait d'ailleurs des scènes si continuelles qu'on pensait que le jour où elle serait arrivée à ses fins et se serait fait épouser, rien ne la retiendrait plus et que leur vie serait un enfer. Hé bien ! c'est le contraire qui est arrivé. On plaisante beaucoup la manière dont Swann parle de sa femme, on en fait même des gorges chaudes. On ne demandait certes pas que, plus ou moins conscient d'être... (vous savez le mot de Molière), il allât le proclamer urbi et orbi ; n'empêche qu'on le trouve exagéré quand il dit que sa femme est une excellente épouse. Or, ce n'est pas aussi faux qu'on le croit. À sa manière qui n'est pas celle que tous les maris préféreraient, – mais enfin, entre nous, il me semble difficile que Swann, qui la connaissait depuis longtemps et est loin d'être un maître-sot, ne sût pas à quoi s'en tenir, – il est indéniable qu'elle semble avoir de l'affection pour lui. Je ne dis pas qu'elle ne soit pas volage, et Swann lui-même ne se fait pas faute de l'être, à en croire les bonnes langues qui, vous pouvez le penser, vont leur train. Mais elle lui est reconnaissante de ce qu'il a fait pour elle, et, contrairement aux craintes éprouvées par tout le monde, elle paraît devenue d'une douceur d'ange.

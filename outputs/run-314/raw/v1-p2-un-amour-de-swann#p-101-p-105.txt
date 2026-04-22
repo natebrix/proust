@@ -1,0 +1,81 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "Mme Verdurin",
+      "surface_forms": ["Mme Verdurin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "docteur Cottard",
+      "surface_forms": ["docteur Cottard", "le docteur"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["votre ami"],
+      "presence_type": "implicit",
+      "presence_confidence": 0.75
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "Mme Verdurin",
+      "target": "docteur Cottard",
+      "type": "praise",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.83,
+      "evidence": "« vous en savez dix fois autant que lui… Vous ne tuez pas vos malades, vous au moins ! »",
+      "explanation": "Mme Verdurin defends and elevates Cottard against renowned 'masters,' crediting his competence and implicitly setting him above them."
+    },
+    {
+      "event_id": "E2",
+      "source": "Mme Verdurin",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.88,
+      "evidence": "« Votre ami nous plaît beaucoup… Il est simple, charmant… vous pouvez les amener. »",
+      "explanation": "Mme Verdurin praises Odette's friend (Swann) and explicitly authorizes his continued presence, signaling acceptance into the valued salon circle."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "docteur Cottard",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.83,
+      "explanation": "Cottard's competence is affirmed and preferred over prestigious 'masters,' raising his local esteem."
+    },
+    {
+      "character": "Swann",
+      "dimension": "inclusion_exclusion",
+      "delta": 1,
+      "based_on_events": ["E2"],
+      "confidence": 0.86,
+      "explanation": "Explicit invitation to return marks his acceptance and inclusion in the Verdurin salon."
+    },
+    {
+      "character": "Odette",
+      "dimension": "social_status",
+      "delta": 1,
+      "based_on_events": ["E2"],
+      "confidence": 0.78,
+      "explanation": "By presenting a guest who 'pleases' the hosts, Odette gains credit and trust as a recommender within the circle."
+    }
+  ],
+  "ambiguities": [
+    "« Votre ami » is almost certainly Swann introduced by Odette, but he is not named explicitly in this passage."
+  ]
+}

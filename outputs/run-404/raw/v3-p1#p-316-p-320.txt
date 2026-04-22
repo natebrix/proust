@@ -1,0 +1,82 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "le père du narrateur",
+      "surface_forms": ["Mon père", "le père du narrateur"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "la mère du narrateur",
+      "surface_forms": ["ma mère", "la mère du narrateur"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "duc de Guermantes",
+      "surface_forms": ["duc de Guermantes"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "Mme de Villeparisis",
+      "surface_forms": ["Mme de Villeparisis", "marquise"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "unknown",
+      "target": "le père du narrateur",
+      "type": "snub",
+      "polarity": "negative",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.87,
+      "evidence": "« Mme Sazerat se contenta d'un salut glacé… »; « Celle-ci ne lui tendit pas la main… elle mit entre elle et lui des continents et des siècles. »",
+      "explanation": "A politically motivated coldness and refusal of ordinary courtesies mark a social exclusion of the father (and, by extension, the mother) over the Dreyfus affair."
+    },
+    {
+      "event_id": "E2",
+      "source": "duc de Guermantes",
+      "target": "Mme de Villeparisis",
+      "type": "praise",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.8,
+      "evidence": "« Il m'a dit qu'elle était extraordinairement intelligente. Il a même ajouté qu'elle tenait un bureau d'esprit. »; « Ma mère… s'en fit immédiatement une idée plus avantageuse. »",
+      "explanation": "The duke's explicit praise of Mme de Villeparisis elevates her locally; the mother immediately upgrades her estimation in response."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "le père du narrateur",
+      "dimension": "inclusion_exclusion",
+      "delta": -2,
+      "based_on_events": ["E1"],
+      "confidence": 0.86,
+      "explanation": "He is treated as beyond the pale by Mme Sazerat, signaling sharp local exclusion over politics."
+    },
+    {
+      "character": "la mère du narrateur",
+      "dimension": "inclusion_exclusion",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.73,
+      "explanation": "She, too, is refused a handshake and kept at a distance, though the affront is framed as secondary to that aimed at her husband."
+    },
+    {
+      "character": "Mme de Villeparisis",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E2"],
+      "confidence": 0.8,
+      "explanation": "Her local standing rises through the duke's endorsement and the immediate uptick in the mother's regard."
+    }
+  ],
+  "ambiguities": [
+    "The snub’s source is Mme Sazerat, who is not in the alias map; encoded as 'unknown' source.",
+    "The narrator explains rather than endorses Mme Sazerat’s moral judgment ('suppôts de l'Injustice'), creating some distance from the evaluation."
+  ]
+}

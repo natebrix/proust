@@ -1,0 +1,67 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "Norpois",
+      "surface_forms": ["Norpois", "Monsieur l'Ambassadeur"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["la présenter", "son impression"],
+      "presence_type": "implicit",
+      "presence_confidence": 0.82
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "Norpois",
+      "target": "Swann",
+      "type": "prestige_association",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.88,
+      "evidence": "« il est certain que le comte de Paris a toujours agréé avec beaucoup de bienveillance le dévouement de Swann qui est, d'ailleurs, un garçon d'esprit s'il en fut »",
+      "explanation": "Norpois links Swann to the favor of a prince and adds a personal compliment on Swann’s esprit, conferring social and personal credit."
+    },
+    {
+      "event_id": "E2",
+      "source": "Norpois",
+      "target": "Odette",
+      "type": "praise",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.85,
+      "evidence": "À la question sur son impression, il répond « Tout à fait excellente ! » avec « une énergie de vieux connaisseur »",
+      "explanation": "Prompted for his own view, Norpois delivers a strong positive appraisal of Odette."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.86,
+      "explanation": "Association with a prince’s benevolent regard, reinforced by Norpois’s compliment, locally elevates Swann’s standing."
+    },
+    {
+      "character": "Odette",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E2"],
+      "confidence": 0.84,
+      "explanation": "Norpois’s emphatic ‘excellente’ impression raises Odette’s local valuation."
+    }
+  ],
+  "ambiguities": [
+    "The referent of « votre impression » is inferred to be Odette from prior context; her name is not repeated in the quoted lines."
+  ]
+}

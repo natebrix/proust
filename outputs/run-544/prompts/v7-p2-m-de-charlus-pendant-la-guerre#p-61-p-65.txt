@@ -1,0 +1,1020 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ],
+    "notes": "Swann acquaintance with a nearby estate"
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ],
+    "notes": "Aristocratic social connection mentioned in Swann's prestige world"
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ],
+    "notes": "Narrator's uncle Adolphe"
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ],
+    "notes": "Parisian salon hostess"
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ],
+    "notes": "Guermantes relation obsessed with rank and kinship display"
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ],
+    "notes": "Guermantes aristocrat referenced in the Laumes social orbit"
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ],
+    "notes": "Aristocratic hostess in the Guermantes orbit"
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ],
+    "notes": "Swann social acquaintance considered among suspects"
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ],
+    "notes": "Swann associate/servant mentioned among suspects"
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ],
+    "notes": "Salon attendee who comments after the sonata"
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ],
+    "notes": "Dream-figure standing in for Forcheville in Swann's dream"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ],
+    "notes": "Gilberte Swann, first encountered at the Champs-Elysees"
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ],
+    "notes": "Narrator's family servant"
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ],
+    "notes": "Celebrated actress"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": "Writer admired by the narrator"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois, diplomat and family dinner guest"
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ],
+    "notes": "Narrator's grandmother"
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ],
+    "notes": "Aristocratic hotel guest at Balbec"
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ],
+    "notes": "Headwaiter or maître d'hôtel at the Grand-Hôtel in Balbec"
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ],
+    "notes": "Daughter of M. de Stermaria"
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ],
+    "notes": "Male member of the Cambremer family in the Balbec hotel circle"
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ],
+    "notes": "Aristocratic visitor in the Balbec social scene"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ],
+    "notes": "Narrator's father"
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ],
+    "notes": "Young aristocrat and nephew of Mme de Villeparisis"
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ],
+    "notes": "Father of Saint-Loup"
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ],
+    "notes": "Friend/acquaintance of the narrator; socially performative and often ironic"
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ],
+    "notes": "Guermantes title in the family sequence discussed with Saint-Loup"
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ],
+    "notes": "Bloch's father as remembered and socially evaluated in the narrator's reflections"
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ],
+    "notes": "Grand-Hotel director observed by the narrator"
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ],
+    "notes": "Figure invoked in the political talk reported by Aimé"
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ],
+    "notes": "The sad-looking blonde seen at Rivebelle who begins to crystallize in the narrator's desire"
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ],
+    "notes": "Oriane de Guermantes; now appearing as the duchesse de Guermantes"
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ],
+    "notes": "Neighbor and ally of Françoise in the new Guermantes setting"
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ],
+    "notes": "Princesse de Guermantes-Bavière; hostess of the evening in the opening of v4-p2"
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ],
+    "notes": "Aristocratic young man encountered outside the princesse de Guermantes salon"
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ],
+    "notes": "Diplomat/ambassador figure appearing in the princesse de Guermantes salon"
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ],
+    "notes": "Wife of M. de Vaugoubert"
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ],
+    "notes": "Albertine Simonet; narrator's companion in La Prisonnière"
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ],
+    "notes": "Andrée, one of the Balbec girls and Albertine's friend"
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ],
+    "notes": "Albertine's aunt"
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ],
+    "notes": "Charles Morel, violinist associated with Charlus and the Verdurins"
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ],
+    "notes": "Painter and social/aesthetic authority referenced by Albertine."
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ],
+    "notes": "Prince de Leon, beau-frere de Saint-Loup in the duchesse de Guermantes anecdotes."
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ],
+    "notes": "Aristocratic figure in the duchesse de Guermantes reminiscences."
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ],
+    "notes": "Social rival figure in the Jockey Club episode around the Guermantes."
+  }
+}
+
+### Prior local context (optional)
+
+Quelque chose pourtant me frappa qui n'était pas sa figure que je ne voyais pas, ni son uniforme dissimulé dans une grande houppelande, mais la disproportion extraordinaire entre le nombre de points différents par où passa son corps et le petit nombre de secondes pendant lesquelles cette sortie, qui avait l'air de la sortie tentée par un assiégé, s'exécuta. De sorte que je pensai, si je ne le reconnus pas formellement – je ne dirai pas même à la tournure ni à la sveltesse, ni à l'allure, ni à la vélocité de Robert de Saint-Loup – mais à l'espèce d'ubiquité qui lui était si spéciale. Le militaire capable d'occuper en si peu de temps tant de positions différentes dans l'espace avait disparu, sans m'avoir aperçu, dans une rue de traverse, et je restais à me demander si je devais ou non entrer dans cet hôtel dont l'apparence modeste me fit fortement douter que ce fût Robert de Saint-Loup qui en fût sorti. Je me rappelai involontairement que Robert de Saint-Loup avait été injustement mêlé à une affaire d'espionnage parce qu'on avait trouvé son nom dans les lettres saisies sur un officier allemand. Pleine justice lui avait d'ailleurs été rendue par l'autorité militaire. Mais malgré moi je rapprochai ce fait de ce que je voyais. Cet hôtel servait-il de lieu de rendez-vous à des espions ? L'officier avait depuis un moment disparu quand je vis entrer de simples soldats de plusieurs armes, ce qui ajouta encore à la force de ma supposition. J'avais, d'autre part, extrêmement soif. « Il est probable que je pourrai trouver à boire ici », me dis-je, et j'en profitai pour tâcher d'assouvir, malgré l'inquiétude qui s'y mêlait, ma curiosité. Je ne pense donc pas que ce fut la curiosité de cette rencontre qui me décida à monter le petit escalier de quelques marches au bout duquel la porte d'une espèce de vestibule était ouverte, sans doute à cause de la chaleur. Je crus d'abord que, cette curiosité, je ne pourrais la satisfaire, car je vis plusieurs personnes venir demander une chambre, à qui on répondit qu'il n'y en avait plus une seule. Mais je compris ensuite qu'elles n'avaient évidemment contre elles que de ne pas faire partie du nid d'espionnage, car un simple marin s'étant présenté un moment après on se hâta de lui donner le n° 28. Je pus apercevoir sans être vu, grâce à l'obscurité, quelques militaires et deux ouvriers qui causaient tranquillement dans une petite pièce étouffée, prétentieusement ornée de portraits en couleurs de femmes découpés dans des magazines et des revues illustrées. Ces gens causaient tranquillement, en train d'exposer des idées patriotiques : « Qu'est-ce que tu veux, on fera comme les camarades », disait l'un. « Ah ! pour sûr que je pense bien ne pas être tué », répondait à un voeu que je n'avais pas entendu, un autre qui, à ce que je compris, repartait le lendemain pour un poste dangereux. « Par exemple, à vingt-deux ans, en n'ayant encore fait que six mois, ce serait fort », criait-il avec un ton où perçait encore plus que le désir de vivre longtemps la conscience de raisonner juste, et comme si le fait de n'avoir que vingt-deux ans devait lui donner plus de chances de ne pas être tué, et que ce dût être une chose impossible qu'il le fût. « À Paris c'est épatant, disait un autre ; on ne dirait pas qu'il y a la guerre. Et toi, Julot, tu t'engages toujours ? – Pour sûr que je m'engage, j'ai envie d'aller y taper un peu dans le tas à tous ces sales Boches. – Mais Joffre, c'est un homme qui couche avec les femmes des Ministres, c'est pas un homme qui a fait quelque chose. – C'est malheureux d'entendre des choses pareilles, dit un aviateur un peu plus âgé en se tournant vers l'ouvrier qui venait de faire entendre cette proposition ; je vous conseillerais pas de causer comme ça en première ligne, les poilus vous auraient vite expédié. » La banalité de ces conversations ne me donnait pas grande envie d'en entendre davantage, et j'allais entrer ou redescendre quand je fus tiré de mon indifférence en entendant ces phrases qui me firent frémir : « C'est épatant, le patron qui ne revient pas, dame, à cette heure-ci je ne sais pas trop où il trouvera des chaînes. – Mais puisque l'autre est déjà attaché. – Il est attaché bien sûr, il est attaché et il ne l'est pas, moi je serais attaché comme ça que je pourrais me détacher. – Mais le cadenas est fermé. – C'est entendu qu'il est fermé, mais ça peut s'ouvrir à la rigueur. Ce qu'il y a, c'est que les chaînes ne sont pas assez longues. Tu vas pas m'expliquer à moi ce que c'est, j'y ai tapé dessus hier pendant toute la nuit que le sang m'en coulait sur les mains. – C'est toi qui taperas ce soir. – Non, c'est pas moi, c'est Maurice. Mais ça sera moi dimanche, le patron me l'a promis. » Je compris maintenant pourquoi on avait eu besoin des bras solides du marin. Si on avait éloigné de paisibles bourgeois, ce n'était donc pas qu'un nid d'espions que cet hôtel. Un crime atroce allait y être consommé, si on n'arrivait pas à temps pour le découvrir et faire arrêter les coupables. Tout cela pourtant, dans cette nuit paisible et menacée, gardait une apparence de rêve, de conte, et c'est à la fois avec une fierté de justicier et une volupté de poète que j'entrai délibérément dans l'hôtel. Je touchai légèrement mon chapeau et les personnes présentes, sans se déranger, répondirent plus ou moins poliment à mon salut. « Est-ce que vous pourriez me dire à qui il faut m'adresser ? Je voudrais avoir une chambre et qu'on m'y monte à boire. – Attendez une minute, le patron est sorti. – Mais il y a le chef là-haut, insinua un des causeurs. – Mais tu sais bien qu'on ne peut pas le déranger. – Croyez-vous qu'on me donnera une chambre ? – J'crois. – Le 43 doit être libre », dit le jeune homme qui était sûr de ne pas être tué parce qu'il avait vingt-deux ans. Et il se poussa légèrement sur le sofa pour me faire place. « Si on ouvrait un peu la fenêtre, il y a une fumée ici », dit l'aviateur ; et en effet chacun avait sa pipe ou sa cigarette. « Oui, mais alors, fermez d'abord les volets, vous savez bien qu'il est défendu d'avoir de la lumière à cause des Zeppelins. – Il n'en viendra plus de Zeppelins. Les journaux ont même fait allusion sur ce qu'ils avaient été tous descendus. – Il n'en viendra plus, il n'en viendra plus, qu'est-ce que tu en sais ? Quand tu auras comme moi quinze mois de front et que tu auras abattu ton cinquième avion boche, tu pourras en causer. Faut pas croire les journaux. Ils sont allés hier sur Compiègne, ils ont tué une mère de famille avec ses deux enfants. – Une mère de famille avec ses deux enfants », dit avec des yeux ardents et un air de profonde pitié le jeune homme qui espérait bien ne pas être tué et qui avait, du reste, une figure énergique, ouverte et des plus sympathiques. « On n'a pas de nouvelles du grand Julot. Sa marraine n'a pas reçu de lettre de lui depuis huit jours et c'est la première fois qu'il reste si longtemps sans lui en donner. – Qui est sa marraine ? – C'est la dame qui tient le chalet de nécessité un peu plus bas que l'Olympia. – Ils couchent ensemble ? – Qu'est-ce que tu dis là ; c'est une femme mariée, tout ce qu'il y a de sérieuse. Elle lui envoie de l'argent toutes les semaines parce qu'elle a bon coeur. Ah ! c'est une chic femme. – Alors tu le connais, le grand Julot ? – Si je le connais ! reprit avec chaleur le jeune homme de vingt-deux ans. C'est un de mes meilleurs amis intimes. Il n'y en a pas beaucoup que j'estime comme lui, et bon camarade, toujours prêt à rendre service, ah ! tu parles que ce serait un rude malheur s'il lui était arrivé quelque chose. » Quelqu'un proposa une partie de dés et à la hâte fébrile avec laquelle le jeune homme de vingt-deux ans retournait les dés et criait les résultats, les yeux hors de la tête, il était aisé de voir qu'il avait un tempérament de joueur. Je ne saisis pas bien ce que quelqu'un lui dit ensuite, mais il s'écria d'un ton de profonde pitié : « Julot, un maquereau ! C'est-à-dire qu'il dit qu'il est un maquereau. Mais il n'est pas foutu de l'être. Moi je l'ai vu payer sa femme, oui, la payer. C'est-à-dire que je ne dis pas que Jeanne l'Algérienne ne lui donnait pas quelque chose, mais elle ne lui donnait pas plus de cinq francs, une femme qui était en maison, qui gagnait plus de cinquante francs par jour. Se faire donner que cinq francs ! il faut qu'un homme soit trop bête. Et maintenant qu'elle est sur le front, elle a une vie dure, je veux bien, mais elle gagne ce qu'elle veut ; eh bien, elle ne lui envoie rien. Ah ! un maquereau, Julot ? Il y en a beaucoup qui pourraient se dire maquereaux à ce compte-là. Non seulement ce n'est pas un maquereau, mais à mon avis c'est même un imbécile. » Le plus vieux de la bande, et que le patron avait sans doute, à cause de son âge, chargé de lui faire garder une certaine tenue, n'entendit, étant allé un moment jusqu'aux cabinets, que la fin de la conversation. Mais il ne put s'empêcher de me regarder et parut visiblement contrarié de l'effet qu'elle avait dû produire sur moi. Sans s'adresser spécialement au jeune homme de vingt-deux ans qui venait pourtant d'exposer cette théorie de l'amour vénal, il dit, d'une façon générale : « Vous causez trop et trop fort, la fenêtre est ouverte, il y a des gens qui dorment à cette heure-ci. Vous savez que si le patron rentrait et vous entendait causer comme ça, il ne serait pas content. » Précisément en ce moment on entendit la porte s'ouvrir et tout le monde se tut croyant que c'était le patron, mais ce n'était qu'un chauffeur d'auto étranger auquel tout le monde fit grand accueil. Mais en voyant une chaîne de montre superbe qui s'étalait sur la veste du chauffeur, le jeune homme de vingt-deux ans lui lança un coup d'oeil interrogatif et rieur, suivi d'un froncement de sourcil et d'un clignement d'oeil sévère dirigé de mon côté. Et je compris que le premier regard voulait dire : « Qu'est-ce que ça ? tu l'as volée ? Toutes mes félicitations. » Et le second : « Ne dis rien à cause de ce type que nous ne connaissons pas. »
+
+### Passage
+
+Tout à coup le patron entra, chargé de plusieurs mètres de grosses chaînes capables d'attacher plusieurs forçats, suant, et dit : « J'en ai une charge, si vous tous vous n'étiez pas si fainéants, je ne devrais pas être obligé d'y aller moi-même. » Je lui dis que je demandais une chambre. « Pour quelques heures seulement, je n'ai pas trouvé de voiture et je suis un peu malade. Mais je voudrais qu'on me monte à boire. – Pierrot, va à la cave chercher du cassis et dis qu'on mette en état le numéro 43. Voilà le 7 qui sonne. Ils disent qu'ils sont malades. Malades, je t'en fiche, c'est des gens à prendre de la coco, ils ont l'air à moitié piqués, il faut les foutre dehors. A-t-on mis une paire de draps au 22 ? Bon ! voilà le 7 qui sonne encore, cours-y voir. Allons, Maurice, qu'est-ce que tu fais là, tu sais bien qu'on t'attend, monte au 14 bis. Et plus vite que ça. » Et Maurice sortit rapidement, suivant le patron qui, un peu ennuyé que j'eusse vu ses chaînes, disparut en les emportant. « Comment que tu viens si tard ? » demanda le jeune homme de vingt-deux ans au chauffeur. « Comment, si tard, je suis d'une heure en avance. Mais il fait trop chaud marcher. J'ai rendez-vous qu'à minuit. – Pour qui donc est-ce que tu viens ? – Pour Pamela la charmeuse », dit le chauffeur oriental dont le rire découvrit les belles dents blanches. « Ah ! » dit le jeune homme de vingt-deux ans. Bientôt on me fit monter dans la chambre 43, mais l'atmosphère était si désagréable et ma curiosité si grande que, mon « cassis » bu, je redescendis l'escalier, puis, pris d'une autre idée, je remontai et dépassai l'étage de la chambre 43, allai jusqu'en haut. Tout à coup, d'une chambre qui était isolée au bout d'un couloir me semblèrent venir des plaintes étouffées. Je marchai vivement dans cette direction et appliquai mon oreille à la porte. « Je vous en supplie, grâce, grâce, pitié, détachez-moi, ne me frappez pas si fort, disait une voix. Je vous baise les pieds, je m'humilie, je ne recommencerai pas. Ayez pitié. – Non, crapule, répondit une autre voix, et puisque tu gueules et que tu te traînes à genoux, on va t'attacher sur le lit, pas de pitié », et j'entendis le bruit du claquement d'un martinet, probablement aiguisé de clous car il fut suivi de cris de douleur. Alors je m'aperçus qu'il y avait dans cette chambre un oeil-de-boeuf latéral dont on avait oublié de tirer le rideau ; cheminant à pas de loup dans l'ombre, je me glissai jusqu'à cet oeil-de-boeuf, et là, enchaîné sur un lit comme Prométhée sur son rocher, recevant les coups d'un martinet en effet planté de clous que lui infligeait Maurice, je vis, déjà tout en sang, et couvert d'ecchymoses qui prouvaient que le supplice n'avait pas lieu pour la première fois, je vis devant moi baron de Charlus. Tout à coup la porte s'ouvrit et quelqu'un entra qui heureusement ne me vit pas, c'était Jupien. Il s'approcha du baron avec un air de respect et un sourire d'intelligence : « Hé bien, vous n'avez pas besoin de moi ? » Le baron pria Jupien de faire sortir un moment Maurice. Jupien le mit dehors avec la plus grande désinvolture. « On ne peut pas nous entendre ? » dit le baron à Jupien, qui lui affirma que non. Le baron savait que Jupien, intelligent comme un homme de lettres, n'avait nullement l'esprit pratique, parlait toujours, devant les intéressés, avec des sous-entendus qui ne trompaient personne et des surnoms que tout le monde connaissait. « Une seconde », interrompit Jupien qui avait entendu une sonnette retentir à la chambre n° 3. C'était un député de l'Action Libérale qui sortait. Jupien n'avait pas besoin de voir le tableau car il connaissait son coup de sonnette, le député venant, en effet, tous les jours après déjeuner. Il avait été obligé ce jour-là de changer ses heures, car il avait marié sa fille à midi à Saint-Pierre de Chaillot. Il était donc venu le soir, mais tenait à partir de bonne heure à cause de sa femme, vite inquiète quand il rentrait tard, surtout par ces temps de bombardement. Jupien tenait à accompagner sa sortie pour témoigner de la déférence qu'il portait à la qualité d'honorable, sans aucun intérêt personnel d'ailleurs. Car bien que ce député, répudiant les exagérations de l'Action Française (il eût, d'ailleurs, été incapable de comprendre une ligne de Swann Maurras ou de prince de Léon Daudet), fût bien avec les ministres, flattés d'être invités à ses chasses, Jupien n'aurait pas osé lui demander le moindre appui dans ses démêlés avec la police. Il savait que, s'il s'était risqué à parler de cela au législateur fortuné et froussard, il n'aurait pas évité la plus inoffensive des « descentes » mais eût instantanément perdu le plus généreux de ses clients. Après avoir reconduit jusqu'à la porte le député, qui avait rabattu son chapeau sur ses yeux, relevé son col et, glissant rapidement comme il faisait dans ses programmes électoraux, croyait cacher son visage, Jupien remonta près de baron de Charlus à qui il dit : « C'était Monsieur Eugène. » Chez Jupien, comme dans les maisons de santé, on n'appelait les gens que par leur prénom tout en ayant soin d'ajouter à l'oreille, pour satisfaire la curiosité des habitués ou augmenter le prestige de la maison, leur nom véritable. Quelquefois cependant Jupien ignorait la personnalité vraie de ses clients, s'imaginait et disait que c'était tel boursier, tel noble, tel artiste, erreurs passagères et charmantes pour ceux qu'on nommait à tort, et finissait par se résigner à ignorer toujours qui était Monsieur Victor. Jupien avait aussi l'habitude, pour plaire au baron, de faire l'inverse de ce qui est de mise dans certaines réunions. « Je vais vous présenter Monsieur Lebrun » (à l'oreille : « Il se fait appeler M. Lebrun mais en réalité c'est le grand-duc de Russie »). Inversement, Jupien sentait que ce n'était pas encore assez de présenter à baron de Charlus un garçon laitier. Il lui murmurait en clignant de l'oeil : « Il est garçon laitier, mais, au fond, c'est surtout un des plus dangereux apaches de Belleville » (il fallait voir le ton grivois dont Jupien disait « apache »). Et comme si ces références ne suffisaient pas, il tâchait d'ajouter quelques « citations ». « Il a été condamné plusieurs fois pour vol et cambriolage de villas, il a été à Fresnes pour s'être battu (même air grivois) avec des passants qu'il a à moitié estropiés et il a été au bat' d'Af. Il a tué son sergent. »
+
+Le baron en voulait même légèrement à Jupien, car il savait que dans cette maison, qu'il avait chargé son factotum d'acheter pour lui et de faire gérer par un sous-ordre, tout le monde, par les maladresses de l'oncle de Mlle d'Oloron, feu Mme de Cambremer, connaissait plus ou moins sa personnalité et son nom (beaucoup seulement croyaient que c'était un surnom et, le prononçant mal, l'avaient déformé, de sorte que la sauvegarde du baron avait été leur propre bêtise et non la discrétion de Jupien). Mais il trouvait plus simple de se laisser rassurer par ses assurances, et tranquillisé de savoir qu'on ne pouvait les entendre, le baron lui dit : « Je ne voulais pas parler devant ce petit, qui est très gentil et fait de son mieux. Mais je ne le trouve pas assez brutal. Sa figure me plaît, mais il m'appelle « crapule » comme si c'était une leçon apprise. – Oh ! non, personne ne lui a rien dit, répondit Jupien sans s'apercevoir de l'invraisemblance de cette assertion. Il a, du reste, été compromis dans le meurtre d'une concierge de la Villette. – Ah ! cela c'est assez intéressant, dit le baron avec un sourire. – Mais j'ai justement là le tueur de boeufs, l'homme des abattoirs qui lui ressemble ; il a passé par hasard. Voulez-vous en essayer ? – Ah ! oui, volontiers. » Je vis entrer l'homme des abattoirs, il ressemblait, en effet, un peu à « Maurice », mais, chose plus curieuse, tous deux avaient quelque chose d'un type que personnellement je n'avais jamais dégagé, mais qu'à ce moment je me rendis très bien compte exister dans la figure de Morel, sinon dans la figure de Morel telle que je l'avais toujours vue, du moins dans un certain visage que des yeux aimants voyant Morel autrement que moi auraient pu composer avec ses traits. Dès que je me fus fait intérieurement, avec des traits empruntés à mes souvenirs de Morel, cette maquette de ce qu'il pouvait représenter à un autre, je me rendis compte que ces deux jeunes gens, dont l'un était un garçon bijoutier et l'autre un employé d'hôtel, étaient de vagues succédanés de Morel. Fallait-il en conclure que baron de Charlus, au moins en une certaine forme de ses amours, était toujours fidèle à un même type et que le désir qui lui avait fait choisir l'un après l'autre ces deux jeunes gens était le même que celui qui lui avait fait arrêter Morel sur le quai de la gare de Doncières ; que tous trois ressemblaient un peu à l'éphèbe dont la forme, intaillée dans le saphir qu'étaient les yeux de baron de Charlus, donnait à son regard ce quelque chose de si particulier qui m'avait effrayé le premier jour à Balbec ? Ou que son amour pour Morel ayant modifié le type qu'il cherchait, pour se consoler de son absence il cherchait des hommes qui lui ressemblassent ? Une supposition que je fis aussi fut que peut-être il n'avait jamais existé entre Morel et lui, malgré les apparences, que des relations d'amitié, et que baron de Charlus faisait venir chez Jupien des jeunes gens qui ressemblassent assez à Morel pour qu'il pût avoir auprès d'eux l'illusion de prendre du plaisir avec lui. Il est vrai qu'en songeant à tout ce que baron de Charlus a fait pour Morel, cette supposition eût semblé peu probable si l'on ne savait que l'amour nous pousse non seulement aux plus grands sacrifices pour l'être que nous aimons, mais parfois jusqu'au sacrifice de notre désir lui-même qui, d'ailleurs, est d'autant moins facilement exaucé que l'être que nous aimons sent que nous aimons davantage. Ce qui enlève aussi à une telle supposition l'invraisemblance qu'elle semble avoir au premier abord (bien qu'elle ne corresponde sans doute pas à la réalité) est dans le tempérament nerveux, dans le caractère profondément passionné de baron de Charlus, pareil en cela à celui de Robert de Saint-Loup, et qui avait pu jouer au début de ses relations avec Morel le même rôle, et plus décent, et négatif, qu'au début des relations de son neveu avec Rachel. Les relations avec une femme qu'on aime (et cela peut s'étendre à l'amour pour un jeune homme) peuvent rester platoniques pour une autre raison que la vertu de la femme ou que la nature peu sensuelle de l'amour qu'elle inspire. Cette raison peut être que l'amoureux, trop impatient par l'excès même de son amour, ne sait pas attendre avec une feinte suffisante d'indifférence le moment où il obtiendra ce qu'il désire. Tout le temps il revient à la charge, il ne cesse d'écrire à celle qu'il aime, il cherche tout le temps à la voir, elle le lui refuse, il est désespéré. Dès lors elle a compris que si elle lui accorde sa compagnie, son amitié, ces biens paraîtront déjà tellement considérables à celui qui a cru en être privé qu'elle peut se dispenser de donner davantage et profiter d'un moment où il ne peut plus supporter de ne pas la voir, où il veut à tout prix terminer la guerre, en lui imposant une paix qui aura pour première condition le platonisme des relations. D'ailleurs, pendant tout le temps qui a précédé ce traité, l'amoureux tout le temps anxieux, sans cesse à l'affût d'une lettre, d'un regard, a cessé de penser à la possession physique dont le désir l'avait tourmenté d'abord mais qui s'est usé dans l'attente et a fait place à des besoins d'un autre ordre, plus douloureux d'ailleurs s'ils ne sont pas satisfaits. Alors le plaisir qu'on avait le premier jour espéré des caresses, on le reçoit plus tard tout dénaturé sous la forme de paroles amicales, de promesses de présence qui, après les effets de l'incertitude, quelquefois simplement après un regard embrumé de tous les brouillards de la froideur et qui recule si loin la personne qu'on croit qu'on ne la reverra jamais, amènent de délicieuses détentes. Les femmes devinent tout cela et savent qu'elles peuvent s'offrir le luxe de ne se donner jamais à ceux dont elles sentent, s'ils ont été trop nerveux pour le leur cacher les premiers jours, l'inguérissable désir qu'ils ont d'elles. La femme est trop heureuse que, sans rien donner, elle reçoive beaucoup plus qu'elle n'a d'habitude quand elle se donne. Les grands nerveux croient ainsi à la vertu de leur idole. Et l'auréole qu'ils mettent autour d'elle est aussi un produit, mais, comme on voit, fort indirect, de leur excessif amour. Il existe alors chez la femme ce qui existe à l'état inconscient chez les médicaments à leur insu rusés, comme sont les soporifiques, la morphine. Ce n'est pas à ceux à qui ils donnent le plaisir du sommeil ou un véritable bien-être qu'ils sont absolument nécessaires. Ce n'est pas par ceux-là qu'ils seraient achetés à prix d'or, échangés contre tout ce que le malade possède, c'est par ces autres malades (d'ailleurs peut-être les mêmes, mais, à quelques années de distance, devenus autres) que le médicament ne fait pas dormir, à qui il ne cause aucune volupté, mais qui, tant qu'ils ne l'ont pas, sont en proie à une agitation qu'ils veulent faire cesser à tout prix, fût-ce en se donnant la mort. Pour baron de Charlus, dont le cas, en somme, avec cette légère différenciation due à la similitude du sexe, rentre dans les lois générales de l'amour, il avait beau appartenir à une famille plus ancienne que les Capétiens, être riche, être vainement recherché par une société élégante, et Morel n'être rien, il aurait eu beau dire à Morel, comme il m'avait dit à moi-même : « Je suis prince, je veux votre bien », encore était-ce Morel qui avait le dessus s'il ne voulait pas se rendre. Et pour qu'il ne le voulût pas, il suffisait peut-être qu'il se sentît aimé. L'horreur que les grands ont pour les snobs qui veulent à toute force se lier avec eux, l'homme viril l'a pour l'inverti, la femme pour tout homme trop amoureux. baron de Charlus non seulement avait tous les avantages, mais en eût proposé d'immenses à Morel. Mais il est possible que tout cela se fût brisé contre une volonté. Il en eût été dans ce cas de baron de Charlus comme de ces Allemands, auxquels il appartenait, du reste, par ses origines, et qui, dans la guerre qui se déroulait à ce moment, étaient bien, comme le baron le répétait un peu trop volontiers, vainqueurs sur tous les fronts. Mais à quoi leur servait leur victoire, puisque après chacune ils trouvaient les Alliés plus résolus à leur refuser la seule chose qu'eux, les Allemands, eussent souhaité d'obtenir, la paix et la réconciliation ? Ainsi Napoléon entrait en Russie et demandait magnanimement aux autorités de venir vers lui. Mais personne ne se présentait.
+
+Je descendis et rentrai dans la petite antichambre où Maurice, incertain si on le rappellerait et à qui Jupien avait à tout hasard dit d'attendre, était en train de faire une partie de cartes avec un de ses camarades. On était très agité d'une croix de guerre qui avait été trouvée par terre, et on ne savait pas qui l'avait perdue, à qui la renvoyer pour éviter au titulaire un ennui. Puis on parla de la bonté d'un officier qui s'était fait tuer pour tâcher de sauver son ordonnance. « Il y a tout de même du bon monde chez les riches. Moi je me ferais tuer avec plaisir pour un type comme ça », dit Maurice, qui, évidemment, n'accomplissait ses terribles fustigations sur le baron que par une habitude mécanique, les effets d'une éducation négligée, le besoin d'argent et un certain penchant à le gagner d'une façon qui était censée donner moins de mal que le travail et en donnait peut-être davantage. Mais, ainsi que l'avait craint baron de Charlus, c'était peut-être un très bon coeur et c'était, paraît-il, un garçon d'une admirable bravoure. Il avait presque les larmes aux yeux en parlant de la mort de cet officier et le jeune homme de vingt-deux ans n'était pas moins ému. « Ah ! oui, ce sont de chic types. Des malheureux comme nous encore, ça n'a pas grand'chose à perdre, mais un Monsieur qui a des tas de larbins, qui peut aller prendre son apéro tous les jours à 6 heures, c'est vraiment chouette. On peut charrier tant qu'on veut, mais quand on voit des types comme ça mourir, ça fait vraiment quelque chose. Le bon Dieu ne devrait pas permettre que des riches comme ça meurent ; d'abord ils sont trop utiles à l'ouvrier. Rien qu'à cause d'une mort comme ça faudra tuer tous les Boches jusqu'au dernier ; et ce qu'ils ont fait à Louvain, et couper des poignets de petits enfants ; non, je ne sais pas, moi je ne suis pas meilleur qu'un autre, mais je me laisserais envoyer des pruneaux dans la gueule plutôt que d'obéir à des barbares comme ça ; car c'est pas des hommes, c'est des vrais barbares, tu ne diras pas le contraire. » Tous ces garçons étaient, en somme, patriotes. Un seul, légèrement blessé au bras, ne fut pas à la hauteur des autres car il dit, comme il devait bientôt repartir : « Dame, ça n'a pas été la bonne blessure » (celle qui fait réformer), comme Odette disait jadis : « J'ai trouvé le moyen d'attraper la fâcheuse influenza. » La porte se rouvrit sur le chauffeur qui était allé un instant prendre l'air. « Comment, c'est déjà fini ? ça n'a pas été long », dit-il en apercevant Maurice qu'il croyait en train de frapper celui qu'on avait surnommé, par allusion à un journal qui paraissait à cette époque : « l'Homme enchaîné ». « Ce n'est pas long pour toi qui es allé prendre l'air, répondit Maurice, froissé qu'on vît qu'il avait déplu là-haut. Mais si tu étais obligé de taper à tour de bras comme moi, par cette chaleur ! Si c'était pas les cinquante francs qu'il donne... – Et puis, c'est un homme qui cause bien ; on sent qu'il a de l'instruction. Dit-il que ce sera bientôt fini ? – Il dit qu'on ne pourra pas les avoir, que ça finira sans que personne ait le dessus. – Bon sang de bon sang, mais c'est donc un Boche... – Je vous ai dit que vous causiez trop haut, dit le plus vieux aux autres en m'apercevant. Vous avez fini avec la chambre ? – Ah ! ta gueule, tu n'es pas le maître ici. – Oui, j'ai fini, et je venais pour payer. – Il vaut mieux que vous payiez au patron. Maurice, va donc le chercher. – Mais je ne veux pas vous déranger. – Ça ne me dérange pas. » Maurice monta et revint en me disant : « Le patron descend. » Je lui donnai deux francs pour son dérangement. Il rougit de plaisir. « Ah ! merci bien. Je les enverrai à mon frère qui est prisonnier. Non, il n'est pas malheureux, ça dépend beaucoup des camps. » Pendant ce temps, deux clients très élégants, en habit et cravate blanche sous leur pardessus – deux Russes, me sembla-t-il à leur très léger accent – se tenaient sur le seuil et délibéraient s'ils devaient entrer. C'était visiblement la première fois qu'ils venaient là, on avait dû leur indiquer l'endroit et ils semblaient partagés entre le désir, la tentation et une extrême frousse. L'un des deux – un beau jeune homme – répétait toutes les deux minutes à l'autre, avec un sourire mi-interrogateur, mi-destiné à persuader : « Quoi ! Après tout on s'en fiche. » Mais il avait beau vouloir dire par là qu'après tout on se fichait des conséquences, il est probable qu'il ne s'en fichait pas tant que cela, car cette parole n'était suivie d'aucun mouvement pour entrer, mais d'un nouveau regard vers l'autre, suivi du même sourire et du même « après tout, on s'en fiche ». C'était, ce « après tout on s'en fiche ! », un exemplaire entre mille de ce magnifique langage, si différent de celui que nous parlons d'habitude, et où l'émotion fait dévier ce que nous voulions dire et épanouir à la place une phrase tout autre, émergée d'un lac inconnu où vivent des expressions sans rapport avec la pensée, et qui par cela même la révèlent. Je me souviens qu'une fois Albertine, comme Françoise, que nous n'avions pas entendue, entrait au moment où mon amie était toute nue contre moi, dit malgré elle, voulant me prévenir : « Tiens, voilà la belle Françoise. » Françoise, qui n'y voyait pas très clair et ne faisait que traverser la pièce assez loin de nous, ne se fût sans doute aperçue de rien. Mais les mots si anormaux de « belle Françoise », qu'Albertine n'avait jamais prononcés de sa vie, montrèrent d'eux-mêmes leur origine ; elle les sentit cueillis au hasard par l'émotion, n'eut pas besoin de regarder rien pour comprendre tout et s'en alla en murmurant dans son patois le mot de « poutana ». Une autre fois, bien plus tard, quand Bloch devenu père de famille eut marié une de ses filles à un catholique, un monsieur mal élevé dit à celle-ci qu'il croyait avoir entendu dire qu'elle était fille d'un juif et lui en demanda le nom. La jeune femme, qui avait été Mlle Bloch depuis sa naissance, répondit en prononçant Bloch à l'allemande, comme eût fait le duc de Guermantes, c'est-à-dire en prononçant le ch non pas comme un c ou un k mais avec le rh germanique.
+
+Le patron, pour en revenir à la scène de l'hôtel (dans lequel les deux Russes s'étaient décidés à pénétrer : « après tout on s'en fiche »), n'était pas encore revenu que Jupien entra se plaindre qu'on parlait trop fort et que les voisins se plaindraient. Mais il s'arrêta stupéfait en m'apercevant. « Allez-vous-en tous sur le carré. » Déjà tous se levaient quand je lui dis : « Il serait plus simple que ces jeunes gens restent là et que j'aille avec vous un instant dehors. » Il me suivit fort troublé. Je lui expliquai pourquoi j'étais venu. On entendait des clients qui demandaient au patron s'il ne pouvait pas leur faire connaître un valet de pied, un enfant de choeur, un chauffeur nègre. Toutes les professions intéressaient ces vieux fous ; dans la troupe, toutes les armes et les alliés de toutes nations. Quelques-uns réclamaient surtout des Canadiens, subissant peut-être à leur insu le charme d'un accent si léger qu'on ne sait pas si c'est celui de la vieille France ou de l'Angleterre. À cause de leur jupon et parce que certains rêves lacustres s'associent souvent à de tels désirs, les Écossais faisaient prime. Et comme toute folie reçoit des circonstances des traits particuliers, sinon même une aggravation, un vieillard dont toutes les curiosités avaient été assouvies demandait avec insistance si on ne pourrait pas lui faire faire la connaissance d'un mutilé. On entendait des pas lents dans l'escalier. Par une indiscrétion qui était dans sa nature Jupien ne put se retenir de me dire que c'était le baron qui descendait, qu'il ne fallait à aucun prix qu'il me vît, mais que, si je voulais entrer dans la petite chambre contiguë au vestibule où étaient les jeunes gens, il allait ouvrir les vasistas, truc qu'il avait inventé pour que le baron pût voir et entendre sans être vu, et qu'il allait, me disait-il, retourner en ma faveur contre lui. « Seulement, ne bougez pas. » Et après m'avoir poussé dans le noir, il me quitta. D'ailleurs, il n'avait pas d'autre chambre à me donner, son hôtel, malgré la guerre, étant plein. Celle que je venais de quitter avait été prise par le vicomte de Courvoisier qui, ayant pu quitter la Croix-Rouge de X... pour deux jours, était venu se délasser une heure à Paris avant d'aller retrouver au château de Courvoisier la vicomtesse, à qui il dirait n'avoir pas pu prendre le bon train. Il ne se doutait guère que baron de Charlus était à quelques mètres de lui, et celui-ci ne s'en doutait pas davantage, n'ayant jamais rencontré son cousin chez Jupien, lequel ignorait la personnalité du vicomte soigneusement dissimulée. Bientôt, en effet, le baron entra, marchant assez difficilement à cause des blessures, dont il devait sans doute pourtant avoir l'habitude. Bien que son plaisir fût fini et qu'il n'entrât, d'ailleurs, que pour donner à Maurice l'argent qu'il lui devait, il dirigeait en cercle sur tous ces jeunes gens réunis un regard tendre et curieux et comptait bien avoir avec chacun le plaisir d'un bonjour tout platonique mais amoureusement prolongé. Je lui retrouvai de nouveau, dans toute la sémillante frivolité dont il fit preuve devant ce harem qui semblait presque l'intimider, ces hochements de taille et de tête, ces affinements du regard qui m'avaient frappé le soir de sa première entrée à la Raspelière, grâces héritées de quelque la grand-mère que je n'avais pas connue, et que dissimulaient dans l'ordinaire de la vie sur sa figure des expressions plus viriles, mais qui y épanouissaient coquettement, dans certaines circonstances où il tenait à plaire à un milieu inférieur, le désir de paraître grande dame. Jupien les avait recommandés à la bienveillance du baron en lui disant que c'étaient tous des « barbeaux » de Belleville et qu'ils marcheraient avec leur propre soeur pour un louis. Au reste, Jupien mentait et disait vrai à la fois. Meilleurs, plus sensibles qu'il ne disait au baron, ils n'appartenaient pas à une race sauvage. Mais ceux qui les croyaient tels leur parlaient néanmoins avec la plus entière bonne foi, comme si ces terribles eussent dû avoir la même. Un sadique a beau se croire avec un assassin, son âme pure, à lui sadique, n'est pas changée pour cela et il reste stupéfait devant le mensonge de ces gens, pas assassins du tout, mais qui désirent gagner facilement une « thune » et dont le père, ou la mère, ou la soeur ressuscitent et remeurent tour à tour en paroles, parce qu'ils se coupent dans la conversation qu'ils ont avec le client à qui ils cherchent à plaire. Le client est stupéfié dans sa naïveté, car dans son arbitraire conception du gigolo, ravi des nombreux assassinats dont il le croit coupable, il s'effare d'une contradiction et d'un mensonge qu'il surprend dans ses paroles. Tous semblaient le connaître et baron de Charlus s'arrêtait longuement à chacun, leur parlant ce qu'il croyait leur langage, à la fois par une affectation prétentieuse de couleur locale et aussi par un plaisir sadique de se mêler à une vie crapuleuse. « Toi, c'est dégoûtant, je t'ai aperçu devant l'Olympia avec deux cartons. C'est pour te faire donner du pèze. Voilà comme tu me trompes. » Heureusement pour celui à qui s'adressait cette phrase il n'eut pas le temps de déclarer qu'il n'eût jamais accepté de « pèze » d'une femme, ce qui eût diminué l'excitation de baron de Charlus, et réserva sa protestation pour la fin de la phrase en disant : « Oh non ! je ne vous trompe pas. » Cette parole causa à baron de Charlus un vif plaisir et comme, malgré lui, le genre d'intelligence qui était naturellement le sien ressortait d'à travers celui qu'il affectait, il se retourna vers Jupien : « Il est gentil de me dire ça. Et comme il le dit bien. On dirait que c'est la vérité. Après tout, qu'est-ce que ça fait que ce soit la vérité ou non puisqu'il arrive à me le faire croire. Quels jolis petits yeux il a. Tiens, je vais te donner deux gros baisers pour la peine, mon petit gars. Tu penseras à moi dans les tranchées. C'est pas trop dur ? – Ah ! dame, il y a des jours, quand une grenade passe à côté de vous. » Et le jeune homme se mit à faire des imitations du bruit de la grenade, des avions, etc. « Mais il faut bien faire comme les autres, et vous pouvez être sûr et certain qu'on ira jusqu'au bout. – Jusqu'au bout ! Si on savait seulement jusqu'à quel bout, dit mélancoliquement le baron qui était « pessimiste ». – Vous n'avez pas vu que Sarah Bernhardt l'a dit sur les journaux : La France, elle ira jusqu'au bout. Les Français, ils se feront tuer plutôt jusqu'au dernier. – Je ne doute pas un seul instant que les Français ne se fassent bravement tuer jusqu'au dernier », dit baron de Charlus comme si c'était la chose la plus simple du monde et bien qu'il n'eût lui-même l'intention de faire quoi que ce soit, mais pensant par là corriger l'impression de pacifisme qu'il donnait quand il s'oubliait. « Je n'en doute pas, mais je me demande jusqu'à quel point Madame Sarah Bernhardt est qualifiée pour parler au nom de la France. Mais, ajouta-t-il, il me semble que je ne connais pas ce charmant, ce délicieux jeune homme », en avisant un autre qu'il ne reconnaissait pas ou qu'il n'avait peut-être jamais vu. Il le salua comme il eût salué un prince à Versailles, et pour profiter de l'occasion d'avoir en supplément un plaisir gratis – comme quand j'étais petit et que la mère du narrateur venait de faire une commande chez Boissier ou chez Gouache, je prenais, sur l'offre d'une des dames du comptoir, un bonbon extrait d'un des vases de verre entre lesquels elle trônait – prenant la main du charmant jeune homme et la lui serrant longuement, à la prussienne, le fixant des yeux en souriant pendant le temps interminable que mettaient autrefois à nous faire poser les photographes quand la lumière était mauvaise : « Monsieur, je suis charmé, je suis enchanté de faire votre connaissance. » « Il a de jolis cheveux », dit-il en se tournant vers Jupien. Il s'approcha ensuite de Maurice pour lui remettre ses cinquante francs, mais le prenant d'abord par la taille : « Tu ne m'avais jamais dit que tu avais suriné une pipelette de Belleville. » Et baron de Charlus râlait d'extase et approchait sa figure de celle de Maurice. « Oh ! Monsieur le Baron, dit en protestant le gigolo, qu'on avait oublié de prévenir, pouvez-vous croire une chose pareille ? » Soit qu'en effet le fait fût faux, ou que, vrai, son auteur le trouvât pourtant abominable et de ceux qu'il convient de nier : « Moi toucher à mon semblable ? à un Boche, oui, parce que c'est la guerre, mais à une femme, et à une vieille femme encore ! » Cette déclaration de principes vertueux fit l'effet d'une douche d'eau froide sur le baron qui s'éloigna sèchement de Maurice, en lui remettant toutefois son argent mais de l'air dépité de quelqu'un qu'on a floué, qui ne veut pas faire d'histoires, qui paye, mais n'est pas content.
+
+La mauvaise impression du baron fut d'ailleurs accrue par la façon dont le bénéficiaire le remercia, car il dit : « Je vais envoyer ça à mes vieux et j'en garderai aussi un peu pour mon frangin qui est sur le front. » Ces sentiments touchants désappointèrent presque autant baron de Charlus que l'agaçait l'expression d'une paysannerie un peu conventionnelle. Jupien parfois les prévenait qu'« il fallait être plus pervers ». Alors l'un d'eux, de l'air de confesser quelque chose de satanique, aventurait : « Dites donc, baron, vous n'allez pas me croire, mais quand j'étais gosse, je regardais par le trou de la serrure mes parents s'embrasser. C'est vicieux, pas ? Vous avez l'air de croire que c'est un bourrage de crâne, mais non, je vous jure, tel que je vous le dis. » Et baron de Charlus était à la fois désespéré et exaspéré par cet effort factice vers la perversité qui n'aboutissait qu'à révéler tant de sottise et tant d'innocence. Et même le voleur, l'assassin le plus déterminés ne l'eussent pas contenté, car ils ne parlent pas de leur crime ; et il y a, d'ailleurs, chez le sadique – si bon qu'il puisse être, bien plus, d'autant meilleur qu'il est – une soif de mal que les méchants agissant dans d'autres buts ne peuvent contenter.

@@ -1,0 +1,1020 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ],
+    "notes": "Swann acquaintance with a nearby estate"
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ],
+    "notes": "Aristocratic social connection mentioned in Swann's prestige world"
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ],
+    "notes": "Narrator's uncle Adolphe"
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ],
+    "notes": "Parisian salon hostess"
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ],
+    "notes": "Guermantes relation obsessed with rank and kinship display"
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ],
+    "notes": "Guermantes aristocrat referenced in the Laumes social orbit"
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ],
+    "notes": "Aristocratic hostess in the Guermantes orbit"
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ],
+    "notes": "Swann social acquaintance considered among suspects"
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ],
+    "notes": "Swann associate/servant mentioned among suspects"
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ],
+    "notes": "Salon attendee who comments after the sonata"
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ],
+    "notes": "Dream-figure standing in for Forcheville in Swann's dream"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ],
+    "notes": "Gilberte Swann, first encountered at the Champs-Elysees"
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ],
+    "notes": "Narrator's family servant"
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ],
+    "notes": "Celebrated actress"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": "Writer admired by the narrator"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois, diplomat and family dinner guest"
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ],
+    "notes": "Narrator's grandmother"
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ],
+    "notes": "Aristocratic hotel guest at Balbec"
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ],
+    "notes": "Headwaiter or maître d'hôtel at the Grand-Hôtel in Balbec"
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ],
+    "notes": "Daughter of M. de Stermaria"
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ],
+    "notes": "Male member of the Cambremer family in the Balbec hotel circle"
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ],
+    "notes": "Aristocratic visitor in the Balbec social scene"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ],
+    "notes": "Narrator's father"
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ],
+    "notes": "Young aristocrat and nephew of Mme de Villeparisis"
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ],
+    "notes": "Father of Saint-Loup"
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ],
+    "notes": "Friend/acquaintance of the narrator; socially performative and often ironic"
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ],
+    "notes": "Guermantes title in the family sequence discussed with Saint-Loup"
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ],
+    "notes": "Bloch's father as remembered and socially evaluated in the narrator's reflections"
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ],
+    "notes": "Grand-Hotel director observed by the narrator"
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ],
+    "notes": "Figure invoked in the political talk reported by Aimé"
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ],
+    "notes": "The sad-looking blonde seen at Rivebelle who begins to crystallize in the narrator's desire"
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ],
+    "notes": "Oriane de Guermantes; now appearing as the duchesse de Guermantes"
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ],
+    "notes": "Neighbor and ally of Françoise in the new Guermantes setting"
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ],
+    "notes": "Princesse de Guermantes-Bavière; hostess of the evening in the opening of v4-p2"
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ],
+    "notes": "Aristocratic young man encountered outside the princesse de Guermantes salon"
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ],
+    "notes": "Diplomat/ambassador figure appearing in the princesse de Guermantes salon"
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ],
+    "notes": "Wife of M. de Vaugoubert"
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ],
+    "notes": "Albertine Simonet; narrator's companion in La Prisonnière"
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ],
+    "notes": "Andrée, one of the Balbec girls and Albertine's friend"
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ],
+    "notes": "Albertine's aunt"
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ],
+    "notes": "Charles Morel, violinist associated with Charlus and the Verdurins"
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ],
+    "notes": "Painter and social/aesthetic authority referenced by Albertine."
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ],
+    "notes": "Prince de Leon, beau-frere de Saint-Loup in the duchesse de Guermantes anecdotes."
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ],
+    "notes": "Aristocratic figure in the duchesse de Guermantes reminiscences."
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ],
+    "notes": "Social rival figure in the Jockey Club episode around the Guermantes."
+  }
+}
+
+### Prior local context (optional)
+
+« On peut dire ce qu'on veut, c'est admirable, cela a de la ligne, du caractère, c'est intelligent, personne n'a jamais dit les vers comme ça », dit duchesse de Guermantes en parlant de Rachel, craignant que Gilberte ne la débinât. Celle-ci s'éloigna vers un autre groupe pour éviter un conflit avec sa tante, laquelle, d'ailleurs, ne dit sur Rachel que des choses fort ordinaires. Mais puisque les meilleurs écrivains cessent souvent aux approches de la vieillesse, ou après un excès de production, d'avoir du talent, on peut bien excuser les femmes du monde de cesser, à partir d'un certain moment, d'avoir de l'esprit. Swann ne retrouvait plus dans l'esprit dur de la duchesse de Guermantes le « fondu » de la jeune princesse des Laumes. Sur le tard, fatiguée au moindre effort, duchesse de Guermantes disait énormément de bêtises. Certes, à tout moment et bien des fois au cours même de cette matinée, elle redevenait la femme que j'avais connue et parlait des choses mondaines avec esprit. Mais à côté de cela, bien souvent il arrivait que cette parole pétillante sous un beau regard, et qui pendant tant d'années avait tenu sous son sceptre spirituel les hommes les plus éminents de Paris, scintillât encore mais, pour ainsi dire, à vide. Quand le moment de placer un mot venait, elle s'interrompait pendant le même nombre de secondes qu'autrefois, elle avait l'air d'hésiter, de produire, mais le mot qu'elle lançait alors ne valait rien. Combien peu de personnes, d'ailleurs, s'en apercevaient, la continuité du procédé leur faisant croire à la survivance de l'esprit, comme il arrive à ces gens qui, superstitieusement attachés à une marque de pâtisserie, continuent à faire venir leurs petits fours d'une même maison sans s'apercevoir qu'ils sont devenus détestables. Déjà, pendant la guerre, duchesse de Guermantes avait donné des marques de cet affaiblissement. Si quelqu'un disait le mot culture, elle l'arrêtait, souriait, allumait son beau regard, et lançait : « la KKKKultur », ce qui faisait rire les amis, qui croyaient retrouver là l'esprit des Guermantes. Et certes, c'était le même moule, la même intonation, le même sourire qui avaient jadis ravi Bergotte, lequel, du reste, s'il avait vécu, eût aussi gardé ses coupes de phrase, ses interjections, ses points suspensifs, ses épithètes, mais pour ne rien dire. Mais les nouveaux venus s'étonnaient et parfois disaient, s'ils n'étaient pas tombés un jour où elle était drôle et en pleine possession de ses moyens : « Comme elle est bête ! » La duchesse, d'ailleurs, s'arrangeait pour canaliser son encanaillement et ne pas le laisser s'étendre à celles des personnes de sa famille desquelles elle tirait une gloire aristocratique. Si au théâtre elle avait, pour remplir son rôle de protectrice des arts, invité un ministre ou un le peintre et que celui-ci ou celui-là lui demandât naïvement si sa belle-soeur ou son mari n'étaient pas dans la salle, duchesse de Guermantes, timorée, avec les apparences superbes de l'audace, répondait insolemment : « Je n'en sais rien. Dès que je sors de chez moi, je ne sais plus ce que fait ma famille. Pour tous les hommes politiques, pour tous les artistes, je suis veuve. » Ainsi s'évitait-elle que le parvenu trop empressé s'attirât des rebuffades – et lui attirât à elle-même des réprimandes – de M. de Marsantes et de duc de Guermantes.
+
+### Passage
+
+Je dis à duchesse de Guermantes que j'avais rencontré baron de Charlus. Elle le trouvait encore plus « baissé » qu'il n'était, les gens du monde faisant des différences, en ce qui concerne l'intelligence, non seulement entre divers gens du monde chez lesquels elle est à peu près semblable, mais même chez une même personne à différents moments de sa vie. Puis elle ajouta : « Il a toujours été le portrait de ma belle-mère ; c'est encore plus frappant maintenant. » Cette ressemblance n'avait rien d'extraordinaire. On sait, en effet, que certaines femmes se projettent en quelque sorte elles-mêmes en un autre être avec la plus grande exactitude, la seule erreur est dans le sexe. Erreur dont on ne peut pas dire : felix culpa, car le sexe réagit sur la personnalité, et chez un homme le féminisme devient afféterie, la réserve susceptibilité, etc. N'importe, dans la figure, fût-elle barbue, dans les joues, même congestionnées sous les favoris, il y a certaines lignes superposables à quelque portrait maternel. Il n'est guère de vieux baron de Charlus qui ne soit une ruine où l'on ne reconnaisse avec étonnement sous tous les empâtements de la graisse et de la poudre de riz quelques fragments d'une belle femme en sa jeunesse éternelle.
+
+« Je ne peux pas vous dire comme ça me fait plaisir de vous voir, reprit duchesse de Guermantes. Mon Dieu, quand est-ce que je vous avais vu la dernière fois... – En visite chez Mme d'Agrigente où je vous trouvais souvent. – Naturellement, j'y allais souvent, mon pauvre petit, comme duc de Guermantes l'aimait à ce moment-là. C'est toujours chez sa bonne amie du moment qu'on me rencontrait le plus parce qu'il me disait : « Ne manquez pas d'aller lui faire une visite. » Au fond, cela me paraissait un peu inconvenant cette espèce de « visite de digestion » qu'il m'envoyait faire une fois qu'il avait consommé. J'avais fini assez vite par m'y habituer, mais ce qu'il y avait de plus ennuyeux c'est que j'étais obligée de garder des relations après qu'il avait rompu les siennes. Ça me faisait toujours penser au vers de Victor Hugo : « Emporte le bonheur et laisse-moi l'ennui. » Comme dans la poésie j'entrais tout de même avec un sourire, mais vraiment ce n'était pas juste, il aurait dû me laisser, à l'égard de ses maîtresses, le droit d'être volage, car, en accumulant tous ses laissés pour compte, j'avais fini par ne plus avoir une après-midi à moi. D'ailleurs, ce temps me semble doux relativement au présent. Mon Dieu, qu'il se soit remis à me tromper, ça ne pourrait que me flatter parce que ça me rajeunit. Mais je préférais son ancienne manière. Dame, il y avait trop longtemps qu'il ne m'avait trompée, il ne se rappelait plus la manière de s'y prendre ! Ah ! mais nous ne sommes pas mal ensemble tout de même, nous nous parlons, nous nous aimons même assez », me dit duchesse de Guermantes, craignant que je n'eusse compris qu'ils étaient tout à fait séparés, et comme on dit de quelqu'un qui est très malade : « Mais il parle encore très bien, je lui ai fait la lecture ce matin pendant une heure », elle ajouta : « Je vais lui dire que vous êtes là, il voudra vous voir. » Et elle alla près du duc qui, assis sur un canapé auprès d'une dame, causait avec elle. Mais en voyant sa femme venir lui parler, il prit un air si furieux qu'elle ne put que se retirer. « Il est occupé, je ne sais pas ce qu'il fait, nous verrons tout à l'heure », me dit duchesse de Guermantes préférant me laisser me débrouiller.
+
+Bloch s'étant approché de nous et ayant demandé, de la part de son Américaine, qui était une jeune duchesse qui était là, je répondis que c'était la nièce de M. de marquis de Bréauté, nom sur lequel Bloch, à qui il ne disait rien, demanda des explications. « Ah ! marquis de Bréauté, s'écria duchesse de Guermantes, en s'adressant à moi, vous vous rappelez ? Mon Dieu, que tout cela est loin ! » Puis, se tournant vers Bloch : « Hé bien, c'était un snob. C'étaient des gens qui habitaient près de chez ma belle-mère. Cela ne vous intéresserait pas, c'est amusant pour ce petit, ajouta-t-elle en me désignant, qui a connu tout ça autrefois en même temps que moi », ajouta duchesse de Guermantes me montrant par ces paroles, de bien des manières, le long temps qui s'était écoulé. Les amitiés, les opinions de duchesse de Guermantes s'étaient tant renouvelées depuis ce moment-là qu'elle considérait son charmant Babal comme un snob. D'autre part, il ne se trouvait pas seulement reculé dans le temps, mais, chose dont je ne m'étais pas rendu compte quand, à mes débuts dans le monde, je l'avais cru une des notabilités essentielles de Paris, qui resterait toujours associé à son histoire mondaine comme celui de Colbert à celle du règne de Louis XIV, il avait lui aussi sa marque provinciale, il était un voisin de campagne de la vieille duchesse, avec lequel la princesse des Laumes s'était liée comme tel. Pourtant ce marquis de Bréauté, dépouillé de son esprit, relégué dans ses années si lointaines qu'il datait, ce qui prouvait qu'il avait été entièrement oublié depuis par duchesse de Guermantes, et dans les environs de Guermantes, était entre duchesse de Guermantes et moi, ce que je n'eusse jamais cru le premier soir à l'Opéra-Comique quand il m'avait paru un Dieu nautique habitant son antre marin, un lien, parce qu'elle se rappelait que je l'avais connu, donc que j'étais son ami à elle, sinon sorti du même monde qu'elle, du moins vivant dans le même monde qu'elle depuis bien plus longtemps que bien des personnes présentes, qu'elle se le rappelait, et assez imparfaitement cependant pour avoir oublié certains détails qui m'avaient à moi semblé alors essentiels, que je n'allais pas à Guermantes et n'étais qu'un petit bourgeois de Combray, au temps où elle venait à la messe de mariage de Mlle Percepied, qu'elle ne m'invitait pas, malgré toutes les prières de Robert de Saint-Loup, dans l'année qui suivit son apparition à l'Opéra-Comique. À moi cela me semblait capital, car c'est justement à ce moment-là que la vie de la duchesse de Guermantes m'apparaissait comme un Paradis où je n'entrerais pas, mais, pour elle, elle lui apparaissait comme sa même vie médiocre de toujours, et puisque j'avais, à partir d'un certain moment, dîné souvent chez elle, que j'avais d'ailleurs été, avant cela même, un ami de sa tante et de son neveu, elle ne savait plus exactement à quelle époque notre intimité avait commencé et ne se rendait pas compte du formidable anachronisme qu'elle faisait en faisant commencer cette amitié quelques années trop tôt. Car cela faisait que j'eusse connu la duchesse de Guermantes du nom de Guermantes impossible à connaître, que j'eusse été reçu dans le nom aux syllabes dorées, dans le faubourg Saint-Germain, alors que tout simplement j'étais allé dîner chez une dame qui n'était déjà plus pour moi qu'une dame comme une autre, et qui m'avait fait quelquefois inviter, non à descendre dans le royaume sous-marin des néréides mais à passer la soirée dans la baignoire de sa cousine. « Si vous voulez des détails sur marquis de Bréauté, qui n'en valait guère la peine, ajouta-t-elle en s'adressant à Bloch, demandez-en à ce petit qui le vaut cent fois : il a dîné cinquante fois avec lui chez moi. N'est-ce pas que c'est chez moi que vous l'avez connu ? En tout cas, c'est chez moi que vous avez connu Swann. » Et j'étais aussi surpris qu'elle pût croire que j'avais peut-être connu M. de marquis de Bréauté ailleurs que chez elle, donc que j'allasse dans ce monde-là avant de la connaître, que de voir qu'elle croyait que c'était chez elle que j'avais connu Swann. Moins mensongèrement que Gilberte quand elle disait de marquis de Bréauté : « C'est un vieux voisin de campagne, j'ai plaisir à parler avec lui de Tansonville », alors qu'autrefois, à Tansonville, il ne les fréquentait pas, j'aurais pu dire : « C'est un voisin de campagne qui venait souvent nous voir le soir », de Swann qui, en effet, me rappelait tout autre chose que les Guermantes. « Je ne saurais pas vous dire ! reprit-elle. C'était un homme qui avait tout dit quand il parlait d'Altesses. Il avait un lot d'histoires assez drôles sur des gens de Guermantes, sur ma belle-mère, sur Mme de Varambon avant qu'elle fût auprès de la princesse de Parme. Mais qui sait aujourd'hui qui était Mme de Varambon ? Ce petit-là, oui, il a connu tout ça, mais tout ça c'est fini, ce sont des gens dont le nom même n'existe plus et qui, d'ailleurs, ne mériteraient pas de survivre. » Et je me rendais compte, malgré cette chose une que semble le monde, et où, en effet, les rapports sociaux arrivent à leur maximum de concentration et où tout communique, comme il y reste des provinces, ou du moins comme le Temps en fait qui changent de nom, qui ne sont plus compréhensibles pour ceux qui y arrivent seulement quand la configuration a changé. « C'était une bonne dame qui disait des choses d'une bêtise inouïe », reprit en parlant de Mme de Varambon duchesse de Guermantes qui, insensible à cette poésie de l'incompréhensible, qui est un effet du temps, dégageait en toute chose l'élément drôle, assimilable à la littérature genre Meilhac, à l'esprit des Guermantes. « À un moment, elle avait la manie d'avaler tout le temps des pastilles qu'on donnait dans ce temps-là contre la toux et qui s'appelaient – ajouta-t-elle en riant elle-même d'un nom si spécial, si connu autrefois, si inconnu aujourd'hui des gens à qui elle parlait – des pastilles Géraudel. « Madame de Varambon, lui disait ma belle-mère, en avalant tout le temps comme cela des pastilles Géraudel, vous vous ferez mal à l'estomac. » « Mais Madame la Duchesse, répondait Mme de Varambon, comment voulez-vous que cela fasse mal à l'estomac puisque cela va dans les bronches ? » Et puis c'est elle qui disait : « La duchesse a une vache si belle qu'on la prend toujours pour étalon. » Et duchesse de Guermantes eût volontiers continué à raconter des histoires de Mme de Varambon, dont nous connaissions des centaines, mais nous sentions bien que ce nom n'éveillait dans la mémoire ignorante de Bloch aucune des images qui se levaient pour nous aussitôt qu'il était question de Mme de Varambon, de M. de marquis de Bréauté, du prince d'Agrigente et, à cause de cela même, excitait peut-être chez lui un prestige que je savais exagéré mais que je trouvais compréhensible, non pas parce que je l'avais moi-même subi, nos propres erreurs et nos propres ridicules ayant rarement pour effet de nous rendre, même quand nous les avons percés à jour, plus indulgents à ceux des autres.
+
+Le passé s'était tellement transformé dans l'esprit de duchesse de Guermantes, ou bien les démarcations qui existaient dans le mien avaient été toujours si absentes du sien, que ce qui avait été événement pour moi avait passé inaperçu d'elle, qu'elle pouvait supposer non seulement que j'avais connu Swann chez elle et M. de marquis de Bréauté ailleurs, me faisant ainsi un passé d'homme du monde qu'elle reculait même trop loin. Car cette notion du temps écoulé, que je venais d'acquérir, duchesse de Guermantes l'avait aussi, et même, avec une illusion inverse de celle qui avait été la mienne de le croire plus court qu'il n'était, elle, au contraire, exagérait, elle le faisait remonter trop haut notamment, sans tenir compte de cette infinie ligne de démarcation entre le moment où elle était pour moi un nom – puis l'objet de mon amour – et le moment où elle n'avait été pour moi qu'une femme du monde quelconque. Or, je n'étais allé chez elle que dans cette seconde période où elle était pour moi une autre personne. Mais à ses propres yeux ces différences échappaient, et elle n'eût pas trouvé plus singulier que j'eusse été chez elle deux ans plus tôt, ne sachant pas qu'elle était alors pour moi une autre personne, sa personne n'offrant pas pour elle-même, comme pour moi, de discontinuité.
+
+Je dis à la duchesse de Guermantes, en lui racontant que Bloch avait cru que c'était l'ancienne princesse de Guermantes qui recevait : « Cela me rappelle la première soirée où je suis allé chez la princesse de Guermantes, où je croyais ne pas être invité et qu'on allait me mettre à la porte, et où vous aviez une robe toute rouge et des souliers rouges. – Mon Dieu, que c'est vieux, tout cela », me répondit duchesse de Guermantes, accentuant pour moi l'impression du temps écoulé. Elle regardait dans le lointain avec mélancolie et pourtant insista particulièrement sur la robe rouge. Je lui demandai de me la décrire, ce qu'elle fit complaisamment. « Maintenant cela ne se porterait plus du tout. C'étaient des robes qui se portaient dans ce temps-là. – Mais est-ce que ce n'était pas joli ? » lui dis-je. Elle avait toujours peur de donner un avantage contre elle par ses paroles, de dire quelque chose qui la diminuât. « Mais si, moi je trouvais cela très joli. On n'en porte pas parce que cela ne se fait plus en ce moment. Mais cela se reportera, toutes les modes reviennent, en robes, en musique, en peinture », ajouta-t-elle avec force, car elle croyait une certaine originalité à cette philosophie. Cependant la tristesse de vieillir lui rendit sa lassitude qu'un sourire lui disputa : « Vous êtes sûr que c'étaient des souliers rouges ? Je croyais que c'étaient des souliers d'or. » J'assurai que cela m'était infiniment présent à l'esprit, sans dire la circonstance qui me permettait de l'affirmer. « Vous êtes gentil de vous rappeler cela », me dit-elle d'un air tendre, car les femmes appellent gentillesse se souvenir de leur beauté comme les artistes admirer leurs oeuvres. D'ailleurs, si lointain que soit le passé, quand on est une femme de tête comme duchesse de Guermantes, il peut ne pas être oublié. « Vous rappelez-vous, me dit-elle en remerciement de mon souvenir pour sa robe et ses souliers, que nous vous avons ramené, duc de Guermantes et moi ? Vous aviez une jeune fille qui devait venir vous voir après minuit. duc de Guermantes riait de tout son coeur en pensant qu'on vous faisait des visites à cette heure-là. » Je me rappelais, en effet, que ce soir-là Albertine était venue me voir après la soirée de la princesse de Guermantes, je me le rappelais aussi bien que duchesse de Guermantes, moi à qui Albertine était maintenant aussi indifférente qu'elle l'eût été à duchesse de Guermantes, si duchesse de Guermantes eût su que la jeune fille à cause de qui je n'avais pas pu entrer chez eux était Albertine. C'est que longtemps après que les pauvres morts sont sortis de nos coeurs, leur poussière indifférente continue à être mêlée, à servir d'alliage, aux circonstances du passé. Et, sans plus les aimer, il arrive qu'en évoquant une chambre, une allée, un chemin, où ils furent à une certaine heure, nous sommes obligés, pour que la place qu'ils occupaient soit remplie, de faire allusion à eux, même sans les regretter, même sans les nommer, même sans permettre qu'on les identifie. (duchesse de Guermantes n'identifiait guère la jeune fille qui devait venir ce soir-là, n'avait jamais su son nom et n'en parlait qu'à cause de la bizarrerie de l'heure et de la circonstance.) Telles sont les formes dernières et peu enviables de la survivance.

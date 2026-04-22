@@ -1,0 +1,1020 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ],
+    "notes": "Swann acquaintance with a nearby estate"
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ],
+    "notes": "Aristocratic social connection mentioned in Swann's prestige world"
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ],
+    "notes": "Narrator's uncle Adolphe"
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ],
+    "notes": "Parisian salon hostess"
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ],
+    "notes": "Guermantes relation obsessed with rank and kinship display"
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ],
+    "notes": "Guermantes aristocrat referenced in the Laumes social orbit"
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ],
+    "notes": "Aristocratic hostess in the Guermantes orbit"
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ],
+    "notes": "Swann social acquaintance considered among suspects"
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ],
+    "notes": "Swann associate/servant mentioned among suspects"
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ],
+    "notes": "Salon attendee who comments after the sonata"
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ],
+    "notes": "Dream-figure standing in for Forcheville in Swann's dream"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ],
+    "notes": "Gilberte Swann, first encountered at the Champs-Elysees"
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ],
+    "notes": "Narrator's family servant"
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ],
+    "notes": "Celebrated actress"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": "Writer admired by the narrator"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois, diplomat and family dinner guest"
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ],
+    "notes": "Narrator's grandmother"
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ],
+    "notes": "Aristocratic hotel guest at Balbec"
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ],
+    "notes": "Headwaiter or maître d'hôtel at the Grand-Hôtel in Balbec"
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ],
+    "notes": "Daughter of M. de Stermaria"
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ],
+    "notes": "Male member of the Cambremer family in the Balbec hotel circle"
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ],
+    "notes": "Aristocratic visitor in the Balbec social scene"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ],
+    "notes": "Narrator's father"
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ],
+    "notes": "Young aristocrat and nephew of Mme de Villeparisis"
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ],
+    "notes": "Father of Saint-Loup"
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ],
+    "notes": "Friend/acquaintance of the narrator; socially performative and often ironic"
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ],
+    "notes": "Guermantes title in the family sequence discussed with Saint-Loup"
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ],
+    "notes": "Bloch's father as remembered and socially evaluated in the narrator's reflections"
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ],
+    "notes": "Grand-Hotel director observed by the narrator"
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ],
+    "notes": "Figure invoked in the political talk reported by Aimé"
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ],
+    "notes": "The sad-looking blonde seen at Rivebelle who begins to crystallize in the narrator's desire"
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ],
+    "notes": "Oriane de Guermantes; now appearing as the duchesse de Guermantes"
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ],
+    "notes": "Neighbor and ally of Françoise in the new Guermantes setting"
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ],
+    "notes": "Princesse de Guermantes-Bavière; hostess of the evening in the opening of v4-p2"
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ],
+    "notes": "Aristocratic young man encountered outside the princesse de Guermantes salon"
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ],
+    "notes": "Diplomat/ambassador figure appearing in the princesse de Guermantes salon"
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ],
+    "notes": "Wife of M. de Vaugoubert"
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ],
+    "notes": "Albertine Simonet; narrator's companion in La Prisonnière"
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ],
+    "notes": "Andrée, one of the Balbec girls and Albertine's friend"
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ],
+    "notes": "Albertine's aunt"
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ],
+    "notes": "Charles Morel, violinist associated with Charlus and the Verdurins"
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ],
+    "notes": "Painter and social/aesthetic authority referenced by Albertine."
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ],
+    "notes": "Prince de Leon, beau-frere de Saint-Loup in the duchesse de Guermantes anecdotes."
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ],
+    "notes": "Aristocratic figure in the duchesse de Guermantes reminiscences."
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ],
+    "notes": "Social rival figure in the Jockey Club episode around the Guermantes."
+  }
+}
+
+### Prior local context (optional)
+
+Pour cette fête-ci, les éléments impurs qui s'y conjuguaient me frappaient à un autre point de vue ; certes, j'étais aussi à même que personne de les dissocier, ayant appris à les connaître séparément, mais surtout il arrivait que les uns, ceux qui se rattachaient à Mlle M. Vinteuil et à son amie, me parlant de Combray me parlaient aussi d'Albertine, c'est-à-dire de Balbec, puisque c'est parce que j'avais vu jadis Mlle M. Vinteuil à Montjouvain et que j'avais appris l'intimité de son amie avec Albertine, que j'allais tout à l'heure, en rentrant chez moi, trouver, au lieu de la solitude, Albertine qui m'attendait, et que les autres, ceux qui concernaient Morel et baron de Charlus, en me parlant de Balbec où j'avais vu, sur le quai de Doncières, se nouer leurs relations, me parlaient de Combray et de ses deux côtés, car baron de Charlus c'était un de ces Guermantes, comtes de Combray, habitant Combray sans y avoir de logis, entre ciel et terre, comme Gilbert le Mauvais dans son vitrail ; enfin Morel était le fils de ce vieux valet de chambre qui m'avait fait connaître la dame en rose et permis, tant d'années après, de reconnaître en elle Odette.
+
+### Passage
+
+baron de Charlus recommença, au moment où, la musique finie, ses invités prirent congé de lui, la même erreur qu'à leur arrivée. Il ne leur demanda pas d'aller vers la Patronne, de l'associer, elle et son mari, à la reconnaissance qu'on lui témoignait. Ce fut un long défilé, mais un défilé devant le baron seul, et non même sans qu'il s'en rendît compte, car ainsi qu'il me le dit quelques minutes après : « La forme même de la manifestation artistique a revêtu ensuite un côté « sacristie » assez amusant. » On prolongeait même les remerciements par des propos différents qui permettaient de rester un instant de plus auprès du baron, pendant que ceux qui ne l'avaient pas encore félicité de la réussite de sa fête stagnaient, piétinaient. Plus d'un mari avait envie de s'en aller ; mais sa femme, snob bien que duchesse, protestait : « Non, non, quand nous devrions attendre une heure, il ne faut pas partir sans avoir remercié baron de Charlus qui s'est donné tant de peine. Il n'y a que lui qui puisse à l'heure actuelle donner des fêtes pareilles. » Personne n'eût plus pensé à se faire présenter à Mme Verdurin qu'à l'ouvreuse d'un théâtre où une grande dame a, pour un soir, amené toute l'aristocratie. « Étiez-vous hier chez Éliane de Montmorency, mon cousin ? demandait Mme de Mortemart, désireuse de prolonger l'entretien. – Eh bien, mon Dieu non ; j'aime bien Éliane, mais je ne comprends pas le sens de ses invitations. Je suis un peu bouché sans doute », ajoutait-il avec un large sourire épanoui, cependant que Mme de Mortemart sentait qu'elle allait avoir la primeur d'une de « baron de Charlus » comme elle en avait souvent d'« duchesse de Guermantes ». « J'ai bien reçu, il y a une quinzaine de jours, une carte de l'agréable Éliane. Au-dessus du nom contesté de Montmorency, il y avait cette aimable invitation : « Mon cousin, faites-moi la grâce de penser à moi vendredi prochain à neuf heures et demie. » Au-dessous étaient écrits ces deux mots moins gracieux : « Quatuor Tchèque. » Ils me semblèrent fort inintelligibles, sans plus de rapport, en tous cas, avec la phrase précédente que ces lettres au dos desquelles on voit que l'épistolier en avait commencé une autre par les mots : « Cher ami », la suite manquant, et n'a pas pris une autre feuille, soit distraction, soit économie de papier. J'aime bien Éliane : aussi je ne lui en voulus pas, je me contentai de ne pas tenir compte des mots étranges et déplacés de « quatuor tchèque », et comme je suis un homme d'ordre, je mis au-dessus de ma cheminée l'invitation de penser à Madame de Montmorency le vendredi à neuf heures et demie. Bien que connu pour ma nature obéissante, ponctuelle et douce, comme Buffon dit du chameau – et le rire s'épanouit plus largement autour de baron de Charlus, qui savait qu'au contraire on le tenait pour l'homme le plus difficile à vivre – je fus en retard de quelques minutes (le temps d'ôter mes vêtements de jour), et sans en avoir trop de remords, pensant que neuf heures et demie était mis pour dix, à dix heures tapant, dans une bonne robe de chambre, les pieds en d'épais chaussons, je me mis au coin de mon feu à penser à Éliane comme elle me l'avait demandé, et avec une intensité qui ne commença à décroître qu'à dix heures et demie. Dites-lui bien, je vous prie, que j'ai strictement obéi à son audacieuse requête. Je pense qu'elle sera contente. » Mme de Mortemart se pâma de rire, et baron de Charlus tout ensemble. « Et demain, ajouta-t-elle, sans penser qu'elle avait dépassé, et de beaucoup, le temps qu'on pouvait lui concéder, irez-vous chez nos cousins La Rochefoucauld ? – Oh ! cela, c'est impossible, ils m'ont convié comme vous, je le vois, à la chose la plus importante à concevoir et à réaliser et qui s'appelle, si j'en crois la carte d'invitation : « Thé dansant. » Je passais pour fort adroit quand j'étais jeune, mais je doute que j'eusse pu, sans manquer à la décence, prendre mon thé en dansant. Or je n'ai jamais aimé manger ni boire d'une façon malpropre. Vous me direz qu'aujourd'hui je n'ai plus à danser. Mais, même assis confortablement à boire du thé – de la qualité duquel, d'ailleurs, je me méfie puisqu'il s'intitule dansant – je craindrais que des invités plus jeunes que moi, et moins adroits peut-être que je n'étais à leur âge, renversassent sur mon habit leur tasse, ce qui interromprait pour moi le plaisir de vider la mienne. » Et baron de Charlus ne se contentait même pas d'omettre dans la conversation Mme Verdurin et de parler de sujets de toute sorte qu'il semblait avoir plaisir à développer et varier, pour le cruel plaisir, qui avait toujours été le sien, de faire rester indéfiniment sur leurs jambes à « faire la queue » les amis qui attendaient avec une épuisante patience que leur tour fût venu ; il faisait même des critiques sur toute la partie de la soirée dont Mme Verdurin était responsable : « Mais, à propos de tasse, qu'est-ce que c'est que ces étranges demi-bols, pareils à ceux où, quand j'étais jeune homme, on faisait venir des sorbets de chez Poiré Blanche ? Quelqu'un m'a dit tout à l'heure que c'était pour du « café glacé ». Mais en fait de café glacé, je n'ai vu ni café ni glace. Quelles curieuses petites choses à destination mal définie ! » Pour dire cela, baron de Charlus avait placé verticalement sur sa bouche ses mains gantées de blanc et arrondi prudemment son regard désignateur, comme s'il craignait d'être entendu et même vu des maîtres de maison. Mais ce n'était qu'une feinte, car dans quelques instants il allait dire les mêmes critiques à la Patronne elle-même, et un peu plus tard lui enjoindre insolemment. « Et surtout plus de tasses à café glacé ! Donnez-les à celle de vos amies dont vous désirez enlaidir la maison. Mais surtout qu'elle ne les mette pas dans le salon, car on pourrait s'oublier et croire qu'on s'est trompé de pièce puisque ce sont exactement des pots de chambre. – Mais mon cousin, disait l'invitée – en baissant elle aussi la voix et en regardant d'un air interrogateur baron de Charlus, non par crainte de fâcher Mme Verdurin, mais de le fâcher lui – peut-être qu'elle ne sait pas encore tout très bien... – On le lui apprendra. – Oh ! riait l'invitée, elle ne peut pas trouver un meilleur professeur ! Elle a de la chance ! Avec vous on est sûr qu'il n'y aura pas de fausse note. – En tous cas, il n'y en a pas eu dans la musique. – Oh ! c'était sublime. Ce sont de ces joies qu'on n'oublie pas. À propos de ce violoniste de génie, continuait-elle, croyant, dans sa naïveté, que baron de Charlus s'intéressait au violon « en soi », en connaissez-vous un que j'ai entendu l'autre jour jouer merveilleusement une sonate de Fauré, il s'appelle Frank... – Oui, c'est une horreur, répondait baron de Charlus, sans se soucier de la grossièreté d'un démenti qui impliquait que sa cousine n'avait aucun goût. En fait de violoniste je vous conseille de vous en tenir au mien. » Les regards allaient recommencer à s'échanger entre baron de Charlus et sa cousine, à la fois baissés et épieurs, car, rougissante et cherchant par son zèle à réparer sa gaffe, Mme de Mortemart allait proposer à baron de Charlus de donner une soirée pour faire entendre Morel. Or, pour elle, cette soirée n'avait pas le but de mettre en lumière un talent, but qu'elle allait pourtant prétendre être le sien, et qui était réellement celui de baron de Charlus. Elle ne voyait là qu'une occasion de donner une soirée particulièrement élégante, et déjà calculait qui elle inviterait et qui elle laisserait de côté. Ce triage, préoccupation dominante des gens qui donnent des fêtes (ceux-là mêmes que les journaux mondains ont le toupet ou la bêtise d'appeler « l'élite »), altère aussitôt le regard – et l'écriture – plus profondément que ne ferait la suggestion d'un hypnotiseur. Avant même d'avoir pensé à ce que Morel jouerait (préoccupation jugée secondaire et avec raison, car si même tout le monde, à cause de baron de Charlus, avait eu la convenance de se taire pendant la musique, personne, en revanche, n'aurait eu l'idée de l'écouter), Mme de Mortemart, ayant décidé que Mme de Valcourt ne serait pas des « élues », avait pris, par ce fait même, l'air de conjuration, de complot qui ravale si bas celles mêmes des femmes du monde qui pourraient le plus aisément se moquer du qu'en-dira-t-on. « N'y aurait-il pas moyen que je donne une soirée pour faire entendre votre ami ? » dit à voix basse Mme de Mortemart, qui, tout en s'adressant uniquement à baron de Charlus, ne put s'empêcher, comme fascinée, de jeter un regard sur Mme de Valcourt (l'exclue) afin de s'assurer que celle-ci était à une distance suffisante pour ne pas entendre. « Non, elle ne peut pas distinguer ce que je dis », conclut mentalement Mme de Mortemart, rassurée par son propre regard, lequel avait eu, en revanche, sur Mme de Valcourt, un effet tout différent de celui qu'il avait pour but : « Tiens, se dit Mme de Valcourt en voyant ce regard, Marie-Thérèse arrange avec baron de Charlus quelque chose dont je ne dois pas faire partie. » « Vous voulez dire mon protégé », rectifiait baron de Charlus, qui n'avait pas plus de pitié pour le savoir grammatical que pour les dons musicaux de sa cousine. Puis, sans tenir aucun compte des muettes prières de celle-ci, qui s'excusait elle-même en souriant : « Mais si..., dit-il d'une voix forte et capable d'être entendue de tout le salon, bien qu'il y ait toujours danger à ce genre d'exportation d'une personnalité fascinante dans un cadre qui lui fait forcément subir une déperdition de son pouvoir transcendantal et qui resterait en tous cas à approprier. » Madame de Mortemart se dit que le mezzo-voce, le pianissimo de sa question avaient été peine perdue, après le « gueuloir » par où avait passé la réponse. Elle se trompa. Mme de Valcourt n'entendit rien, pour la raison qu'elle ne comprit pas un seul mot. Ses inquiétudes diminuèrent, et se fussent rapidement éteintes, si Mme de Mortemart, craignant de se voir déjouée et craignant d'avoir à inviter Mme de Valcourt, avec qui elle était trop liée pour la laisser de côté si l'autre savait « avant », n'eût de nouveau levé les paupières dans la direction d'Édith, comme pour ne pas perdre de vue un danger menaçant, non sans les rabaisser vivement de façon à ne pas trop s'engager. Elle comptait, le lendemain de la fête, lui écrire une de ces lettres, complément du regard révélateur, lettres qu'on croit habiles et qui sont comme un aveu sans réticences et signé. Par exemple : « Chère Édith, je m'ennuie après vous, je ne vous attendais pas trop hier soir (comment m'aurait-elle attendue, se serait dit Édith, puisqu'elle ne m'avait pas invitée ?) car je sais que vous n'aimez pas extrêmement ce genre de réunions, qui vous ennuient plutôt. Nous n'en aurions pas moins été très honorés de vous avoir (jamais Mme de Mortemart n'employait ce terme « honoré », excepté dans les lettres où elle cherchait à donner à un mensonge une apparence de vérité). Vous savez que vous êtes toujours chez vous à la maison. Du reste, vous avez bien fait, car cela a été tout à fait raté, comme toutes les choses improvisées en deux heures, etc. » Mais déjà le nouveau regard furtif lancé sur elle avait fait comprendre à Édith tout ce que cachait le langage compliqué de baron de Charlus. Ce regard fut même si fort qu'après avoir frappé Mme de Valcourt, le secret évident et l'intention de cachotterie qu'il contenait rebondirent sur un jeune Péruvien que Mme de Mortemart comptait, au contraire, inviter. Mais, soupçonneux, voyant jusqu'à l'évidence les mystères qu'on faisait, sans prendre garde qu'ils n'étaient pas pour lui, il éprouva aussitôt, à l'endroit de Mme de Mortemart, une haine atroce et se jura de lui faire mille mauvaises farces, comme de faire envoyer cinquante cafés glacés chez elle le jour où elle ne recevrait pas, de faire insérer, celui où elle recevrait, une note dans les journaux disant que la fête était remise, et de publier des comptes rendus mensongers des suivantes, dans lesquels figureraient les noms connus de toutes de personnes que, pour des raisons variées, on ne tient pas à recevoir, même pas à se laisser présenter. Mme Mortemart avait tort de se préoccuper de Mme de Valcourt. baron de Charlus allait se charger de dénaturer, bien davantage que n'eût fait la présence de celle-ci, la fête projetée. « Mais mon cousin, dit-elle en réponse à la phrase du « cadre à approprier », dont son état momentané d'hyperesthésie lui avait permis de deviner le sens, nous vous éviterons toute peine. Je me charge très bien de demander à Gilbert de s'occuper de tout. – Non, surtout pas, d'autant plus qu'il ne sera pas invité. Rien ne se fera que par moi. Il s'agit avant tout d'exclure les personnes qui ont des oreilles pour ne pas entendre. » La cousine de baron de Charlus, qui avait compté sur l'attrait de Morel pour donner une soirée où elle pourrait dire qu'à la différence de tant de parentes, « elle avait eu baron de Charlus », reporta brusquement sa pensée, de ce prestige de baron de Charlus, sur tant de personnes avec lesquelles il allait la brouiller s'il se mêlait d'exclure et d'inviter. La pensée que le prince de Guermantes (à cause duquel, en partie, elle désirait exclure Mme de Valcourt, qu'il ne recevait pas) ne serait pas convié, l'effrayait. Ses yeux prirent une expression inquiète. « Est-ce que la lumière un peu trop vive vous fait mal ? » demanda baron de Charlus avec un sérieux apparent dont l'ironie foncière ne fut pas comprise. « Non, pas du tout, je songeais à la difficulté, non à cause de moi, naturellement, mais des miens, que cela pourrait créer si Gilbert apprend que j'ai eu une soirée sans l'inviter, lui qui n'a jamais quatre chats sans... – Mais justement, on commencera par supprimer les quatre chats qui ne pourraient que miauler ; je crois que le bruit des conversations vous a empêchée de comprendre qu'il s'agissait non de faire des politesses grâce à une soirée, mais de procéder aux rites habituels à toute véritable célébration. » Puis, jugeant, non que la personne suivante avait trop attendu, mais qu'il ne seyait pas d'exagérer les faveurs faites à celle qui avait eu en vue beaucoup moins Morel que ses propres « listes » d'invitation, baron de Charlus, comme un médecin qui arrête la consultation quand il juge être resté le temps suffisant, signifia à sa cousine de se retirer, non en lui disant au revoir, mais en se tournant vers la personne qui venait immédiatement après. « Bonsoir, Madame de Montesquiou, c'était merveilleux, n'est-ce pas ? Je n'ai pas vu Hélène, dites-lui que toute abstention générale, même la plus noble, autant dire la sienne, comporte des exceptions, si celles-ci sont éclatantes, comme c'était ce soir le cas. Se montrer rare, c'est bien, mais faire passer avant le rare, qui n'est que négatif, le précieux, c'est mieux encore. Pour votre soeur, dont je prise plus que personne la systématique absence là où ce qui l'attend ne la vaut pas, au contraire, à une manifestation mémorable comme celle-ci sa présence eût été une préséance et eût apporté à votre soeur, déjà si prestigieuse, un prestige supplémentaire. » Puis il passa à une troisième personne, M. d'Argencourt. Je fus très étonné de voir, là, aussi aimable et flagorneur avec baron de Charlus qu'il était sec avec lui autrefois, se faisant présenter Morel et lui disant qu'il espérait qu'il viendrait le voir, M. d'Argencourt, cet homme si terrible pour l'espèce d'hommes dont était baron de Charlus. Or il en vivait maintenant entouré. Ce n'était certes pas qu'il fût devenu à cet égard un des pareils de baron de Charlus. Mais, depuis quelque temps, il avait à peu près abandonné sa femme pour une jeune femme du monde qu'il adorait. Intelligente, elle lui faisait partager son goût pour les gens intelligents et souhaitait fort d'avoir baron de Charlus chez elle. Mais, surtout, M. d'Argencourt fort jaloux et un peu impuissant, sentant qu'il satisfaisait mal sa conquête et voulant à la fois la préserver et la distraire, ne le pouvait sans danger qu'en l'entourant d'hommes inoffensifs, à qui il faisait ainsi jouer le rôle de gardiens du sérail. Ceux-ci le trouvaient devenu très aimable et le déclaraient beaucoup plus intelligent qu'ils n'avaient cru, ce dont sa maîtresse et lui étaient ravis.
+
+Les autres invitées de baron de Charlus s'en allèrent assez rapidement. Beaucoup disaient : « Je ne voudrais pas aller à la sacristie (le petit salon où le baron, ayant Morel à côté de lui, recevait les félicitations, et qu'il appelait ainsi lui-même), il faudrait pourtant que baron de Charlus me voie pour qu'il sache que je suis restée jusqu'à la fin. » Aucune ne s'occupait de Mme Verdurin. Plusieurs feignirent de ne pas la reconnaître et de dire adieu par erreur à Mme Cottard, en me disant de la femme du docteur : « C'est bien Mme Verdurin, n'est-ce pas ? » Mme d'Arpajon me demanda, à portée des oreilles de la maîtresse de maison : « Est-ce qu'il y a seulement jamais eu un M. Verdurin ? » Les duchesses, ne trouvant rien des étrangetés auxquelles elles s'étaient attendues, dans ce lieu qu'elles avaient espéré plus différent de ce qu'elles connaissaient, se rattrapaient, faute de mieux, en étouffant des fous rires devant les tableaux d'Elstir ; pour le reste, qu'elles trouvaient plus conforme qu'elles n'avaient cru à ce qu'elles connaissaient déjà, elles en faisaient honneur à baron de Charlus en disant : « Comme baron de Charlus sait bien arranger les choses ! il monterait une féerie dans une remise ou dans un cabinet de toilette que ça n'en serait pas moins ravissant. » Les plus nobles étaient celles qui félicitaient avec le plus de ferveur baron de Charlus de la réussite d'une soirée dont certaines n'ignoraient pas le ressort secret, sans en être embarrassées d'ailleurs, cette société – par souvenir peut-être de certaines époques de l'histoire où leur famille était déjà arrivée à un degré identique d'impudeur pleinement consciente – poussant le mépris des scrupules presque aussi loin que le respect de l'étiquette. Plusieurs d'entre elles engagèrent sur place Morel pour des soirs où il viendrait jouer le septuor de M. Vinteuil, mais aucune n'eut même l'idée d'y convier Mme Verdurin. Celle-ci était au comble de la rage quand baron de Charlus qui, porté sur un nuage, ne pouvait s'en apercevoir, voulut, par décence, inviter la Patronne à partager sa joie. Et ce fut peut-être plutôt en se livrant à son goût de littérature qu'à un débordement d'orgueil que ce doctrinaire des fêtes artistes dit à Mme Verdurin : « Hé bien, êtes-vous contente ? Je pense qu'on le serait à moins ; vous voyez que, quand je me mêle de donner une fête, cela n'est pas réussi à moitié. Je ne sais pas si vos notions héraldiques vous permettent de mesurer exactement l'importance de la manifestation, le poids que j'ai soulevé, le volume d'air que j'ai déplacé pour vous. Vous avez eu la reine de Naples, le frère du roi de Bavière, les trois plus anciens pairs. Si M. Vinteuil est Mahomet, nous pouvons dire que nous avons déplacé pour lui les moins amovibles des montagnes. Pensez que, pour assister à votre fête, la reine de Naples est venue de Neuilly, ce qui est beaucoup plus difficile pour elle que de quitter les Deux-Siciles, dit-il avec une intention de rosserie, malgré son admiration pour la Reine. C'est un événement historique. Pensez qu'elle n'était peut-être jamais sortie depuis la prise de Gaète. Il est probable que, dans les dictionnaires, on mettra comme dates culminantes le jour de la prise de Gaète et celui de la soirée M. Verdurin. L'éventail qu'elle a posé pour mieux applaudir M. Vinteuil mérite de rester plus célèbre que celui que Mme de Metternich a brisé parce qu'on sifflait Wagner. – Elle l'a même oublié, son éventail », dit Mme Verdurin, momentanément apaisée par le souvenir de la sympathie que lui avait témoignée la Reine, et elle montra à baron de Charlus l'éventail sur un fauteuil. « Oh ! comme c'est émouvant ! s'écria baron de Charlus en s'approchant avec vénération de la relique. Il est d'autant plus touchant qu'il est affreux ; la petite violette est incroyable ! » Et des spasmes d'émotion et d'ironie le parcouraient alternativement. « Mon Dieu, je ne sais pas si vous ressentez ces choses-là comme moi. Swann serait simplement mort de convulsions s'il avait vu cela. Je sais bien qu'à quelque prix qu'il doive monter, j'achèterai cet éventail à la vente de la Reine. Car elle sera vendue, comme elle n'a pas le sou », ajouta-t-il, la cruelle médisance ne cessant jamais chez le baron de se mêler à la vénération la plus sincère, bien qu'elles partissent de deux natures opposées, mais réunies en lui. Elles pouvaient même se porter tour à tour sur un même fait. Car baron de Charlus qui, du fond de son bien-être d'homme riche, raillait la pauvreté de la Reine, était le même qui souvent exaltait cette pauvreté et qui, quand on parlait de la princesse Murat, reine des Deux-Siciles, répondait : « Je ne sais pas de qui vous voulez parler. Il n'y a qu'une seule reine de Naples, qui est sublime, celle-là, et n'a pas de voiture. Mais de son omnibus elle anéantit tous les équipages et on se mettrait à genoux dans la poussière en la voyant passer. » « Je le léguerai à un musée. – En attendant, il faudra le lui rapporter pour qu'elle n'ait pas à payer un fiacre pour le faire chercher. Le plus intelligent, étant donné l'intérêt historique d'un pareil objet, serait de voler cet éventail. Mais cela la gênerait – parce qu'il est probable qu'elle n'en possède pas d'autre ! ajouta-t-il en éclatant de rire. Enfin vous voyez que pour moi elle est venue. Et ce n'est pas le seul miracle que j'aie fait. Je ne crois pas que personne, à l'heure qu'il est, ait le pouvoir de déplacer les gens que j'ai fait venir. Du reste, il faut faire à chacun sa part, Morel et les autres musiciens ont joué comme des Dieux. Et, ma chère Patronne, ajouta-t-il avec condescendance, vous-même avez eu votre part de rôle dans cette fête. Votre nom n'en sera pas absent. L'histoire a retenu celui du page qui arma Jeanne d'Arc quand elle partit combattre ; en somme, vous avez servi de trait d'union, vous avez permis la fusion entre la musique de M. Vinteuil et son génial exécutant, vous avez eu l'intelligence de comprendre l'importance capitale de tout l'enchaînement de circonstances qui ferait bénéficier l'exécutant de tout le poids d'une personnalité considérable, et s'il ne s'agissait pas de moi, je dirais providentielle, à qui vous avez eu le bon esprit de demander d'assurer le prestige de la réunion, d'amener devant le violon de Morel les oreilles directement attachées aux langues les plus écoutées ; non, non, ce n'est pas rien. Il n'y a pas de rien dans une réalisation aussi complète. Tout y concourt. La Duras était merveilleuse. Enfin, tout ; c'est pour cela, conclut-il, comme il aimait à morigéner, que je me suis opposé à ce que vous invitiez de ces personnes-diviseurs qui, devant les êtres prépondérants que je vous amenais, eussent joué le rôle de virgules dans un chiffre, les autres réduites à n'être que de simples dixièmes. J'ai le sentiment très juste de ces choses-là. Vous comprenez, il faut éviter les gaffes quand nous donnons une fête qui doit être digne de M. Vinteuil, de son génial interprète, de vous, et, j'ose le dire, de moi. Vous auriez invité la Molé que tout était raté. C'était la petite goutte contraire, neutralisante, qui rend une potion sans vertu. L'électricité se serait éteinte, les petits fours ne seraient pas arrivés à temps, l'orangeade aurait donné la colique à tout le monde. C'était la personne à ne pas avoir. À son nom seul, comme dans une féerie, aucun son ne serait sorti des cuivres ; la flûte et le hautbois auraient été pris d'une extinction de voix subite. Morel lui-même, même s'il était parvenu à donner quelques sons, n'aurait plus été en mesure, et au lieu du septuor de M. Vinteuil, vous auriez eu sa parodie par Beckmesser, finissant au milieu des huées. Moi qui crois beaucoup à l'influence des personnes, j'ai très bien senti, dans l'épanouissement de certain largo, qui s'ouvrait jusqu'au fond comme une fleur, dans le surcroît de satisfaction du finale, qui n'était pas seulement allégro mais incomparablement allègre, que l'absence de la Molé inspirait les musiciens et dilatait de joie jusqu'aux instruments de musique eux-mêmes. D'ailleurs, le jour où on reçoit les souverains on n'invite pas sa concierge. » En l'appelant la Molé (comme il disait, d'ailleurs très sympathiquement, la Duras), baron de Charlus lui faisait justice. Car toutes ces femmes étaient des actrices du monde, et il est vrai aussi que, même en considérant ce point de vue, la comtesse Molé n'était pas égale à l'extraordinaire réputation d'intelligence qu'on lui faisait, et qui donnait à penser à ces acteurs ou à ces romanciers médiocres qui, à certaines époques, ont une situation de génies, soit à cause de la médiocrité de leurs confrères, parmi lesquels aucun artiste supérieur n'est capable de montrer ce qu'est le vrai talent, soit à cause de la médiocrité du public, qui, existât-il une individualité extraordinaire, serait incapable de la comprendre. Dans le cas de Mme Molé, il est préférable, sinon entièrement exact, de s'arrêter à cette première explication. Le monde étant le royaume du néant, il n'y a, entre les mérites des différentes femmes du monde, que des degrés insignifiants, que peuvent seulement follement majorer les rancunes ou l'imagination de baron de Charlus. Et certes, s'il parlait, comme il venait de le faire, dans ce langage qui était un ambigu précieux des choses de l'art et du monde, c'est parce que ses colères de vieille femme et sa culture de mondain ne fournissaient à l'éloquence véritable qui était la sienne que des thèmes insignifiants. Le monde des différences n'existant pas à la surface de la terre, parmi tous les pays que notre perception uniformise, à plus forte raison n'existe-t-il pas dans le « monde ». Existe-t-il, d'ailleurs, quelque part ? Le septuor de M. Vinteuil avait semblé me dire que oui. Mais où ? Comme baron de Charlus aimait aussi à répéter de l'un à l'autre, cherchant à brouiller, à diviser pour régner, il ajouta : « Vous avez, en ne l'invitant pas, enlevé à Mme Molé l'occasion de dire : « Je ne sais pas pourquoi cette Mme Verdurin m'a invitée. Je ne sais pas ce que c'est que ces gens-là, je ne les connais pas. » Elle a déjà dit l'an passé que vous la fatiguiez de vos avances. C'est une sotte, ne l'invitez plus. En somme, elle n'est pas une personne si extraordinaire. Elle peut bien venir chez vous sans faire d'histoires puisque j'y viens bien. En somme, conclut-il, il me semble que vous pouvez me remercier, car, tel que ça a marché, c'était parfait. La duchesse de Guermantes n'est pas venue, mais on ne sait pas, c'était peut-être mieux ainsi. Nous ne lui en voudrons pas et nous penserons tout de même à elle pour une autre fois ; d'ailleurs on ne peut pas ne pas se souvenir d'elle, ses yeux mêmes nous disent : ne m'oubliez pas, puisque ce sont deux myosotis (et je pensais à part moi combien il fallait que l'esprit des Guermantes – la décision d'aller ici et pas là – fût fort pour l'avoir emporté chez duchesse de Guermantes sur la crainte de baron de Charlus). Devant une réussite aussi complète, on est tenté, comme Bernardin de Saint-Pierre, de voir partout la main de la Providence. La duchesse de Duras était enchantée. Elle m'a même chargé de vous le dire », ajouta baron de Charlus en appuyant sur les mots, comme si Mme Verdurin devait considérer cela comme un honneur suffisant. Suffisant et même à peine croyable, car il trouva nécessaire, pour être cru, de dire : « Parfaitement », emporté par la démence de ceux que Jupiter veut perdre. « Elle a engagé Morel chez elle où on redonnera le même programme, et je pense même à demander une invitation pour M. Verdurin. » Cette politesse au mari seul était, sans que baron de Charlus en eût même l'idée, le plus sanglant outrage pour l'épouse, laquelle se croyant, à l'égard de l'exécutant, en vertu d'une sorte de décret de Moscou en vigueur dans le petit clan, le droit de lui interdire de jouer au dehors sans son autorisation expresse, était bien résolue à interdire sa participation à la soirée de Mme de Duras.
+
+Rien qu'en parlant avec cette faconde, baron de Charlus irritait Mme Verdurin, qui n'aimait pas qu'on fît bande à part dans leur petit clan. Que de fois, et déjà à la Raspelière, entendant le baron parler sans cesse à Morel au lieu de se contenter de tenir sa partie dans l'ensemble concertant du clan, s'était-elle écriée, en montrant le baron : « Quelle tapette il a ! Quelle tapette ! Ah ! pour une tapette, c'est une fameuse tapette ! » Mais cette fois c'était bien pis. Enivré de ses paroles, baron de Charlus ne comprenait pas qu'en raccourcissant le rôle de Mme Verdurin et en lui fixant d'étroites frontières, il déchaînait ce sentiment haineux qui n'était chez elle qu'une forme particulière, une forme sociale de la jalousie. Mme Verdurin aimait vraiment les habitués, les fidèles du petit clan, elle les voulait tout à leur Patronne. Faisant la part du feu, comme ces jaloux qui permettent qu'on les trompe, mais sous leur toit et même sous leurs yeux, c'est-à-dire qu'on ne les trompe pas, elle concédait aux hommes d'avoir une maîtresse, un amant, à condition que tout cela n'eût aucune conséquence sociale hors de chez elle, se nouât et se perpétuât à l'abri des mercredis. Tout éclat de rire furtif d'Odette auprès de Swann lui avait jadis rongé le coeur, depuis quelque temps tout aparté entre Morel et le baron ; elle trouvait à ses chagrins une seule consolation, qui était de défaire le bonheur des autres. Elle n'eût pu supporter longtemps celui du baron. Voici que cet imprudent précipitait la catastrophe en ayant l'air de restreindre la place de la Patronne dans son propre petit clan. Déjà elle voyait Morel allant dans le monde sans elle, sous l'égide du baron. Il n'y avait qu'un remède, donner à choisir à Morel entre le baron et elle, et, profitant de l'ascendant qu'elle avait pris sur Morel en faisant preuve à ses yeux d'une clairvoyance extraordinaire, grâce à des rapports qu'elle se faisait faire, à des mensonges qu'elle inventait, et qu'elle lui servait, les uns et les autres, comme corroborant ce qu'il était porté à croire lui-même, et ce qu'il allait voir à l'évidence, grâce aux panneaux qu'elle préparait et où les naïfs venaient tomber, profitant de cet ascendant, la faire choisir, elle, de préférence au baron. Quant aux femmes du monde qui étaient là et qui ne s'étaient même pas fait présenter, dès qu'elle avait compris leurs hésitations ou leur sans-gêne, elle avait dit : « Ah ! je vois ce que c'est, c'est un genre de vieilles grues qui ne nous convient pas, elles voient ce salon pour la dernière fois. » Car elle serait morte plutôt que de dire qu'on avait été moins aimable avec elle qu'elle n'avait espéré. « Ah ! mon cher général », s'écria brusquement baron de Charlus en lâchant Mme Verdurin parce qu'il apercevait le général Deltour, secrétaire de la Présidence de la République, lequel pouvait avoir une grande importance pour la croix de Morel, et qui, après avoir demandé un conseil à docteur Cottard, s'éclipsait rapidement : « Bonsoir, cher et charmant ami. Hé bien, c'est comme ça que vous vous tirez des pattes sans me dire adieu », dit le baron avec un sourire de bonhomie et de suffisance, car il savait bien qu'on était toujours content de lui parler un moment de plus. Et comme, dans l'état d'exaltation où il était, il faisait à lui tout seul, sur un ton suraigu, les demandes et les réponses : « Eh bien, êtes-vous content ? N'est-ce pas que c'était bien beau ? L'andante, n'est-ce pas ? C'est ce qu'on a jamais écrit de plus touchant. Je défie de l'écouter jusqu'au bout sans avoir les larmes aux yeux. Vous êtes charmant d'être venu. Dites-moi, j'ai reçu ce matin un télégramme parfait de général de Froberville, qui m'annonce que, du côté de la Grande Chancellerie, les difficultés sont aplanies, comme on dit. » La voix de baron de Charlus continuait à s'élever, aussi perçante, aussi différente de la voix habituelle, que celle d'un avocat, qui plaide avec emphase, de son débit ordinaire, phénomène d'amplification vocale par surexcitation et euphorie nerveuse, analogue à celle qui, dans les dîners qu'elle donnait, montait à un diapason si élevé la voix comme le regard de duchesse de Guermantes. « Je comptais vous envoyer demain matin un mot par un garde pour vous dire mon enthousiasme, en attendant que je puisse vous l'exprimer de vive voix, mais vous étiez si entouré ! L'appui de général de Froberville sera loin d'être à dédaigner, mais, de mon côté, j'ai la promesse du Ministre, dit le général. – Ah ! parfait. Du reste, vous avez vu que c'est bien ce que mérite un talent pareil. Hoyos était enchanté, je n'ai pas pu voir l'Ambassadrice ; était-elle contente ? Qui ne l'aurait pas été, excepté ceux qui ont des oreilles pour ne pas entendre, ce qui ne fait rien, du moment qu'ils ont des langues pour parler. » Profitant de ce que le baron s'était éloigné pour parler au général, Mme Verdurin fit signe à Brichot. Celui-ci, qui ne savait pas ce que Mme Verdurin allait lui dire, voulut l'amuser et, sans se douter combien il me faisait souffrir, dit à la Patronne : « Le baron est enchanté que Mlle M. Vinteuil et son amie ne soient pas venues. Elles le scandalisent énormément. Il a déclaré que leurs moeurs étaient à faire peur. Vous n'imaginez pas comme le baron est pudibond et sévère sur le chapitre des moeurs. » Contrairement à l'attente de Brichot, Mme Verdurin ne s'égaya pas : « Il est immonde, répondit-elle. Proposez-lui de venir fumer une cigarette avec vous, pour que mon mari puisse emmener sa Dulcinée sans que le baron de Charlus s'en aperçoive, et l'éclaire sur l'abîme où il roule. » Brichot semblait avoir quelques hésitations. « Je vous dirai, reprit Mme Verdurin pour lever les derniers scrupules de Brichot, que je ne me sens pas en sûreté avec ça chez moi. Je sais qu'il a eu de sales histoires et que la police l'a à l'oeil. » Et comme elle avait un certain don d'improvisation quand la malveillance l'inspirait, Mme Verdurin ne s'arrêta pas là : « Il paraît qu'il a fait de la prison. Oui, oui, ce sont des personnes très renseignées qui me l'ont dit. Je sais, du reste, par quelqu'un qui demeure dans sa rue, qu'on n'a pas idée des bandits qu'il fait venir chez lui. » Et comme Brichot, qui allait souvent chez le baron, protestait, Mme Verdurin, s'animant, s'écria : « Mais je vous en réponds ! c'est moi qui vous le dis », expression par laquelle elle cherchait d'habitude à étayer une assertion jetée un peu au hasard. « Il mourra assassiné un jour ou l'autre, comme tous ses pareils d'ailleurs. Il n'ira peut-être même pas jusque-là parce qu'il est dans les griffes de ce Jupien, qu'il a eu le toupet de m'envoyer et qui est un ancien forçat, je le sais, vous savez, oui, et de façon positive. Il tient baron de Charlus par des lettres qui sont quelque chose d'effrayant, il paraît. Je le sais par quelqu'un qui les a vues et qui m'a dit : « Vous vous trouveriez mal si vous voyiez cela. » C'est comme ça que ce Jupien le fait marcher au bâton et lui fait cracher tout l'argent qu'il veut. J'aimerais mille fois mieux la mort que de vivre dans la terreur où vit baron de Charlus. En tous cas, si la famille de Morel se décide à porter plainte contre lui, je n'ai pas envie d'être accusée de complicité. S'il continue, ce sera à ses risques et périls, mais j'aurai fait mon devoir. Qu'est-ce que vous voulez. Ce n'est pas toujours folichon. » Et déjà agréablement enfiévrée par l'attente de la conversation que son mari allait avoir avec le violoniste, Mme Verdurin me dit : « Demandez à Brichot si je ne suis pas une amie courageuse, et si je ne sais pas me dévouer pour sauver les camarades. » (Elle faisait allusion aux circonstances dans lesquelles elle l'avait, juste à temps, brouillé avec sa blanchisseuse d'abord, avec Mme de Cambremer ensuite, brouilles à la suite desquelles Brichot était devenu presque complètement aveugle et, disait-on, morphinomane). « Une amie incomparable, perspicace et vaillante », répondit l'universitaire avec une émotion naïve. « Mme Verdurin m'a empêché de commettre une grande sottise, me dit Brichot, quand celle-ci se fut éloignée. Elle n'hésite pas à couper dans le vif. Elle est interventionniste, comme dit notre ami docteur Cottard. J'avoue pourtant que la pensée que le pauvre baron ignore encore le coup qui va le frapper me fait une grande peine. Il est complètement fou de ce garçon. Si Mme Verdurin réussit, voilà un homme qui sera bien malheureux. Du reste, il n'est pas certain qu'elle n'échoue pas. Je crains qu'elle ne réussisse qu'à semer des mésintelligences entre eux, qui, finalement, sans les séparer, n'aboutiront qu'à les brouiller avec elle. » C'était arrivé souvent entre Mme Verdurin et les fidèles. Mais il était visible qu'en elle le besoin de conserver leur amitié était de plus en plus dominé par celui que cette amitié ne fût jamais tenue en échec par celle qu'ils pouvaient avoir les uns pour les autres. L'homosexualité ne lui déplaisait pas, tant qu'elle ne touchait pas à l'orthodoxie, mais, comme l'Église, elle préférait tous les sacrifices à une concession sur l'orthodoxie. Je commençais à craindre que son irritation contre moi ne vînt de ce qu'elle avait su que j'avais empêché Albertine d'aller chez elle dans la journée, et qu'elle n'entreprît auprès d'elle, si elle n'avait déjà commencé, le même travail pour la séparer de moi que son mari allait, à l'égard de baron de Charlus, opérer auprès du musicien. « Voyons, allez chercher baron de Charlus, trouvez un prétexte, il est temps, dit Mme Verdurin, et tâchez surtout de ne pas le laisser revenir avant que je vous fasse chercher. Ah ! quelle soirée, ajouta Mme Verdurin, qui dévoila ainsi la vraie raison de sa rage. Avoir fait jouer ces chefs-d'oeuvre devant ces cruches ! Je ne parle pas de la reine de Naples, elle est intelligente, c'est une femme agréable (lisez : elle a été très aimable avec moi). Mais les autres. Ah ! c'est à vous rendre enragée. Qu'est-ce que vous voulez, moi je n'ai plus vingt ans. Quand j'étais jeune, on me disait qu'il fallait savoir s'ennuyer, je me forçais ; mais maintenant, ah ! non, c'est plus fort que moi, j'ai l'âge de faire ce que je veux, la vie est trop courte ; m'ennuyer, fréquenter des imbéciles, feindre, avoir l'air de les trouver intelligents ? Ah ! non, je ne peux pas. Allons, voyons, Brichot, il n'y a pas de temps à perdre. – J'y vais, Madame, j'y vais », finit par dire Brichot comme le général Deltour s'éloignait. Mais d'abord l'universitaire me prit un instant à part : « Le devoir moral, me dit-il, est moins clairement impératif que ne l'enseignent nos Éthiques. Que les cafés théosophiques et les brasseries kantiennes en prennent leur parti, nous ignorons déplorablement la nature du Bien. Moi-même qui, sans nulle vantardise, ai commenté pour mes élèves, en toute innocence, la philosophie du prénommé Emmanuel Kant, je ne vois aucune indication précise, pour le cas de casuistique mondaine devant lequel je suis placé, dans cette critique de la Raison pratique où le grand défroqué du protestantisme platonisa, à la mode de Germanie, pour une Allemagne préhistoriquement sentimentale et aulique, à toutes fins utiles d'un mysticisme poméranien. C'est encore le « Banquet », mais donné cette fois à Koenigsberg, à la façon de là-bas, indigeste et assaisonné avec choucroute, et sans gigolos. Il est évident, d'une part, que je ne puis refuser à notre excellente hôtesse le léger service qu'elle me demande, en conformité pleinement orthodoxe avec la morale traditionnelle. Il faut éviter, avant toute chose, car il n'y en a pas beaucoup qui fasse dire plus de sottises, de se laisser piper avec des mots. Mais enfin, n'hésitons pas à avouer que, si les mères de famille avaient part au vote, le baron risquerait d'être lamentablement blackboulé comme professeur de vertu. C'est malheureusement avec le tempérament d'un roué qu'il suit sa vocation de pédagogue ; remarquez que je ne dis pas de mal du baron ; ce doux homme, qui sait découper un rôti comme personne, possède, avec le génie de l'anathème, des trésors de bonté. Il peut être amusant comme un pitre supérieur, alors qu'avec tel de mes confrères, académicien, s'il vous plaît, je m'ennuie, comme dirait Xénophon, à cent drachmes l'heure. Mais je crains qu'il n'en dépense, à l'égard de Morel, un peu plus que la saine morale ne commande, et sans savoir dans quelle mesure le jeune pénitent se montre docile ou rebelle aux exercices spéciaux que son catéchiste lui impose en manière de mortification, il n'est pas besoin d'être grand clerc pour savoir que nous pécherions, comme dit l'autre, par mansuétude à l'égard de ce Rose-Croix qui semble nous venir de Pétrone, après avoir passé par Saint-Simon, si nous lui accordions, les yeux fermés, en bonne et due forme, le permis de sataniser. Et pourtant, en occupant cet homme pendant que Mme Verdurin, pour le bien du pécheur et bien justement tentée par une telle cure, va – en parlant au jeune étourdi sans ambages – lui retirer tout ce qu'il aime, lui porter peut-être un coup fatal, il me semble que je l'attire comme qui dirait dans un guet-apens, et je recule comme devant une manière de lâcheté. » Ceci dit, il n'hésita pas à la commettre, et le prenant par le bras : « Allons, baron, si nous allions fumer une cigarette, ce jeune homme ne connaît pas encore toutes les merveilles de l'Hôtel. » Je m'excusai en disant que j'étais obligé de rentrer. « Attendez encore un instant, dit Brichot. Vous savez que vous devez me ramener et je n'oublie pas votre promesse. – Vous ne voulez vraiment pas que je vous fasse sortir l'argenterie ? rien ne serait plus simple, me dit baron de Charlus. Comme vous me l'avez promis, pas un mot de la question décoration à Morel. Je veux lui faire la surprise de le lui annoncer tout à l'heure, quand on sera un peu parti, bien qu'il dise que ce n'est pas important pour un artiste, mais que son oncle le désire (je rougis car, pensai-je, par mon grand-père les M. Verdurin savaient qui était l'oncle de Morel). Alors, vous ne voulez pas que je vous fasse sortir les plus belles pièces ? me dit baron de Charlus. Du reste, vous les connaissez, vous les avez vues dix fois à la Raspelière. » Je n'osai pas lui dire que ce qui eût pu m'intéresser, ce n'était pas le médiocre d'une argenterie bourgeoise, même la plus riche, mais quelque spécimen, fût-ce seulement sur une belle gravure, de celle de Mme Du Barry. J'étais beaucoup trop préoccupé – et ne l'eussé-je pas été par cette révélation relative à la venue de Mlle M. Vinteuil ? – toujours, dans le monde, beaucoup trop distrait et agité pour arrêter mon attention sur des objets plus ou moins jolis. Elle n'eût pu être fixée que par l'appel de quelque réalité s'adressant à mon imagination, comme eût pu le faire, ce soir, une vue de cette Venise à laquelle j'avais tant pensé l'après-midi, ou quelque élément général, commun à plusieurs apparences et plus vrai qu'elles, qui, de lui-même, éveillait toujours en moi un esprit intérieur et habituellement ensommeillé, mais dont la remontée à la surface de ma conscience me donnait une grande joie.
+
+Or, comme je sortais du salon appelé salle de théâtre, et traversais, avec Brichot et baron de Charlus, les autres salons, en retrouvant, transposés au milieu d'autres, certains meubles vus à la Raspelière et auxquels je n'avais prêté aucune attention, je saisis, entre l'arrangement de l'hôtel et celui du château, un certain air de famille, une identité permanente, et je compris Brichot quand il me dit en souriant : « Tenez, voyez-vous ce fond de salon, cela du moins peut, à la rigueur, vous donner l'idée de la rue Montalivet il y a vingt-cinq ans. » À son sourire, dédié au salon défunt qu'il revoyait, je compris que ce que Brichot, peut-être sans s'en rendre compte, préférait dans l'ancien salon, plus que les grandes fenêtres, plus que la gaie jeunesse des Patrons et de leurs fidèles, c'était cette partie irréelle (que je dégageais moi-même de quelques similitudes entre la Raspelière et le quai Conti) de laquelle, dans un salon comme en toutes choses, la partie extérieure, actuelle, contrôlable pour tout le monde, n'est que le prolongement ; c'était cette partie devenue purement morale, d'une couleur qui n'existait plus que pour mon vieil interlocuteur, qu'il ne pouvait pas me faire voir, cette partie qui s'est détachée du monde extérieur pour se réfugier dans notre âme, à qui elle donne une plus-value où elle s'est assimilée à sa substance habituelle, s'y muant – maisons détruites, gens d'autrefois, compotiers de fruits des soupers que nous nous rappelons – en cet albâtre translucide de nos souvenirs, duquel nous sommes incapables de montrer la couleur qu'il n'y a que nous qui voyons, ce qui nous permet de dire véridiquement aux autres, au sujet de ces choses passées, qu'ils n'en peuvent avoir une idée, que cela ne ressemble pas à ce qu'ils ont vu, et ce qui fait que nous ne pouvons considérer en nous-même sans une certaine émotion, en songeant que c'est de l'existence de notre pensée que dépend pour quelque temps encore leur survie, le reflet des lampes qui se sont éteintes et l'odeur des charmilles qui ne fleuriront plus. Et sans doute par là le salon de la rue Montalivet faisait, pour Brichot, tort à la demeure actuelle des M. Verdurin. Mais, d'autre part, il ajoutait à celle-ci, pour les yeux du professeur, une beauté qu'elle ne pouvait avoir pour un nouveau venu. Ceux de ses anciens meubles qui avaient été replacés ici, en un même arrangement parfois conservé, et que moi-même je retrouvais de la Raspelière, intégraient dans le salon actuel des parties de l'ancien qui, par moments, l'évoquaient jusqu'à l'hallucination et ensuite semblaient presque irréelles d'évoquer, au sein de la réalité ambiante, des fragments d'un monde détruit qu'on croyait voir ailleurs. Canapé surgi du rêve entre les fauteuils nouveaux et bien réels, petites chaises revêtues de soie rose, tapis broché de table à jeu élevé à la dignité de personne depuis que, comme une personne, il avait un passé, une mémoire, gardant dans l'ombre froide du quai Conti le hâle de l'ensoleillement par les fenêtres de la rue Montalivet (dont il connaissait l'heure aussi bien que Mme Verdurin elle-même) et par les baies des portes vitrées de Doville, où on l'avait emmené et où il regardait tout le jour, au delà du jardin fleuri, la profonde vallée, en attendant l'heure où docteur Cottard et le flûtiste feraient ensemble leur partie ; bouquet de violettes et de pensées au pastel, présent d'un grand artiste ami, mort depuis, seul fragment survivant d'une vie disparue sans laisser de traces, résumant un grand talent et une longue amitié, rappelant son regard attentif et doux, sa belle main grasse et triste pendant qu'il peignait ; incohérent et joli désordre des cadeaux de fidèles, qui ont suivi partout la maîtresse de la maison et ont fini par prendre l'empreinte et la fixité d'un trait de caractère, d'une ligne de la destinée ; profusion des bouquets de fleurs, des boîtes de chocolat, qui systématisait, ici comme là-bas, son épanouissement suivant un mode de floraison identique ; interpolation curieuse des objets singuliers et superflus qui ont encore l'air de sortir de la boîte où ils ont été offerts et qui restent toute la vie ce qu'ils ont été d'abord, des cadeaux du Premier Janvier ; tous ces objets enfin qu'on ne saurait isoler des autres, mais qui pour Brichot, vieil habitué des fêtes des M. Verdurin, avaient cette patine, ce velouté des choses auxquelles, leur donnant une sorte de profondeur, vient s'ajouter leur double spirituel ; tout cela éparpillait, faisait chanter devant lui comme autant de touches sonores qui éveillaient dans son coeur des ressemblances aimées, des réminiscences confuses et qui, à même le salon tout actuel, qu'elles marquetaient çà et là, découpaient, délimitaient, comme fait par un beau jour un cadre de soleil sectionnant l'atmosphère, les meubles et les tapis, et la poursuivant d'un coussin à un porte-bouquets, d'un tabouret au relent d'un parfum, d'un mode d'éclairage à une prédominance de couleurs, sculptaient, évoquaient, spiritualisaient, faisaient vivre une forme qui était comme la figure idéale, immanente à leurs logis successifs, du salon des M. Verdurin. « Nous allons tâcher, me dit Brichot à l'oreille, de mettre le baron sur son sujet favori. Il y est prodigieux. » D'une part, je désirais pouvoir tâcher d'obtenir de baron de Charlus les renseignements relatifs à la venue de Mlle M. Vinteuil et de son amie. D'autre part, je ne voulais pas laisser Albertine seule trop longtemps, non qu'elle pût (incertaine de l'instant de mon retour, et, d'ailleurs, à des heures pareilles où une visite venue pour elle ou bien une sortie d'elle eussent été trop remarquées) faire un mauvais usage de mon absence, mais pour qu'elle ne la trouvât pas trop prolongée. Aussi dis-je à Brichot et à baron de Charlus que je ne les suivais pas pour longtemps. « Venez tout de même », me dit le baron, dont l'excitation mondaine commençait à tomber, mais qui éprouvait ce besoin de prolonger, de faire durer les entretiens, que j'avais déjà remarqué chez la duchesse de Guermantes aussi bien que chez lui, et qui, tout en étant particulier à cette famille, s'étend, plus généralement, à tous ceux qui, n'offrant à leur intelligence d'autre réalisation que la conversation, c'est-à-dire une réalisation imparfaite, restent inassouvis même après des heures passées ensemble et se suspendent de plus en plus avidement à l'interlocuteur épuisé, dont ils réclament, par erreur, une satiété que les plaisirs sociaux sont impuissants à donner. « Venez, reprit-il, n'est-ce pas, voilà le moment agréable des fêtes, le moment où tous les invités sont partis, l'heure de Doña Sol ; espérons que celle-ci finira moins tristement. Malheureusement vous êtes pressé, pressé probablement d'aller faire des choses que vous feriez mieux de ne pas faire. Tout le monde est toujours pressé, et on part au moment où on devrait arriver. Nous sommes là comme les philosophes de Couture, ce serait le moment de récapituler la soirée, de faire ce qu'on appelle, en style militaire, la critique des opérations. On demanderait à Mme Verdurin de nous faire apporter un petit souper auquel on aurait soin de ne pas l'inviter, et on prierait Morel – toujours Hernani – de rejouer pour nous seuls le sublime adagio. Est-ce assez beau, cet adagio ! Mais où est-il le jeune violoniste ? je voudrais pourtant le féliciter, c'est le moment des attendrissements et des embrassades. Avouez, Brichot, qu'ils ont joué comme des Dieux, Morel surtout. Avez-vous remarqué le moment où la mèche se détache ? Ah ! bien alors, mon cher, vous n'avez rien vu. On a eu un fa dièse qui peut faire mourir de jalousie Enesco, Capet et Thibaud ; j'ai beau être très calme, je vous avoue qu'à une sonorité pareille, j'avais le coeur tellement serré que je retenais mes sanglots. La salle haletait ; Brichot, mon cher, s'écria le baron en secouant violemment l'universitaire par le bras, c'était sublime. Seul le jeune Morel gardait une immobilité de pierre, on ne le voyait même pas respirer, il avait l'air d'être comme ces choses du monde inanimé dont parle Théodore Rousseau, qui font penser mais ne pensent pas. Et alors, tout d'un coup, s'écria baron de Charlus avec emphase et en mimant comme un coup de théâtre, alors... la Mèche ! Et pendant ce temps-là, gracieuse petite contredanse de l'allegro vivace. Vous savez, cette mèche a été le signe de la révélation, même pour les plus obtus. La princesse de Taormine, sourde jusque-là, car il n'est pas pires sourdes que celles qui ont des oreilles pour ne pas entendre, la princesse de Taormine, devant l'évidence de la mèche miraculeuse, a compris que c'était de la musique et qu'on ne jouerait pas au poker. Oh ! ça a été un moment bien solennel. – Pardonnez-moi, Monsieur, de vous interrompre, dis-je à baron de Charlus pour l'amener au sujet qui m'intéressait, vous me disiez que la fille de l'auteur devait venir. Cela m'aurait beaucoup intéressé. Est-ce que vous êtes certain qu'on comptait sur elle ? – Ah ! je ne sais pas. » baron de Charlus obéissait ainsi, peut-être sans le vouloir, à cette consigne universelle qu'on a de ne pas renseigner les jaloux, soit pour se montrer absurdement « bon camarade », par point d'honneur, et la détestât-on, envers celle qui l'excite, soit par méchanceté pour elle en devinant que la jalousie ne ferait que redoubler l'amour, soit par ce besoin d'être désagréable aux autres, qui consiste à dire la vérité à la plupart des hommes mais, aux jaloux, à la leur taire, l'ignorance augmentant leur supplice, du moins à ce qu'on se figurent, et, pour faire de la peine aux gens, on se guide d'après ce qu'on croit soi-même, peut-être à tort, le plus douloureux. « Vous savez, reprit-il, ici c'est un peu la maison des exagérations, ce sont des gens charmants, mais enfin on aime bien annoncer des célébrités d'un genre ou d'un autre. Mais vous n'avez pas l'air bien et vous allez avoir froid dans cette pièce si humide, dit-il en poussant près de moi une chaise. Puisque vous êtes souffrant, il faut faire attention, je vais aller vous chercher votre pelure. Non, n'y allez pas vous-même, vous vous perdrez et vous aurez froid. Voilà comme on fait des imprudences, vous n'avez pourtant pas quatre ans, il vous faudrait une vieille bonne comme moi pour vous soigner. – Ne vous dérangez pas baron, j'y vais », dit Brichot, qui s'éloigna aussitôt : ne se rendant peut-être pas exactement compte de l'amitié très vive que baron de Charlus avait pour moi et des rémissions charmantes de simplicité et de dévouement que comportaient ses crises délirantes de grandeur et de persécution, il avait craint que baron de Charlus, que Mme Verdurin avait confié comme un prisonnier à sa vigilance, eût cherché simplement, sous le prétexte de demander mon pardessus, à rejoindre Morel et fît manquer ainsi le plan de la Patronne.
+
+Cependant M. Ski s'était assis au piano, où personne ne lui avait demandé de se mettre, et se composant – avec un froncement souriant des sourcils, un regard lointain et une légère grimace de la bouche – ce qu'il croyait être un air artiste, insistait auprès de Morel pour que celui-ci jouât quelque chose de Bizet. « Comment, vous n'aimez pas cela, ce côté gosse de la musique de Bizet ? Mais, mon cher, dit-il, avec ce roulement d'r qui lui était particulier, c'est ravissant. » Morel, qui n'aimait pas Bizet, le déclara avec exagération et (comme il passait dans le petit clan pour avoir, ce qui était vraiment incroyable, de l'esprit) M. Ski, feignant de prendre les diatribes du violoniste pour des paradoxes, se mit à rire. Son rire n'était pas, comme celui de M. Verdurin, l'étouffement d'un fumeur. M. Ski prenait d'abord un air fin, puis laissait échapper comme malgré lui un seul son de rire, comme un premier appel de cloches, suivi d'un silence où le regard fin semblait examiner à bon escient la drôlerie de ce qu'on disait, puis une seconde cloche de rire s'ébranlait, et c'était bientôt un hilare angelus.

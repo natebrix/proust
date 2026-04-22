@@ -1,0 +1,1020 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ],
+    "notes": "Swann acquaintance with a nearby estate"
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ],
+    "notes": "Aristocratic social connection mentioned in Swann's prestige world"
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ],
+    "notes": "Narrator's uncle Adolphe"
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ],
+    "notes": "Parisian salon hostess"
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ],
+    "notes": "Guermantes relation obsessed with rank and kinship display"
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ],
+    "notes": "Guermantes aristocrat referenced in the Laumes social orbit"
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ],
+    "notes": "Aristocratic hostess in the Guermantes orbit"
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ],
+    "notes": "Swann social acquaintance considered among suspects"
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ],
+    "notes": "Swann associate/servant mentioned among suspects"
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ],
+    "notes": "Salon attendee who comments after the sonata"
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ],
+    "notes": "Dream-figure standing in for Forcheville in Swann's dream"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ],
+    "notes": "Gilberte Swann, first encountered at the Champs-Elysees"
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ],
+    "notes": "Narrator's family servant"
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ],
+    "notes": "Celebrated actress"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": "Writer admired by the narrator"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois, diplomat and family dinner guest"
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ],
+    "notes": "Narrator's grandmother"
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ],
+    "notes": "Aristocratic hotel guest at Balbec"
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ],
+    "notes": "Headwaiter or maître d'hôtel at the Grand-Hôtel in Balbec"
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ],
+    "notes": "Daughter of M. de Stermaria"
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ],
+    "notes": "Male member of the Cambremer family in the Balbec hotel circle"
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ],
+    "notes": "Aristocratic visitor in the Balbec social scene"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ],
+    "notes": "Narrator's father"
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ],
+    "notes": "Young aristocrat and nephew of Mme de Villeparisis"
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ],
+    "notes": "Father of Saint-Loup"
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ],
+    "notes": "Friend/acquaintance of the narrator; socially performative and often ironic"
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ],
+    "notes": "Guermantes title in the family sequence discussed with Saint-Loup"
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ],
+    "notes": "Bloch's father as remembered and socially evaluated in the narrator's reflections"
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ],
+    "notes": "Grand-Hotel director observed by the narrator"
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ],
+    "notes": "Figure invoked in the political talk reported by Aimé"
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ],
+    "notes": "The sad-looking blonde seen at Rivebelle who begins to crystallize in the narrator's desire"
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ],
+    "notes": "Oriane de Guermantes; now appearing as the duchesse de Guermantes"
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ],
+    "notes": "Neighbor and ally of Françoise in the new Guermantes setting"
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ],
+    "notes": "Princesse de Guermantes-Bavière; hostess of the evening in the opening of v4-p2"
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ],
+    "notes": "Aristocratic young man encountered outside the princesse de Guermantes salon"
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ],
+    "notes": "Diplomat/ambassador figure appearing in the princesse de Guermantes salon"
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ],
+    "notes": "Wife of M. de Vaugoubert"
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ],
+    "notes": "Albertine Simonet; narrator's companion in La Prisonnière"
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ],
+    "notes": "Andrée, one of the Balbec girls and Albertine's friend"
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ],
+    "notes": "Albertine's aunt"
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ],
+    "notes": "Charles Morel, violinist associated with Charlus and the Verdurins"
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ],
+    "notes": "Painter and social/aesthetic authority referenced by Albertine."
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ],
+    "notes": "Prince de Leon, beau-frere de Saint-Loup in the duchesse de Guermantes anecdotes."
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ],
+    "notes": "Aristocratic figure in the duchesse de Guermantes reminiscences."
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ],
+    "notes": "Social rival figure in the Jockey Club episode around the Guermantes."
+  }
+}
+
+### Prior local context (optional)
+
+En voyant se ranger sur la petite estrade non pas seulement Morel et un pianiste, mais d'autres instrumentistes, je crus qu'on commençait par des oeuvres d'autres musiciens que M. Vinteuil. Car je croyais qu'on ne possédait de lui que sa sonate pour piano et violon.
+
+### Passage
+
+Mme Verdurin s'assit à part, les hémisphères de son front blanc et légèrement rosé magnifiquement bombés, les cheveux écartés, moitié en imitation d'un portrait du XVIIIe siècle, moitié par besoin de fraîcheur d'une fiévreuse qu'une pudeur empêche de dire son état, isolée, divinité qui présidait aux solennités musicales, déesse du wagnérisme et de la migraine, sorte de Norne presque tragique, évoquée par le génie au milieu de ces ennuyeux, devant qui elle allait dédaigner plus encore que de coutume d'exprimer des impressions en entendant une musique qu'elle connaissait mieux qu'eux. Le concert commença, je ne connaissais pas ce qu'on jouait, je me trouvais en pays inconnu. Où le situer ? Dans l'oeuvre de quel auteur étais-je ? J'aurais bien voulu le savoir et, n'ayant près de moi personne à qui le demander, j'aurais bien voulu être un personnage de ces Mille et une Nuits que je relisais sans cesse et où, dans les moments d'incertitude, surgit soudain un génie ou une adolescente d'une ravissante beauté, invisible pour les autres, mais non pour le héros embarrassé, à qui elle révèle exactement ce qu'il désire savoir. Or, à ce moment, je fus précisément favorisé d'une telle apparition magique. Comme, dans un pays qu'on ne croit pas connaître et qu'en effet on a abordé par un côté nouveau, lorsque, après avoir tourné un chemin, on se trouve tout d'un coup déboucher dans un autre dont les moindres coins vous sont familiers, mais seulement où on n'avait pas l'habitude d'arriver par là, on se dit : « Mais c'est le petit chemin qui mène à la petite porte du jardin de mes amis X... ; je suis à deux minutes de chez eux », et leur fille est en effet là qui est venue vous dire bonjour au passage ; ainsi, tout d'un coup, je me reconnus, au milieu de cette musique nouvelle pour moi, en pleine sonate de M. Vinteuil ; et, plus merveilleuse qu'une adolescente, la petite phrase, enveloppée, harnachée d'argent, toute ruisselante de sonorités brillantes, légères et douces comme des écharpes, vint à moi, reconnaissable sous ces parures nouvelles. Ma joie de l'avoir retrouvée s'accroissait de l'accent si amicalement connu qu'elle prenait pour s'adresser à moi, si persuasif, si simple, non sans laisser éclater pourtant cette beauté chatoyante dont elle resplendissait. La signification, d'ailleurs, n'était cette fois que de me montrer le chemin, et qui n'était pas celui de la sonate, car c'était une oeuvre inédite de M. Vinteuil où il s'était seulement amusé, par une allusion que justifiait à cet endroit un mot du programme, qu'on aurait dû avoir en même temps sous les yeux, à faire apparaître un instant la petite phrase. À peine rappelée ainsi, elle disparut et je me retrouvai dans un monde inconnu ; mais je savais maintenant, et tout ne cessa plus de me confirmer, que ce monde était un de ceux que je n'avais même pu concevoir que M. Vinteuil eût créés, car quand, fatigué de la sonate, qui était un univers épuisé pour moi, j'essayais d'en imaginer d'autres aussi beaux mais différents, je faisais seulement comme ces poètes qui remplissent leur prétendu paradis de prairies, de fleurs, de rivières, qui font double emploi avec celles de la Terre. Ce qui était devant moi me faisait éprouver autant de joie qu'aurait fait la sonate si je ne l'avais pas connue ; par conséquent, en étant aussi beau, était autre. Tandis que la sonate s'ouvrait sur une aube liliale et champêtre, divisant sa candeur légère pour se suspendre à l'emmêlement léger et pourtant consistant d'un berceau rustique de chèvrefeuilles sur des géraniums blancs, c'était sur des surfaces unies et planes comme celles de la mer que, par un matin d'orage déjà tout empourpré, commençait, au milieu d'un aigre silence, dans un vide infini, l'oeuvre nouvelle, et c'est dans un rose d'aurore que, pour se construire progressivement devant moi, cet univers inconnu était tiré du silence et de la nuit. Ce rouge si nouveau, si absent de la tendre, champêtre et candide sonate, teignait tout le ciel, comme l'aurore, d'un espoir mystérieux. Et un chant perçait déjà l'air, chant de sept notes, mais le plus inconnu, le plus différent de tout ce que j'eusse jamais imaginé, de tout ce que j'eusse jamais pu imaginer, à la fois ineffable et criard, non plus un roucoulement de colombe comme dans la sonate, mais déchirant l'air, aussi vif que la nuance écarlate dans laquelle le début était noyé, quelque chose comme un mystique chant du coq, un appel ineffable, mais suraigu, de l'éternel matin. L'atmosphère froide, lavée de pluie, électrique – d'une qualité si différente, à des pressions tout autres, dans un monde si éloigné de celui, virginal et meublé de végétaux, de la sonate – changeait à tout instant, effaçant la promesse empourprée de l'Aurore. À midi pourtant, dans un ensoleillement brûlant et passager, elle semblait s'accomplir en un bonheur lourd, villageois et presque rustique, où la titubation de cloches retentissantes et déchaînées (pareilles à celles qui incendiaient de chaleur la place de l'église à Combray, et que M. Vinteuil, qui avait dû souvent les entendre, avait peut-être trouvées à ce moment-là dans sa mémoire comme une couleur qu'on a à portée de sa main sur une palette) semblait matérialiser la plus épaisse joie. À vrai dire, esthétiquement, ce motif de joie ne me plaisait pas, je le trouvais presque laid, le rythme s'en traînait si péniblement à terre qu'on aurait pu en imiter presque tout l'essentiel, rien qu'avec des bruits, en frappant d'une certaine manière des baguettes sur une table. Il me semblait que M. Vinteuil avait manqué là d'inspiration, et, en conséquence, je manquai aussi là un peu de force d'attention.
+
+Je regardai la Patronne, dont l'immobilité farouche semblait protester contre les battements de mesure exécutés par les têtes ignorantes des dames du Faubourg. Mme Verdurin ne disait pas : « Vous comprenez que je la connais un peu cette musique, et un peu encore ! S'il me fallait exprimer tout ce que je ressens, vous n'en auriez pas fini ! » Elle ne le disait pas. Mais sa taille droite et immobile, ses yeux sans expression, ses mèches fuyantes, le disaient pour elle. Ils disaient aussi son courage, que les musiciens pouvaient y aller, ne pas ménager ses nerfs, qu'elle ne flancherait pas à l'andante, qu'elle ne crierait pas à l'allegro. Je regardai ces musiciens. Le violoncelliste dominait l'instrument qu'il serrait entre ses genoux, inclinant sa tête à laquelle des traits vulgaires donnaient, dans les instants de maniérisme, une expression involontaire de dégoût ; il se penchait sur sa contrebasse, la palpait avec la même patience domestique que s'il eût épluché un chou, tandis que, près de lui, la harpiste (encore enfant) en jupe courte, dépassée de tous côtés par les rayons horizontaux du quadrilatère d'or, pareils à ceux qui, dans la chambre magique d'une sibylle, figureraient arbitrairement l'éther selon les formes consacrées, semblait aller y chercher, çà et là, au point exigé, un son délicieux, de la même manière que, petite déesse allégorique, dressée devant le treillage d'or de la voûte céleste, elle y aurait cueilli, une à une, des étoiles. Quant à Morel, une mèche, jusque-là invisible et confondue dans sa chevelure, venait de se détacher et de faire boucle sur son front. Je tournai imperceptiblement la tête vers le public pour me rendre compte de ce que baron de Charlus avait l'air de penser de cette mèche. Mais mes yeux ne rencontrèrent que le visage, ou plutôt que les mains, de Mme Verdurin, car celui-là était entièrement enfoui dans celles-ci.
+
+Mais bien vite, le motif triomphant des cloches ayant été chassé, dispersé par d'autres, je fus repris par cette musique ; et je me rendais compte que, si, au sein de ce septuor, des éléments différents s'exposaient tour à tour pour se combiner à la fin, de même, la sonate de M. Vinteuil et, comme je le sus plus tard, ses autres oeuvres n'avaient toutes été, par rapport à ce septuor, que de timides essais, délicieux mais bien frêles, auprès du chef-d'oeuvre triomphal et complet qui m'était en ce moment révélé. Et de même encore, je ne pouvais m'empêcher, par comparaison, de me rappeler que j'avais pensé aux autres mondes qu'avait pu créer M. Vinteuil comme à des univers aussi complètement clos qu'avait été chacun de mes amours ; mais, en réalité, je devais bien m'avouer qu'au sein de mon dernier amour – celui pour Albertine – mes premières velléités de l'aimer (à Balbec tout au début, puis après la partie de furet, puis la nuit où elle avait couché à l'hôtel, puis à Paris le dimanche de brume, puis le soir de la fête Guermantes, puis de nouveau à Balbec, et enfin à Paris où ma vie était étroitement unie à la sienne) n'avaient été que des appels ; de même, si je considérais maintenant, non plus mon amour pour Albertine, mais toute ma vie, mes autres amours eux aussi n'y avaient été que de minces et timides essais, des appels, qui préparaient ce plus vaste amour : l'amour pour Albertine. Et je cessai de suivre la musique pour me redemander si Albertine avait vu ou non Mlle M. Vinteuil ces jours-ci, comme on interroge de nouveau une souffrance interne que la distraction vous a fait un moment oublier. Car c'est en moi que se passaient les actions possibles d'Albertine. De tous les êtres que nous connaissons, nous possédons un double, mais habituellement situé à l'horizon de notre imagination, de notre mémoire ; il nous reste relativement extérieur, et ce qu'il a fait ou pu faire ne comporte pas plus, pour nous, d'élément douloureux qu'un objet placé à quelque distance et qui ne nous procure que les sensations indolores de la vue. Ce qui affecte ces êtres-là, nous le percevons d'une façon contemplative, nous pouvons le déplorer en termes appropriés qui donnent aux autres l'idée de notre bon coeur, nous ne le ressentons pas ; mais depuis ma blessure de Balbec, c'était dans mon coeur, à une grande profondeur, difficile à extraire, qu'était le double d'Albertine. Ce que je voyais d'elle me lésait comme un malade dont les sens seraient si fâcheusement transposés que la vue d'une couleur serait intérieurement éprouvée par lui comme une incision en pleine chair. Heureusement que je n'avais pas cédé à la tentation de rompre encore avec Albertine ; cet ennui d'avoir à la retrouver tout à l'heure, quand je rentrerais, était bien peu de chose auprès de l'anxiété que j'aurais eue si la séparation s'était effectuée à ce moment où j'avais un doute sur elle, avant qu'elle eût eu le temps de me devenir indifférente. Au moment où je me la représentais ainsi m'attendant à la maison, comme une femme bien aimée trouvant le temps long, s'étant peut-être endormie un instant dans sa chambre, je fus caressé au passage par une tendre phrase familiale et domestique du septuor. Peut-être – tant tout s'entrecroise et se superpose dans notre vie intérieure – avait-elle été inspirée à M. Vinteuil par le sommeil de sa fille – de sa fille, cause aujourd'hui de tous mes troubles – quand il enveloppait de sa douceur, dans les paisibles soirées, le travail du musicien, cette phrase qui me calma tant par le même moelleux arrière-plan de silence qui pacifie certaines rêveries de Schumann, durant lesquelles, même quand « le Poète parle », on devine que « l'enfant dort ». Endormie, éveillée, je la retrouverais ce soir, quand il me plairait de rentrer, Albertine, ma petite enfant. Et pourtant, me dis-je, quelque chose de plus mystérieux que l'amour d'Albertine semblait promis au début de cette oeuvre, dans ces premiers cris d'aurore. J'essayai de chasser la pensée de mon amie pour ne plus songer qu'au musicien. Aussi bien semblait-il être là. On aurait dit que, réincarné, l'auteur vivait à jamais dans sa musique ; on sentait la joie avec laquelle il choisissait la couleur de tel timbre, l'assortissait aux autres. Car à des dons plus profonds, M. Vinteuil joignait celui que peu de musiciens, et même peu de peintres ont possédé, d'user de couleurs non seulement si stables mais si personnelles que, pas plus que le temps n'altère leur fraîcheur, les élèves qui imitent celui qui les a trouvées, et les maîtres mêmes qui le dépassent, ne font pâlir leur originalité. La révolution que leur apparition a accomplie ne voit pas ses résultats s'assimiler anonymement aux époques suivantes ; elle se déchaîne, elle éclate à nouveau, et seulement quand on rejoue les oeuvres du novateur à perpétuité. Chaque timbre se soulignait d'une couleur que toutes les règles du monde, apprises par les musiciens les plus savants, ne pourraient pas imiter, en sorte que M. Vinteuil, quoique venu à son heure et fixé à son rang dans l'évolution musicale, le quitterait toujours pour venir prendre la tête dès qu'on jouerait une de ses productions, qui devrait de paraître éclose après celle de musiciens plus récents, à ce caractère, en apparence contradictoire et en effet trompeur, de durable nouveauté. Une page symphonique de M. Vinteuil, connue déjà au piano et qu'on entendait à l'orchestre, comme un rayon de jour d'été que le prisme de la fenêtre décompose avant son entrée dans une salle à manger obscure, dévoilait comme un trésor insoupçonné et multicolore toutes les pierreries des Mille et une Nuits. Mais comment comparer à cet immobile éblouissement de la lumière ce qui était vie, mouvement perpétuel et heureux ? Ce M. Vinteuil, que j'avais connu si timide et si triste, avait, quand il fallait choisir un timbre, lui en unir un autre, des audaces, et, dans tout le sens du mot, un bonheur sur lequel l'audition d'une oeuvre de lui ne laissait aucun doute. La joie que lui avaient causée telles sonorités, les forces accrues qu'elle lui avait données pour en découvrir d'autres, menaient encore l'auditeur de trouvaille en trouvaille, ou plutôt c'était le créateur qui le conduisait lui-même, puisant, dans les couleurs qu'il venait de trouver, une joie éperdue qui lui donnait la puissance de découvrir, de se jeter sur celles qu'elles semblaient appeler, ravi, tressaillant comme au choc d'une étincelle, quand le sublime naissait de lui-même de la rencontre des cuivres, haletant, grisé, affolé, vertigineux, tandis qu'il peignait sa grande fresque musicale, comme Michel-Ange attaché à son échelle et lançant, la tête en bas, de tumultueux coups de brosse au plafond de la chapelle Sixtine.
+
+M. Vinteuil était mort depuis nombre d'années ; mais, au milieu de ces instruments qu'il avait animés, il lui avait été donné de poursuivre, pour un temps illimité, une part au moins de sa vie. De sa vie d'homme seulement ? Si l'art n'était vraiment qu'un prolongement de la vie, valait-il de lui rien sacrifier ? n'était-il pas aussi irréel qu'elle-même ? À mieux écouter ce septuor, je ne le pouvais pas penser. Sans doute le rougeoyant septuor différait singulièrement de la blanche sonate ; la timide interrogation, à laquelle répondait la petite phrase, de la supplication haletante pour trouver l'accomplissement de l'étrange promesse qui avait retenti, si aigre, si surnaturelle, si brève, faisant vibrer la rougeur encore inerte du ciel matinal, au-dessus de la mer. Et pourtant, ces phrases si différentes étaient faites des mêmes éléments, car, de même qu'il y avait un certain univers, perceptible pour nous, en ces parcelles dispersées çà et là, dans telles demeures, dans tels musées, et qui était l'univers d'Elstir, celui qu'il voyait, celui où il vivait, de même la musique de M. Vinteuil étendait, notes par notes, touches par touches, les colorations inconnues d'un univers inestimable, insoupçonné, fragmenté par les lacunes que laissaient entre elles les auditions de son oeuvre ; ces deux interrogations si dissemblables qui commandaient les mouvements si différents de la sonate et du septuor, l'une brisant en courts appels une ligne continue et pure, l'autre ressoudant en une armature indivisible des fragments épars, c'était pourtant, l'une si calme et timide, presque détachée et comme philosophique, l'autre si pressante, anxieuse, implorante, une même prière, jaillie devant différents levers de soleil intérieurs, et seulement réfractée à travers les milieux différents de pensées autres, de recherches d'art en progrès au cours d'années où il avait voulu créer quelque chose de nouveau. Prière, espérance qui était au fond la même, reconnaissable sous ces déguisements dans les diverses oeuvres de M. Vinteuil, et, d'autre part, qu'on ne trouvait que dans les oeuvres de M. Vinteuil. Ces phrases-là, les musicographes pourraient bien trouver leur apparentement, leur généalogie, dans les oeuvres d'autres grands musiciens, mais seulement pour des raisons accessoires, des ressemblances extérieures, des analogies plutôt ingénieusement trouvées par le raisonnement que senties par l'impression directe. Celle que donnaient ces phrases de M. Vinteuil était différente de toute autre, comme si, en dépit des conclusions qui semblent se dégager de la science, l'individuel existait. Et c'était justement quand il cherchait puissamment à être nouveau, qu'on reconnaissait, sous les différences apparentes, les similitudes profondes et les ressemblances voulues qu'il y avait au sein d'une oeuvre, quand M. Vinteuil reprenait à diverses reprises une même phrase, la diversifiait, s'amusait à changer son rythme, à la faire reparaître sous sa forme première, ces ressemblances-là voulues, oeuvre de l'intelligence, forcément superficielles, n'arrivaient jamais à être aussi frappantes que ces ressemblances dissimulées, involontaires, qui éclataient sous des couleurs différentes, entre les deux chefs-d'oeuvre distincts ; car alors M. Vinteuil, cherchant puissamment à être nouveau, s'interrogeait lui-même ; de toute la puissance de son effort créateur il atteignait sa propre essence à ces profondeurs où, quelque question qu'on lui pose, c'est du même accent, le sien propre, qu'elle répond. Un accent, cet accent de M. Vinteuil, séparé de l'accent des autres musiciens par une différence bien plus grande que celle que nous percevons entre la voix de deux personnes, même entre le beuglement et le cri de deux espèces animales : par la différence même qu'il y a entre la pensée de ces autres musiciens et les éternelles investigations de M. Vinteuil, la question qu'il se posait sous tant de formes, son habituelle spéculation, mais aussi débarrassée des formes analytiques du raisonnement que si elle s'exerçait dans le monde des anges, de sorte que nous pouvons en mesurer la profondeur, mais sans plus la traduire en langage humain que ne le peuvent les esprits désincarnés quand, évoqués par un médium, celui-ci les interroge sur les secrets de la mort. Et, même en tenant compte de cette originalité acquise qui m'avait frappé dès l'après-midi, de cette parenté que les musicographes pourraient trouver entre eux, c'est bien un accent unique auquel s'élèvent, auquel reviennent malgré eux ces grands chanteurs que sont les musiciens originaux, et qui est une preuve de l'existence irréductiblement individuelle de l'âme. Que M. Vinteuil essayât de faire plus solennel, plus grand, ou de faire plus vif et plus gai, de faire ce qu'il apercevait se reflétant en beau dans l'esprit du public, M. Vinteuil, malgré lui, submergeait tout cela sous une lame de fond qui rend son chant éternel et aussitôt reconnu. Ce chant, différent de celui des autres, semblable à tous les siens, où M. Vinteuil l'avait-il appris, entendu ? Chaque artiste semble ainsi comme le citoyen d'une patrie inconnue, oubliée de lui-même, différente de celle d'où viendra, appareillant pour la terre, un autre grand artiste. Tout au plus, de cette patrie M. Vinteuil, dans ses dernières oeuvres, semblait s'être rapproché. L'atmosphère n'y était plus la même que dans la sonate, les phrases interrogatives s'y faisaient plus pressantes, plus inquiètes, les réponses plus mystérieuses ; l'air délavé du matin et du soir semblait y influencer jusqu'aux cordes des instruments. Morel avait beau jouer merveilleusement, les sons que rendait son violon me parurent singulièrement perçants, presque criards. Cette âcreté plaisait et, comme dans certaines voix, on y sentait une sorte de qualité morale et de supériorité intellectuelle. Mais cela pouvait choquer. Quand la vision de l'univers se modifie, s'épure, devient plus adéquate au souvenir de la patrie intérieure, il est bien naturel que cela se traduise par une altération générale des sonorités chez le musicien, comme de la couleur chez le peintre. Au reste, le public le plus intelligent ne s'y trompe pas puisque l'on déclara plus tard les dernières oeuvres de M. Vinteuil les plus profondes. Or aucun programme, aucun sujet n'apportait un élément intellectuel de jugement. On devinait donc qu'il s'agissait d'une transposition, dans l'ordre sonore, de la profondeur.
+
+Cette patrie perdue, les musiciens ne se la rappellent pas, mais chacun d'eux reste toujours inconsciemment accordé en un certain unisson avec elle ; il délire de joie quand il chante selon sa patrie, la trahit parfois par amour de la gloire, mais alors en cherchant la gloire il la fuit, et ce n'est qu'en la dédaignant qu'il la trouve quand il entonne, quel que soit le sujet qu'il traite, ce chant singulier dont la monotonie – car quel que soit le sujet traité, il reste identique à soi-même – prouve la fixité des éléments composants de son âme. Mais alors, n'est-ce pas que, de ces éléments, tout le résidu réel que nous sommes obligés de garder pour nous-mêmes, que la causerie ne peut transmettre même de l'ami à l'ami, du maître au disciple, de l'amant à la maîtresse, cet ineffable qui différencie qualitativement ce que chacun a senti et qu'il est obligé de laisser au seuil des phrases où il ne peut communiquer avec autrui qu'en se limitant à des points extérieurs communs à tous et sans intérêt, l'art, l'art d'un M. Vinteuil comme celui d'un Elstir, le fait apparaître, extériorisant dans les couleurs du spectre la composition intime de ces mondes que nous appelons les individus, et que sans l'art nous ne connaîtrions jamais ? Des ailes, un autre appareil respiratoire, et qui nous permissent de traverser l'immensité, ne nous serviraient à rien, car, si nous allions dans Mars et dans Vénus en gardant les mêmes sens, ils revêtiraient du même aspect que les choses de la Terre tout ce que nous pourrions voir. Le seul véritable voyage, le seul bain de Jouvence, ce ne serait pas d'aller vers de nouveaux paysages, mais d'avoir d'autres yeux, de voir l'univers avec les yeux d'un autre, de cent autres, de voir les cent univers que chacun d'eux voit, que chacun d'eux est ; et cela, nous le pouvons avec un Elstir, avec un M. Vinteuil ; avec leurs pareils, nous volons vraiment d'étoiles en étoiles. L'andante venait de finir sur une phrase remplie d'une tendresse à laquelle je m'étais donné tout entier ; alors il y eut, avant le mouvement suivant, un instant de repos où les exécutants posèrent leurs instruments et les auditeurs échangèrent quelques impressions. Un duc, pour montrer qu'il s'y connaissait, déclara : « C'est très difficile à bien jouer. » Des personnes plus agréables causèrent un moment avec moi. Mais qu'étaient leurs paroles, qui, comme toute parole humaine extérieure, me laissaient si indifférent, à côté de la céleste phrase musicale avec laquelle je venais de m'entretenir ? J'étais vraiment comme un ange qui, déchu des ivresses du Paradis, tombe dans la plus insignifiante réalité. Et de même que certains êtres sont les derniers témoins d'une forme de vie que la nature a abandonnée, je me demandais si la musique n'était pas l'exemple unique de ce qu'aurait pu être – s'il n'y avait pas eu l'invention du langage, la formation des mots, l'analyse des idées – la communication des âmes. Elle est comme une possibilité qui n'a pas eu de suites ; l'humanité s'est engagée en d'autres voies, celle du langage parlé et écrit. Mais ce retour à l'inanalysé était si enivrant, qu'au sortir de ce paradis, le contact des êtres plus ou moins intelligents me semblait d'une insignifiance extraordinaire. Les êtres, j'avais pu, pendant la musique, me souvenir d'eux, les mêler à elle ; ou plutôt à la musique je n'avais guère mêlé le souvenir que d'une seule personne, celui d'Albertine. Et la phrase qui finissait l'andante me semblait si sublime que je me disais qu'il était malheureux qu'Albertine ne sût pas, et, si elle avait su, n'eût pas compris quel honneur c'était pour elle d'être mêlée à quelque chose de si grand qui nous réunissait et dont elle avait semblé emprunter la voix pathétique. Mais, une fois la musique interrompue, les êtres qui étaient là semblaient trop fades. On passa quelques rafraîchissements. baron de Charlus interpellait de temps en temps un domestique : « Comment allez-vous ? Avez-vous reçu mon pneumatique ? Viendrez-vous ? » Sans doute il y avait, dans ces interpellations, la liberté du grand seigneur qui croit flatter et qui est plus peuple que le bourgeois, mais aussi la rouerie du coupable qui croit que ce dont on fait étalage est par cela même jugé innocent. Et il ajoutait, sur le ton Guermantes de Mme de Villeparisis : « C'est un brave petit, c'est une bonne nature, je l'emploie souvent chez moi. » Mais ses habiletés tournaient contre le baron, car on trouvait extraordinaires ses amabilités si intimes et ses pneumatiques à des valets de pied. Ceux-ci en étaient, d'ailleurs, moins flattés que gênés pour leurs camarades.

@@ -1,0 +1,661 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  }
+}
+
+### Prior local context (optional)
+
+– Il n'avait qu'à être aimable, il serait encore ici, une bonne correction peut être utile à tout âge.
+
+### Passage
+
+Un jour que Swann était sorti au milieu de l'après-midi pour faire une visite, n'ayant pas trouvé la personne qu'il voulait rencontrer, il eut l'idée d'entrer chez Odette à cette heure où il n'allait jamais chez elle, mais où il savait qu'elle était toujours à la maison à faire sa sieste ou à écrire des lettres avant l'heure du thé, et où il aurait plaisir à la voir un peu sans la déranger. Le concierge lui dit qu'il croyait qu'elle était là ; il sonna, crut entendre du bruit, entendre marcher, mais on n'ouvrit pas. Anxieux, irrité, il alla dans la petite rue où donnait l'autre face de l'hôtel, se mit devant la fenêtre de la chambre d'Odette ; les rideaux l'empêchaient de rien voir, il frappa avec force aux carreaux, appela ; personne n'ouvrit. Il vit que des voisins le regardaient. Il partit, pensant qu'après tout, il s'était peut-être trompé en croyant entendre des pas ; mais il en resta si préoccupé qu'il ne pouvait penser à autre chose. Une heure après, il revint. Il la trouva ; elle lui dit qu'elle était chez elle tantôt quand il avait sonné, mais dormait ; la sonnette l'avait éveillée, elle avait deviné que c'était Swann, elle avait couru après lui, mais il était déjà parti. Elle avait bien entendu frapper aux carreaux. Swann reconnut tout de suite dans ce dire un de ces fragments d'un fait exact que les menteurs pris de court se consolent de faire entrer dans la composition du fait faux qu'ils inventent, croyant y faire sa part et y dérober sa ressemblance à la Vérité. Certes quand Odette venait de faire quelque chose qu'elle ne voulait pas révéler, elle le cachait bien au fond d'elle-même. Mais dès qu'elle se trouvait en présence de celui à qui elle voulait mentir, un trouble la prenait, toutes ses idées s'effondraient, ses facultés d'invention et de raisonnement étaient paralysées, elle ne trouvait plus dans sa tête que le vide, il fallait pourtant dire quelque chose, et elle rencontrait à sa portée précisément la chose qu'elle avait voulu dissimuler et qui étant vraie, était seule restée là. Elle en détachait un petit morceau, sans importance par lui-même, se disant qu'après tout c'était mieux ainsi puisque c'était un détail véritable qui n'offrait pas les mêmes dangers qu'un détail faux. « Ça du moins, c'est vrai, se disait-elle, c'est toujours autant de gagné, il peut s'informer, il reconnaîtra que c'est vrai, ce n'est toujours pas ça qui me trahira. » Elle se trompait, c'était cela qui la trahissait, elle ne se rendait pas compte que ce détail vrai avait des angles qui ne pouvaient s'emboîter que dans les détails contigus du fait vrai dont elle l'avait arbitrairement détaché et qui, quels que fussent les détails inventés entre lesquels elle le placerait, révéleraient toujours par la matière excédante et les vides non remplis, que ce n'était pas d'entre ceux-là qu'il venait. « Elle avoue qu'elle m'avait entendu sonner, puis frapper, et qu'elle avait cru que c'était moi, qu'elle avait envie de me voir, se disait Swann. Mais cela ne s'arrange pas avec le fait qu'elle n'ait pas fait ouvrir. »
+
+Mais il ne lui fit pas remarquer cette contradiction, car il pensait que, livrée à elle-même, Odette produirait peut-être quelque mensonge qui serait un faible indice de la vérité ; elle parlait ; il ne l'interrompait pas, il recueillait avec une piété avide et douloureuse ces mots qu'elle lui disait et qu'il sentait (justement, parce qu'elle la cachait derrière eux tout en lui parlant) garder vaguement, comme le voile sacré, l'empreinte, dessiner l'incertain modelé, de cette réalité infiniment précieuse et hélas introuvable : – ce qu'elle faisait tantôt à trois heures, quand il était venu – de laquelle il ne posséderait jamais que ces mensonges, illisibles et divins vestiges, et qui n'existait plus que dans le souvenir receleur de cet être qui la contemplait sans savoir l'apprécier, mais ne la lui livrerait pas. Certes il se doutait bien par moments qu'en elles-mêmes les actions quotidiennes d'Odette n'étaient pas passionnément intéressantes, et que les relations qu'elle pouvait avoir avec d'autres hommes n'exhalaient pas naturellement d'une façon universelle et pour tout être pensant une tristesse morbide, capable de donner la fièvre du suicide. Il se rendait compte alors que cet intérêt, cette tristesse n'existaient qu'en lui comme une maladie, et que quand celle-ci serait guérie, les actes d'Odette, les baisers qu'elle aurait pu donner redeviendraient inoffensifs comme ceux de tant d'autres femmes. Mais que la curiosité douloureuse que Swann y portait maintenant n'eût sa cause qu'en lui n'était pas pour lui faire trouver déraisonnable de considérer cette curiosité comme importante et de mettre tout en oeuvre pour lui donner satisfaction. C'est que Swann arrivait à un âge dont la philosophie – favorisée par celle de l'époque, par celle aussi du milieu où Swann avait beaucoup vécu, de cette coterie de la princesse des Laumes où il était convenu qu'on est intelligent dans la mesure où on doute de tout et où on ne trouvait de réel et d'incontestable que les goûts de chacun – n'est déjà plus celle de la jeunesse, mais une philosophie positive, presque médicale, d'hommes qui au lieu d'extérioriser les objets de leurs aspirations, essayent de dégager de leurs années déjà écoulées un résidu fixe d'habitudes, de passions qu'ils puissent considérer en eux comme caractéristiques et permanentes et auxquelles, délibérément, ils veilleront d'abord que le genre d'existence qu'ils adoptent puisse donner satisfaction. Swann trouvait sage de faire dans sa vie la part de la souffrance qu'il éprouvait à ignorer ce qu'avait fait Odette, aussi bien que la part de la recrudescence qu'un climat humide causait à son eczéma ; de prévoir dans son budget une disponibilité importante pour obtenir sur l'emploi des journées d'Odette des renseignements sans lesquels il se sentirait malheureux, aussi bien qu'il en réservait pour d'autres goûts dont il savait qu'il pouvait attendre du plaisir, au moins avant qu'il fût amoureux, comme celui des collections et de la bonne cuisine.
+
+Quand il voulut dire adieu à Odette pour rentrer, elle lui demanda de rester encore et le retint même vivement, en lui prenant le bras, au moment où il allait ouvrir la porte pour sortir. Mais il n'y prit pas garde, car, dans la multitude des gestes, des propos, des petits incidents qui remplissent une conversation, il est inévitable que nous passions, sans y rien remarquer qui éveille notre attention, près de ceux qui cachent une vérité que nos soupçons cherchent au hasard, et que nous nous arrêtions au contraire à ceux sous lesquels il n'y a rien. Elle lui redisait tout le temps : « Quel malheur que toi, qui ne viens jamais l'après-midi, pour une fois que cela t'arrive, je ne t'aie pas vu. » Il savait bien qu'elle n'était pas assez amoureuse de lui pour avoir un regret si vif d'avoir manqué sa visite, mais comme elle était bonne, désireuse de lui faire plaisir, et souvent triste quand elle l'avait contrarié, il trouva tout naturel qu'elle le fût cette fois de l'avoir privé de ce plaisir de passer une heure ensemble qui était très grand, non pour elle, mais pour lui. C'était pourtant une chose assez peu importante pour que l'air douloureux qu'elle continuait d'avoir finît par l'étonner. Elle rappelait ainsi, plus encore qu'il ne le trouvait d'habitude, les figures de femmes du le peintre de la Primavera. Elle avait en ce moment leur visage abattu et navré qui semble succomber sous le poids d'une douleur trop lourde pour elles, simplement quand elles laissent l'enfant Jésus jouer avec une grenade ou regardent Moïse verser de l'eau dans une auge. Il lui avait déjà vu une fois une telle tristesse, mais ne savait plus quand. Et tout d'un coup, il se rappela : c'était quand Odette avait menti en parlant à Mme Verdurin le lendemain de ce dîner où elle n'était pas venue sous prétexte qu'elle était malade et en réalité pour rester avec Swann. Certes, eût-elle été la plus scrupuleuse des femmes qu'elle n'aurait pu avoir de remords d'un mensonge aussi innocent. Mais ceux que faisait couramment Odette l'étaient moins et servaient à empêcher des découvertes qui auraient pu lui créer avec les uns ou avec les autres, de terribles difficultés. Aussi quand elle mentait, prise de peur, se sentant peu armée pour se défendre, incertaine du succès, elle avait envie de pleurer, par fatigue, comme certains enfants qui n'ont pas dormi. Puis elle savait que son mensonge lésait d'ordinaire gravement l'homme à qui elle le faisait, et à la merci duquel elle allait peut-être tomber si elle mentait mal. Alors elle se sentait à la fois humble et coupable devant lui. Et quand elle avait à faire un mensonge insignifiant et mondain, par association de sensations et de souvenirs, elle éprouvait le malaise d'un surmenage et le regret d'une méchanceté.

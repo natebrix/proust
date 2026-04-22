@@ -1,0 +1,80 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "Mme Verdurin",
+      "surface_forms": ["les M. Verdurin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.85
+    },
+    {
+      "canonical_name": "M. Verdurin",
+      "surface_forms": ["les M. Verdurin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.85
+    },
+    {
+      "canonical_name": "docteur Cottard",
+      "surface_forms": ["docteur Cottard"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "unknown",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.78,
+      "evidence": "« ça ne m'étonne pas du tout, c'est bien par là que devait finir Swann. Joli milieu ! ... tombé ... dans la bohème et la racaille. ... je ne me mêle pas de ces affaires-là. »",
+      "explanation": "The grandfather refuses to help and disparages the Verdurin milieu, framing Swann’s pursuit of their circle as a decline and tainted by a 'histoire de femme,' which locally discredits Swann through his association with the Verdurins."
+    },
+    {
+      "event_id": "E2",
+      "source": "narrator",
+      "target": "docteur Cottard",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "« ne savait jamais ... de quel ton ... il ajoutait ... un sourire conditionnel et provisoire ... on y voyait flotter perpétuellement une incertitude »",
+      "explanation": "The narrator’s detailed portrait highlights Cottard’s perpetual social uncertainty and defensive smiling, lowering his local standing as inept and timid in salons and in life."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.78,
+      "explanation": "Within the family/social code reported, seeking out the Verdurins marks Swann as 'fallen,' and he is refused assistance, lowering his perceived standing."
+    },
+    {
+      "character": "docteur Cottard",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.9,
+      "explanation": "He is depicted as socially inept and unsure, which diminishes his local appraisal."
+    }
+  ],
+  "ambiguities": [
+    "The negative judgment and refusal come from the narrator’s grandfather (not in alias map), so the source is marked as 'unknown' and may not be narrator-endorsed.",
+    "The plural form « les M. Verdurin » refers to the couple; attribution to Mme Verdurin vs M. Verdurin is not disambiguated."
+  ]
+}

@@ -1,0 +1,1020 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ],
+    "notes": "Swann acquaintance with a nearby estate"
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ],
+    "notes": "Aristocratic social connection mentioned in Swann's prestige world"
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ],
+    "notes": "Narrator's uncle Adolphe"
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ],
+    "notes": "Parisian salon hostess"
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ],
+    "notes": "Guermantes relation obsessed with rank and kinship display"
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ],
+    "notes": "Guermantes aristocrat referenced in the Laumes social orbit"
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ],
+    "notes": "Aristocratic hostess in the Guermantes orbit"
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ],
+    "notes": "Swann social acquaintance considered among suspects"
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ],
+    "notes": "Swann associate/servant mentioned among suspects"
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ],
+    "notes": "Salon attendee who comments after the sonata"
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ],
+    "notes": "Dream-figure standing in for Forcheville in Swann's dream"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ],
+    "notes": "Gilberte Swann, first encountered at the Champs-Elysees"
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ],
+    "notes": "Narrator's family servant"
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ],
+    "notes": "Celebrated actress"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": "Writer admired by the narrator"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois, diplomat and family dinner guest"
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ],
+    "notes": "Narrator's grandmother"
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ],
+    "notes": "Aristocratic hotel guest at Balbec"
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ],
+    "notes": "Headwaiter or maître d'hôtel at the Grand-Hôtel in Balbec"
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ],
+    "notes": "Daughter of M. de Stermaria"
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ],
+    "notes": "Male member of the Cambremer family in the Balbec hotel circle"
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ],
+    "notes": "Aristocratic visitor in the Balbec social scene"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ],
+    "notes": "Narrator's father"
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ],
+    "notes": "Young aristocrat and nephew of Mme de Villeparisis"
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ],
+    "notes": "Father of Saint-Loup"
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ],
+    "notes": "Friend/acquaintance of the narrator; socially performative and often ironic"
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ],
+    "notes": "Guermantes title in the family sequence discussed with Saint-Loup"
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ],
+    "notes": "Bloch's father as remembered and socially evaluated in the narrator's reflections"
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ],
+    "notes": "Grand-Hotel director observed by the narrator"
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ],
+    "notes": "Figure invoked in the political talk reported by Aimé"
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ],
+    "notes": "The sad-looking blonde seen at Rivebelle who begins to crystallize in the narrator's desire"
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ],
+    "notes": "Oriane de Guermantes; now appearing as the duchesse de Guermantes"
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ],
+    "notes": "Neighbor and ally of Françoise in the new Guermantes setting"
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ],
+    "notes": "Princesse de Guermantes-Bavière; hostess of the evening in the opening of v4-p2"
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ],
+    "notes": "Aristocratic young man encountered outside the princesse de Guermantes salon"
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ],
+    "notes": "Diplomat/ambassador figure appearing in the princesse de Guermantes salon"
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ],
+    "notes": "Wife of M. de Vaugoubert"
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ],
+    "notes": "Albertine Simonet; narrator's companion in La Prisonnière"
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ],
+    "notes": "Andrée, one of the Balbec girls and Albertine's friend"
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ],
+    "notes": "Albertine's aunt"
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ],
+    "notes": "Charles Morel, violinist associated with Charlus and the Verdurins"
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ],
+    "notes": "Painter and social/aesthetic authority referenced by Albertine."
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ],
+    "notes": "Prince de Leon, beau-frere de Saint-Loup in the duchesse de Guermantes anecdotes."
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ],
+    "notes": "Aristocratic figure in the duchesse de Guermantes reminiscences."
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ],
+    "notes": "Social rival figure in the Jockey Club episode around the Guermantes."
+  }
+}
+
+### Prior local context (optional)
+
+Mais une fois, mon grand-père lut dans son journal que Swann était un des plus fidèles habitués des déjeuners du dimanche chez le duc de X..., dont le père et l'oncle avaient été les hommes d'État les plus en vue du règne de Louis-Philippe. Or mon grand-père était curieux de tous les petits faits qui pouvaient l'aider à entrer par la pensée dans la vie privée d'hommes comme Molé, comme le duc Pasquier, comme le duc de Broglie. Il fut enchanté d'apprendre que Swann fréquentait des gens qui les avaient connus. Ma grand'tante au contraire interpréta cette nouvelle dans un sens défavorable à Swann : quelqu'un qui choisissait ses fréquentations en dehors de la caste où il était né, en dehors de sa « classe » sociale, subissait à ses yeux un fâcheux déclassement. Il lui semblait qu'on renonçât d'un coup au fruit de toutes les belles relations avec des gens bien posés, qu'avaient honorablement entretenues et engrangées pour leurs enfants les familles prévoyantes (ma grand'tante avait même cessé de voir le fils d'un notaire de nos amis parce qu'il avait épousé une altesse et était par là descendu pour elle du rang respecté de fils de notaire à celui d'un de ces aventuriers, anciens valets de chambre ou garçons d'écurie, pour qui on raconte que les reines eurent parfois des bontés). Elle blâma le projet qu'avait mon grand-père d'interroger Swann, le soir prochain où il devait venir dîner, sur ces amis que nous lui découvrions. D'autre part les deux soeurs de la grand-mère, vieilles filles qui avaient sa noble nature, mais non son esprit, déclarèrent ne pas comprendre le plaisir que leur beau-frère pouvait trouver à parler de niaiseries pareilles. C'étaient des personnes d'aspirations élevées et qui à cause de cela même étaient incapables de s'intéresser à ce qu'on appelle un potin, eût-il même un intérêt historique, et d'une façon générale à tout ce qui ne se rattachait pas directement à un objet esthétique ou vertueux. Le désintéressement de leur pensée était tel, à l'égard de tout ce qui, de près ou de loin semblait se rattacher à la vie mondaine, que leur sens auditif, – ayant fini par comprendre son inutilité momentanée dès qu'à dîner la conversation prenait un ton frivole ou seulement terre à terre sans que ces deux vieilles demoiselles aient pu la ramener aux sujets qui leur étaient chers, – mettait alors au repos ses organes récepteurs et leur laissait subir un véritable commencement d'atrophie. Si alors mon grand-père avait besoin d'attirer l'attention des deux soeurs, il fallait qu'il eût recours à ces avertissements physiques dont usent les médecins aliénistes à l'égard de certains maniaques de la distraction : coups frappés à plusieurs reprises sur un verre avec la lame d'un couteau, coïncidant avec une brusque interpellation de la voix et du regard, moyens violents que ces psychiatres transportent souvent dans les rapports courants avec des gens bien portants, soit par habitude professionnelle, soit qu'ils croient tout le monde un peu fou.
+
+### Passage
+
+Elles furent plus intéressées quand la veille du jour où Swann devait venir dîner, et leur avait personnellement envoyé une caisse de vin d'Asti, ma tante, tenant un numéro du Figaro où à côté du nom d'un tableau qui était à une Exposition de Corot, il y avait ces mots : « de la collection de Swann Swann », nous dit : « Vous avez vu que Swann a « les honneurs » du Figaro ? » – « Mais je vous ai toujours dit qu'il avait beaucoup de goût », dit la grand-mère. – « Naturellement toi, du moment qu'il s'agit d'être d'un autre avis que nous », répondit ma grand'tante qui, sachant que la grand-mère n'était jamais du même avis qu'elle, et n'étant pas bien sûre que ce fût à elle-même que nous donnions toujours raison, voulait nous arracher une condamnation en bloc des opinions de la grand-mère contre lesquelles elle tâchait de nous solidariser de force avec les siennes. Mais nous restâmes silencieux. Les soeurs de la grand-mère ayant manifesté l'intention de parler à Swann de ce mot du Figaro, ma grand'tante le leur déconseilla. Chaque fois qu'elle voyait aux autres un avantage si petit fût-il qu'elle n'avait pas, elle se persuadait que c'était non un avantage mais un mal et elle les plaignait pour ne pas avoir à les envier. « Je crois que vous ne lui feriez pas plaisir ; moi je sais bien que cela me serait très désagréable de voir mon nom imprimé tout vif comme cela dans le journal, et je ne serais pas flattée du tout qu'on m'en parlât. » Elle ne s'entêta pas d'ailleurs à persuader les soeurs de la grand-mère ; car celles-ci par horreur de la vulgarité poussaient si loin l'art de dissimuler sous des périphrases ingénieuses une allusion personnelle, qu'elle passait souvent inaperçue de celui même à qui elle s'adressait. Quant à la mère du narrateur, elle ne pensait qu'à tâcher d'obtenir de le père du narrateur qu'il consentît à parler à Swann non de sa femme, mais de sa fille qu'il adorait et à cause de laquelle, disait-on, il avait fini par faire ce mariage. « Tu pourrais ne lui dire qu'un mot, lui demander comment elle va. Cela doit être si cruel pour lui. » Mais le père du narrateur se fâchait : « Mais non ! tu as des idées absurdes. Ce serait ridicule. »
+
+Mais le seul d'entre nous pour qui la venue de Swann devint l'objet d'une préoccupation douloureuse, ce fut moi. C'est que les soirs où des étrangers, ou seulement Swann, étaient là, la mère du narrateur ne montait pas dans ma chambre. Je dînais avant tout le monde et je venais ensuite m'asseoir à table, jusqu'à huit heures où il était convenu que je devais monter ; ce baiser précieux et fragile que la mère du narrateur me confiait d'habitude dans mon lit au moment de m'endormir, il me fallait le transporter de la salle à manger dans ma chambre et le garder pendant tout le temps que je me déshabillais, sans que se brisât sa douceur, sans que se répandît et s'évaporât sa vertu volatile et, justement ces soirs-là où j'aurais eu besoin de le recevoir avec plus de précaution, il fallait que je le prisse, que je dérobasse brusquement, publiquement, sans même avoir le temps et la liberté d'esprit nécessaires pour porter à ce que je faisais cette attention des maniaques qui s'efforcent de ne pas penser à autre chose pendant qu'ils ferment une porte, pour pouvoir, quand l'incertitude maladive leur revient, lui opposer victorieusement le souvenir du moment où ils l'ont fermée. Nous étions tous au jardin quand retentirent les deux coups hésitants de la clochette. On savait que c'était Swann ; néanmoins tout le monde se regarda d'un air interrogateur et on envoya la grand-mère en reconnaissance. « Pensez à le remercier intelligiblement de son vin, vous savez qu'il est délicieux et la caisse est énorme », recommanda mon grand-père à ses deux belles-soeurs. « Ne commencez pas à chuchoter, dit ma grand'tante. Comme c'est confortable d'arriver dans une maison où tout le monde parle bas. » – « Ah ! voilà Swann. Nous allons lui demander s'il croit qu'il fera beau demain », dit le père du narrateur. Ma mère pensait qu'un mot d'elle effacerait toute la peine que dans notre famille on avait pu faire à Swann depuis son mariage. Elle trouva le moyen de l'emmener un peu à l'écart. Mais je la suivis ; je ne pouvais me décider à la quitter d'un pas en pensant que tout à l'heure il faudrait que je la laisse dans la salle à manger et que je remonte dans ma chambre sans avoir comme les autres soirs la consolation qu'elle vînt m'embrasser. « Voyons, monsieur Swann, lui dit-elle, parlez-moi un peu de votre fille ; je suis sûre qu'elle a déjà le goût des belles oeuvres comme son papa. » – « Mais venez donc vous asseoir avec nous tous sous la véranda », dit mon grand-père en s'approchant. Ma mère fut obligée de s'interrompre, mais elle tira de cette contrainte même une pensée délicate de plus, comme les bons poètes que la tyrannie de la rime force à trouver leurs plus grandes beautés : « Nous reparlerons d'elle quand nous serons tous les deux, dit-elle à mi-voix à Swann. Il n'y a qu'une la mère du narrateur qui soit digne de vous comprendre. Je suis sûre que la sienne serait de mon avis. » Nous nous assîmes tous autour de la table de fer. J'aurais voulu ne pas penser aux heures d'angoisse que je passerais ce soir seul dans ma chambre sans pouvoir m'endormir ; je tâchais de me persuader qu'elles n'avaient aucune importance, puisque je les aurais oubliées demain matin, de m'attacher à des idées d'avenir qui auraient dû me conduire comme sur un pont au delà de l'abîme prochain qui m'effrayait. Mais mon esprit tendu par ma préoccupation, rendu convexe comme le regard que je dardais sur la mère du narrateur, ne se laissait pénétrer par aucune impression étrangère. Les pensées entraient bien en lui, mais à condition de laisser dehors tout élément de beauté ou simplement de drôlerie qui m'eût touché ou distrait. Comme un malade grâce à un anesthésique assiste avec une pleine lucidité à l'opération qu'on pratique sur lui, mais sans rien sentir, je pouvais me réciter des vers que j'aimais ou observer les efforts que mon grand-père faisait pour parler à Swann du duc d'Audiffret-Pasquier, sans que les premiers me fissent éprouver aucune émotion, les seconds aucune gaîté. Ces efforts furent infructueux. À peine mon grand-père eut-il posé à Swann une question relative à cet orateur qu'une des soeurs de la grand-mère aux oreilles de qui cette question résonna comme un silence profond mais intempestif et qu'il était poli de rompre, interpella l'autre : « Imagine-toi, Céline, que j'ai fait la connaissance d'une jeune institutrice suédoise qui m'a donné sur les coopératives dans les pays scandinaves des détails tout ce qu'il y a de plus intéressants. Il faudra qu'elle vienne dîner ici un soir. » – « Je crois bien ! répondit sa soeur Flora, mais je n'ai pas perdu mon temps non plus. J'ai rencontré chez M. Vinteuil un vieux savant qui connaît beaucoup Maubant, et à qui Maubant a expliqué dans le plus grand détail comment il s'y prend pour composer un rôle. C'est tout ce qu'il y a de plus intéressant. C'est un voisin de M. Vinteuil, je n'en savais rien ; et il est très aimable. » – « Il n'y a pas que M. Vinteuil qui ait des voisins aimables », s'écria ma tante Céline d'une voix que la timidité rendait forte et la préméditation, factice, tout en jetant sur Swann ce qu'elle appelait un regard significatif. En même temps ma tante Flora qui avait compris que cette phrase était le remerciement de Céline pour le vin d'Asti, regardait également Swann avec un air mêlé de congratulation et d'ironie, soit simplement pour souligner le trait d'esprit de sa soeur, soit qu'elle enviât Swann de l'avoir inspiré, soit qu'elle ne pût s'empêcher de se moquer de lui parce qu'elle le croyait sur la sellette. « Je crois qu'on pourra réussir à avoir ce monsieur à dîner, continua Flora ; quand on le met sur Maubant ou sur Mme Materna, il parle des heures sans s'arrêter. » – « Ce doit être délicieux », soupira mon grand-père dans l'esprit de qui la nature avait malheureusement aussi complètement omis d'inclure la possibilité de s'intéresser passionnément aux coopératives suédoises ou à la composition des rôles de Maubant, qu'elle avait oublié de fournir celui des soeurs de la grand-mère du petit grain de sel qu'il faut ajouter soi-même, pour y trouver quelque saveur, à un récit sur la vie intime de Molé ou du comte de Paris. « Tenez, dit Swann à mon grand-père, ce que je vais vous dire a plus de rapports que cela n'en a l'air avec ce que vous me demandiez, car sur certains points les choses n'ont pas énormément changé. Je relisais ce matin dans Saint-Simon quelque chose qui vous aurait amusé. C'est dans le volume sur son ambassade d'Espagne ; ce n'est pas un des meilleurs, ce n'est guère qu'un journal merveilleusement écrit, ce qui fait déjà une première différence avec les assommants journaux que nous nous croyons obligés de lire matin et soir. » – « Je ne suis pas de votre avis, il y a des jours où la lecture des journaux me semble fort agréable... », interrompit ma tante Flora, pour montrer qu'elle avait lu la phrase sur le Corot de Swann dans le Figaro. « Quand ils parlent de choses ou de gens qui nous intéressent ! » enchérit ma tante Céline. « Je ne dis pas non, répondit Swann étonné. Ce que je reproche aux journaux, c'est de nous faire faire attention tous les jours à des choses insignifiantes tandis que nous lisons trois ou quatre fois dans notre vie les livres où il y a des choses essentielles. Du moment que nous déchirons fiévreusement chaque matin la bande du journal, alors on devrait changer les choses et mettre dans le journal, moi je ne sais pas, les... Pensées de Pascal ! (il détacha ce mot d'un ton d'emphase ironique pour ne pas avoir l'air pédant). Et c'est dans le volume doré sur tranches que nous n'ouvrons qu'une fois tous les dix ans, ajouta-t-il en témoignant pour les choses mondaines ce dédain qu'affectent certains hommes du monde, que nous lirions que la reine de Grèce est allée à Cannes ou que la princesse de prince de Léon a donné un bal costumé. Comme cela la juste proportion serait rétablie. »
+
+Mais regrettant de s'être laissé aller à parler même légèrement de choses sérieuses : « Nous avons une bien belle conversation, dit-il ironiquement, je ne sais pas pourquoi nous abordons ces « sommets », et se tournant vers mon grand-père : « Donc Saint-Simon raconte que Maulevrier avait eu l'audace de tendre la main à ses fils. Vous savez, c'est ce Maulevrier dont il dit : « Jamais je ne vis dans cette épaisse bouteille que de l'humeur, de la grossièreté et des sottises. » – « Épaisses ou non, je connais des bouteilles où il y a tout autre chose », dit vivement Flora, qui tenait à avoir remercié Swann elle aussi, car le présent de vin d'Asti s'adressait aux deux. Céline se mit à rire. Swann interloqué reprit : « Je ne sais si ce fut ignorance ou panneau, écrit Saint-Simon, il voulut donner la main à mes enfants. Je m'en aperçus assez tôt pour l'en empêcher. » Mon grand-père s'extasiait déjà sur « ignorance ou panneau », mais Mlle Céline, chez qui le nom de Saint-Simon – un littérateur – avait empêché l'anesthésie complète des facultés auditives, s'indignait déjà : « Comment ? vous admirez cela ? Eh bien ! c'est du joli ! Mais qu'est-ce que cela peut vouloir dire ; est-ce qu'un homme n'est pas autant qu'un autre ? Qu'est-ce que cela peut faire qu'il soit duc ou cocher s'il a de l'intelligence et du coeur ? Il avait une belle manière d'élever ses enfants, votre Saint-Simon, s'il ne leur disait pas de donner la main à tous les honnêtes gens. Mais c'est abominable, tout simplement. Et vous osez citer cela ? » Et mon grand-père navré, sentant l'impossibilité, devant cette obstruction, de chercher à faire raconter à Swann les histoires qui l'eussent amusé, disait à voix basse à la mère du narrateur : « Rappelle-moi donc le vers que tu m'as appris et qui me soulage tant dans ces moments-là. Ah ! oui : « Seigneur, que de vertus vous nous faites haïr ! » Ah ! comme c'est bien ! »
+
+Je ne quittais pas la mère du narrateur des yeux, je savais que quand on serait à table, on ne me permettrait pas de rester pendant toute la durée du dîner et que, pour ne pas contrarier le père du narrateur, la mère du narrateur ne me laisserait pas l'embrasser à plusieurs reprises devant le monde, comme si ç'avait été dans ma chambre. Aussi je me promettais, dans la salle à manger, pendant qu'on commencerait à dîner et que je sentirais approcher l'heure, de faire d'avance de ce baiser qui serait si court et furtif, tout ce que j'en pouvais faire seul, de choisir avec mon regard la place de la joue que j'embrasserais, de préparer ma pensée pour pouvoir grâce à ce commencement mental de baiser consacrer toute la minute que m'accorderait la mère du narrateur à sentir sa joue contre mes lèvres, comme un le peintre qui ne peut obtenir que de courtes séances de pose, prépare sa palette, et a fait d'avance de souvenir, d'après ses notes, tout ce pour quoi il pouvait à la rigueur se passer de la présence du modèle. Mais voici qu'avant que le dîner fût sonné mon grand-père eut la férocité inconsciente de dire : « Le petit a l'air fatigué, il devrait monter se coucher. On dîne tard du reste ce soir. » Et le père du narrateur, qui ne gardait pas aussi scrupuleusement que la grand-mère et que la mère du narrateur la foi des traités, dit : « Oui, allons, vas te coucher. » Je voulus embrasser la mère du narrateur, à cet instant on entendit la cloche du dîner. « Mais non, voyons, laisse ta mère, vous vous êtes assez dit bonsoir comme cela, ces manifestations sont ridicules. Allons, monte ! » Et il me fallut partir sans viatique ; il me fallut monter chaque marche de l'escalier, comme dit l'expression populaire, à « contre-coeur », montant contre mon coeur qui voulait retourner près de la mère du narrateur parce qu'elle ne lui avait pas, en m'embrassant, donné licence de me suivre. Cet escalier détesté où je m'engageais toujours si tristement, exhalait une odeur de vernis qui avait en quelque sorte absorbé, fixé, cette sorte particulière de chagrin que je ressentais chaque soir, et la rendait peut-être plus cruelle encore pour ma sensibilité parce que, sous cette forme olfactive, mon intelligence n'en pouvait plus prendre sa part. Quand nous dormons et qu'une rage de dents n'est encore perçue par nous que comme une jeune fille que nous nous efforçons deux cents fois de suite de tirer de l'eau ou que comme un vers de Molière que nous nous répétons sans arrêter, c'est un grand soulagement de nous réveiller et que notre intelligence puisse débarrasser l'idée de rage de dents, de tout déguisement héroïque ou cadencé. C'est l'inverse de ce soulagement que j'éprouvais quand mon chagrin de monter dans ma chambre entrait en moi d'une façon infiniment plus rapide, presque instantanée, à la fois insidieuse et brusque, par l'inhalation – beaucoup plus toxique que la pénétration morale – de l'odeur de vernis particulière à cet escalier. Une fois dans ma chambre, il fallut boucher toutes les issues, fermer les volets, creuser mon propre tombeau, en défaisant mes couvertures, revêtir le suaire de ma chemise de nuit. Mais avant de m'ensevelir dans le lit de fer qu'on avait ajouté dans la chambre parce que j'avais trop chaud l'été sous les courtines de reps du grand lit, j'eus un mouvement de révolte, je voulus essayer d'une ruse de condamné. J'écrivis à la mère du narrateur en la suppliant de monter pour une chose grave que je ne pouvais lui dire dans ma lettre. Mon effroi était que Françoise, la cuisinière de ma tante qui était chargée de s'occuper de moi quand j'étais à Combray, refusât de porter mon mot. Je me doutais que pour elle, faire une commission à la mère du narrateur quand il y avait du monde lui paraîtrait aussi impossible que pour le portier d'un théâtre de remettre une lettre à un acteur pendant qu'il est en scène. Elle possédait à l'égard des choses qui peuvent ou ne peuvent pas se faire un code impérieux, abondant, subtil et intransigeant sur des distinctions insaisissables ou oiseuses (ce qui lui donnait l'apparence de ces lois antiques qui, à côté de prescriptions féroces comme de massacrer les enfants à la mamelle, défendent avec une délicatesse exagérée de faire bouillir le chevreau dans le lait de sa mère, ou de manger dans un animal le nerf de la cuisse). Ce code, si l'on en jugeait par l'entêtement soudain qu'elle mettait à ne pas vouloir faire certaines commissions que nous lui donnions, semblait avoir prévu des complexités sociales et des raffinements mondains tels que rien dans l'entourage de Françoise et dans sa vie de domestique de village n'avait pu les lui suggérer ; et l'on était obligé de se dire qu'il y avait en elle un passé français très ancien, noble et mal compris, comme dans ces cités manufacturières où de vieux hôtels témoignent qu'il y eut jadis une vie de cour, et où les ouvriers d'une usine de produits chimiques travaillent au milieu de délicates sculptures qui représentent le miracle de saint Théophile ou les quatre fils Aymon. Dans le cas particulier, l'article du code à cause duquel il était peu probable que sauf le cas d'incendie Françoise allât déranger la mère du narrateur en présence de Swann pour un aussi petit personnage que moi, exprimait simplement le respect qu'elle professait non seulement pour les parents – comme pour les morts, les prêtres et les rois – mais encore pour l'étranger à qui on donne l'hospitalité, respect qui m'aurait peut-être touché dans un livre mais qui m'irritait toujours dans sa bouche, à cause du ton grave et attendri qu'elle prenait pour en parler, et davantage ce soir où le caractère sacré qu'elle conférait au dîner avait pour effet qu'elle refuserait d'en troubler la cérémonie. Mais pour mettre une chance de mon côté, je n'hésitai pas à mentir et à lui dire que ce n'était pas du tout moi qui avais voulu écrire à la mère du narrateur, mais que c'était la mère du narrateur qui, en me quittant, m'avait recommandé de ne pas oublier de lui envoyer une réponse relativement à un objet qu'elle m'avait prié de chercher ; et elle serait certainement très fâchée si on ne lui remettait pas ce mot. Je pense que Françoise ne me crut pas, car, comme les hommes primitifs dont les sens étaient plus puissants que les nôtres, elle discernait immédiatement, à des signes insaisissables pour nous, toute vérité que nous voulions lui cacher ; elle regarda pendant cinq minutes l'enveloppe comme si l'examen du papier et l'aspect de l'écriture allaient la renseigner sur la nature du contenu ou lui apprendre à quel article de son code elle devait se référer. Puis elle sortit d'un air résigné qui semblait signifier : « C'est-il pas malheureux pour des parents d'avoir un enfant pareil ! » Elle revint au bout d'un moment me dire qu'on n'en était encore qu'à la glace, qu'il était impossible au maître d'hôtel de remettre la lettre en ce moment devant tout le monde, mais que, quand on serait aux rince-bouche, on trouverait le moyen de la faire passer à la mère du narrateur. Aussitôt mon anxiété tomba ; maintenant ce n'était plus comme tout à l'heure pour jusqu'à demain que j'avais quitté la mère du narrateur, puisque mon petit mot allait, la fâchant sans doute (et doublement parce que ce manège me rendrait ridicule aux yeux de Swann), me faire du moins entrer invisible et ravi dans la même pièce qu'elle, allait lui parler de moi à l'oreille ; puisque cette salle à manger interdite, hostile, où, il y avait un instant encore, la glace elle-même – le « granité » – et les rince-bouche me semblaient recéler des plaisirs malfaisants et mortellement tristes parce que la mère du narrateur les goûtait loin de moi, s'ouvrait à moi et, comme un fruit devenu doux qui brise son enveloppe, allait faire jaillir, projeter jusqu'à mon coeur enivré l'attention de la mère du narrateur tandis qu'elle lirait mes lignes. Maintenant je n'étais plus séparé d'elle ; les barrières étaient tombées, un fil délicieux nous réunissait. Et puis, ce n'était pas tout : la mère du narrateur allait sans doute venir !
+
+L'angoisse que je venais d'éprouver, je pensais que Swann s'en serait bien moqué s'il avait lu ma lettre et en avait deviné le but ; or, au contraire, comme je l'ai appris plus tard, une angoisse semblable fut le tourment de longues années de sa vie, et personne aussi bien que lui peut-être, n'aurait pu me comprendre ; lui, cette angoisse qu'il y a à sentir l'être qu'on aime dans un lieu de plaisir où l'on n'est pas, où l'on ne peut pas le rejoindre, c'est l'amour qui la lui a fait connaître, l'amour auquel elle est en quelque sorte prédestinée, par lequel elle sera accaparée, spécialisée ; mais quand, comme pour moi, elle est entrée en nous avant qu'il ait encore fait son apparition dans notre vie, elle flotte en l'attendant, vague et libre, sans affectation déterminée, au service un jour d'un sentiment, le lendemain d'un autre, tantôt de la tendresse filiale ou de l'amitié pour un camarade. – Et la joie avec laquelle je fis mon premier apprentissage quand Françoise revint me dire que ma lettre serait remise, Swann l'avait bien connue aussi, cette joie trompeuse que nous donne quelque ami, quelque parent de la femme que nous aimons, quand arrivant à l'hôtel ou au théâtre où elle se trouve, pour quelque bal, redoute, ou première où il va la retrouver, cet ami nous aperçoit errant dehors, attendant désespérément quelque occasion de communiquer avec elle. Il nous reconnaît, nous aborde familièrement, nous demande ce que nous faisons là. Et comme nous inventons que nous avons quelque chose d'urgent à dire à sa parente ou amie, il nous assure que rien n'est plus simple, nous fait entrer dans le vestibule et nous promet de nous l'envoyer avant cinq minutes. Que nous l'aimons – comme en ce moment j'aimais Françoise – l'intermédiaire bien intentionné qui d'un mot vient de nous rendre supportable, humaine et presque propice la fête inconcevable, infernale, au sein de laquelle nous croyions que des tourbillons ennemis, pervers et délicieux entraînaient loin de nous, la faisant rire de nous, celle que nous aimons. Si nous en jugeons par lui, le parent qui nous a accosté et qui est lui aussi un des initiés des cruels mystères, les autres invités de la fête ne doivent rien avoir de bien démoniaque. Ces heures inaccessibles et suppliciantes où elle allait goûter des plaisirs inconnus, voici que par une brèche inespérée nous y pénétrons ; voici qu'un des moments dont la succession les aurait composées, un moment aussi réel que les autres, même peut-être plus important pour nous, parce que notre maîtresse y est plus mêlée, nous nous le représentons, nous le possédons, nous y intervenons, nous l'avons créé presque : le moment où on va lui dire que nous sommes là, en bas. Et sans doute les autres moments de la fête ne devaient pas être d'une essence bien différente de celui-là, ne devaient rien avoir de plus délicieux et qui dût tant nous faire souffrir, puisque l'ami bienveillant nous a dit : « Mais elle sera ravie de descendre ! Cela lui fera beaucoup plus de plaisir de causer avec vous que de s'ennuyer là-haut. » Hélas ! Swann en avait fait l'expérience, les bonnes intentions d'un tiers sont sans pouvoir sur une femme qui s'irrite de se sentir poursuivie jusque dans une fête par quelqu'un qu'elle n'aime pas. Souvent, l'ami redescend seul.

@@ -1,0 +1,1020 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+Your purpose is to generate structured literary-social annotations that can later be transformed into different notions of "winning" and "losing."
+Do **not** reduce the passage to a single winner-loser verdict unless the evidence is overwhelmingly explicit.
+Instead, identify the **dominant local evaluative acts** and their consequences for the named characters.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Use **only named characters** that appear in the alias map.
+* Resolve references to the **canonical character name** using the alias map.
+* Ignore unnamed figures unless they are clearly mapped to a named character.
+* Work primarily from the passage itself.
+* Use prior context only for local disambiguation of references, not for broad plot inference.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+
+## What to detect
+
+Track local shifts in how named characters are positioned through:
+
+* praise
+* blame
+* admiration
+* snub
+* prestige by association
+* discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+For this first pass, prefer **broad, stable categories** over fine-grained distinctions.
+Do not split one local movement into multiple event labels unless the passage clearly stages them as distinct.
+
+## Interpretive principles
+
+A character may come out ahead or behind in several ways:
+
+* directly, by being praised or insulted
+* comparatively, by being favored over another
+* socially, by being included, deferred to, or excluded
+* rhetorically, by speaking with force, wit, authority, or discernment
+* emotionally, by gaining leverage over another character
+* associationally, by benefiting from or suffering through a linked person
+* narratively, through a passage that appears to elevate or diminish them
+
+Do **not** judge:
+
+* morality
+* factual correctness
+* long-term importance
+* whether the character "deserves" the treatment
+
+Judge only the **local evaluative and social dynamics** of the supplied passage.
+
+## Special caution for Proust
+
+Proust often layers evaluation through:
+
+* quoted speech
+* free indirect style
+* remembered perception
+* irony
+* narrator distance
+* social codes that are reported rather than endorsed
+
+For every evaluative event, distinguish:
+
+* who is making the evaluation
+* who is its target
+* whether the passage appears to endorse, neutrally report, ironize, or leave uncertain that evaluation
+
+## Special rule for consummation and renewal
+
+In erotic or affective passages, distinguish between:
+
+* the mode of attainment
+* the attained local outcome
+
+Timidity, dependence, awkwardness, compromise, or ironic framing may qualify how an outcome is reached, but they do **not** by themselves override a plainly successful local outcome.
+
+If the passage culminates in any of the following, that dominant positive movement must be represented in the annotation:
+
+* realized intimacy
+* mutual receptivity
+* successful consummation
+* narrator-endorsed emotional renewal
+
+Do **not** collapse such passages into pure diminishment merely because the path to that outcome is hesitant, dependent, socially compromising, or lightly ironized.
+When both weakness and successful renewal coexist, preserve the dominant local success and mention the qualifying weakness only if it is central.
+Do **not** treat mere reunion, temporary relief, or the end of uncertainty as equivalent to consummation or renewal.
+Relief at finding the desired person again counts as dominant positive movement only if the passage itself goes on to show realized intimacy, mutual receptivity, or an explicitly narrator-endorsed affective transformation.
+Weigh the passage as a whole rather than over-privileging its final sentence or final image.
+Do **not** let a single upbeat note, however striking or late-placed, outweigh a passage whose dominant body is organized around anxious search, dependency, agitation, jealousy, or diminishment unless the passage is plainly structured so that the culmination redefines the whole local movement.
+If most of the passage is governed by distress and only a brief closing note offers relief, prefer a mixed or negative reading unless the text clearly presents that closing turn as the main narrated point.
+
+## Task
+
+1. Identify only the named characters who are materially involved in the dominant local movement.
+2. Extract only the **significant** appraisal or status-relevant events.
+3. Record only the dominant local status effects for the characters involved.
+4. Note ambiguity only when it materially changes how the event or status effect should be read.
+5. Multiple characters may gain or lose simultaneously.
+6. If there is no meaningful status movement, return empty `appraisal_events` and empty `status_effects`.
+7. Prefer fewer, high-quality events over many trivial ones.
+8. Default to **1 main event** for a passage.
+9. Use **2 events only** when the passage clearly contains two distinct, non-redundant local movements.
+10. Do not add balancing or countervailing events unless they are central to the passage.
+11. Never return more than **2 appraisal events**.
+12. Never return more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only.
+
+Schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "E1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["E1"],
+"confidence": 0.0,
+"explanation": "brief explanation"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+## Schema guidance
+
+Use a reduced first-pass schema.
+
+Do not add fields beyond the schema above.
+
+### `characters_present`
+
+Include only named characters who are either:
+
+* explicitly mentioned in the passage
+* clearly implicated by nearby reference in the passage or optional prior context
+
+Do **not** include every discourse participant.
+Include a character only if omitting them would distort the dominant local appraisal or status movement.
+Peripheral parents, relatives, or bystanders should usually be omitted in this first pass.
+
+### `appraisal_events`
+
+Record only significant local evaluative or status-relevant events.
+
+Prefer fewer, stronger events over exhaustive tagging.
+Default to **1 event**.
+Use **2 events** only when the passage clearly contains two distinct movements that are both central.
+Never emit more than **2 events** total.
+
+Good reasons to create an event:
+
+* one character is praised, admired, deferred to, or favored
+* one character is blamed, ridiculed, excluded, snubbed, or diminished
+* a comparison clearly puts one character above or below another
+* a character gains or loses rhetorical or emotional leverage
+* association with another figure clearly raises or lowers local standing
+
+Bad reasons to create a separate event:
+
+* a subordinate nuance merely restates the same local movement
+* a quoted phrase provides color but not a distinct appraisal act
+* a possible counter-reading is present but not central
+* a nearby character is involved in the scene but not in the main evaluative movement
+* one sentence offers several pieces of evidence for the same local movement
+* the same movement could be described with several nearby labels
+
+Prefer these broad labels when possible:
+
+* `narrated_diminishment`
+* `narrated_elevation`
+* `snub`
+* `admiration`
+* `blame`
+* `prestige_association`
+* `discredit_association`
+
+Avoid finer-grained labels unless the passage truly demands them.
+Choose the **single best label** for the dominant movement rather than enumerating nearby alternatives.
+
+### `status_effects`
+
+Use these dimensions only:
+
+* `general_appraisal`
+* `social_status`
+* `rhetorical_position`
+* `emotional_position`
+* `inclusion_exclusion`
+
+Create status effects only when there is meaningful local movement.
+Usually emit **1** status effect.
+Occasionally emit **2** when the passage clearly has two central consequences.
+Do not try to record every plausible dimension.
+Never emit more than **2** status effects for one character.
+If one event could support several dimensions, choose the **single most important** dimension unless a second one is clearly central.
+
+`delta` should reflect local movement in the passage:
+
+Status delta:
+
+* -2 = clearly diminished in this passage
+* -1 = somewhat diminished
+* 0 = neutral, mixed, or no clear movement
+* +1 = somewhat elevated
+* +2 = clearly elevated
+
+### `ambiguities`
+
+Use this list to record uncertainty such as:
+
+* ironic or layered narration
+* uncertain evaluator
+* ambiguous target
+* uncertain alias resolution
+* unclear endorsement by narrator or social voice
+
+Default to an empty list.
+Only add an ambiguity when it materially changes how the event or status effect should be read.
+Do not use `ambiguities` for routine caveats or general interpretive hedging.
+Usually return an empty list.
+
+### Confidence
+
+* 0.0 to 1.0
+* Be conservative when irony, layered narration, or reference resolution makes interpretation unstable.
+
+## Important rules
+
+* Named characters only.
+* Always use canonical names from the alias map.
+* If a surface form is ambiguous, mention that in "ambiguities."
+* Do not infer broad character arcs.
+* Do not force zero-sum logic.
+* A single event may affect both source and target, but record that through separate status effects if needed.
+* Ignore trivial mentions that do not meaningfully alter evaluation or status.
+* Do not add a winner/loser verdict field.
+* Do not add a summary object.
+* If there is no meaningful status movement, keep `appraisal_events` and `status_effects` empty rather than inventing a weak event.
+* When narrator framing clearly guides the judgment, do not default to `neutral_report`.
+* Do not turn one dominant movement into a chain of micro-events.
+* Do not add balancing positive and negative effects unless both are central to the passage.
+* Do not annotate every evaluatively charged phrase.
+* Multiple quotations can support one event.
+* If you are unsure between several event labels, pick the broadest stable one.
+
+## Compression examples
+
+These examples illustrate the intended first-pass compression.
+
+Example A:
+
+If a passage reveals that Swann is far more socially eminent than the family realizes, do **not** split this into:
+
+* one event for narrator elevation
+* one event for aristocratic association
+* one event for local under-recognition
+
+Instead, prefer:
+
+* `1` event: `narrated_elevation`
+* `1` main status effect: `social_status +2`
+
+Example B:
+
+If a passage exposes Legrandin’s evasive, socially defensive performance, do **not** split this into:
+
+* ridicule
+* humiliation
+* blame
+* rhetorical weakness
+* emotional vulnerability
+
+Instead, prefer:
+
+* `1` event: `narrated_diminishment`
+* `1` or `2` status effects at most, only if both are central
+
+Example C:
+
+If a passage shows Swann reaching long-desired intimacy with Odette through awkward pretext, hesitation, or dependence, do **not** reduce it to:
+
+* one event for timidity
+* one event for dependence
+* one event for social compromise
+
+Instead, prefer:
+
+* `1` central event that preserves the realized intimacy or renewal
+* a positive `emotional_position` effect when that attainment is the dominant local outcome
+* a secondary note about hesitation or compromise only if it is itself central
+* do **not** promote mere reunion relief unless the passage clearly crosses into intimacy or explicit renewal
+* do **not** let a brief closing uplift outweigh the dominant movement of the passage unless that culminating turn is clearly the passage's main point
+
+## Positive examples
+
+Use the following as models for the **level of compression and focality** expected in this task.
+
+### Positive example 1: single narrator-led elevation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann", "M. Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.97,
+      "evidence": "Swann is described as one of the most elegant and most sought-after men in the highest social world, though the family does not realize it.",
+      "explanation": "The narrator sharply elevates Swann by contrasting the family's ignorance with his actual prestige, influence, and desirability in elite society."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.97,
+      "explanation": "Within this passage, Swann's local standing rises clearly because he is framed as socially eminent far beyond what his hosts understand."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 2: single narrator-led diminishment
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Legrandin",
+      "surface_forms": ["Legrandin", "M. Legrandin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Legrandin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.95,
+      "evidence": "At the name Guermantes, Legrandin's bodily reaction, evasive denial, and defensive explanation expose the social craving he claims to reject; the narrator explicitly concludes that he is a snob.",
+      "explanation": "The passage locally lowers Legrandin by revealing a gap between his anti-snob rhetoric and his actual dependence on aristocratic approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Legrandin",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.95,
+      "explanation": "Legrandin comes off worse because the narrator exposes him as insincere and socially compromised."
+    },
+    {
+      "character": "Legrandin",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.88,
+      "explanation": "His local social position is weakened because he appears dependent on aristocratic regard and anxious not to be associated with bourgeois friends."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+### Positive example 3: genuine two-movement mixed passage
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["Vinteuil", "M. Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.94,
+      "evidence": "Vinteuil calls Swann an exquisite man and speaks of him with enthusiastic veneration.",
+      "explanation": "Locally, Swann is elevated by Vinteuil's explicit admiration and deference."
+    },
+    {
+      "event_id": "E2",
+      "source": "collective_social_voice",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "Swann's marriage is treated as socially misplaced, and Vinteuil withholds sending his daughter to him.",
+      "explanation": "The passage lowers Swann through the social discredit attached to his marriage, which overrides personal admiration and leads to a practical form of exclusion."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann is locally praised as personally admirable and refined."
+    },
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.92,
+      "explanation": "His local standing is diminished because his marriage carries social stigma that affects how others treat him."
+    }
+  ],
+  "ambiguities": [
+    "The praise of Swann is explicit, but the passage also stresses the hypocrisy of those who admire him personally while condemning his marriage socially."
+  ]
+}
+```
+
+### Positive example 4: hesitant path, successful local consummation
+
+```json
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Swann reaches the desired intimacy with Odette, and the passage treats the realized encounter as the decisive local development even though he arrives there through hesitation and pretext.",
+      "explanation": "The dominant movement is successful consummation or affective fulfillment. Swann's awkwardness qualifies the mode of attainment, but it does not cancel the attained local outcome."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.9,
+      "explanation": "Swann comes out locally ahead because the passage culminates in realized intimacy rather than frustrated pursuit."
+    }
+  ],
+  "ambiguities": []
+}
+```
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ],
+    "notes": "Charles Swann"
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ],
+    "notes": ""
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ],
+    "notes": ""
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ],
+    "notes": "Legrandin's sister"
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ],
+    "notes": ""
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ],
+    "notes": ""
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ],
+    "notes": "Odette de Crecy; later Mme Swann"
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ],
+    "notes": "Verdurin salon hostess"
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ],
+    "notes": "Verdurin salon host"
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ],
+    "notes": "Aristocratic newcomer to the Verdurin circle"
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ],
+    "notes": "Professor associated with the Verdurin circle"
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ],
+    "notes": "Verdurin regular known for literal-minded wit"
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ],
+    "notes": "Wife of docteur Cottard"
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ],
+    "notes": "Verdurin circle hanger-on"
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ],
+    "notes": "Verdurin circle painter"
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ],
+    "notes": "Swann acquaintance with a nearby estate"
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ],
+    "notes": "Aristocratic social connection mentioned in Swann's prestige world"
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ],
+    "notes": "Narrator's uncle Adolphe"
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ],
+    "notes": "Parisian salon hostess"
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ],
+    "notes": "Worldly acquaintance in Swann's social circle"
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ],
+    "notes": "Guermantes relation obsessed with rank and kinship display"
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ],
+    "notes": "Guermantes aristocrat referenced in the Laumes social orbit"
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ],
+    "notes": "Aristocratic hostess in the Guermantes orbit"
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ],
+    "notes": "Swann social acquaintance considered among suspects"
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ],
+    "notes": "Swann associate/servant mentioned among suspects"
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ],
+    "notes": "Salon attendee who comments after the sonata"
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ],
+    "notes": "Dream-figure standing in for Forcheville in Swann's dream"
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ],
+    "notes": "Gilberte Swann, first encountered at the Champs-Elysees"
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ],
+    "notes": "Narrator's family servant"
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ],
+    "notes": "Celebrated actress"
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ],
+    "notes": "Writer admired by the narrator"
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ],
+    "notes": "Marquis de Norpois, diplomat and family dinner guest"
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ],
+    "notes": "Narrator's grandmother"
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ],
+    "notes": "Aristocratic hotel guest at Balbec"
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ],
+    "notes": "Headwaiter or maître d'hôtel at the Grand-Hôtel in Balbec"
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ],
+    "notes": "Daughter of M. de Stermaria"
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ],
+    "notes": "Male member of the Cambremer family in the Balbec hotel circle"
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ],
+    "notes": "Aristocratic visitor in the Balbec social scene"
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ],
+    "notes": "Narrator's father"
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ],
+    "notes": "Member of the Balbec gossip circle"
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ],
+    "notes": "Young aristocrat and nephew of Mme de Villeparisis"
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ],
+    "notes": "Father of Saint-Loup"
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ],
+    "notes": "Friend/acquaintance of the narrator; socially performative and often ironic"
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ],
+    "notes": "Guermantes title in the family sequence discussed with Saint-Loup"
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ],
+    "notes": "Bloch's father as remembered and socially evaluated in the narrator's reflections"
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ],
+    "notes": "Grand-Hotel director observed by the narrator"
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ],
+    "notes": "Figure invoked in the political talk reported by Aimé"
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ],
+    "notes": "The sad-looking blonde seen at Rivebelle who begins to crystallize in the narrator's desire"
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ],
+    "notes": "Oriane de Guermantes; now appearing as the duchesse de Guermantes"
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ],
+    "notes": "Neighbor and ally of Françoise in the new Guermantes setting"
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ],
+    "notes": "Princesse de Guermantes-Bavière; hostess of the evening in the opening of v4-p2"
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ],
+    "notes": "Aristocratic young man encountered outside the princesse de Guermantes salon"
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ],
+    "notes": "Diplomat/ambassador figure appearing in the princesse de Guermantes salon"
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ],
+    "notes": "Wife of M. de Vaugoubert"
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ],
+    "notes": "Albertine Simonet; narrator's companion in La Prisonnière"
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ],
+    "notes": "Andrée, one of the Balbec girls and Albertine's friend"
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ],
+    "notes": "Albertine's aunt"
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ],
+    "notes": "Charles Morel, violinist associated with Charlus and the Verdurins"
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ],
+    "notes": "Painter and social/aesthetic authority referenced by Albertine."
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ],
+    "notes": "Prince de Leon, beau-frere de Saint-Loup in the duchesse de Guermantes anecdotes."
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ],
+    "notes": "Aristocratic figure in the duchesse de Guermantes reminiscences."
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ],
+    "notes": "Social rival figure in the Jockey Club episode around the Guermantes."
+  }
+}
+
+### Prior local context (optional)
+
+Hélas ! une fois auprès de moi, la blonde crémière aux mèches striées, dépouillée de tant d'imagination et de désirs éveillés en moi, se trouva réduite à elle-même. Le nuage frémissant de mes suppositions ne l'enveloppait plus d'un vertige. Elle prenait un air tout penaud de n'avoir plus (au lieu des dix, des vingt, que je me rappelais tour à tour sans pouvoir fixer mon souvenir) qu'un seul nez, plus rond que je ne l'avais cru, qui donnait une idée de bêtise et avait en tous cas perdu le pouvoir de se multiplier. Ce vol capturé, inerte, anéanti, incapable de rien ajouter à sa pauvre évidence, n'avait plus mon imagination pour collaborer avec lui. Tombé dans le réel immobile, je tâchai de rebondir ; les joues, non aperçues de la boutique, me parurent si jolies que j'en fus intimidé, et pour me donner une contenance, je dis à la petite crémière : « Seriez-vous assez bonne pour me passer le Figaro qui est là, il faut que je regarde le nom de l'endroit où je veux vous envoyer. » Aussitôt, en prenant le journal, elle découvrit jusqu'au coude la manche rouge de sa jaquette et me tendit la feuille conservatrice d'un geste adroit et gentil qui me plut par sa rapidité familière, son apparence moelleuse et sa couleur écarlate. Pendant que j'ouvrais le Figaro, pour dire quelque chose et sans lever les yeux, je demandai à la petite : « Comment s'appelle ce que vous portez là en tricot rouge, c'est très joli. » Elle me répondit : « C'est mon golf. » Car, par une déchéance habituelle à toutes les modes, les vêtements et les mots qui, il y a quelques années, semblaient appartenir au monde relativement élégant des amies d'Albertine, étaient maintenant le lot des ouvrières. « Ça ne vous gênerait vraiment pas trop, dis-je en faisant semblant de chercher dans le Figaro, que je vous envoie même un peu loin ? » Dès que j'eus ainsi l'air de trouver pénible le service qu'elle me rendrait en faisant une course, aussitôt elle commença à trouver que c'était gênant pour elle. « C'est que je dois aller tantôt me promener en vélo. Dame, nous n'avons que le dimanche. – Mais vous n'avez pas froid, nu-tête comme cela ? – Ah ! je ne serai pas nu-tête, j'aurai mon polo, et je pourrais m'en passer avec tous mes cheveux. » Je levai les yeux sur les mèches flavescentes et frisées, et je sentis que leur tourbillon m'emportait, le coeur battant, dans la lumière et les rafales d'un ouragan de beauté. Je continuais à regarder le journal, mais bien que ce ne fût que pour me donner une contenance et me faire gagner du temps, tout en ne faisant que semblant de lire, je comprenais tout de même le sens des mots qui étaient sous mes yeux, et ceux-ci me frappaient : « Au programme de la matinée que nous avons annoncée et qui sera donnée cet après-midi dans la salle des fêtes du Trocadéro, il faut ajouter le nom de Mlle Léa qui a accepté d'y paraître dans les Fourberies de Nérine. Elle tiendra, bien entendu, le rôle de Nérine où elle est étourdissante de verve et d'ensorceleuse gaîté. » Ce fut comme si on avait brutalement arraché de mon coeur le pansement sous lequel il avait commencé, depuis mon retour de Balbec, à se cicatriser. Le flux de mes angoisses s'échappa à torrents. Léa c'était la comédienne amie des deux jeunes filles de Balbec qu'Albertine, sans avoir l'air de les voir, avait un après-midi, au Casino, regardées dans la glace. Il est vrai qu'à Balbec, Albertine, au nom de Léa, avait pris un ton de componction particulier pour me dire, presque choquée qu'on pût soupçonner une telle vertu : « Oh non, ce n'est pas du tout une femme comme ça, c'est une femme très bien. » Malheureusement pour moi, quand Albertine émettait une affirmation de ce genre, ce n'était jamais que le premier stade d'affirmations différentes. Peu après la première, venait cette deuxième : « Je ne la connais pas. » En troisième lieu, quand Albertine m'avait parlé d'une telle personne « insoupçonnable » et que (secundo) elle ne connaissait pas, elle oubliait peu à peu, d'abord avoir dit qu'elle ne la connaissait pas, et, dans une phrase où elle se « coupait » sans le savoir, racontait qu'elle la connaissait. Ce premier oubli consommé et la nouvelle affirmation ayant été émise, un deuxième oubli commençait, celui que la personne était insoupçonnable. « Est-ce qu'une telle, demandais-je, n'a pas de telles moeurs ? – Mais voyons, naturellement, c'est connu comme tout ! » Aussitôt le ton de componction reprenait pour une affirmation qui était un vague écho, fort amoindri, de la toute première : « Je dois dire qu'avec moi elle a toujours été d'une convenance parfaite. Naturellement, elle savait que je l'aurais remisée et de la belle manière. Mais enfin cela ne fait rien. Je suis obligée de lui être reconnaissante du vrai respect qu'elle m'a toujours témoigné. On voit qu'elle savait à qui elle avait affaire. » On se rappelle la vérité parce qu'elle a un nom, des racines anciennes ; mais un mensonge improvisé s'oublie vite. Albertine oubliait ce dernier mensonge-là, le quatrième, et, un jour où elle voulait gagner ma confiance par des confidences, elle se laissait aller à me dire de la même personne, au début si comme il faut et qu'elle ne connaissait pas : « Elle a eu le béguin pour moi. Trois ou quatre fois elle m'a demandé de l'accompagner jusque chez elle et de monter la voir. L'accompagner, je n'y voyais pas de mal, devant tout le monde, en plein jour, en plein air. Mais, arrivée à sa porte, je trouvais toujours un prétexte et je ne suis jamais montée. » Quelque temps après, Albertine faisait allusion à la beauté des objets qu'on voyait chez la même dame. D'approximation en approximation on fût sans doute arrivé à lui faire dire la vérité, qui était peut-être moins grave que je n'étais porté à le croire, car, peut-être, facile avec les femmes, préférait-elle un amant, et, maintenant que j'étais le sien, n'eût-elle pas songé à Léa. En tous cas, pour cette dernière je n'en étais qu'à la première affirmation et j'ignorais si Albertine la connaissait. Déjà, en tous cas pour bien des femmes, il m'eût suffi de rassembler devant mon amie, en une synthèse, ses affirmations contradictoires pour la convaincre de ses fautes (fautes qui sont bien plus aisées, comme les lois astronomiques, à dégager par le raisonnement, qu'à observer, qu'à surprendre dans la réalité). Mais elle aurait encore mieux aimé dire qu'elle avait menti quand elle avait émis une de ces affirmations, dont ainsi le retrait ferait écrouler tout mon système, plutôt que de reconnaître que tout ce qu'elle avait raconté dès le début n'était qu'un tissu de contes mensongers. Il en est de semblables dans les Mille et une Nuits, et qui nous y charment. Ils nous font souffrir dans une personne que nous aimons, et à cause de cela nous permettent d'entrer un peu plus avant dans la connaissance de la nature humaine au lieu de nous contenter de nous jouer à sa surface. Le chagrin pénètre en nous et nous force par la curiosité douloureuse à pénétrer. D'où des vérités que nous ne nous sentons pas le droit de cacher, si bien qu'un athée moribond qui les a découvertes, assuré du néant, insoucieux de la gloire, use pourtant ses dernières heures à tâcher de les faire connaître.
+
+### Passage
+
+Sans doute je n'en étais qu'à la première de ces affirmations pour Léa. J'ignorais même si Albertine la connaissait ou non.
+
+N'importe, cela revenait au même. Il fallait à tout prix éviter qu'au Trocadéro elle pût retrouver cette connaissance, ou faire la connaissance de cette inconnue. Je dis que je ne savais si elle connaissait Léa ou non ; j'avais dû pourtant l'apprendre à Balbec, d'Albertine elle-même. Car l'oubli anéantissait aussi bien chez moi que chez Albertine une grande part des choses qu'elle m'avait affirmées. La mémoire, au lieu d'un exemplaire en double, toujours présent à nos yeux, des divers faits de notre vie, est plutôt un néant d'où par instant une similitude actuelle nous permet de tirer, ressuscités, des souvenirs morts ; mais encore il y a mille petits faits qui ne sont pas tombés dans cette virtualité de la mémoire, et qui resteront à jamais incontrôlables pour nous. Tout ce que nous ignorons se rapporter à la vie réelle de la personne que nous aimons, nous n'y faisons aucune attention, nous oublions aussitôt ce qu'elle nous a dit à propos de tel fait ou de telles gens que nous ne connaissons pas, et l'air qu'elle avait en nous le disant. Aussi, quand ensuite notre jalousie est excitée par ces mêmes gens, pour savoir si elle ne se trompe pas, si c'est bien à eux qu'elle doit rapporter telle hâte que notre maîtresse a de sortir, tel mécontentement que nous l'en ayons privée en rentrant trop tôt, notre jalousie, fouillant le passé pour en tirer des indications, n'y trouve rien ; toujours rétrospective, elle est comme un historien qui aurait à faire une histoire pour laquelle il n'est aucun document ; toujours en retard, elle se précipite comme un taureau furieux là où ne se trouve pas l'être fier et brillant qui l'irrite de ses piqûres et dont la foule cruelle admire la magnificence et la ruse. La jalousie se débat dans le vide, incertaine comme nous le sommes dans ces rêves où nous souffrons de ne pas trouver dans sa maison vide une personne que nous avons bien connue dans la vie, mais qui peut-être en est ici une autre et a seulement emprunté les traits d'un autre personnage, incertaine comme nous le sommes plus encore après le réveil quand nous cherchons à identifier tel ou tel détail de notre rêve. Quel air avait notre amie en nous disant cela ; n'avait-elle pas l'air heureux, ne sifflait-elle même pas, ce qu'elle ne fait que quand elle a quelque pensée amoureuse ? Au temps de l'amour, pour peu que notre présence l'importune et l'irrite, ne nous a-t-elle pas dit une chose qui se trouve en contradiction avec ce qu'elle nous affirme maintenant, qu'elle connaît ou ne connaît pas telle personne ? Nous ne le savons pas, nous ne le saurons jamais ; nous nous acharnons à chercher les débris inconsistants d'un rêve, et pendant ce temps notre vie avec notre maîtresse continue, notre vie distraite devant ce que nous ignorons être important pour nous, attentive à ce qui ne l'est peut-être pas, encauchemardée par des êtres qui sont sans rapports réels avec nous, pleine d'oublis, de lacunes, d'anxiétés vaines, notre vie pareille à un songe.
+
+Je m'aperçus que la petite laitière était toujours là. Je lui dis que décidément ce serait bien loin, que je n'avais pas besoin d'elle. Aussitôt elle trouva aussi que ce serait trop gênant : « Il y a un beau match tantôt, je ne voudrais pas le manquer. » Je sentis qu'elle devait déjà aimer les sports et que dans quelques années elle dirait : vivre sa vie. Je lui dis que décidément je n'avais pas besoin d'elle et je lui donnai cinq francs. Aussitôt, s'y attendant si peu, et se disant que, si elle avait cinq francs pour ne rien faire, elle aurait beaucoup pour ma course, elle commença à trouver que son match n'avait pas d'importance. « J'aurais bien fait votre course. On peut toujours s'arranger. » Mais je la poussai vers la porte, j'avais besoin d'être seul, il fallait à tout prix empêcher qu'Albertine pût retrouver au Trocadéro les amies de Léa. Il le fallait, il fallait y réussir ; à vrai dire je ne savais pas encore comment, et pendant ces premiers instants j'ouvrais mes mains, les regardais, faisais craquer les jointures de mes doigts, soit que l'esprit qui ne peut trouver ce qu'il cherche, pris de paresse, s'accorde de faire halte pendant un instant, où les choses les plus indifférentes lui apparaissent distinctement, comme ces pointes d'herbe des talus qu'on voit du wagon trembler au vent, quand le train s'arrête en rase campagne – immobilité qui n'est pas toujours plus féconde que celle de la bête capturée qui, paralysée par la peur ou fascinée, regarde sans bouger – soit que je tinsse tout préparé mon corps – avec mon intelligence au dedans et en celle-ci les moyens d'action sur telle ou telle personne – comme n'étant plus qu'une arme d'où partirait le coup qui séparerait Albertine de Léa et de ses deux amies. Certes, le matin, quand Françoise était venue me dire qu'Albertine irait au Trocadéro, je m'étais dit : « Albertine peut bien faire ce qu'elle veut », et j'avais cru que jusqu'au soir, par ce temps radieux, ses actions resteraient pour moi sans importance perceptible ; mais ce n'était pas seulement le soleil matinal, comme je l'avais pensé, qui m'avait rendu si insouciant ; c'était parce que, ayant obligé Albertine à renoncer aux projets qu'elle pouvait peut-être amorcer ou même réaliser chez les M. Verdurin, et l'ayant réduite à aller à une matinée que j'avais choisie moi-même et en vue de laquelle elle n'avait pu rien préparer, je savais que ce qu'elle ferait serait forcément innocent. De même, si Albertine avait dit quelques instants plus tard : « Si je me tue, cela m'est bien égal », c'était parce qu'elle était persuadée qu'elle ne se tuerait pas. Devant moi, devant Albertine, il y avait en ce matin (bien plus que l'ensoleillement du jour) ce milieu que nous ne voyons pas, mais par l'intermédiaire translucide et changeant duquel nous voyions, moi ses actions, elle l'importance de sa propre vie, c'est-à-dire ces croyances que nous ne percevons pas, mais qui ne sont pas plus assimilables à un pur vide que n'est l'air qui nous entoure ; composant autour de nous une atmosphère variable, parfois excellente, souvent irrespirable, elles mériteraient d'être relevées et notées avec autant de soin que la température, la pression barométrique, la saison, car nos jours ont leur originalité, physique et morale. La croyance, non remarquée ce matin par moi et dont pourtant j'avais été joyeusement enveloppé jusqu'au moment où j'avais rouvert le Figaro, qu'Albertine ne ferait rien que d'inoffensif, cette croyance venait de disparaître. Je ne vivais plus dans la belle journée, mais dans une journée créée au sein de la première par l'inquiétude qu'Albertine renouât avec Léa, et plus facilement encore avec les deux jeunes filles, si elles allaient, comme cela me semblait probable, applaudir l'actrice au Trocadéro, où il ne leur serait pas difficile, dans un entr'acte, de retrouver Albertine. Je ne songeais plus à Mlle M. Vinteuil ; le nom de Léa m'avait fait revoir, pour en être jaloux, l'image d'Albertine au Casino près des deux jeunes filles. Car je ne possédais dans ma mémoire que des séries d'Albertine séparées les unes des autres, incomplètes, des profils, des instantanés ; aussi ma jalousie se confinait-elle à une expression discontinue, à la fois fugitive et fixée, et aux êtres qui l'avaient amenée sur la figure d'Albertine. Je me rappelais celle-ci quand, à Balbec, elle était trop regardée par les deux jeunes filles ou par des femmes de ce genre ; je me rappelais la souffrance que j'éprouvais à voir parcourir, par des regards actifs comme ceux d'un le peintre qui veut prendre un croquis, le visage entièrement recouvert par eux et qui, à cause de ma présence sans doute, subissait ce contact sans avoir l'air de s'en apercevoir, avec une passivité peut-être clandestinement voluptueuse. Et avant qu'elle se ressaisît et me parlât, il y avait une seconde pendant laquelle Albertine ne bougeait pas, souriait dans le vide, avec le même air de naturel feint et de plaisir dissimulé que si on avait été en train de faire sa photographie ; ou même pour choisir devant l'objectif une pose plus fringante – celle même qu'elle avait prise à Doncières quand nous nous promenions avec Robert de Saint-Loup : riant et passant sa langue sur ses lèvres, elle faisait semblant d'agacer un chien. Certes, à ces moments, elle n'était nullement la même que quand c'était elle qui était intéressée par des fillettes qui passaient. Dans ce dernier cas, au contraire, son regard étroit et velouté se fixait, se collait sur la passante, si adhérent, si corrosif, qu'il semblait qu'en se retirant il aurait dû emporter la peau. Mais en ce moment ce regard-là, qui du moins lui donnait quelque chose de sérieux, jusqu'à la faire paraître souffrante, m'avait semblé doux auprès du regard atone et heureux qu'elle avait près des deux jeunes filles, et j'aurais préféré la sombre expression du désir, qu'elle ressentait peut-être quelquefois, à la riante expression causée par le désir qu'elle inspirait. Elle avait beau essayer de voiler la conscience qu'elle en avait, celle-ci la baignait, l'enveloppait, vaporeuse, voluptueuse, faisait paraître sa figure toute rose. Mais tout ce qu'Albertine tenait à ces moments-là en suspens en elle, qui irradiait autour d'elle et me faisait tant souffrir, qui sait si, hors de ma présence, elle continuerait à le taire, si aux avances des deux jeunes filles, maintenant que je n'étais pas là, elle ne répondrait pas audacieusement. Certes, ces souvenirs me causaient une grande douleur, ils étaient comme un aveu total des goûts d'Albertine, une confession générale de son infidélité contre quoi ne pouvaient prévaloir les serments particuliers qu'elle me faisait, auxquels je voulais croire, les résultats négatifs de mes incomplètes enquêtes, les assurances, peut-être faites de connivence avec elle, d'Andrée. Albertine pouvait me nier ses trahisons particulières ; par des mots qui lui échappaient, plus forts que les déclarations contraires, par ces regards seuls, elle avait fait l'aveu de ce qu'elle eût voulu cacher, bien plus que de faits particuliers, de ce qu'elle se fût fait tuer plutôt que de reconnaître : de son penchant. Car aucun être ne veut livrer son âme. Malgré la douleur que ces souvenirs me causaient, aurais-je pu nier que c'était le programme de la matinée du Trocadéro qui avait réveillé mon besoin d'Albertine ? Elle était de ces femmes à qui leurs fautes pourraient au besoin tenir lieu de charme, et autant que leurs fautes, leur bonté qui y succède et ramène en nous cette douceur qu'avec elles, comme un malade qui n'est jamais bien portant deux jours de suite, nous sommes sans cesse obligés de reconquérir. D'ailleurs, plus même que leurs fautes pendant que nous les aimons, il y a leurs fautes avant que nous les connaissions, et la première de toutes : leur nature. Ce qui rend douloureuses de telles amours, en effet, c'est qu'il leur préexiste une espèce de péché originel de la femme, un péché qui nous les fait aimer, de sorte que, quand nous l'oublions, nous avons moins besoin d'elle et que, pour recommencer à aimer, il faut recommencer à souffrir. En ce moment, qu'elle ne retrouvât pas les deux jeunes files et savoir si elle connaissait Léa ou non était ce qui me préoccupait le plus, en dépit de ce qu'on ne devrait pas s'intéresser aux faits particuliers autrement qu'à cause de leur signification générale, et malgré la puérilité qu'il y a, aussi grande que celle du voyage ou du désir de connaître des femmes, de fragmenter sa curiosité sur ce qui, du torrent invisible des réalités cruelles qui nous resteront toujours inconnues, a fortuitement cristallisé dans notre esprit. D'ailleurs, arriverions-nous à détruire cette cristallisation qu'elle serait remplacée par une autre aussitôt. Hier je craignais qu'Albertine n'allât chez Mme Verdurin. Maintenant je n'étais plus préoccupé que de Léa. La jalousie, qui a un bandeau sur les yeux, n'est pas seulement impuissante à rien découvrir dans les ténèbres qui l'enveloppent, elle est encore un de ces supplices où la tâche est à recommencer sans cesse, comme celle des Danaïdes, comme celle d'Ixion. Même si ses amies n'étaient pas là, quelle impression pouvait faire sur elle Léa embellie par le travestissement, glorifiée par le succès ? quelles rêveries laisserait-elle à Albertine ? quels désirs qui, même refrénés, lui donneraient le dégoût d'une vie chez moi où elle ne pouvait les assouvir ?
+
+D'ailleurs, qui sait si elle ne connaissait pas Léa et n'irait pas la voir dans sa loge ? et même, si Léa ne la connaissait pas, qui m'assurait que, l'ayant en tous cas aperçue à Balbec, elle ne la reconnaîtrait pas et ne lui ferait pas de la scène un signe qui autoriserait Albertine à se faire ouvrir la porte des coulisses ? Un danger semble très évitable quand il est conjuré. Celui-ci ne l'était pas encore, j'avais peur qu'il ne pût pas l'être, et il me semblait d'autant plus terrible. Et pourtant, cet amour pour Albertine, que je sentais presque s'évanouir quand j'essayais de le réaliser, la violence de ma douleur en ce moment semblait en quelque sorte m'en donner la preuve. Je n'avais plus souci de rien d'autre, je ne pensais qu'aux moyens de l'empêcher de rester au Trocadéro, j'aurais offert n'importe quelle somme à Léa pour qu'elle n'y allât pas. Si donc on prouve sa préférence par l'action qu'on accomplit plus que par l'idée qu'on forme, j'aurais aimé Albertine. Mais cette reprise de ma souffrance ne donnait pas plus de consistance en moi à l'image d'Albertine. Elle causait mes maux comme une divinité qui reste invisible. Faisant mille conjectures, je cherchais à parer à ma souffrance sans réaliser pour cela mon amour.
+
+D'abord il fallait être certain que Léa allât vraiment au Trocadéro. Après avoir congédié la laitière, je téléphonai à Bloch, lié lui aussi avec Léa, pour le lui demander. Il n'en savait rien et parut étonné que cela pût m'intéresser. Je pensai qu'il me fallait aller vite, que Françoise était tout habillée et moi pas, et, pendant que moi-même je me levais, je lui fis prendre une automobile ; elle devait aller au Trocadéro, prendre un billet, chercher Albertine partout dans la salle, et lui remettre un mot de moi. Dans ce mot, je lui disais que j'étais bouleversé par une lettre reçue à l'instant de la même dame à cause de qui elle savait que j'avais été si malheureux une nuit à Balbec. Je lui rappelais que le lendemain elle m'avait reproché de ne pas l'avoir fait appeler. Aussi je me permettais, lui disais-je, de lui demander de me sacrifier sa matinée et de venir me chercher pour aller prendre un peu l'air ensemble afin de tâcher de me remettre. Mais comme j'en avais pour assez longtemps avant d'être habillé et prêt, elle me ferait plaisir de profiter de la présence de Françoise pour aller acheter aux Trois-Quartiers (ce magasin, étant plus petit, m'inquiétait moins que le Bon Marché) la guimpe de tulle blanc dont elle avait besoin. Mon mot n'était probablement pas inutile. À vrai dire, je ne savais rien qu'eût fait Albertine, depuis que je la connaissais, ni même avant. Mais dans sa conversation (Albertine aurait pu, si je lui en eusse parlé, dire que j'avais mal entendu), il y avait certaines contradictions, certaines retouches qui me semblaient aussi décisives qu'un flagrant délit, mais moins utilisables contre Albertine qui, souvent, prise en fraude comme un enfant, grâce à de brusques redressements stratégiques, avait chaque fois rendu vaines mes cruelles attaques et rétabli la situation. Cruelles surtout pour moi. Elle usait, non par raffinement de style, mais pour réparer ses imprudences, de ces brusques sautes de syntaxe ressemblant un peu à ce que les grammairiens appellent anacoluthe ou je ne sais comment. S'étant laissée aller, en parlant femmes, à dire : « Je me rappelle que dernièrement je », brusquement, après un « quart de soupir », « je » devenait « elle », c'était une chose qu'elle avait aperçue en promeneuse innocente, et nullement accomplie. Ce n'était pas elle qui était le sujet de l'action. J'aurais voulu me rappeler exactement le commencement de la phrase pour conclure moi-même, puisqu'elle lâchait pied, à ce qu'en eût été la fin. Mais comme j'avais attendu cette fin, je me rappelais mal le commencement, que peut-être mon air d'intérêt lui avait fait dévier, et je restais anxieux de sa pensée vraie, de son souvenir véridique. Il en est malheureusement des commencements d'un mensonge de notre maîtresse comme des commencements de notre propre amour, ou d'une vocation. Ils se forment, se conglomèrent, ils passent, inaperçus de notre propre attention. Quand on veut se rappeler de quelle façon on a commencé d'aimer une femme, on aime déjà ; les rêveries d'avant, on ne se disait pas : c'est le prélude d'un amour, faisons attention ; et elles avançaient par surprise, à peine remarquées de nous. De même, sauf des cas relativement assez rares, ce n'est guère que pour la commodité du récit que j'ai souvent opposé ici un dire mensonger d'Albertine à son assertion première sur le même sujet. Cette assertion première, souvent, ne lisant pas dans l'avenir et ne devinant pas quelle affirmation contradictoire lui ferait pendant, elle s'était glissée inaperçue, entendue certes de mes oreilles, mais sans que je l'isolasse de la continuité des paroles d'Albertine. Plus tard, devant le mensonge parlant, ou pris d'un doute anxieux, j'aurais voulu me rappeler ; c'était en vain ; ma mémoire n'avait pas été prévenue à temps ; elle avait cru inutile de garder copie.
