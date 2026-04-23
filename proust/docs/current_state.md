@@ -18,7 +18,7 @@ For the longer running history, decisions, and examples, see:
 
 The project is in:
 
-- post-production corpus aggregation review
+- post-production aggregate analysis and normalization planning
 
 This now means:
 
@@ -29,6 +29,10 @@ This now means:
 - the first production-style dry run is now complete
 - full-corpus automation has now completed the canonical ISLT chapter pass
 - the final production-corpus sanity/aggregation review is complete
+- annotation `explanation` fields have been normalized to English
+- a refreshed full-corpus review has been generated over all currently accepted annotation outputs
+- a character-alias audit has been completed
+- the first character-alias normalization plan has been reviewed and documented
 
 The current question is no longer:
 
@@ -38,7 +42,7 @@ The current question is no longer:
 
 The current question is:
 
-- what downstream analysis or publication artifact should be built from the accepted production corpus?
+- what aggregate-layer normalization and downstream analysis surfaces should be built from the accepted production corpus?
 
 ## Current stack status
 
@@ -65,6 +69,7 @@ Current read:
 - the dry run demonstrated viable unattended chaining, explicit failure visibility, and practical resumability
 - interruption-state handling has now been patched in the runner
 - controlled chapter-internal parallelism has now been repeatedly validated in production chapters
+- the current aggregate review surface is good enough to expose identity-splitting issues that were not obvious batch by batch
 
 ## Current review rule
 
@@ -125,6 +130,14 @@ The current accepted evidence now includes:
   - `v6-p1`
 - a completed `20`-unit adverse-case stress pack in `run-276`
 - a completed production-style dry run through `run-278`, `run-280`, and the resumed `run-282`
+- a refreshed current corpus review over all accepted annotation outputs:
+  - [corpus-review-current.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.json:1)
+  - [corpus-review-current.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.md:1)
+- a completed character alias audit:
+  - [character-alias-audit-current.json](/Users/nathan_brixius/dev/proust/outputs/character-alias-audit-current.json:1)
+  - [character-alias-audit-current.md](/Users/nathan_brixius/dev/proust/outputs/character-alias-audit-current.md:1)
+- a reviewed character alias normalization plan:
+  - [character_alias_normalization_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/character_alias_normalization_plan.md:1)
 
 Stress-pack result:
 
@@ -143,25 +156,24 @@ Key interpretive takeaways from `run-276`:
 
 ## Current judgment
 
-The project has now met the interpretive side of the full-corpus automation threshold.
+The project has completed the full-corpus automation and first aggregate refresh successfully.
 
 Current conclusion:
 
-- move to full-corpus automation with monitoring
-
-The operating procedure for that pass is defined in:
-
-- [full_corpus_runbook.md](/Users/nathan_brixius/dev/proust/proust/docs/full_corpus_runbook.md:1)
+- keep source annotations fixed
+- treat the accepted annotation corpus as stable enough for aggregate-layer refinement
+- use explicit reviewed mappings rather than broad alias heuristics
+- make the next changes in downstream aggregation, not in prompt/reducer/schema behavior
 
 ## Default next move
 
 If work resumes from this checkpoint, the next default move is:
 
-1. treat the completed output through `run-556` as accepted
-2. treat `v7-p4-le-bal-de-tetes` as complete through `p-141`
-3. treat the canonical ISLT production pass as complete
-4. treat `outputs/corpus-review-final.json` as the final production-corpus aggregation checkpoint
-5. only reopen unit-level review if downstream analysis exposes a new recurring failure class
+1. keep the accepted annotation JSON unchanged
+2. implement optional aggregate-layer character normalization using only the reviewed explicit mapping in [character_alias_normalization_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/character_alias_normalization_plan.md:1)
+3. generate normalized aggregate artifacts beside the current unnormalized ones
+4. write a normalization diff that shows what changed in top character totals, rankings, and cross-lens summaries
+5. only consider source-annotation rewriting after the normalized aggregate surface has been reviewed and accepted
 
 ## Latest checkpoint
 
@@ -217,6 +229,24 @@ Completed through the latest accepted outputs:
 - `run-556`: output for `v7-p4-le-bal-de-tetes#p-121-p-141`
 
 Latest mechanical result:
+
+- explanation-language normalization committed in `cfe7d33`
+- current corpus review workflow and refreshed artifacts committed in `499ad3a`
+- character alias audit committed in `522d51e`
+- reviewed character alias normalization plan committed in `82137dc`
+
+Current aggregate corpus counts:
+
+- `271` annotated runs discovered under `outputs/`
+- `1684` declared units
+- `1684` valid annotations
+- cross-lens sign-flip examples in the refreshed corpus review: `0`
+
+Current stopping point:
+
+- the corpus review surface has exposed a small number of identity splits (`Charlus` / `baron de Charlus`, `Mme Swann` / `Odette`, etc.)
+- those have now been audited and converted into an explicit reviewed normalization plan
+- the next session should begin with aggregate-layer normalization, not new annotation production
 
 - `run-466`: `8/8` completed, `0` parse errors, `0` validation errors
 - `run-468`: `8/8` completed, `0` parse errors, `0` validation errors

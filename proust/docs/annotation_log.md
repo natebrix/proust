@@ -5373,3 +5373,89 @@ Operational judgment:
 - no hidden sign-flip problem emerged at corpus scale
 - cross-lens disagreement is higher than in the earlier exploratory corpus review, but still bounded and dominated by threshold, neutral, and mixedness cases rather than outright inversion
 - focal narrowness remains the main known watchpoint, but it is now a downstream interpretation caveat rather than a production blocker
+
+## post-pass normalization and aggregate refresh
+
+After the production pass and the earlier `1000`-unit final review were complete, the project was brought to a cleaner aggregate-analysis state.
+
+Completed maintenance and review work:
+
+- normalized annotation `explanation` fields to English across the accepted annotation corpus
+  - `773` annotation files changed
+  - `1684` explanation fields updated
+  - structural digest excluding explanations remained identical before and after
+  - full annotation validation passed
+  - test suite passed
+- extended the corpus-review workflow so it can:
+  - discover annotated runs under `outputs/`
+  - write JSON artifacts directly
+  - write a human-readable Markdown companion
+- generated refreshed full-corpus review artifacts over the currently accepted annotation set:
+  - [corpus-review-current.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.json:1)
+  - [corpus-review-current.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.md:1)
+
+Current refreshed aggregate counts:
+
+- `271` annotated runs discovered
+- `1684` declared units
+- `1684` valid annotations
+- event polarity counts:
+  - positive: `674`
+  - negative: `1012`
+  - mixed: `36`
+- cross-lens comparable entries: `1996`
+- label disagreement rate: `0.064`
+- direction disagreement rate: `0.047`
+- positive-versus-negative sign-flip cases: `0`
+
+Interpretive consequence:
+
+- the refreshed aggregate surface remained stable enough to trust operationally
+- but it exposed a downstream identity-normalization issue that had been easy to miss batch by batch:
+  - some characters were split across multiple canonical names in the accepted annotation outputs
+
+Most obvious example:
+
+- `Charlus` and `baron de Charlus` appeared separately in the refreshed review, even though they are the same person
+
+Response:
+
+- an audit-only character alias pass was added, using:
+  - `aliases.csv`
+  - run-level alias maps in `outputs/run-*/run.json`
+  - character names actually present in annotation outputs
+- generated audit artifacts:
+  - [character-alias-audit-current.json](/Users/nathan_brixius/dev/proust/outputs/character-alias-audit-current.json:1)
+  - [character-alias-audit-current.md](/Users/nathan_brixius/dev/proust/outputs/character-alias-audit-current.md:1)
+
+Audit result:
+
+- `7` candidate merge groups were found:
+  - `Robert de Saint-Loup` / `Saint-Loup`
+  - `duchesse de Guermantes` / `princesse des Laumes`
+  - `baron de Charlus` / `Charlus`
+  - `Odette` / `Mme Swann`
+  - `la grand-mère` / `la grand-mère du narrateur`
+  - `M. Vinteuil` / `Vinteuil`
+  - `marquise de Saint-Euverte` / `Mme de Saint-Euverte`
+
+Reviewed principle adopted:
+
+- canonical character names should track stable person identity
+- title-stage, married-name, and socially meaningful naming differences should remain visible in evidence and status effects, not by splitting a person into separate aggregate keys
+
+That principle was written up in:
+
+- [character_alias_normalization_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/character_alias_normalization_plan.md:1)
+
+Reviewed decision:
+
+- treat all seven current candidate groups as `merge now` targets for aggregate-layer normalization
+- do **not** rewrite source annotation JSON yet
+- implement normalization first in downstream aggregation only
+
+Current stopping point:
+
+- the annotation corpus itself is stable
+- the aggregate review surface is refreshed and trustworthy enough to guide the next move
+- the next session should implement optional aggregate-layer character normalization and generate normalized corpus-review artifacts plus a diff against the current unnormalized review
