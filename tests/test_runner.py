@@ -527,6 +527,85 @@ def test_main_corpus_review_can_discover_and_write_artifacts(tmp_path, capsys):
     assert markdown_output.read_text().startswith("# Corpus Review\n")
 
 
+def test_build_character_alias_audit_reports_candidate_merge_groups(tmp_path):
+    outputs_dir = tmp_path / "outputs"
+    aliases_csv = tmp_path / "aliases.csv"
+    aliases_csv.write_text("Charlus,baron de Charlus\n")
+    charlus_run = outputs_dir / "run-001"
+    baron_run = outputs_dir / "run-002"
+    pn.prepare_annotation_run(
+        charlus_run,
+        alias_map={"Charlus": {"aliases": ["Charlus", "M. de Charlus"]}},
+    )
+    pn.prepare_annotation_run(
+        baron_run,
+        alias_map={"baron de Charlus": {"aliases": ["baron de Charlus", "Charlus"]}},
+    )
+    pn.write_annotation_result(
+        charlus_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        baron_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="baron de Charlus"),
+    )
+
+    audit = pr.build_character_alias_audit(outputs_dir=outputs_dir, aliases_csv=aliases_csv)
+
+    assert audit["annotation_name_count"] == 2
+    assert audit["candidate_merge_group_count"] == 1
+    group = audit["candidate_merge_groups"][0]
+    assert group["preferred_name_by_usage"] == "baron de Charlus"
+    assert {name["name"] for name in group["names"]} == {"Charlus", "baron de Charlus"}
+    assert any("aliases_csv" in edge["sources"] for edge in group["alias_edges"])
+
+
+def test_main_character_alias_audit_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    aliases_csv = tmp_path / "aliases.csv"
+    json_output = tmp_path / "character-alias-audit.json"
+    markdown_output = tmp_path / "character-alias-audit.md"
+    aliases_csv.write_text("Mme Swann,Odette\n")
+    mme_run = outputs_dir / "run-001"
+    odette_run = outputs_dir / "run-002"
+    pn.prepare_annotation_run(mme_run)
+    pn.prepare_annotation_run(odette_run)
+    pn.write_annotation_result(
+        mme_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Mme Swann"),
+    )
+    pn.write_annotation_result(
+        odette_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Odette"),
+    )
+
+    exit_code = pr.main(
+        [
+            "character-alias-audit",
+            "--outputs-dir",
+            str(outputs_dir),
+            "--aliases-csv",
+            str(aliases_csv),
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    audit = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["candidate_merge_group_count"] == 1
+    assert audit["candidate_merge_groups"][0]["preferred_name_by_usage"] == "Odette"
+    assert markdown_output.read_text().startswith("# Character Alias Audit\n")
+
+
 def test_main_report_outputs_json(tmp_path, capsys):
     run_dir = tmp_path / "run-report-cli"
     pn.prepare_annotation_run(run_dir)

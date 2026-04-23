@@ -89,6 +89,7 @@ from .nlp import (
 )
 from .runner import (
     AnnotationRunManifest,
+    build_character_alias_audit,
     build_corpus_sanity_review,
     build_outcome_report,
     compare_run_to_benchmark,
@@ -100,6 +101,7 @@ from .runner import (
     prepare_annotation_run_from_existing,
     reduce_annotation_result,
     reduce_run_annotations,
+    render_character_alias_audit_markdown,
     render_corpus_review_markdown,
     reprocess_raw_annotations,
     run_openai_annotation,
@@ -109,6 +111,7 @@ from .runner import (
     summarize_run_annotations,
     validate_annotation_result,
     write_annotation_result,
+    write_character_alias_audit_artifacts,
     write_corpus_review_artifacts,
     write_raw_response,
 )
@@ -122,6 +125,7 @@ __all__ = [
     "annotation_unit_id",
     "apply_alias_replacements",
     "build_annotation_unit",
+    "build_character_alias_audit",
     "build_corpus_sanity_review",
     "build_outcome_report",
     "prepare_annotation_run",
@@ -189,6 +193,7 @@ __all__ = [
     "ReaderEditionSpec",
     "reduce_annotation_result",
     "reduce_run_annotations",
+    "render_character_alias_audit_markdown",
     "render_corpus_review_markdown",
     "reprocess_raw_annotations",
     "reset_aliases",
@@ -217,6 +222,7 @@ __all__ = [
     "words_in_list",
     "build_reader_manifest",
     "CANONICAL_CHAPTER_SPECS",
+    "write_character_alias_audit_artifacts",
     "write_corpus_review_artifacts",
     "write_proust_pages",
     "ReaderChapterSpec",

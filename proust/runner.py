@@ -1,4 +1,5 @@
 import argparse
+import csv
 from collections import defaultdict
 import json
 import os
@@ -21,6 +22,7 @@ from .annotation import (
     load_prompt_template,
     render_prompt_input,
 )
+from .paths import ALIASES_CSV
 
 ANNOTATION_TOP_LEVEL_KEYS = {
     "unit_id",
@@ -2002,6 +2004,333 @@ def write_corpus_review_artifacts(review, json_output=None, markdown_output=None
         markdown_path.write_text(render_corpus_review_markdown(review))
 
 
+def _clean_character_name(value):
+    return value.strip() if isinstance(value, str) else ""
+
+
+def _read_alias_csv_pairs(path=ALIASES_CSV):
+    alias_path = Path(path)
+    if not alias_path.exists():
+        raise ValueError(f'Alias CSV "{alias_path}" does not exist.')
+
+    pairs = []
+    with alias_path.open(newline="") as handle:
+        for row in csv.reader(handle):
+            if len(row) < 2:
+                continue
+            alias = _clean_character_name(row[0])
+            canonical = _clean_character_name(row[1])
+            if alias and canonical and alias != canonical:
+                pairs.append({"alias": alias, "canonical": canonical})
+    return pairs
+
+
+def _record_character_usage(usage, name, role, path, unit_id):
+    clean_name = _clean_character_name(name)
+    if not clean_name:
+        return
+    entry = usage.setdefault(
+        clean_name,
+        {
+            "total_references": 0,
+            "roles": {
+                "characters_present": 0,
+                "event_source": 0,
+                "event_target": 0,
+                "status_effect": 0,
+            },
+            "examples": [],
+        },
+    )
+    entry["total_references"] += 1
+    entry["roles"][role] += 1
+    if len(entry["examples"]) < 5:
+        entry["examples"].append({"path": str(path), "unit_id": unit_id})
+
+
+def _collect_annotation_character_usage(outputs_dir):
+    usage = {}
+    for annotation_path in sorted(Path(outputs_dir).glob("run-*/annotations/*.json")):
+        annotation = _read_json(annotation_path)
+        unit_id = annotation.get("unit_id")
+        for character in annotation.get("characters_present", []):
+            _record_character_usage(
+                usage,
+                character.get("canonical_name"),
+                "characters_present",
+                annotation_path,
+                unit_id,
+            )
+        for event in annotation.get("appraisal_events", []):
+            source = event.get("source")
+            if source not in ALLOWED_EVENT_SOURCES:
+                _record_character_usage(usage, source, "event_source", annotation_path, unit_id)
+            _record_character_usage(usage, event.get("target"), "event_target", annotation_path, unit_id)
+        for effect in annotation.get("status_effects", []):
+            _record_character_usage(
+                usage,
+                effect.get("character"),
+                "status_effect",
+                annotation_path,
+                unit_id,
+            )
+    return usage
+
+
+def _collect_run_alias_evidence(outputs_dir):
+    canonical_counts = defaultdict(int)
+    pair_counts = defaultdict(int)
+    pair_examples = defaultdict(list)
+    for manifest_path in sorted(Path(outputs_dir).glob("run-*/run.json")):
+        manifest = _read_json(manifest_path)
+        for canonical, entry in (manifest.get("alias_map") or {}).items():
+            clean_canonical = _clean_character_name(canonical)
+            if not clean_canonical:
+                continue
+            canonical_counts[clean_canonical] += 1
+            for alias in entry.get("aliases", []):
+                clean_alias = _clean_character_name(alias)
+                if not clean_alias or clean_alias == clean_canonical:
+                    continue
+                key = (clean_alias, clean_canonical)
+                pair_counts[key] += 1
+                if len(pair_examples[key]) < 5:
+                    pair_examples[key].append(manifest_path.parent.name)
+    return canonical_counts, pair_counts, pair_examples
+
+
+def _connected_alias_components(edges):
+    graph = defaultdict(set)
+    for left, right in edges:
+        if left == right:
+            continue
+        graph[left].add(right)
+        graph[right].add(left)
+
+    seen = set()
+    components = []
+    for node in sorted(graph):
+        if node in seen:
+            continue
+        stack = [node]
+        component = set()
+        while stack:
+            current = stack.pop()
+            if current in seen:
+                continue
+            seen.add(current)
+            component.add(current)
+            stack.extend(graph[current] - seen)
+        components.append(component)
+    return components
+
+
+def build_character_alias_audit(outputs_dir="outputs", aliases_csv=ALIASES_CSV):
+    output_path = Path(outputs_dir)
+    if not output_path.exists():
+        raise ValueError(f'Outputs directory "{output_path}" does not exist.')
+
+    annotation_usage = _collect_annotation_character_usage(output_path)
+    csv_pairs = _read_alias_csv_pairs(aliases_csv)
+    run_canonical_counts, run_pair_counts, run_pair_examples = _collect_run_alias_evidence(output_path)
+
+    csv_edges = {(pair["alias"], pair["canonical"]) for pair in csv_pairs}
+    csv_canonical_counts = defaultdict(int)
+    for pair in csv_pairs:
+        csv_canonical_counts[pair["canonical"]] += 1
+    run_edges = set(run_pair_counts)
+    components = _connected_alias_components(csv_edges | run_edges)
+
+    candidate_groups = []
+    for component in components:
+        annotation_names = sorted(name for name in component if name in annotation_usage)
+        if len(annotation_names) < 2:
+            continue
+
+        preferred_name = sorted(
+            annotation_names,
+            key=lambda name: (
+                -annotation_usage[name]["total_references"],
+                -csv_canonical_counts.get(name, 0),
+                -run_canonical_counts.get(name, 0),
+                name.lower(),
+            ),
+        )[0]
+        names = [
+            {
+                "name": name,
+                "total_references": annotation_usage[name]["total_references"],
+                "roles": annotation_usage[name]["roles"],
+                "run_manifest_canonical_count": run_canonical_counts.get(name, 0),
+                "examples": annotation_usage[name]["examples"],
+            }
+            for name in sorted(
+                annotation_names,
+                key=lambda item: (-annotation_usage[item]["total_references"], item.lower()),
+            )
+        ]
+
+        alias_edges = []
+        for left, right in sorted(csv_edges | run_edges):
+            if left not in component or right not in component:
+                continue
+            sources = []
+            if (left, right) in csv_edges:
+                sources.append("aliases_csv")
+            run_count = run_pair_counts.get((left, right), 0)
+            if run_count:
+                sources.append("run_alias_maps")
+            alias_edges.append(
+                {
+                    "alias": left,
+                    "canonical": right,
+                    "sources": sources,
+                    "run_manifest_count": run_count,
+                    "run_examples": run_pair_examples.get((left, right), []),
+                }
+            )
+
+        candidate_groups.append(
+            {
+                "preferred_name_by_usage": preferred_name,
+                "annotation_name_count": len(annotation_names),
+                "total_annotation_references": sum(
+                    annotation_usage[name]["total_references"] for name in annotation_names
+                ),
+                "names": names,
+                "alias_edges": alias_edges,
+            }
+        )
+
+    candidate_groups.sort(
+        key=lambda group: (
+            -group["total_annotation_references"],
+            group["preferred_name_by_usage"].lower(),
+        )
+    )
+
+    annotation_names = {
+        name: {
+            "total_references": usage["total_references"],
+            "roles": usage["roles"],
+        }
+        for name, usage in sorted(
+            annotation_usage.items(),
+            key=lambda item: (-item[1]["total_references"], item[0].lower()),
+        )
+    }
+
+    return {
+        "character_alias_audit_version": "character_alias_audit_v1",
+        "outputs_dir": str(output_path),
+        "aliases_csv": str(Path(aliases_csv)),
+        "annotation_name_count": len(annotation_usage),
+        "run_manifest_canonical_name_count": len(run_canonical_counts),
+        "csv_alias_pair_count": len(csv_pairs),
+        "run_manifest_alias_pair_count": len(run_pair_counts),
+        "candidate_merge_group_count": len(candidate_groups),
+        "candidate_merge_groups": candidate_groups,
+        "annotation_names": annotation_names,
+    }
+
+
+def render_character_alias_audit_markdown(audit):
+    lines = [
+        "# Character Alias Audit",
+        "",
+        f"- Audit version: `{audit['character_alias_audit_version']}`",
+        f"- Outputs directory: `{audit['outputs_dir']}`",
+        f"- Alias CSV: `{audit['aliases_csv']}`",
+        f"- Annotation names: `{audit['annotation_name_count']}`",
+        f"- Run-manifest canonical names: `{audit['run_manifest_canonical_name_count']}`",
+        f"- CSV alias pairs: `{audit['csv_alias_pair_count']}`",
+        f"- Run-manifest alias pairs: `{audit['run_manifest_alias_pair_count']}`",
+        f"- Candidate merge groups: `{audit['candidate_merge_group_count']}`",
+        "",
+        "## Candidate Merge Groups",
+        "",
+    ]
+
+    if audit["candidate_merge_groups"]:
+        lines.append(
+            _markdown_table(
+                ["Preferred Name", "Names", "References"],
+                [
+                    (
+                        group["preferred_name_by_usage"],
+                        ", ".join(name["name"] for name in group["names"]),
+                        group["total_annotation_references"],
+                    )
+                    for group in audit["candidate_merge_groups"]
+                ],
+            )
+        )
+        lines.append("")
+    else:
+        lines.extend(["No candidate merge groups found.", ""])
+
+    for group in audit["candidate_merge_groups"]:
+        lines.extend(
+            [
+                f"### {group['preferred_name_by_usage']}",
+                "",
+                _markdown_table(
+                    [
+                        "Name",
+                        "References",
+                        "Character Present",
+                        "Event Source",
+                        "Event Target",
+                        "Status Effect",
+                        "Run Canonical Count",
+                    ],
+                    [
+                        (
+                            name["name"],
+                            name["total_references"],
+                            name["roles"]["characters_present"],
+                            name["roles"]["event_source"],
+                            name["roles"]["event_target"],
+                            name["roles"]["status_effect"],
+                            name["run_manifest_canonical_count"],
+                        )
+                        for name in group["names"]
+                    ],
+                ),
+                "",
+                "Alias evidence:",
+                "",
+                _markdown_table(
+                    ["Alias", "Canonical", "Sources", "Run Count", "Run Examples"],
+                    [
+                        (
+                            edge["alias"],
+                            edge["canonical"],
+                            ", ".join(edge["sources"]),
+                            edge["run_manifest_count"],
+                            ", ".join(edge["run_examples"]),
+                        )
+                        for edge in group["alias_edges"]
+                    ],
+                ),
+                "",
+            ]
+        )
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_alias_audit_artifacts(audit, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_alias_audit_markdown(audit))
+
+
 def prepare_annotation_run_from_existing(
     source_run_dir,
     output_dir,
@@ -2484,6 +2813,23 @@ def main(argv=None):
     corpus_review_parser.add_argument("--output", help="Optional JSON output path.")
     corpus_review_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
+    alias_audit_parser = subparsers.add_parser(
+        "character-alias-audit",
+        help="Audit possible duplicate character names using aliases and annotation outputs.",
+    )
+    alias_audit_parser.add_argument(
+        "--outputs-dir",
+        default="outputs",
+        help="Outputs directory containing run-* annotation outputs.",
+    )
+    alias_audit_parser.add_argument(
+        "--aliases-csv",
+        default=str(ALIASES_CSV),
+        help="Two-column alias CSV to use as audit evidence.",
+    )
+    alias_audit_parser.add_argument("--output", help="Optional JSON output path.")
+    alias_audit_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+
     automate_parser = subparsers.add_parser("automate", help="Run prompts in a prepared source run through OpenAI.")
     automate_parser.add_argument("--source-run", required=True, help="Reviewed or candidate source run directory.")
     automate_parser.add_argument("--output", required=True, help="Output run directory for automated results.")
@@ -2647,6 +2993,36 @@ def main(argv=None):
             )
         else:
             print(json.dumps(review, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-alias-audit":
+        try:
+            audit = build_character_alias_audit(
+                outputs_dir=args.outputs_dir,
+                aliases_csv=args.aliases_csv,
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
+        write_character_alias_audit_artifacts(
+            audit,
+            json_output=args.output,
+            markdown_output=args.markdown_output,
+        )
+        if args.output or args.markdown_output:
+            print(
+                json.dumps(
+                    {
+                        "annotation_name_count": audit["annotation_name_count"],
+                        "candidate_merge_group_count": audit["candidate_merge_group_count"],
+                        "json_output": args.output,
+                        "markdown_output": args.markdown_output,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            print(json.dumps(audit, ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "automate":
