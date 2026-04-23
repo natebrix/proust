@@ -92,6 +92,7 @@ from .runner import (
     build_corpus_sanity_review,
     build_outcome_report,
     compare_run_to_benchmark,
+    discover_annotation_run_dirs,
     get_run_status,
     mark_run_as_benchmark,
     parse_annotation_response_text,
@@ -99,6 +100,7 @@ from .runner import (
     prepare_annotation_run_from_existing,
     reduce_annotation_result,
     reduce_run_annotations,
+    render_corpus_review_markdown,
     reprocess_raw_annotations,
     run_openai_annotation,
     score_run_inclusion_outcomes,
@@ -107,6 +109,7 @@ from .runner import (
     summarize_run_annotations,
     validate_annotation_result,
     write_annotation_result,
+    write_corpus_review_artifacts,
     write_raw_response,
 )
 from .state import get_loaded_aliases, get_loaded_nlp, reset_aliases, reset_nlp, set_aliases, set_nlp
@@ -129,6 +132,7 @@ __all__ = [
     "compare_run_to_benchmark",
     "conjunction",
     "DEFAULT_STARTER_ALIAS_MAP",
+    "discover_annotation_run_dirs",
     "entities",
     "entity_count",
     "entity_pos",
@@ -185,6 +189,7 @@ __all__ = [
     "ReaderEditionSpec",
     "reduce_annotation_result",
     "reduce_run_annotations",
+    "render_corpus_review_markdown",
     "reprocess_raw_annotations",
     "reset_aliases",
     "reset_nlp",
@@ -212,6 +217,7 @@ __all__ = [
     "words_in_list",
     "build_reader_manifest",
     "CANONICAL_CHAPTER_SPECS",
+    "write_corpus_review_artifacts",
     "write_proust_pages",
     "ReaderChapterSpec",
 ]

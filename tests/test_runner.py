@@ -7,6 +7,44 @@ import proust.runner as pr
 import pytest
 
 
+def _minimal_annotation(unit_id, character="Swann", dimension="social_status", delta=1):
+    return {
+        "unit_id": unit_id,
+        "characters_present": [
+            {
+                "canonical_name": character,
+                "surface_forms": [character],
+                "presence_type": "explicit",
+                "presence_confidence": 0.99,
+            }
+        ],
+        "appraisal_events": [
+            {
+                "event_id": "E1",
+                "source": "narrator",
+                "target": character,
+                "type": "admiration" if delta >= 0 else "narrated_diminishment",
+                "polarity": "positive" if delta >= 0 else "negative",
+                "narrative_stance": "endorsed",
+                "confidence": 1.0,
+                "evidence": "x",
+                "explanation": "x",
+            }
+        ],
+        "status_effects": [
+            {
+                "character": character,
+                "dimension": dimension,
+                "delta": delta,
+                "based_on_events": ["E1"],
+                "confidence": 1.0,
+                "explanation": "x",
+            }
+        ],
+        "ambiguities": [],
+    }
+
+
 def test_prepare_annotation_run_writes_expected_directory_shape(tmp_path):
     run_dir = tmp_path / "run-001"
     manifest = pn.prepare_annotation_run(run_dir, notes="starter batch")
@@ -417,6 +455,76 @@ def test_build_outcome_report_summarizes_characters_and_timeline(tmp_path):
     assert report["top_wins"][0]["character"] == "Swann"
     assert report["top_losses"][0]["character"] == "Legrandin"
     assert report["mixed_units"] == []
+
+
+def test_discover_annotation_run_dirs_finds_valid_annotated_runs(tmp_path):
+    outputs_dir = tmp_path / "outputs"
+    annotated_run = outputs_dir / "run-002"
+    empty_run = outputs_dir / "run-001"
+    pn.prepare_annotation_run(empty_run)
+    pn.prepare_annotation_run(annotated_run)
+    pn.write_annotation_result(
+        annotated_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17"),
+    )
+
+    discovered = pr.discover_annotation_run_dirs(outputs_dir)
+
+    assert discovered == [annotated_run]
+
+
+def test_render_corpus_review_markdown_includes_headline_sections(tmp_path):
+    run_dir = tmp_path / "run-review"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17"),
+    )
+    review = pr.build_corpus_sanity_review([run_dir])
+
+    markdown = pr.render_corpus_review_markdown(review)
+
+    assert "# Corpus Review" in markdown
+    assert "Valid annotation count: `1`" in markdown
+    assert "## Lens Reviews" in markdown
+    assert "## Cross-Lens Summary" in markdown
+    assert "| social_status | +1 |" in markdown
+
+
+def test_main_corpus_review_can_discover_and_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_dir = outputs_dir / "run-001"
+    json_output = tmp_path / "corpus-review.json"
+    markdown_output = tmp_path / "corpus-review.md"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17"),
+    )
+
+    exit_code = pr.main(
+        [
+            "corpus-review",
+            "--discover-runs",
+            str(outputs_dir),
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    review = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["run_count"] == 1
+    assert payload["valid_annotation_count"] == 1
+    assert review["run_count"] == 1
+    assert markdown_output.read_text().startswith("# Corpus Review\n")
 
 
 def test_main_report_outputs_json(tmp_path, capsys):

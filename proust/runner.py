@@ -1795,6 +1795,213 @@ def build_corpus_sanity_review(run_dirs):
     }
 
 
+def discover_annotation_run_dirs(outputs_dir="outputs"):
+    output_path = Path(outputs_dir)
+    if not output_path.exists():
+        raise ValueError(f'Outputs directory "{output_path}" does not exist.')
+
+    run_dirs = []
+    for run_dir in sorted(output_path.glob("run-*")):
+        if not run_dir.is_dir() or not (run_dir / "run.json").exists():
+            continue
+        annotation_dir = run_dir / "annotations"
+        if not annotation_dir.exists() or not any(annotation_dir.glob("*.json")):
+            continue
+        status = get_run_status(run_dir)
+        if status["summary"]["valid_annotation_count"] > 0:
+            run_dirs.append(run_dir)
+
+    if not run_dirs:
+        raise ValueError(f'No annotated run directories found under "{output_path}".')
+
+    return run_dirs
+
+
+def _markdown_table(headers, rows):
+    lines = [
+        "| " + " | ".join(headers) + " |",
+        "| " + " | ".join("---" for _ in headers) + " |",
+    ]
+    for row in rows:
+        lines.append("| " + " | ".join(str(value) for value in row) + " |")
+    return "\n".join(lines)
+
+
+def _format_signed_number(value):
+    if isinstance(value, float):
+        value = round(value, 3)
+    if isinstance(value, (int, float)) and value > 0:
+        return f"+{value}"
+    return str(value)
+
+
+def render_corpus_review_markdown(review):
+    annotation_summary = review["aggregate_annotation_summary"]
+    cross_lens_summary = review["cross_lens_summary"]
+    lines = [
+        "# Corpus Review",
+        "",
+        f"- Review version: `{review['corpus_review_version']}`",
+        f"- Run count: `{review['run_count']}`",
+        f"- Declared unit count: `{review['declared_unit_count']}`",
+        f"- Valid annotation count: `{review['valid_annotation_count']}`",
+        "",
+        "## Aggregate Annotation Summary",
+        "",
+        "### Event Polarity Counts",
+        "",
+        _markdown_table(
+            ["Polarity", "Count"],
+            annotation_summary["event_polarity_counts"].items(),
+        ),
+        "",
+        "### Status Dimension Totals",
+        "",
+        _markdown_table(
+            ["Dimension", "Total"],
+            [
+                (dimension, _format_signed_number(total))
+                for dimension, total in annotation_summary["status_dimension_totals"].items()
+            ],
+        ),
+        "",
+        "### Event Type Counts",
+        "",
+        _markdown_table(
+            ["Event Type", "Count"],
+            annotation_summary["event_type_counts"].items(),
+        ),
+        "",
+        "## Run Surface",
+        "",
+        _markdown_table(
+            [
+                "Run",
+                "Units",
+                "Scored Units",
+                "Characters",
+                "Avg Characters/Scored Unit",
+                "Zero-character Units",
+            ],
+            [
+                (
+                    row["run_id"],
+                    row["unit_count"],
+                    row["scored_unit_count"],
+                    row["unique_character_count"],
+                    row["avg_characters_per_scored_unit"],
+                    row["zero_character_unit_count"],
+                )
+                for row in review["run_surface_summaries"][:25]
+            ],
+        ),
+        "",
+    ]
+
+    if len(review["run_surface_summaries"]) > 25:
+        lines.extend(
+            [
+                f"_Showing first 25 of {len(review['run_surface_summaries'])} run surface rows._",
+                "",
+            ]
+        )
+
+    lines.extend(
+        [
+            "### Narrowest Surface Runs",
+            "",
+            _markdown_table(
+                ["Run", "Units", "Characters", "Avg Characters/Scored Unit", "Zero-character Units"],
+                [
+                    (
+                        row["run_id"],
+                        row["unit_count"],
+                        row["unique_character_count"],
+                        row["avg_characters_per_scored_unit"],
+                        row["zero_character_unit_count"],
+                    )
+                    for row in review["narrow_surface_runs"]
+                ],
+            ),
+            "",
+            "## Lens Reviews",
+            "",
+        ]
+    )
+
+    for lens, lens_review in review["lens_reviews"].items():
+        lines.extend(
+            [
+                f"### {lens}",
+                "",
+                f"- Entry count: `{lens_review['entry_count']}`",
+                f"- Character count: `{lens_review['character_count']}`",
+                "",
+                "Label counts:",
+                "",
+                _markdown_table(["Label", "Count"], lens_review["label_counts"].items()),
+                "",
+                "Top positive characters:",
+                "",
+                _markdown_table(
+                    ["Character", "Net Score", "Units", "Dominant Dimension"],
+                    [
+                        (
+                            row["character"],
+                            _format_signed_number(row["net_score"]),
+                            row["unit_count"],
+                            row["dominant_status_dimension"],
+                        )
+                        for row in lens_review["top_positive_characters"]
+                    ],
+                ),
+                "",
+                "Top negative characters:",
+                "",
+                _markdown_table(
+                    ["Character", "Net Score", "Units", "Dominant Dimension"],
+                    [
+                        (
+                            row["character"],
+                            _format_signed_number(row["net_score"]),
+                            row["unit_count"],
+                            row["dominant_status_dimension"],
+                        )
+                        for row in lens_review["top_negative_characters"]
+                    ],
+                ),
+                "",
+            ]
+        )
+
+    lines.extend(
+        [
+            "## Cross-Lens Summary",
+            "",
+            f"- Comparable entries: `{cross_lens_summary['comparable_entry_count']}`",
+            f"- Label disagreement count: `{cross_lens_summary['label_disagreement_count']}`",
+            f"- Label disagreement rate: `{cross_lens_summary['label_disagreement_rate']}`",
+            f"- Direction disagreement count: `{cross_lens_summary['direction_disagreement_count']}`",
+            f"- Direction disagreement rate: `{cross_lens_summary['direction_disagreement_rate']}`",
+            f"- Sign-flip examples: `{len(cross_lens_summary['sign_flip_examples'])}`",
+            "",
+        ]
+    )
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_corpus_review_artifacts(review, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(review, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_corpus_review_markdown(review))
+
+
 def prepare_annotation_run_from_existing(
     source_run_dir,
     output_dir,
@@ -2266,9 +2473,16 @@ def main(argv=None):
         "--run",
         dest="runs",
         action="append",
-        required=True,
         help="Run directory to include. Repeat for multiple runs.",
     )
+    corpus_review_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    corpus_review_parser.add_argument("--output", help="Optional JSON output path.")
+    corpus_review_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
     automate_parser = subparsers.add_parser("automate", help="Run prompts in a prepared source run through OpenAI.")
     automate_parser.add_argument("--source-run", required=True, help="Reviewed or candidate source run directory.")
@@ -2406,10 +2620,33 @@ def main(argv=None):
 
     if args.command == "corpus-review":
         try:
-            review = build_corpus_sanity_review(args.runs)
+            runs = list(args.runs or [])
+            if args.discover_runs:
+                runs.extend(discover_annotation_run_dirs(args.discover_runs))
+            review = build_corpus_sanity_review(runs)
         except (RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        print(json.dumps(review, ensure_ascii=False, indent=2))
+        write_corpus_review_artifacts(
+            review,
+            json_output=args.output,
+            markdown_output=args.markdown_output,
+        )
+        if args.output or args.markdown_output:
+            print(
+                json.dumps(
+                    {
+                        "run_count": review["run_count"],
+                        "declared_unit_count": review["declared_unit_count"],
+                        "valid_annotation_count": review["valid_annotation_count"],
+                        "json_output": args.output,
+                        "markdown_output": args.markdown_output,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            print(json.dumps(review, ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "automate":
