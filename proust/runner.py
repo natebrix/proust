@@ -11,6 +11,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from http.client import RemoteDisconnected
 from pathlib import Path
+import unicodedata
 from urllib import error as urllib_error
 from urllib import request as urllib_request
 
@@ -24,6 +25,14 @@ from .annotation import (
 )
 from .export import CANONICAL_CHAPTER_SPECS
 from .paths import ALIASES_CSV
+
+ISLT_PORTRAITS_DIR = Path("/Users/nathan_brixius/dev/brixius-web/public/projects/islt/portraits")
+ISLT_READER_BASE_PATH = "/projects/islt/fr-original"
+PORTRAIT_STYLES = (
+    "vermeer-proustian",
+    "tarot-marseille-belle-epoque",
+    "elstir",
+)
 
 ANNOTATION_TOP_LEVEL_KEYS = {
     "unit_id",
@@ -224,6 +233,87 @@ REVIEWED_CHARACTER_NORMALIZATION_MAP = {
     "la grand-mère du narrateur": "la grand-mère",
     "Vinteuil": "M. Vinteuil",
     "Mme de Saint-Euverte": "marquise de Saint-Euverte",
+}
+
+CHARACTER_PORTRAIT_SLUGS = {
+    "Albertine": "albertine",
+    "Odette": "odette",
+    "Robert de Saint-Loup": "saint-loup",
+    "Swann": "swann",
+    "baron de Charlus": "charlus",
+}
+
+CHARACTER_PAGE_PILOT_EDITORIAL = {
+    "Odette": {
+        "dek": "Prestige-positive but inclusion-negative, with her sharpest gains and reversals concentrated in a few high-pressure chapters.",
+        "summary": "Odette is one of the clearest cross-lens split figures in the corpus: she rises strongly in prestige while remaining far more unstable in belonging and local regard.",
+        "why_interesting": [
+            "Her prestige and inclusion readings diverge much more sharply than her raw frequency alone would predict.",
+            "Her profile is driven by a few concentrated chapter zones rather than a flat corpus-wide pattern.",
+        ],
+        "primary_pattern": "prestige_positive_inclusion_negative",
+        "reading_path": [
+            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Prestige ascent around Mme Swann"},
+            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "Negative counterweight in Swann's love"},
+            {"chapter_id": "v3-p1", "label": "Later reversals in Guermantes-adjacent society"},
+        ],
+    },
+    "Robert de Saint-Loup": {
+        "dek": "One of the most frequent figures in the corpus, but also one of the most sharply split across prestige and inclusion.",
+        "summary": "Robert de Saint-Loup combines very high annotation frequency with one of the largest lens spreads in the corpus, especially where aristocratic polish and emotional belonging pull apart.",
+        "why_interesting": [
+            "He is not just volatile; he is structurally split across lenses in a way that makes him central to the project's interpretive payoff.",
+            "His strongest divergence is heavily chapter-located, especially in v3-p1.",
+        ],
+        "primary_pattern": "prestige_positive_inclusion_negative",
+        "reading_path": [
+            {"chapter_id": "v3-p1", "label": "Core prestige/inclusion split"},
+            {"chapter_id": "v7-p2-m-de-charlus-pendant-la-guerre", "label": "Later stabilizing wartime treatment"},
+            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Earlier positive social energy"},
+        ],
+    },
+    "Swann": {
+        "dek": "The most annotated figure in the corpus and one of its most consistently negative, especially in emotionally charged social passages.",
+        "summary": "Swann dominates the corpus by sheer annotation footprint, and his aggregate profile remains broadly and repeatedly negative across all three lenses.",
+        "why_interesting": [
+            "He is the clearest example of frequency and stability combining into a durable corpus-wide shape.",
+            "His chapter drivers reveal how strongly one major narrative zone can define a character's aggregate outcome.",
+        ],
+        "primary_pattern": "consistently_negative",
+        "reading_path": [
+            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "The main negative core of the profile"},
+            {"chapter_id": "v4-p2", "label": "Later social afterlife and residue"},
+            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Secondary shaping around Mme Swann"},
+        ],
+    },
+    "Albertine": {
+        "dek": "Highly central and highly negative, with much of her profile concentrated in the captivity and aftermath volumes.",
+        "summary": "Albertine is one of the largest and most persistently negative figures in the corpus, with her strongest shaping concentrated in the prison and disappearance chapters.",
+        "why_interesting": [
+            "Her aggregate pattern is less about lens disagreement than about strong repeated negative accumulation.",
+            "She helps distinguish cross-lens split figures from characters whose importance lies in concentrated directional force.",
+        ],
+        "primary_pattern": "broadly_negative",
+        "reading_path": [
+            {"chapter_id": "v5", "label": "The main captivity-zone accumulation"},
+            {"chapter_id": "v6-p1", "label": "Aftermath and disappearance"},
+            {"chapter_id": "v4-p2", "label": "Earlier social framing before concentration in v5"},
+        ],
+    },
+    "baron de Charlus": {
+        "dek": "A major recurrent figure whose treatment is strongly negative overall but distributed across several distinct social terrains.",
+        "summary": "baron de Charlus is a highly annotated and highly volatile figure whose negative aggregate treatment is spread across salon, sexual, and wartime configurations rather than one single narrative block.",
+        "why_interesting": [
+            "He is central both to corpus-wide negativity and to some of the project's richest later-terrain dynamics.",
+            "His profile is broad enough to test whether the analysis stays coherent across very different social worlds.",
+        ],
+        "primary_pattern": "volatile_negative",
+        "reading_path": [
+            {"chapter_id": "v7-p2-m-de-charlus-pendant-la-guerre", "label": "Wartime concentration"},
+            {"chapter_id": "v4-p2", "label": "Salon and sexual volatility"},
+            {"chapter_id": "v5", "label": "Continuation of negative concentration"},
+        ],
+    },
 }
 
 
@@ -2221,6 +2311,209 @@ def _build_overlay_chapter_summary(units):
     )
 
 
+def _slugify_text(value):
+    normalized = unicodedata.normalize("NFKD", value)
+    ascii_value = normalized.encode("ascii", "ignore").decode("ascii")
+    cleaned = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_value.lower()).strip("-")
+    return cleaned or "item"
+
+
+def _reader_chapter_link(chapter_id, paragraph_start=None):
+    link = f"{ISLT_READER_BASE_PATH}/{chapter_id}"
+    if paragraph_start is not None:
+        link += f"#p-{paragraph_start}"
+    return link
+
+
+def _chapter_title_map():
+    return {chapter.id: chapter.title for chapter in CANONICAL_CHAPTER_SPECS}
+
+
+def _discover_character_portraits(character):
+    portrait_slug = CHARACTER_PORTRAIT_SLUGS.get(character, _slugify_text(character))
+    if not ISLT_PORTRAITS_DIR.exists():
+        return {"default": None, "variants": []}
+
+    variants = []
+    for path in sorted(ISLT_PORTRAITS_DIR.glob(f"{portrait_slug}-*.png")):
+        stem = path.stem
+        prefix = f"{portrait_slug}-"
+        if not stem.startswith(prefix):
+            continue
+        body = stem[len(prefix) :]
+        match = re.match(r"(.+)-(\d{8}|[0-9a-f]{8})-(\d{4,})$", body)
+        if not match:
+            continue
+        descriptor = match.group(1)
+        variant = "default"
+        style = None
+        for candidate in PORTRAIT_STYLES:
+            suffix = f"-{candidate}"
+            if descriptor == candidate:
+                style = candidate
+                variant = "default"
+                break
+            if descriptor.endswith(suffix):
+                style = candidate
+                variant = descriptor[: -len(suffix)]
+                break
+        if style is None:
+            descriptor_parts = descriptor.split("-", 1)
+            variant = descriptor_parts[0]
+            style = descriptor_parts[1] if len(descriptor_parts) > 1 else "unknown"
+        variants.append(
+            {
+                "variant": variant,
+                "style": style,
+                "src": f"/projects/islt/portraits/{path.name}",
+            }
+        )
+
+    default_src = None
+    preferred_default = next(
+        (
+            row["src"]
+            for row in variants
+            if row["variant"] == "default" and row["style"] == "vermeer-proustian"
+        ),
+        None,
+    )
+    if preferred_default:
+        default_src = preferred_default
+    elif variants:
+        default_src = variants[0]["src"]
+
+    return {"default": default_src, "variants": variants}
+
+
+def _build_character_page_notable_units(character, overlay_dataset, limit=3):
+    rows = []
+    for chapter in overlay_dataset["chapters"]:
+        for unit in chapter["units"]:
+            for character_row in unit["characters"]:
+                if character_row["character"] != character:
+                    continue
+                rows.append(
+                    {
+                        "unit_id": unit["unitId"],
+                        "chapter_id": chapter["chapterId"],
+                        "paragraph_start": unit["paragraphStart"],
+                        "summary": unit["summary"],
+                        "max_abs_score": max(
+                            abs(character_row["local"]["netScore"]),
+                            abs(character_row["prestige"]["netScore"]),
+                            abs(character_row["inclusion"]["netScore"]),
+                        ),
+                    }
+                )
+
+    rows.sort(key=lambda item: (-item["max_abs_score"], item["unit_id"]))
+    return [
+        {
+            "unit_id": row["unit_id"],
+            "label": row["summary"],
+            "reader_link": _reader_chapter_link(row["chapter_id"], paragraph_start=row["paragraph_start"]),
+        }
+        for row in rows[:limit]
+    ]
+
+
+def build_character_pages(run_dirs, character_name_map=None, target_characters=None, top_chapter_limit=5):
+    review = build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    profile_cards = build_character_profile_cards(
+        run_dirs,
+        character_name_map=character_name_map,
+        top_chapter_limit=top_chapter_limit,
+    )
+    chapter_analysis = build_character_chapter_analysis(
+        run_dirs,
+        character_name_map=character_name_map,
+        target_characters=target_characters,
+    )
+    overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
+    chapter_titles = _chapter_title_map()
+
+    selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
+    cards_by_character = {row["character"]: row for row in profile_cards["cards"]}
+    chapter_rows_by_character = {row["character"]: row for row in chapter_analysis["characters"]}
+
+    pages = []
+    for character in selected_characters:
+        if character not in cards_by_character:
+            raise ValueError(f"Character page target not found in derived profile data: {character}")
+        if character not in CHARACTER_PAGE_PILOT_EDITORIAL:
+            raise ValueError(f"Character page editorial data is missing for: {character}")
+
+        card = cards_by_character[character]
+        chapter_rows = chapter_rows_by_character.get(character, {}).get("chapters", [])
+        top_chapters = sorted(
+            chapter_rows,
+            key=lambda item: max(
+                abs(item["local"]["net_score"]),
+                abs(item["prestige"]["net_score"]),
+                abs(item["inclusion"]["net_score"]),
+            ),
+            reverse=True,
+        )[:top_chapter_limit]
+        editorial = CHARACTER_PAGE_PILOT_EDITORIAL[character]
+
+        pages.append(
+            {
+                "character": character,
+                "slug": _slugify_text(character),
+                "portrait": _discover_character_portraits(character),
+                "profile": {
+                    "annotation_unit_count": card["annotation_unit_count"],
+                    "rank_spread": card["rank_spread"],
+                    "max_score_span": card["max_score_span"],
+                    "selected_by": card["selected_by"],
+                    "lens_scores": card["lens_scores"],
+                },
+                "editorial": {
+                    "dek": editorial["dek"],
+                    "summary": editorial["summary"],
+                    "why_interesting": editorial["why_interesting"],
+                    "primary_pattern": editorial["primary_pattern"],
+                },
+                "top_chapters": [
+                    {
+                        "chapter_id": row["chapter_id"],
+                        "chapter_title": chapter_titles.get(row["chapter_id"], row["chapter_id"]),
+                        "local": row["local"],
+                        "prestige": row["prestige"],
+                        "inclusion": row["inclusion"],
+                        "reader_link": _reader_chapter_link(row["chapter_id"]),
+                    }
+                    for row in top_chapters
+                ],
+                "reading_path": [
+                    {
+                        "chapter_id": row["chapter_id"],
+                        "label": row["label"],
+                        "reader_link": _reader_chapter_link(row["chapter_id"]),
+                    }
+                    for row in editorial["reading_path"]
+                ],
+                "notable_units": _build_character_page_notable_units(character, overlay_dataset),
+            }
+        )
+
+    pages.sort(
+        key=lambda item: (
+            -item["profile"]["annotation_unit_count"],
+            -item["profile"]["rank_spread"],
+            item["character"],
+        )
+    )
+    return {
+        "character_pages_version": "character_pages_v1",
+        "source_review_version": review["corpus_review_version"],
+        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
+        "character_count": len(pages),
+        "pages": pages,
+    }
+
+
 def build_chapter_overlay_data(run_dirs, character_name_map=None):
     if not run_dirs:
         raise ValueError("At least one run directory is required for chapter overlay export.")
@@ -3070,6 +3363,100 @@ def write_chapter_overlay_artifacts(dataset, output_dir):
     for chapter in dataset["chapters"]:
         chapter_path = chapters_dir / f"{chapter['chapterId']}.json"
         chapter_path.write_text(json.dumps(chapter, ensure_ascii=False, indent=2) + "\n")
+
+
+def render_character_pages_markdown(analysis):
+    lines = [
+        "# Character Pages",
+        "",
+        f"- Analysis version: `{analysis['character_pages_version']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Character count: `{analysis['character_count']}`",
+        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
+        "",
+    ]
+
+    for page in analysis["pages"]:
+        lines.extend(
+            [
+                f"## {page['character']}",
+                "",
+                f"- Slug: `{page['slug']}`",
+                f"- Portrait default: `{page['portrait']['default'] or 'none'}`",
+                f"- Annotation units: `{page['profile']['annotation_unit_count']}`",
+                f"- Rank spread: `{page['profile']['rank_spread']}`",
+                f"- Max score span: `{_format_signed_number(page['profile']['max_score_span'])}`",
+                f"- Pattern: `{page['editorial']['primary_pattern']}`",
+                "",
+                page["editorial"]["dek"],
+                "",
+                page["editorial"]["summary"],
+                "",
+                "Why interesting:",
+                "",
+            ]
+        )
+        lines.extend(f"- {item}" for item in page["editorial"]["why_interesting"])
+        lines.extend(
+            [
+                "",
+                _markdown_table(
+                    ["Lens", "Net Score", "Rank", "Units", "Dominant Dimension", "Score Span"],
+                    [
+                        (
+                            lens,
+                            _format_signed_number(page["profile"]["lens_scores"][lens]["net_score"]),
+                            page["profile"]["lens_scores"][lens]["rank"],
+                            page["profile"]["lens_scores"][lens]["unit_count"],
+                            page["profile"]["lens_scores"][lens]["dominant_status_dimension"],
+                            _format_signed_number(page["profile"]["lens_scores"][lens]["score_span"]),
+                        )
+                        for lens in sorted(SCORING_LENS_CONFIGS)
+                    ],
+                ),
+                "",
+                "Top chapters:",
+                "",
+                _markdown_table(
+                    ["Chapter", "Local", "Prestige", "Inclusion"],
+                    [
+                        (
+                            row["chapter_id"],
+                            _format_signed_number(row["local"]["net_score"]),
+                            _format_signed_number(row["prestige"]["net_score"]),
+                            _format_signed_number(row["inclusion"]["net_score"]),
+                        )
+                        for row in page["top_chapters"]
+                    ],
+                ),
+                "",
+                "Reading path:",
+                "",
+            ]
+        )
+        lines.extend(f"- {row['label']}: `{row['reader_link']}`" for row in page["reading_path"])
+        lines.extend(
+            [
+                "",
+                "Notable units:",
+                "",
+            ]
+        )
+        lines.extend(f"- {row['label']}: `{row['reader_link']}`" for row in page["notable_units"])
+        lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_pages_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_pages_markdown(analysis))
 
 
 def render_corpus_review_markdown(review):
@@ -4165,6 +4552,36 @@ def main(argv=None):
     character_cards_parser.add_argument("--output", help="Optional JSON output path.")
     character_cards_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
+    character_pages_parser = subparsers.add_parser(
+        "character-pages",
+        help="Build pilot app-facing character pages from existing analysis artifacts.",
+    )
+    character_pages_parser.add_argument(
+        "--run",
+        dest="runs",
+        action="append",
+        help="Run directory to include. Repeat for multiple runs.",
+    )
+    character_pages_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_pages_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
+    character_pages_parser.add_argument(
+        "--character",
+        dest="characters",
+        action="append",
+        help="Optional pilot character to include. Repeat for multiple characters.",
+    )
+    character_pages_parser.add_argument("--output", help="Optional JSON output path.")
+    character_pages_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+
     chapter_overlay_parser = subparsers.add_parser(
         "chapter-overlays",
         help="Export chapter-keyed app overlay JSON from the accepted normalized corpus surface.",
@@ -4581,6 +4998,42 @@ def main(argv=None):
                 indent=2,
             )
         )
+        return 0
+
+    if args.command == "character-pages":
+        try:
+            runs = list(args.runs or [])
+            if args.discover_runs:
+                runs.extend(discover_annotation_run_dirs(args.discover_runs))
+            character_name_map = (
+                REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
+            )
+            analysis = build_character_pages(
+                runs,
+                character_name_map=character_name_map,
+                target_characters=args.characters,
+            )
+        except (RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        write_character_pages_artifacts(
+            analysis,
+            json_output=args.output,
+            markdown_output=args.markdown_output,
+        )
+        if args.output or args.markdown_output:
+            print(
+                json.dumps(
+                    {
+                        "character_count": analysis["character_count"],
+                        "json_output": args.output,
+                        "markdown_output": args.markdown_output,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            print(json.dumps(analysis, ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "automate":

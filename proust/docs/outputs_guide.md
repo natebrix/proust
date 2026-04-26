@@ -37,8 +37,9 @@ The `outputs/` directory now contains five main artifact families:
 4. downstream character-level analysis artifacts
 5. character annotation-count artifacts
 6. character profile-card artifacts
-7. chapter overlay artifacts for the `islt` app
-8. historical milestone artifacts kept for comparison
+7. character page artifacts for the `islt` app
+8. chapter overlay artifacts for the `islt` app
+9. historical milestone artifacts kept for comparison
 
 ## Granular Runs
 
@@ -212,6 +213,21 @@ Use when:
 - you want one stable object per character with annotation count, lens scores, rank spread, volatility, and top driving chapters
 - you want to feed a reader app or another presentation layer without recomputing analysis logic there
 
+### Character Pages
+
+- [character-pages-current.json](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.json:1)
+- [character-pages-current.md](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.md:1)
+
+Purpose:
+
+- provide a pilot page-ready artifact for a small high-signal character set
+- combine computed profile data, chapter drivers, portrait metadata, and editorial explainer fields
+
+Use when:
+
+- you want a full character-page surface rather than a compact card
+- you want a rendering-oriented handoff for the `islt` app
+
 ### Chapter Overlays
 
 - [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)
@@ -273,6 +289,9 @@ If the question is:
 
 - "What should a cross-lens character card contain?"  
   Read [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
+
+- "What should a first full character page contain?"  
+  Read [character-pages-current.json](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.json:1)
 
 - "What should the `islt` app use for inline paragraph-range overlays?"  
   Read [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)

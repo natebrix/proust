@@ -233,7 +233,10 @@ Instead, export small chapter-oriented JSON artifacts from the annotation projec
 For the completed character-card JSON contract and current artifact, see:
 
 - [character_profile_card_schema.md](/Users/nathan_brixius/dev/proust/proust/docs/character_profile_card_schema.md:1)
+- [character_page_schema.md](/Users/nathan_brixius/dev/proust/proust/docs/character_page_schema.md:1)
 - [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
+- [character-pages-current.json](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.json:1)
+- [islt_character_pages_handoff.md](/Users/nathan_brixius/dev/proust/proust/docs/islt_character_pages_handoff.md:1)
 
 For the chapter overlay export contract, see:
 

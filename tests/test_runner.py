@@ -45,6 +45,56 @@ def _minimal_annotation(unit_id, character="Swann", dimension="social_status", d
     }
 
 
+def _multi_character_annotation(unit_id, characters):
+    characters_present = []
+    appraisal_events = []
+    status_effects = []
+    for index, item in enumerate(characters, start=1):
+        character = item["character"]
+        delta = item.get("delta", 1)
+        dimension = item.get("dimension", "social_status")
+        event_id = f"E{index}"
+        characters_present.append(
+            {
+                "canonical_name": character,
+                "surface_forms": [character],
+                "presence_type": "explicit",
+                "presence_confidence": 0.99,
+            }
+        )
+        appraisal_events.append(
+            {
+                "event_id": event_id,
+                "source": "narrator",
+                "target": character,
+                "type": "admiration" if delta >= 0 else "narrated_diminishment",
+                "polarity": "positive" if delta >= 0 else "negative",
+                "narrative_stance": "endorsed",
+                "confidence": 1.0,
+                "evidence": "x",
+                "explanation": "x",
+            }
+        )
+        status_effects.append(
+            {
+                "character": character,
+                "dimension": dimension,
+                "delta": delta,
+                "based_on_events": [event_id],
+                "confidence": 1.0,
+                "explanation": "x",
+            }
+        )
+
+    return {
+        "unit_id": unit_id,
+        "characters_present": characters_present,
+        "appraisal_events": appraisal_events,
+        "status_effects": status_effects,
+        "ambiguities": [],
+    }
+
+
 def test_prepare_annotation_run_writes_expected_directory_shape(tmp_path):
     run_dir = tmp_path / "run-001"
     manifest = pn.prepare_annotation_run(run_dir, notes="starter batch")
@@ -1049,6 +1099,123 @@ def test_main_chapter_overlays_can_write_artifacts(tmp_path, capsys):
     assert "summary" in chapter
     assert "summary" in chapter["units"][0]
     assert chapter["units"][0]["characters"][0]["character"] == "baron de Charlus"
+
+
+def test_build_character_pages_pilot_uses_profile_portraits_and_editorial(tmp_path):
+    run_dir = tmp_path / "run-001"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        _multi_character_annotation(
+            "v1-p1-combray#p-17",
+            [
+                {"character": "Odette", "delta": -1},
+                {"character": "Saint-Loup", "delta": 1},
+            ],
+        ),
+    )
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-274-p-275",
+        _multi_character_annotation(
+            "v1-p1-combray#p-274-p-275",
+            [
+                {"character": "Swann", "delta": -1},
+                {"character": "Albertine", "delta": -1},
+            ],
+        ),
+    )
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-312-p-313",
+        _minimal_annotation("v1-p1-combray#p-312-p-313", character="Charlus", delta=-1),
+    )
+
+    analysis = pr.build_character_pages(
+        [run_dir],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+        target_characters=["Odette", "Robert de Saint-Loup", "Swann", "Albertine", "baron de Charlus"],
+    )
+
+    assert analysis["character_pages_version"] == "character_pages_v1"
+    assert analysis["character_count"] == 5
+    odette = next(page for page in analysis["pages"] if page["character"] == "Odette")
+    assert odette["portrait"]["default"]
+    assert odette["editorial"]["primary_pattern"] == "prestige_positive_inclusion_negative"
+    assert odette["top_chapters"][0]["reader_link"].startswith("/projects/islt/fr-original/")
+    assert odette["reading_path"][0]["chapter_id"] == "v2-p1-autour-de-mme-swann"
+    saint_loup = next(page for page in analysis["pages"] if page["character"] == "Robert de Saint-Loup")
+    assert saint_loup["portrait"]["default"]
+    assert saint_loup["slug"] == "robert-de-saint-loup"
+    assert "core prestige/inclusion split" in saint_loup["reading_path"][0]["label"].lower()
+    assert "Why interesting" in pr.render_character_pages_markdown(analysis)
+
+
+def test_main_character_pages_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    json_output = tmp_path / "character-pages.json"
+    markdown_output = tmp_path / "character-pages.md"
+    pn.prepare_annotation_run(run_a)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _multi_character_annotation(
+            "v1-p1-combray#p-17",
+            [
+                {"character": "Odette", "delta": -1},
+                {"character": "Saint-Loup", "delta": 1},
+            ],
+        ),
+    )
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-274-p-275",
+        _multi_character_annotation(
+            "v1-p1-combray#p-274-p-275",
+            [
+                {"character": "Swann", "delta": -1},
+                {"character": "Albertine", "delta": -1},
+            ],
+        ),
+    )
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-312-p-313",
+        _minimal_annotation("v1-p1-combray#p-312-p-313", character="Charlus", delta=-1),
+    )
+
+    exit_code = pr.main(
+        [
+            "character-pages",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--character",
+            "Odette",
+            "--character",
+            "Robert de Saint-Loup",
+            "--character",
+            "Swann",
+            "--character",
+            "Albertine",
+            "--character",
+            "baron de Charlus",
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    analysis = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["character_count"] == 5
+    assert analysis["pages"][0]["portrait"]["default"]
+    assert markdown_output.read_text().startswith("# Character Pages\n")
 
 
 def test_build_character_alias_audit_reports_candidate_merge_groups(tmp_path):
