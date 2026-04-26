@@ -5454,8 +5454,156 @@ Reviewed decision:
 - do **not** rewrite source annotation JSON yet
 - implement normalization first in downstream aggregation only
 
-Current stopping point:
+Previous stopping point before normalization pass:
 
 - the annotation corpus itself is stable
 - the aggregate review surface is refreshed and trustworthy enough to guide the next move
-- the next session should implement optional aggregate-layer character normalization and generate normalized corpus-review artifacts plus a diff against the current unnormalized review
+- the next planned move at that point was to implement optional aggregate-layer character normalization and generate normalized corpus-review artifacts plus a diff against the current unnormalized review
+
+## normalized aggregate review accepted
+
+The reviewed aggregate-layer character normalization has now been implemented and exercised over the accepted corpus.
+
+Generated artifacts:
+
+- [corpus-review-current-normalized.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.json:1)
+- [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1)
+- [corpus-review-normalization-diff.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-normalization-diff.md:1)
+
+Mechanical result:
+
+- normalized review generated cleanly over `271` annotated runs
+- `1684` declared units
+- `1684` valid annotations
+- character counts dropped from `69` to `62` in all three lenses
+
+Cross-lens stability after normalization:
+
+- comparable entries remained `1996`
+- label disagreements remained `128`
+- direction disagreements remained `93`
+- positive-versus-negative sign-flip examples remained `0`
+
+Interpretive consequence:
+
+- the main aggregate identity splits have now been removed from the default per-character review surface
+- ranking changes were real but bounded and behaved as expected for reviewed merges rather than exposing a new structural problem
+- the normalized surface is cleaner for downstream reading without changing the core judgment about corpus-level stability
+
+Updated stopping point:
+
+- keep accepted annotation JSON fixed
+- treat the normalized corpus review as the default aggregate character surface
+- the next session should build the first downstream analysis artifact on top of the normalized corpus surface
+- [downstream_analysis_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/downstream_analysis_plan.md:1) is now the shortest handoff for that next step
+
+## first downstream character analysis generated
+
+The first downstream analysis artifact has now been generated on top of the normalized corpus review surface.
+
+Generated artifacts:
+
+- [character-cross-lens-current.json](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.json:1)
+- [character-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.md:1)
+
+Mechanical result:
+
+- `62` normalized aggregate characters were included
+- the artifact records per-character `local`, `prestige`, and `inclusion` scores side by side
+- it also records cross-lens rank spread and within-lens score-span volatility
+
+Immediate high-information readings:
+
+- `Odette` shows the largest cross-lens rank spread:
+  - local rank `28`
+  - prestige rank `4`
+  - inclusion rank `52`
+- `Robert de Saint-Loup` also shows a very large cross-lens split:
+  - local rank `35`
+  - prestige rank `8`
+  - inclusion rank `54`
+- the highest-volatility repeated characters remain the expected major figures:
+  - `Swann`
+  - `Albertine`
+  - `Mme de Villeparisis`
+  - `Odette`
+  - `Robert de Saint-Loup`
+  - `baron de Charlus`
+
+Updated stopping point:
+
+- keep accepted annotation JSON fixed
+- keep the normalized corpus review as the default aggregate surface
+- use the character cross-lens artifact as the default next reading surface for downstream work
+- if analysis continues, extend character-centered downstream reporting before inventing new source-level interventions
+
+## character-by-chapter checkpoint opened
+
+The next downstream checkpoint has now been opened and exercised: chapter-level distribution for the highest-information characters.
+
+Generated artifacts:
+
+- [character-chapter-cross-lens-current.json](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.json:1)
+- [character-chapter-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.md:1)
+
+Mechanical result:
+
+- `16` characters were selected from the union of the current top rank-spread and top volatility sets
+- each selected character now has chapter-level `local`, `prestige`, and `inclusion` totals plus chapter-level unit counts
+
+Immediate high-information readings:
+
+- `Odette`'s large lens split is now chapter-located rather than abstract:
+  - strongly positive in `v2-p1-autour-de-mme-swann`
+  - strongly negative in `v1-p2-un-amour-de-swann`
+  - the prestige/inclusion gap remains visible chapter by chapter
+- `Robert de Saint-Loup`'s split is concentrated heavily in `v3-p1`
+  - prestige remains positive there
+  - local is negative
+  - inclusion is sharply more negative
+- `Mme de Villeparisis` also shows a chapter-structured split rather than simple aggregate noise:
+  - notably positive in `v3-p1`
+  - notably negative in `v2-p2-noms-de-pays-le-pays`
+- the major volatility figures remain chapter-concentrated in exactly the kinds of zones the broader corpus reading suggested:
+  - `Swann` in `v1-p2-un-amour-de-swann`
+  - `Albertine` across `v5` and `v6-p1`
+  - `baron de Charlus` across `v4-p2`, `v5`, and `v7-p2-m-de-charlus-pendant-la-guerre`
+
+Updated stopping point:
+
+- keep accepted annotation JSON fixed
+- keep the normalized aggregate artifacts as the default analysis surface
+- use the chapter-level character artifact as the active checkpoint surface for interpreting large lens splits
+- only move back toward unit-level reading if one of these chapter-level accumulations still looks genuinely surprising
+
+## app-facing overlay and profile-card exports generated
+
+The project has now produced the first app-facing derived JSON layer for the separate `islt` reader.
+
+Generated artifacts:
+
+- [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
+- [character-profile-cards-current.md](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.md:1)
+- [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)
+- [v1-p1-combray.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/chapters/v1-p1-combray.json:1)
+- [chapter_overlay_schema.md](/Users/nathan_brixius/dev/proust/proust/docs/chapter_overlay_schema.md:1)
+- [islt_app_integration_ideas.md](/Users/nathan_brixius/dev/proust/proust/docs/islt_app_integration_ideas.md:1)
+
+Mechanical result:
+
+- cross-lens character profiles are now packaged as a stable app-facing JSON contract
+- chapter overlays are now exported as one manifest plus one JSON file per canonical chapter
+- the overlay export uses reviewed aggregate-layer character normalization
+- the overlay export resolves historical duplicate `unit_id` overlap with `latest_reviewed_run_wins`
+- the current overlay manifest includes `18` accepted canonical chapters
+
+Interpretive consequence:
+
+- the analysis project now has a clean bridge into the reader app without asking the app to recompute corpus logic
+- the next app-facing additive step should be prose unit summaries layered onto the overlay format rather than a redesign of the structural export
+
+Updated stopping point:
+
+- keep the accepted annotation JSON fixed
+- treat character profile cards and chapter overlays as the default app-facing export surface
+- if app-facing data work continues, add `chapter_overlay_v2` prose summaries as a narrow additive extension

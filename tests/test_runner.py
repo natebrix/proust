@@ -493,6 +493,68 @@ def test_render_corpus_review_markdown_includes_headline_sections(tmp_path):
     assert "| social_status | +1 |" in markdown
 
 
+def test_build_outcome_report_can_apply_reviewed_character_normalization(tmp_path):
+    run_dir = tmp_path / "run-normalized-report"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="baron de Charlus"),
+    )
+
+    report = pr.build_outcome_report(
+        run_dir,
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+
+    assert report["character_normalization"]["applied"] is True
+    assert report["character_count"] == 1
+    assert [entry["character"] for entry in report["character_summaries"]] == ["baron de Charlus"]
+    assert [entry["character"] for entry in report["timeline"]] == [
+        "baron de Charlus",
+        "baron de Charlus",
+    ]
+    assert report["character_summaries"][0]["unit_count"] == 2
+
+
+def test_build_corpus_sanity_review_can_apply_character_normalization_and_diff(tmp_path):
+    first_run = tmp_path / "run-001"
+    second_run = tmp_path / "run-002"
+    pn.prepare_annotation_run(first_run)
+    pn.prepare_annotation_run(second_run)
+    pn.write_annotation_result(
+        first_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="baron de Charlus"),
+    )
+
+    before_review = pr.build_corpus_sanity_review([first_run, second_run])
+    after_review = pr.build_corpus_sanity_review(
+        [first_run, second_run],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+    diff = pr.build_corpus_review_normalization_diff(before_review, after_review)
+
+    assert before_review["lens_reviews"]["local"]["character_count"] == 2
+    assert after_review["character_normalization"]["applied"] is True
+    assert after_review["lens_reviews"]["local"]["character_count"] == 1
+    assert after_review["lens_reviews"]["local"]["top_positive_characters"][0]["character"] == "baron de Charlus"
+    assert diff["lens_diffs"]["local"]["character_count_before"] == 2
+    assert diff["lens_diffs"]["local"]["character_count_after"] == 1
+    assert diff["lens_diffs"]["local"]["normalized_characters"][0]["character"] == "baron de Charlus"
+    assert diff["lens_diffs"]["local"]["normalized_characters"][0]["merged_from"] == ["Charlus"]
+
+
 def test_main_corpus_review_can_discover_and_write_artifacts(tmp_path, capsys):
     outputs_dir = tmp_path / "outputs"
     run_dir = outputs_dir / "run-001"
@@ -525,6 +587,462 @@ def test_main_corpus_review_can_discover_and_write_artifacts(tmp_path, capsys):
     assert payload["valid_annotation_count"] == 1
     assert review["run_count"] == 1
     assert markdown_output.read_text().startswith("# Corpus Review\n")
+
+
+def test_main_corpus_review_can_write_normalized_artifacts_and_diff(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    run_b = outputs_dir / "run-002"
+    json_output = tmp_path / "corpus-review-normalized.json"
+    markdown_output = tmp_path / "corpus-review-normalized.md"
+    diff_output = tmp_path / "corpus-review-normalization-diff.md"
+    pn.prepare_annotation_run(run_a)
+    pn.prepare_annotation_run(run_b)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        run_b,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="baron de Charlus"),
+    )
+
+    exit_code = pr.main(
+        [
+            "corpus-review",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+            "--normalization-diff-output",
+            str(diff_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    review = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["normalization_diff_output"] == str(diff_output)
+    assert review["character_normalization"]["applied"] is True
+    assert review["lens_reviews"]["local"]["character_count"] == 1
+    assert markdown_output.read_text().startswith("# Corpus Review\n")
+    assert diff_output.read_text().startswith("# Corpus Review Normalization Diff\n")
+
+
+def test_build_character_cross_lens_analysis_uses_normalized_review(tmp_path):
+    first_run = tmp_path / "run-001"
+    second_run = tmp_path / "run-002"
+    pn.prepare_annotation_run(first_run)
+    pn.prepare_annotation_run(second_run)
+    pn.write_annotation_result(
+        first_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="baron de Charlus"),
+    )
+
+    review = pr.build_corpus_sanity_review(
+        [first_run, second_run],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+    analysis = pr.build_character_cross_lens_analysis(review)
+
+    assert analysis["character_normalization"]["applied"] is True
+    assert analysis["character_count"] == 1
+    assert analysis["characters"][0]["character"] == "baron de Charlus"
+    assert analysis["characters"][0]["lens_scores"]["local"]["unit_count"] == 2
+    assert "baron de Charlus" in pr.render_character_cross_lens_analysis_markdown(analysis)
+
+
+def test_main_character_analysis_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    run_b = outputs_dir / "run-002"
+    json_output = tmp_path / "character-analysis.json"
+    markdown_output = tmp_path / "character-analysis.md"
+    pn.prepare_annotation_run(run_a)
+    pn.prepare_annotation_run(run_b)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        run_b,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="baron de Charlus"),
+    )
+
+    exit_code = pr.main(
+        [
+            "character-analysis",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    analysis = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["character_count"] == 1
+    assert analysis["character_normalization"]["applied"] is True
+    assert analysis["characters"][0]["character"] == "baron de Charlus"
+    assert markdown_output.read_text().startswith("# Character Cross-Lens Analysis\n")
+
+
+def test_build_character_chapter_analysis_groups_scores_by_chapter(tmp_path):
+    first_run = tmp_path / "run-001"
+    second_run = tmp_path / "run-002"
+    pn.prepare_annotation_run(first_run)
+    pn.prepare_annotation_run(second_run)
+    pn.write_annotation_result(
+        first_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="baron de Charlus"),
+    )
+
+    analysis = pr.build_character_chapter_analysis(
+        [first_run, second_run],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+        target_characters=["baron de Charlus"],
+    )
+
+    assert analysis["selected_character_count"] == 1
+    assert analysis["characters"][0]["character"] == "baron de Charlus"
+    assert analysis["characters"][0]["chapters"][0]["chapter_id"] == "v1-p1-combray"
+    assert analysis["characters"][0]["chapters"][0]["local"]["unit_count"] == 2
+    assert "v1-p1-combray" in pr.render_character_chapter_analysis_markdown(analysis)
+
+
+def test_main_character_chapter_analysis_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    run_b = outputs_dir / "run-002"
+    json_output = tmp_path / "character-chapter-analysis.json"
+    markdown_output = tmp_path / "character-chapter-analysis.md"
+    pn.prepare_annotation_run(run_a)
+    pn.prepare_annotation_run(run_b)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        run_b,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="baron de Charlus"),
+    )
+
+    exit_code = pr.main(
+        [
+            "character-chapter-analysis",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--character",
+            "baron de Charlus",
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    analysis = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["selected_character_count"] == 1
+    assert analysis["characters"][0]["character"] == "baron de Charlus"
+    assert markdown_output.read_text().startswith("# Character Chapter Analysis\n")
+
+
+def test_build_character_annotation_counts_sorts_by_unit_count(tmp_path):
+    first_run = tmp_path / "run-001"
+    second_run = tmp_path / "run-002"
+    pn.prepare_annotation_run(first_run)
+    pn.prepare_annotation_run(second_run)
+    pn.write_annotation_result(
+        first_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="baron de Charlus"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-312-p-313",
+        _minimal_annotation("v1-p1-combray#p-312-p-313", character="Swann"),
+    )
+
+    review = pr.build_corpus_sanity_review(
+        [first_run, second_run],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+    analysis = pr.build_character_annotation_counts(review)
+
+    assert analysis["character_count"] == 2
+    assert analysis["characters"][0]["character"] == "baron de Charlus"
+    assert analysis["characters"][0]["annotation_unit_count"] == 2
+    assert analysis["characters"][1]["character"] == "Swann"
+    assert "Annotation Units" in pr.render_character_annotation_counts_markdown(analysis)
+
+
+def test_main_character_annotation_counts_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    run_b = outputs_dir / "run-002"
+    json_output = tmp_path / "character-annotation-counts.json"
+    markdown_output = tmp_path / "character-annotation-counts.md"
+    pn.prepare_annotation_run(run_a)
+    pn.prepare_annotation_run(run_b)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        run_b,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="baron de Charlus"),
+    )
+
+    exit_code = pr.main(
+        [
+            "character-annotation-counts",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    analysis = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["character_count"] == 1
+    assert analysis["characters"][0]["character"] == "baron de Charlus"
+    assert markdown_output.read_text().startswith("# Character Annotation Counts\n")
+
+
+def test_build_character_profile_cards_uses_existing_derived_fields(tmp_path):
+    first_run = tmp_path / "run-001"
+    second_run = tmp_path / "run-002"
+    pn.prepare_annotation_run(first_run)
+    pn.prepare_annotation_run(second_run)
+    pn.write_annotation_result(
+        first_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="baron de Charlus"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-312-p-313",
+        _minimal_annotation("v1-p1-combray#p-312-p-313", character="Swann"),
+    )
+
+    analysis = pr.build_character_profile_cards(
+        [first_run, second_run],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+
+    assert analysis["character_count"] == 2
+    assert analysis["cards"][0]["character"] == "baron de Charlus"
+    assert analysis["cards"][0]["annotation_unit_count"] == 2
+    assert analysis["cards"][0]["top_chapters"][0]["chapter_id"] == "v1-p1-combray"
+    assert "Top chapters" in pr.render_character_profile_cards_markdown(analysis)
+
+
+def test_main_character_profile_cards_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    run_b = outputs_dir / "run-002"
+    json_output = tmp_path / "character-profile-cards.json"
+    markdown_output = tmp_path / "character-profile-cards.md"
+    pn.prepare_annotation_run(run_a)
+    pn.prepare_annotation_run(run_b)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        run_b,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="baron de Charlus"),
+    )
+
+    exit_code = pr.main(
+        [
+            "character-profile-cards",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    analysis = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["character_count"] == 1
+    assert analysis["cards"][0]["character"] == "baron de Charlus"
+    assert markdown_output.read_text().startswith("# Character Profile Cards\n")
+
+
+def test_build_chapter_overlay_data_exports_normalized_chapter_units(tmp_path):
+    first_run = tmp_path / "run-001"
+    second_run = tmp_path / "run-002"
+    pn.prepare_annotation_run(first_run)
+    pn.prepare_annotation_run(second_run)
+    pn.write_annotation_result(
+        first_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="baron de Charlus"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-312-p-313",
+        _minimal_annotation("v1-p1-combray#p-312-p-313", character="Swann", delta=-1),
+    )
+
+    dataset = pr.build_chapter_overlay_data(
+        [first_run, second_run],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+
+    assert dataset["chapter_overlay_version"] == "chapter_overlay_v1"
+    assert dataset["chapter_count"] == len(pr.CANONICAL_CHAPTER_SPECS)
+    assert dataset["character_normalization"]["applied"] is True
+
+    manifest_row = next(row for row in dataset["manifest"]["chapters"] if row["chapterId"] == "v1-p1-combray")
+    assert manifest_row["unitCount"] == 3
+    assert manifest_row["characterCount"] == 2
+
+    chapter = next(row for row in dataset["chapters"] if row["chapterId"] == "v1-p1-combray")
+    assert chapter["title"] == "Du Côté de Chez Swann — I. Combray"
+    assert [unit["unitId"] for unit in chapter["units"]] == [
+        "v1-p1-combray#p-17",
+        "v1-p1-combray#p-274-p-275",
+        "v1-p1-combray#p-312-p-313",
+    ]
+    assert chapter["units"][0]["paragraphStart"] == 17
+    assert chapter["units"][1]["paragraphEnd"] == 275
+    assert chapter["units"][0]["dominantCharacter"] == "baron de Charlus"
+    assert chapter["units"][0]["characters"][0]["character"] == "baron de Charlus"
+    assert chapter["units"][0]["characters"][0]["local"]["label"] == "win"
+    assert chapter["units"][2]["characters"][0]["character"] == "Swann"
+    assert chapter["units"][2]["characters"][0]["local"]["label"] == "loss"
+
+
+def test_build_chapter_overlay_data_prefers_latest_reviewed_run_for_duplicate_unit_ids(tmp_path):
+    first_run = tmp_path / "run-001"
+    second_run = tmp_path / "run-002"
+    pn.prepare_annotation_run(first_run)
+    pn.prepare_annotation_run(second_run)
+    pn.write_annotation_result(
+        first_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Swann"),
+    )
+    pn.write_annotation_result(
+        second_run,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+
+    dataset = pr.build_chapter_overlay_data(
+        [first_run, second_run],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+
+    chapter = next(row for row in dataset["chapters"] if row["chapterId"] == "v1-p1-combray")
+    assert len(chapter["units"]) == 1
+    assert chapter["units"][0]["characters"][0]["character"] == "baron de Charlus"
+    assert dataset["manifest"]["duplicate_resolution"] == "latest_reviewed_run_wins"
+
+
+def test_main_chapter_overlays_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    run_b = outputs_dir / "run-002"
+    output_dir = tmp_path / "chapter-overlays"
+    pn.prepare_annotation_run(run_a)
+    pn.prepare_annotation_run(run_b)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        run_b,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="baron de Charlus"),
+    )
+
+    exit_code = pr.main(
+        [
+            "chapter-overlays",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--output-dir",
+            str(output_dir),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    manifest = json.loads((output_dir / "manifest.json").read_text())
+    chapter = json.loads((output_dir / "chapters" / "v1-p1-combray.json").read_text())
+    assert exit_code == 0
+    assert payload["chapter_count"] == len(pr.CANONICAL_CHAPTER_SPECS)
+    assert payload["character_normalization_applied"] is True
+    assert manifest["chapter_overlay_version"] == "chapter_overlay_v1"
+    assert chapter["chapterId"] == "v1-p1-combray"
+    assert chapter["units"][0]["characters"][0]["character"] == "baron de Charlus"
 
 
 def test_build_character_alias_audit_reports_candidate_merge_groups(tmp_path):

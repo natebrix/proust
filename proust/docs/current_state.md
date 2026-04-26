@@ -13,12 +13,14 @@ For the longer running history, decisions, and examples, see:
 - [annotation_log.md](/Users/nathan_brixius/dev/proust/proust/docs/annotation_log.md:1)
 - [annotation_runner.md](/Users/nathan_brixius/dev/proust/proust/docs/annotation_runner.md:1)
 - [full_corpus_runbook.md](/Users/nathan_brixius/dev/proust/proust/docs/full_corpus_runbook.md:1)
+- [downstream_analysis_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/downstream_analysis_plan.md:1)
+- [outputs_guide.md](/Users/nathan_brixius/dev/proust/proust/docs/outputs_guide.md:1)
 
 ## Current phase
 
 The project is in:
 
-- post-production aggregate analysis and normalization planning
+- post-production normalized aggregate analysis
 
 This now means:
 
@@ -33,6 +35,13 @@ This now means:
 - a refreshed full-corpus review has been generated over all currently accepted annotation outputs
 - a character-alias audit has been completed
 - the first character-alias normalization plan has been reviewed and documented
+- optional aggregate-layer character normalization has now been implemented
+- normalized corpus-review artifacts have now been generated and reviewed
+- the normalized aggregate surface has now been accepted as the default downstream analysis surface
+- the first downstream character cross-lens analysis artifact has now been generated
+- the first character-by-chapter cross-lens analysis artifact has now been generated for the current highest-information figures
+- app-facing cross-lens character profile cards have now been generated
+- app-facing chapter overlay JSON has now been exported for the accepted normalized corpus surface
 
 The current question is no longer:
 
@@ -42,7 +51,7 @@ The current question is no longer:
 
 The current question is:
 
-- what aggregate-layer normalization and downstream analysis surfaces should be built from the accepted production corpus?
+- what downstream analysis surfaces should be built from the accepted normalized production corpus?
 
 ## Current stack status
 
@@ -70,6 +79,7 @@ Current read:
 - interruption-state handling has now been patched in the runner
 - controlled chapter-internal parallelism has now been repeatedly validated in production chapters
 - the current aggregate review surface is good enough to expose identity-splitting issues that were not obvious batch by batch
+- the reviewed normalization pass cleaned up per-character aggregate summaries without changing the core cross-lens stability read
 
 ## Current review rule
 
@@ -108,15 +118,15 @@ Do not keep reopening interpretive review once the report-level evidence remains
 The default should be:
 
 - keep the prompt, reducer, and lenses fixed
-- move to full-corpus automation with monitoring
-- intervene only if a new recurring failure class or orchestration failure appears
+- keep accepted annotation JSON fixed
+- treat the normalized aggregate surface as the default analysis surface
+- intervene only if downstream analysis exposes a genuinely new report-level failure class
 
-For long automated runs:
+For downstream analysis work:
 
-- do not assume silence means failure
-- check `run.json` for `automation.in_progress` and `automation.completed_unit_count`
-- check whether files are appearing in `raw/` and `annotations/`
-- retry only when there is evidence that progress has actually stopped
+- read aggregate artifacts first
+- only drill back into unit-level evidence when the aggregate picture shows a genuinely surprising signal
+- prefer new downstream views over source-annotation rewriting
 
 ## Latest accepted evidence
 
@@ -138,6 +148,22 @@ The current accepted evidence now includes:
   - [character-alias-audit-current.md](/Users/nathan_brixius/dev/proust/outputs/character-alias-audit-current.md:1)
 - a reviewed character alias normalization plan:
   - [character_alias_normalization_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/character_alias_normalization_plan.md:1)
+- completed normalized aggregate artifacts:
+  - [corpus-review-current-normalized.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.json:1)
+  - [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1)
+  - [corpus-review-normalization-diff.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-normalization-diff.md:1)
+- the first downstream character analysis artifacts:
+  - [character-cross-lens-current.json](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.json:1)
+  - [character-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.md:1)
+- the first downstream character-by-chapter analysis artifacts:
+  - [character-chapter-cross-lens-current.json](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.json:1)
+  - [character-chapter-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.md:1)
+- app-facing character profile card artifacts:
+  - [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
+  - [character-profile-cards-current.md](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.md:1)
+- app-facing chapter overlay artifacts:
+  - [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)
+  - [v1-p1-combray.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/chapters/v1-p1-combray.json:1)
 
 Stress-pack result:
 
@@ -161,19 +187,22 @@ The project has completed the full-corpus automation and first aggregate refresh
 Current conclusion:
 
 - keep source annotations fixed
-- treat the accepted annotation corpus as stable enough for aggregate-layer refinement
+- treat the accepted annotation corpus as stable enough for downstream analysis
 - use explicit reviewed mappings rather than broad alias heuristics
-- make the next changes in downstream aggregation, not in prompt/reducer/schema behavior
+- use the normalized aggregate review surface as the default per-character surface
+- make the next changes in downstream analysis, not in prompt/reducer/schema behavior
 
 ## Default next move
 
 If work resumes from this checkpoint, the next default move is:
 
 1. keep the accepted annotation JSON unchanged
-2. implement optional aggregate-layer character normalization using only the reviewed explicit mapping in [character_alias_normalization_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/character_alias_normalization_plan.md:1)
-3. generate normalized aggregate artifacts beside the current unnormalized ones
-4. write a normalization diff that shows what changed in top character totals, rankings, and cross-lens summaries
-5. only consider source-annotation rewriting after the normalized aggregate surface has been reviewed and accepted
+2. treat [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1) as the default aggregate review surface
+3. treat [character-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.md:1) as the first downstream analysis artifact
+4. treat [character-chapter-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.md:1) as the active checkpoint artifact for the highest-information characters
+5. treat [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1) and [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1) as the default app-facing data products
+6. if app-facing data work continues, make the next additive step `chapter_overlay_v2` prose summaries rather than revisiting `v1`
+7. only reconsider source-annotation rewriting if a later downstream-analysis need clearly justifies it
 
 ## Latest checkpoint
 
@@ -234,6 +263,10 @@ Latest mechanical result:
 - current corpus review workflow and refreshed artifacts committed in `499ad3a`
 - character alias audit committed in `522d51e`
 - reviewed character alias normalization plan committed in `82137dc`
+- aggregate-layer character normalization, normalized corpus-review artifacts, and normalization diff generated in the working tree
+- first downstream character cross-lens analysis artifacts generated in the working tree
+- first downstream character-by-chapter analysis artifacts generated in the working tree
+- app-facing character profile cards and chapter overlay exports generated in the working tree
 
 Current aggregate corpus counts:
 
@@ -241,12 +274,23 @@ Current aggregate corpus counts:
 - `1684` declared units
 - `1684` valid annotations
 - cross-lens sign-flip examples in the refreshed corpus review: `0`
+- normalized corpus-review character counts:
+  - `69 -> 62` in `local`
+  - `69 -> 62` in `prestige`
+  - `69 -> 62` in `inclusion`
+- normalized corpus-review cross-lens summary:
+  - `1996` comparable entries
+  - `128` label disagreements
+  - `93` direction disagreements
+  - `0` sign-flip examples
 
 Current stopping point:
 
-- the corpus review surface has exposed a small number of identity splits (`Charlus` / `baron de Charlus`, `Mme Swann` / `Odette`, etc.)
-- those have now been audited and converted into an explicit reviewed normalization plan
-- the next session should begin with aggregate-layer normalization, not new annotation production
+- the earlier identity splits (`Charlus` / `baron de Charlus`, `Mme Swann` / `Odette`, etc.) have now been merged at the aggregate layer using the reviewed explicit mapping
+- the normalized aggregate surface is cleaner and still preserves the same core stability read
+- the first downstream per-character cross-lens surface now exists and is suitable as the default starting point for further analysis
+- the next reading surface should be the character-by-chapter cross-lens artifact for the current highest-information figures
+- the next session should extend downstream analysis on that normalized chapter-aware surface, not return to new annotation production
 
 - `run-466`: `8/8` completed, `0` parse errors, `0` validation errors
 - `run-468`: `8/8` completed, `0` parse errors, `0` validation errors

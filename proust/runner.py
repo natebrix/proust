@@ -22,6 +22,7 @@ from .annotation import (
     load_prompt_template,
     render_prompt_input,
 )
+from .export import CANONICAL_CHAPTER_SPECS
 from .paths import ALIASES_CSV
 
 ANNOTATION_TOP_LEVEL_KEYS = {
@@ -213,6 +214,16 @@ SCORING_LENS_CONFIGS = {
         "label_thresholds": LOCAL_OUTCOME_LABEL_THRESHOLDS,
         "ambiguity_penalty": LOCAL_OUTCOME_AMBIGUITY_PENALTY,
     },
+}
+
+REVIEWED_CHARACTER_NORMALIZATION_MAP = {
+    "Saint-Loup": "Robert de Saint-Loup",
+    "princesse des Laumes": "duchesse de Guermantes",
+    "Charlus": "baron de Charlus",
+    "Mme Swann": "Odette",
+    "la grand-mère du narrateur": "la grand-mère",
+    "Vinteuil": "M. Vinteuil",
+    "Mme de Saint-Euverte": "marquise de Saint-Euverte",
 }
 
 
@@ -1409,6 +1420,59 @@ def _dominant_status_dimension(status_dimensions):
     return _sorted_status_dimensions(status_dimensions)[0][0]
 
 
+def _normalize_character_name(character, character_name_map=None):
+    if not character_name_map:
+        return character
+    return character_name_map.get(character, character)
+
+
+def _normalize_character_name_map(character_name_map):
+    if not character_name_map:
+        return {}
+
+    normalized_map = {}
+    for source, target in character_name_map.items():
+        clean_source = _clean_character_name(source)
+        clean_target = _clean_character_name(target)
+        if not clean_source or not clean_target or clean_source == clean_target:
+            continue
+        normalized_map[clean_source] = clean_target
+    return normalized_map
+
+
+def _merge_unit_character_scores(score_maps, lens_config):
+    merged = {
+        "event_score": 0.0,
+        "status_score": 0.0,
+        "ambiguity_penalty": 0.0,
+        "status_dimensions": {},
+        "event_types": {},
+        "positive_event_count": 0,
+        "negative_event_count": 0,
+    }
+
+    for scores in score_maps:
+        merged["event_score"] += scores["event_score"]
+        merged["status_score"] += scores["status_score"]
+        merged["ambiguity_penalty"] = max(merged["ambiguity_penalty"], scores["ambiguity_penalty"])
+        merged["positive_event_count"] += scores["positive_event_count"]
+        merged["negative_event_count"] += scores["negative_event_count"]
+        for dimension, delta_total in scores["status_dimensions"].items():
+            merged["status_dimensions"][dimension] = merged["status_dimensions"].get(dimension, 0) + delta_total
+        for event_type, count in scores["event_types"].items():
+            merged["event_types"][event_type] = merged["event_types"].get(event_type, 0) + count
+
+    merged["event_score"] = round(merged["event_score"], 3)
+    merged["status_score"] = round(merged["status_score"], 3)
+    merged["ambiguity_penalty"] = round(merged["ambiguity_penalty"], 3)
+    merged["net_score"] = round(
+        merged["event_score"] + merged["status_score"] - merged["ambiguity_penalty"],
+        3,
+    )
+    merged["label"] = _outcome_label(merged["net_score"], lens_config)
+    return merged
+
+
 def _build_unit_outcome_entry(unit_id, character, scores):
     dominant_dimension = _dominant_status_dimension(scores["status_dimensions"])
     return {
@@ -1427,14 +1491,26 @@ def _build_unit_outcome_entry(unit_id, character, scores):
     }
 
 
-def build_outcome_report(run_dir, lens="local"):
+def build_outcome_report(run_dir, lens="local", character_name_map=None):
     score_summary = _score_run_outcomes(run_dir, lens=lens)
+    lens_config = SCORING_LENS_CONFIGS[lens]
+    character_name_map = _normalize_character_name_map(character_name_map)
     units = []
     character_summaries = {}
 
     for unit in score_summary["units"]:
         unit_id = unit["unit_id"]
+        normalized_unit_scores = defaultdict(list)
         for character, scores in unit["characters"].items():
+            normalized_character = _normalize_character_name(character, character_name_map)
+            normalized_unit_scores[normalized_character].append(scores)
+
+        for character, score_maps in normalized_unit_scores.items():
+            scores = (
+                score_maps[0]
+                if len(score_maps) == 1
+                else _merge_unit_character_scores(score_maps, lens_config)
+            )
             entry = _build_unit_outcome_entry(unit_id, character, scores)
             units.append(entry)
 
@@ -1494,6 +1570,10 @@ def build_outcome_report(run_dir, lens="local"):
         "report_version": "outcome_report_v1",
         "scoring_version": score_summary["scoring_version"],
         "lens": lens,
+        "character_normalization": {
+            "applied": bool(character_name_map),
+            "map": dict(sorted(character_name_map.items())),
+        },
         "scored_unit_count": score_summary["scored_unit_count"],
         "character_count": len(sorted_character_summaries),
         "character_summaries": sorted_character_summaries,
@@ -1512,10 +1592,11 @@ def _label_direction(label):
     return "non_directional"
 
 
-def build_corpus_sanity_review(run_dirs):
+def build_corpus_sanity_review(run_dirs, character_name_map=None):
     if not run_dirs:
         raise ValueError("At least one run directory is required for a corpus sanity review.")
 
+    character_name_map = _normalize_character_name_map(character_name_map)
     run_statuses = []
     run_reports = {}
 
@@ -1525,7 +1606,7 @@ def build_corpus_sanity_review(run_dirs):
         run_id = manifest["run_id"]
         run_statuses.append(status)
         run_reports[run_id] = {
-            lens: build_outcome_report(run_dir, lens=lens)
+            lens: build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map)
             for lens in sorted(SCORING_LENS_CONFIGS)
         }
 
@@ -1655,6 +1736,21 @@ def build_corpus_sanity_review(run_dirs):
             ),
             key=lambda item: (item["net_score"], item["character"]),
         )[:10]
+        character_totals = sorted(
+            (
+                {
+                    "character": totals["character"],
+                    "net_score": round(totals["net_score"], 3),
+                    "event_score": round(totals["event_score"], 3),
+                    "status_score": round(totals["status_score"], 3),
+                    "unit_count": totals["unit_count"],
+                    "labels": totals["labels"],
+                    "dominant_status_dimension": _dominant_status_dimension(totals["status_dimensions"]),
+                }
+                for totals in lens_character_totals[lens].values()
+            ),
+            key=lambda item: (-item["net_score"], item["character"]),
+        )
 
         volatility_rows = []
         for character, entries in lens_character_entries[lens].items():
@@ -1673,6 +1769,7 @@ def build_corpus_sanity_review(run_dirs):
             [row for row in volatility_rows if row["unit_count"] >= 2],
             key=lambda item: (-item["score_span"], -item["unit_count"], item["character"]),
         )[:10]
+        character_volatility = sorted(volatility_rows, key=lambda item: item["character"])
 
         extreme_positive_units = sorted(
             lens_unit_entries[lens],
@@ -1687,6 +1784,8 @@ def build_corpus_sanity_review(run_dirs):
             "entry_count": len(lens_unit_entries[lens]),
             "character_count": len(lens_character_totals[lens]),
             "label_counts": label_counts,
+            "character_totals": character_totals,
+            "character_volatility": character_volatility,
             "top_positive_characters": top_positive_characters,
             "top_negative_characters": top_negative_characters,
             "most_volatile_characters": most_volatile_characters,
@@ -1764,6 +1863,10 @@ def build_corpus_sanity_review(run_dirs):
 
     return {
         "corpus_review_version": "corpus_sanity_review_v1",
+        "character_normalization": {
+            "applied": bool(character_name_map),
+            "map": dict(sorted(character_name_map.items())),
+        },
         "run_count": len(run_statuses),
         "run_ids": run_ids,
         "declared_unit_count": total_declared_unit_count,
@@ -1837,6 +1940,1012 @@ def _format_signed_number(value):
     return str(value)
 
 
+def _character_ranks(character_totals, reverse=True):
+    ordered = sorted(
+        character_totals,
+        key=lambda item: ((-item["net_score"]) if reverse else item["net_score"], item["character"]),
+    )
+    return {row["character"]: index + 1 for index, row in enumerate(ordered)}
+
+
+def _character_totals_by_name(character_totals):
+    return {row["character"]: row for row in character_totals}
+
+
+def _character_volatility_by_name(character_volatility):
+    return {row["character"]: row for row in character_volatility}
+
+
+def build_character_cross_lens_analysis(review):
+    lenses = sorted(SCORING_LENS_CONFIGS)
+    missing_lenses = [lens for lens in lenses if lens not in review["lens_reviews"]]
+    if missing_lenses:
+        raise ValueError(f"Review is missing lens reviews for: {', '.join(missing_lenses)}")
+
+    rank_maps = {
+        lens: _character_ranks(review["lens_reviews"][lens]["character_totals"], reverse=True)
+        for lens in lenses
+    }
+    totals_by_lens = {
+        lens: _character_totals_by_name(review["lens_reviews"][lens]["character_totals"])
+        for lens in lenses
+    }
+    volatility_by_lens = {
+        lens: _character_volatility_by_name(review["lens_reviews"][lens]["character_volatility"])
+        for lens in lenses
+    }
+
+    all_characters = sorted(
+        {
+            character
+            for lens in lenses
+            for character in totals_by_lens[lens]
+        }
+    )
+
+    character_rows = []
+    for character in all_characters:
+        lens_rows = {}
+        ranks = []
+        unit_counts = []
+        score_spans = []
+        for lens in lenses:
+            total = totals_by_lens[lens].get(character)
+            volatility = volatility_by_lens[lens].get(character)
+            rank = rank_maps[lens].get(character)
+            if rank is not None:
+                ranks.append(rank)
+            if total is not None:
+                unit_counts.append(total["unit_count"])
+            if volatility is not None:
+                score_spans.append(volatility["score_span"])
+            lens_rows[lens] = {
+                "net_score": total["net_score"] if total else 0.0,
+                "rank": rank,
+                "unit_count": total["unit_count"] if total else 0,
+                "dominant_status_dimension": total["dominant_status_dimension"] if total else None,
+                "score_span": volatility["score_span"] if volatility else 0.0,
+                "mean_score": volatility["mean_score"] if volatility else 0.0,
+            }
+
+        character_rows.append(
+            {
+                "character": character,
+                "lens_scores": lens_rows,
+                "rank_spread": (max(ranks) - min(ranks)) if ranks else 0,
+                "max_unit_count": max(unit_counts) if unit_counts else 0,
+                "max_score_span": max(score_spans) if score_spans else 0.0,
+            }
+        )
+
+    top_rank_spread = sorted(
+        [row for row in character_rows if row["max_unit_count"] >= 2],
+        key=lambda item: (-item["rank_spread"], -item["max_unit_count"], item["character"]),
+    )[:15]
+    top_volatility = sorted(
+        [row for row in character_rows if row["max_unit_count"] >= 2],
+        key=lambda item: (-item["max_score_span"], -item["max_unit_count"], item["character"]),
+    )[:15]
+
+    return {
+        "character_cross_lens_analysis_version": "character_cross_lens_analysis_v1",
+        "source_review_version": review["corpus_review_version"],
+        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
+        "character_count": len(character_rows),
+        "characters": sorted(
+            character_rows,
+            key=lambda item: (
+                -item["lens_scores"]["local"]["net_score"],
+                item["character"],
+            ),
+        ),
+        "top_rank_spread_characters": top_rank_spread,
+        "top_volatile_characters": top_volatility,
+        "top_positive_by_lens": {
+            lens: review["lens_reviews"][lens]["top_positive_characters"]
+            for lens in lenses
+        },
+        "top_negative_by_lens": {
+            lens: review["lens_reviews"][lens]["top_negative_characters"]
+            for lens in lenses
+        },
+    }
+
+
+def _chapter_id_from_unit_id(unit_id):
+    return unit_id.split("#", 1)[0]
+
+
+def _run_id_sort_key(run_id):
+    match = re.search(r"(\d+)$", run_id)
+    return (int(match.group(1)), run_id) if match else (-1, run_id)
+
+
+def _paragraph_range_from_unit_id(unit_id):
+    _, paragraph_spec = unit_id.split("#", 1)
+    matches = [int(value) for value in re.findall(r"p-(\d+)", paragraph_spec)]
+    if not matches:
+        raise ValueError(f"Unit id does not contain a paragraph range: {unit_id}")
+    if len(matches) == 1:
+        return matches[0], matches[0]
+    return matches[0], matches[-1]
+
+
+def _overlay_character_sort_key(character_row):
+    return (
+        -max(
+            abs(character_row["local"]["netScore"]),
+            abs(character_row["prestige"]["netScore"]),
+            abs(character_row["inclusion"]["netScore"]),
+        ),
+        character_row["character"],
+    )
+
+
+def _overlay_dominant_character(characters):
+    if not characters:
+        return None
+
+    def _key(row):
+        return (
+            abs(row["local"]["netScore"]),
+            abs(row["prestige"]["netScore"]),
+            abs(row["inclusion"]["netScore"]),
+            row["character"],
+        )
+
+    return max(characters, key=_key)["character"]
+
+
+def build_chapter_overlay_data(run_dirs, character_name_map=None):
+    if not run_dirs:
+        raise ValueError("At least one run directory is required for chapter overlay export.")
+
+    character_name_map = _normalize_character_name_map(character_name_map)
+    timeline_by_lens = {lens: [] for lens in sorted(SCORING_LENS_CONFIGS)}
+    preferred_run_by_unit = {}
+
+    for run_dir in run_dirs:
+        status = get_run_status(run_dir)
+        run_id = status["manifest"]["run_id"]
+        for unit in status["units"]:
+            unit_id = unit["unit_id"]
+            if unit["review_state"] != "reviewed":
+                continue
+            existing_run_id = preferred_run_by_unit.get(unit_id)
+            if existing_run_id is None or _run_id_sort_key(run_id) > _run_id_sort_key(existing_run_id):
+                preferred_run_by_unit[unit_id] = run_id
+
+    for run_dir in run_dirs:
+        status = get_run_status(run_dir)
+        run_id = status["manifest"]["run_id"]
+        for lens in sorted(SCORING_LENS_CONFIGS):
+            report = build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map)
+            timeline_by_lens[lens].extend(
+                entry for entry in report["timeline"] if preferred_run_by_unit.get(entry["unit_id"]) == run_id
+            )
+
+    unit_rows = defaultdict(lambda: {"characters": {}})
+    for lens, entries in timeline_by_lens.items():
+        for entry in entries:
+            unit_id = entry["unit_id"]
+            chapter_id = _chapter_id_from_unit_id(unit_id)
+            paragraph_start, paragraph_end = _paragraph_range_from_unit_id(unit_id)
+            chapter_bucket = unit_rows[chapter_id]
+            chapter_bucket["characters"].setdefault(unit_id, {})
+            character_bucket = chapter_bucket["characters"][unit_id].setdefault(
+                entry["character"],
+                {
+                    "character": entry["character"],
+                    "dominantStatusDimension": entry["dominant_status_dimension"],
+                },
+            )
+            character_bucket[lens] = {
+                "netScore": entry["net_score"],
+                "label": entry["label"],
+            }
+            chapter_bucket.setdefault("unit_meta", {})[unit_id] = {
+                "paragraphStart": paragraph_start,
+                "paragraphEnd": paragraph_end,
+            }
+
+    chapters = []
+    manifest_rows = []
+    for chapter in CANONICAL_CHAPTER_SPECS:
+        chapter_unit_map = unit_rows.get(chapter.id, {})
+        unit_meta = chapter_unit_map.get("unit_meta", {})
+        units = []
+        for unit_id, characters in sorted(
+            chapter_unit_map.get("characters", {}).items(),
+            key=lambda item: (
+                unit_meta[item[0]]["paragraphStart"],
+                unit_meta[item[0]]["paragraphEnd"],
+                item[0],
+            ),
+        ):
+            character_rows = []
+            for character in characters.values():
+                character_row = {
+                    "character": character["character"],
+                    "dominantStatusDimension": character["dominantStatusDimension"],
+                }
+                for lens in sorted(SCORING_LENS_CONFIGS):
+                    character_row[lens] = character.get(lens, {"netScore": 0.0, "label": "neutral"})
+                character_rows.append(character_row)
+
+            character_rows.sort(key=_overlay_character_sort_key)
+            units.append(
+                {
+                    "unitId": unit_id,
+                    "paragraphStart": unit_meta[unit_id]["paragraphStart"],
+                    "paragraphEnd": unit_meta[unit_id]["paragraphEnd"],
+                    "dominantCharacter": _overlay_dominant_character(character_rows),
+                    "characters": character_rows,
+                }
+            )
+
+        chapter_payload = {
+            "chapter_overlay_version": "chapter_overlay_v1",
+            "chapterId": chapter.id,
+            "chapterNumber": chapter.number,
+            "title": chapter.title,
+            "volumeNumber": chapter.volume_number,
+            "volumeTitle": chapter.volume_title,
+            "partNumber": chapter.part_number,
+            "partTitle": chapter.part_title,
+            "sectionTitle": chapter.section_title,
+            "characterNormalizationApplied": bool(character_name_map),
+            "units": units,
+        }
+        chapters.append(chapter_payload)
+        manifest_rows.append(
+            {
+                "chapterId": chapter.id,
+                "title": chapter.title,
+                "path": f"chapters/{chapter.id}.json",
+                "unitCount": len(units),
+                "characterCount": len({row["character"] for unit in units for row in unit["characters"]}),
+            }
+        )
+
+    return {
+        "chapter_overlay_version": "chapter_overlay_v1",
+        "source_review_version": "corpus_sanity_review_v1",
+        "character_normalization": {
+            "applied": bool(character_name_map),
+            "map": dict(sorted(character_name_map.items())),
+        },
+        "chapter_count": len(chapters),
+        "duplicate_resolution": "latest_reviewed_run_wins",
+        "chapters": chapters,
+        "manifest": {
+            "chapter_overlay_version": "chapter_overlay_v1",
+            "source_review_version": "corpus_sanity_review_v1",
+            "character_normalization": {
+                "applied": bool(character_name_map),
+                "map": dict(sorted(character_name_map.items())),
+            },
+            "chapter_count": len(chapters),
+            "duplicate_resolution": "latest_reviewed_run_wins",
+            "chapters": manifest_rows,
+        },
+    }
+
+
+def build_character_chapter_analysis(
+    run_dirs,
+    character_name_map=None,
+    target_characters=None,
+    top_rank_spread_limit=10,
+    top_volatile_limit=10,
+):
+    review = build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    cross_lens = build_character_cross_lens_analysis(review)
+
+    if target_characters:
+        selected_characters = list(dict.fromkeys(target_characters))
+    else:
+        selected_characters = []
+        seen = set()
+        for row in cross_lens["top_rank_spread_characters"][:top_rank_spread_limit]:
+            character = row["character"]
+            if character not in seen:
+                seen.add(character)
+                selected_characters.append(character)
+        for row in cross_lens["top_volatile_characters"][:top_volatile_limit]:
+            character = row["character"]
+            if character not in seen:
+                seen.add(character)
+                selected_characters.append(character)
+
+    if not selected_characters:
+        raise ValueError("At least one target character is required for chapter analysis.")
+
+    chapter_order = [chapter.id for chapter in CANONICAL_CHAPTER_SPECS]
+    chapter_positions = {chapter_id: index for index, chapter_id in enumerate(chapter_order)}
+    lens_reports = {lens: [] for lens in sorted(SCORING_LENS_CONFIGS)}
+    for run_dir in run_dirs:
+        for lens in sorted(SCORING_LENS_CONFIGS):
+            lens_reports[lens].append(build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map))
+
+    selected_set = set(selected_characters)
+    chapter_rows = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: {"net_score": 0.0, "unit_count": 0})))
+
+    for lens, reports in lens_reports.items():
+        for report in reports:
+            for entry in report["timeline"]:
+                character = entry["character"]
+                if character not in selected_set:
+                    continue
+                chapter_id = _chapter_id_from_unit_id(entry["unit_id"])
+                chapter_row = chapter_rows[character][chapter_id][lens]
+                chapter_row["net_score"] += entry["net_score"]
+                chapter_row["unit_count"] += 1
+
+    selected_by = {}
+    for row in cross_lens["top_rank_spread_characters"][:top_rank_spread_limit]:
+        selected_by.setdefault(row["character"], []).append("rank_spread")
+    for row in cross_lens["top_volatile_characters"][:top_volatile_limit]:
+        selected_by.setdefault(row["character"], []).append("volatility")
+
+    characters = []
+    for character in selected_characters:
+        source_row = next(row for row in cross_lens["characters"] if row["character"] == character)
+        chapters = []
+        for chapter_id, chapter_lenses in sorted(
+            chapter_rows.get(character, {}).items(),
+            key=lambda item: (chapter_positions.get(item[0], 999), item[0]),
+        ):
+            chapters.append(
+                {
+                    "chapter_id": chapter_id,
+                    "local": {
+                        "net_score": round(chapter_lenses["local"]["net_score"], 3),
+                        "unit_count": chapter_lenses["local"]["unit_count"],
+                    },
+                    "prestige": {
+                        "net_score": round(chapter_lenses["prestige"]["net_score"], 3),
+                        "unit_count": chapter_lenses["prestige"]["unit_count"],
+                    },
+                    "inclusion": {
+                        "net_score": round(chapter_lenses["inclusion"]["net_score"], 3),
+                        "unit_count": chapter_lenses["inclusion"]["unit_count"],
+                    },
+                }
+            )
+
+        characters.append(
+            {
+                "character": character,
+                "selected_by": selected_by.get(character, []),
+                "cross_lens_summary": source_row,
+                "chapters": chapters,
+            }
+        )
+
+    return {
+        "character_chapter_analysis_version": "character_chapter_analysis_v1",
+        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
+        "source_review_version": review["corpus_review_version"],
+        "selected_character_count": len(characters),
+        "selected_characters": selected_characters,
+        "characters": characters,
+    }
+
+
+def build_character_annotation_counts(review):
+    local_totals = review["lens_reviews"]["local"]["character_totals"]
+    rows = []
+    for row in local_totals:
+        rows.append(
+            {
+                "character": row["character"],
+                "annotation_unit_count": row["unit_count"],
+                "local_net_score": row["net_score"],
+                "prestige_net_score": next(
+                    item["net_score"]
+                    for item in review["lens_reviews"]["prestige"]["character_totals"]
+                    if item["character"] == row["character"]
+                ),
+                "inclusion_net_score": next(
+                    item["net_score"]
+                    for item in review["lens_reviews"]["inclusion"]["character_totals"]
+                    if item["character"] == row["character"]
+                ),
+            }
+        )
+
+    rows.sort(key=lambda item: (-item["annotation_unit_count"], item["character"]))
+    return {
+        "character_annotation_counts_version": "character_annotation_counts_v1",
+        "source_review_version": review["corpus_review_version"],
+        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
+        "character_count": len(rows),
+        "characters": rows,
+    }
+
+
+def build_character_profile_cards(run_dirs, character_name_map=None, top_chapter_limit=5):
+    review = build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    cross_lens = build_character_cross_lens_analysis(review)
+    chapter_analysis = build_character_chapter_analysis(
+        run_dirs,
+        character_name_map=character_name_map,
+        target_characters=[row["character"] for row in cross_lens["characters"]],
+    )
+    annotation_counts = build_character_annotation_counts(review)
+
+    chapter_rows_by_character = {row["character"]: row for row in chapter_analysis["characters"]}
+    counts_by_character = {row["character"]: row for row in annotation_counts["characters"]}
+
+    cards = []
+    for row in cross_lens["characters"]:
+        character = row["character"]
+        chapter_rows = chapter_rows_by_character.get(character, {}).get("chapters", [])
+        top_chapters = sorted(
+            chapter_rows,
+            key=lambda item: max(
+                abs(item["local"]["net_score"]),
+                abs(item["prestige"]["net_score"]),
+                abs(item["inclusion"]["net_score"]),
+            ),
+            reverse=True,
+        )[:top_chapter_limit]
+
+        cards.append(
+            {
+                "character": character,
+                "annotation_unit_count": counts_by_character[character]["annotation_unit_count"],
+                "rank_spread": row["rank_spread"],
+                "max_score_span": row["max_score_span"],
+                "selected_by": chapter_rows_by_character.get(character, {}).get("selected_by", []),
+                "lens_scores": row["lens_scores"],
+                "top_chapters": top_chapters,
+            }
+        )
+
+    cards.sort(
+        key=lambda item: (-item["annotation_unit_count"], -item["rank_spread"], item["character"]),
+    )
+    return {
+        "character_profile_cards_version": "character_profile_cards_v1",
+        "source_review_version": review["corpus_review_version"],
+        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
+        "character_count": len(cards),
+        "cards": cards,
+    }
+
+
+def build_corpus_review_normalization_diff(before_review, after_review):
+    after_map = after_review.get("character_normalization", {}).get("map", {})
+    if not after_map:
+        raise ValueError("A normalized corpus review is required to build a normalization diff.")
+
+    normalized_targets = sorted(set(after_map.values()))
+    lens_diffs = {}
+    for lens in sorted(SCORING_LENS_CONFIGS):
+        before_lens = before_review["lens_reviews"][lens]
+        after_lens = after_review["lens_reviews"][lens]
+        before_totals = _character_totals_by_name(before_lens["character_totals"])
+        after_totals = _character_totals_by_name(after_lens["character_totals"])
+        positive_ranks_before = _character_ranks(before_lens["character_totals"], reverse=True)
+        positive_ranks_after = _character_ranks(after_lens["character_totals"], reverse=True)
+        negative_ranks_before = _character_ranks(before_lens["character_totals"], reverse=False)
+        negative_ranks_after = _character_ranks(after_lens["character_totals"], reverse=False)
+
+        normalized_character_rows = []
+        for target in normalized_targets:
+            sources = sorted(source for source, normalized in after_map.items() if normalized == target)
+            before_net_score = round(
+                sum(before_totals.get(name, {}).get("net_score", 0.0) for name in [target, *sources]),
+                3,
+            )
+            before_unit_count = sum(before_totals.get(name, {}).get("unit_count", 0) for name in [target, *sources])
+            after_row = after_totals.get(target)
+            if not after_row and before_unit_count == 0:
+                continue
+
+            normalized_character_rows.append(
+                {
+                    "character": target,
+                    "merged_from": sources,
+                    "net_score_before": before_net_score,
+                    "net_score_after": after_row["net_score"] if after_row else 0.0,
+                    "unit_count_before": before_unit_count,
+                    "unit_count_after": after_row["unit_count"] if after_row else 0,
+                    "positive_rank_before": positive_ranks_before.get(target),
+                    "positive_rank_after": positive_ranks_after.get(target),
+                    "negative_rank_before": negative_ranks_before.get(target),
+                    "negative_rank_after": negative_ranks_after.get(target),
+                }
+            )
+
+        lens_diffs[lens] = {
+            "character_count_before": before_lens["character_count"],
+            "character_count_after": after_lens["character_count"],
+            "top_positive_before": before_lens["top_positive_characters"],
+            "top_positive_after": after_lens["top_positive_characters"],
+            "top_negative_before": before_lens["top_negative_characters"],
+            "top_negative_after": after_lens["top_negative_characters"],
+            "normalized_characters": normalized_character_rows,
+        }
+
+    before_cross_lens = before_review["cross_lens_summary"]
+    after_cross_lens = after_review["cross_lens_summary"]
+    return {
+        "normalization_diff_version": "corpus_review_normalization_diff_v1",
+        "character_normalization_map": dict(sorted(after_map.items())),
+        "lens_diffs": lens_diffs,
+        "cross_lens_summary_diff": {
+            "comparable_entry_count_before": before_cross_lens["comparable_entry_count"],
+            "comparable_entry_count_after": after_cross_lens["comparable_entry_count"],
+            "label_disagreement_count_before": before_cross_lens["label_disagreement_count"],
+            "label_disagreement_count_after": after_cross_lens["label_disagreement_count"],
+            "direction_disagreement_count_before": before_cross_lens["direction_disagreement_count"],
+            "direction_disagreement_count_after": after_cross_lens["direction_disagreement_count"],
+            "sign_flip_count_before": len(before_cross_lens["sign_flip_examples"]),
+            "sign_flip_count_after": len(after_cross_lens["sign_flip_examples"]),
+        },
+        "before_review_version": before_review["corpus_review_version"],
+        "after_review_version": after_review["corpus_review_version"],
+    }
+
+
+def render_corpus_review_normalization_diff_markdown(diff):
+    lines = [
+        "# Corpus Review Normalization Diff",
+        "",
+        f"- Diff version: `{diff['normalization_diff_version']}`",
+        f"- Reviewed merges: `{len(diff['character_normalization_map'])}`",
+        "",
+        "## Character Map",
+        "",
+        _markdown_table(
+            ["Source Name", "Normalized Name"],
+            diff["character_normalization_map"].items(),
+        ),
+        "",
+        "## Lens Diffs",
+        "",
+    ]
+
+    for lens, lens_diff in diff["lens_diffs"].items():
+        lines.extend(
+            [
+                f"### {lens}",
+                "",
+                f"- Character count: `{lens_diff['character_count_before']}` -> `{lens_diff['character_count_after']}`",
+                "",
+                "Normalized character movement:",
+                "",
+                _markdown_table(
+                    [
+                        "Character",
+                        "Merged From",
+                        "Net Before",
+                        "Net After",
+                        "Units Before",
+                        "Units After",
+                        "Positive Rank",
+                        "Negative Rank",
+                    ],
+                    [
+                        (
+                            row["character"],
+                            ", ".join(row["merged_from"]),
+                            _format_signed_number(row["net_score_before"]),
+                            _format_signed_number(row["net_score_after"]),
+                            row["unit_count_before"],
+                            row["unit_count_after"],
+                            f"{row['positive_rank_before']} -> {row['positive_rank_after']}",
+                            f"{row['negative_rank_before']} -> {row['negative_rank_after']}",
+                        )
+                        for row in lens_diff["normalized_characters"]
+                    ],
+                ),
+                "",
+                "Top positive characters:",
+                "",
+                _markdown_table(
+                    ["Before", "After"],
+                    [
+                        (
+                            row_before["character"] if index < len(lens_diff["top_positive_before"]) else "",
+                            row_after["character"] if index < len(lens_diff["top_positive_after"]) else "",
+                        )
+                        for index, (row_before, row_after) in enumerate(
+                            zip(
+                                lens_diff["top_positive_before"] + [{}] * 10,
+                                lens_diff["top_positive_after"] + [{}] * 10,
+                            )
+                        )
+                        if index < 10
+                    ],
+                ),
+                "",
+                "Top negative characters:",
+                "",
+                _markdown_table(
+                    ["Before", "After"],
+                    [
+                        (
+                            row_before["character"] if index < len(lens_diff["top_negative_before"]) else "",
+                            row_after["character"] if index < len(lens_diff["top_negative_after"]) else "",
+                        )
+                        for index, (row_before, row_after) in enumerate(
+                            zip(
+                                lens_diff["top_negative_before"] + [{}] * 10,
+                                lens_diff["top_negative_after"] + [{}] * 10,
+                            )
+                        )
+                        if index < 10
+                    ],
+                ),
+                "",
+            ]
+        )
+
+    cross_lens_diff = diff["cross_lens_summary_diff"]
+    lines.extend(
+        [
+            "## Cross-Lens Summary Diff",
+            "",
+            f"- Comparable entries: `{cross_lens_diff['comparable_entry_count_before']}` -> `{cross_lens_diff['comparable_entry_count_after']}`",
+            f"- Label disagreements: `{cross_lens_diff['label_disagreement_count_before']}` -> `{cross_lens_diff['label_disagreement_count_after']}`",
+            f"- Direction disagreements: `{cross_lens_diff['direction_disagreement_count_before']}` -> `{cross_lens_diff['direction_disagreement_count_after']}`",
+            f"- Sign-flip examples: `{cross_lens_diff['sign_flip_count_before']}` -> `{cross_lens_diff['sign_flip_count_after']}`",
+            "",
+        ]
+    )
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_corpus_review_normalization_diff_artifacts(diff, markdown_output=None):
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_corpus_review_normalization_diff_markdown(diff))
+
+
+def render_character_cross_lens_analysis_markdown(analysis):
+    lines = [
+        "# Character Cross-Lens Analysis",
+        "",
+        f"- Analysis version: `{analysis['character_cross_lens_analysis_version']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Character count: `{analysis['character_count']}`",
+        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
+        "",
+        "## Top Positive By Lens",
+        "",
+    ]
+
+    for lens in sorted(SCORING_LENS_CONFIGS):
+        lines.extend(
+            [
+                f"### {lens}",
+                "",
+                _markdown_table(
+                    ["Character", "Net Score", "Units"],
+                    [
+                        (
+                            row["character"],
+                            _format_signed_number(row["net_score"]),
+                            row["unit_count"],
+                        )
+                        for row in analysis["top_positive_by_lens"][lens]
+                    ],
+                ),
+                "",
+            ]
+        )
+
+    lines.extend(
+        [
+            "## Top Negative By Lens",
+            "",
+        ]
+    )
+
+    for lens in sorted(SCORING_LENS_CONFIGS):
+        lines.extend(
+            [
+                f"### {lens}",
+                "",
+                _markdown_table(
+                    ["Character", "Net Score", "Units"],
+                    [
+                        (
+                            row["character"],
+                            _format_signed_number(row["net_score"]),
+                            row["unit_count"],
+                        )
+                        for row in analysis["top_negative_by_lens"][lens]
+                    ],
+                ),
+                "",
+            ]
+        )
+
+    lines.extend(
+        [
+            "## Largest Cross-Lens Rank Spread",
+            "",
+            _markdown_table(
+                ["Character", "Local Rank", "Prestige Rank", "Inclusion Rank", "Rank Spread", "Max Units"],
+                [
+                    (
+                        row["character"],
+                        row["lens_scores"]["local"]["rank"],
+                        row["lens_scores"]["prestige"]["rank"],
+                        row["lens_scores"]["inclusion"]["rank"],
+                        row["rank_spread"],
+                        row["max_unit_count"],
+                    )
+                    for row in analysis["top_rank_spread_characters"]
+                ],
+            ),
+            "",
+            "## Highest Volatility",
+            "",
+            _markdown_table(
+                ["Character", "Local Span", "Prestige Span", "Inclusion Span", "Max Span", "Max Units"],
+                [
+                    (
+                        row["character"],
+                        _format_signed_number(row["lens_scores"]["local"]["score_span"]),
+                        _format_signed_number(row["lens_scores"]["prestige"]["score_span"]),
+                        _format_signed_number(row["lens_scores"]["inclusion"]["score_span"]),
+                        _format_signed_number(row["max_score_span"]),
+                        row["max_unit_count"],
+                    )
+                    for row in analysis["top_volatile_characters"]
+                ],
+            ),
+            "",
+            "## Character Table",
+            "",
+            _markdown_table(
+                [
+                    "Character",
+                    "Local",
+                    "Prestige",
+                    "Inclusion",
+                    "Local Rank",
+                    "Prestige Rank",
+                    "Inclusion Rank",
+                    "Max Units",
+                    "Max Span",
+                ],
+                [
+                    (
+                        row["character"],
+                        _format_signed_number(row["lens_scores"]["local"]["net_score"]),
+                        _format_signed_number(row["lens_scores"]["prestige"]["net_score"]),
+                        _format_signed_number(row["lens_scores"]["inclusion"]["net_score"]),
+                        row["lens_scores"]["local"]["rank"],
+                        row["lens_scores"]["prestige"]["rank"],
+                        row["lens_scores"]["inclusion"]["rank"],
+                        row["max_unit_count"],
+                        _format_signed_number(row["max_score_span"]),
+                    )
+                    for row in analysis["characters"][:40]
+                ],
+            ),
+            "",
+        ]
+    )
+
+    if len(analysis["characters"]) > 40:
+        lines.extend(
+            [
+                f"_Showing first 40 of {len(analysis['characters'])} character rows._",
+                "",
+            ]
+        )
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_cross_lens_analysis_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_cross_lens_analysis_markdown(analysis))
+
+
+def render_character_chapter_analysis_markdown(analysis):
+    lines = [
+        "# Character Chapter Analysis",
+        "",
+        f"- Analysis version: `{analysis['character_chapter_analysis_version']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Selected character count: `{analysis['selected_character_count']}`",
+        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
+        "",
+    ]
+
+    for character_row in analysis["characters"]:
+        summary = character_row["cross_lens_summary"]
+        lines.extend(
+            [
+                f"## {character_row['character']}",
+                "",
+                f"- Selected by: `{', '.join(character_row['selected_by']) or 'manual'}`",
+                f"- Local / Prestige / Inclusion ranks: `{summary['lens_scores']['local']['rank']}` / `{summary['lens_scores']['prestige']['rank']}` / `{summary['lens_scores']['inclusion']['rank']}`",
+                f"- Rank spread: `{summary['rank_spread']}`",
+                f"- Max units: `{summary['max_unit_count']}`",
+                f"- Max score span: `{_format_signed_number(summary['max_score_span'])}`",
+                "",
+                _markdown_table(
+                    [
+                        "Chapter",
+                        "Local",
+                        "Prestige",
+                        "Inclusion",
+                        "Local Units",
+                        "Prestige Units",
+                        "Inclusion Units",
+                    ],
+                    [
+                        (
+                            row["chapter_id"],
+                            _format_signed_number(row["local"]["net_score"]),
+                            _format_signed_number(row["prestige"]["net_score"]),
+                            _format_signed_number(row["inclusion"]["net_score"]),
+                            row["local"]["unit_count"],
+                            row["prestige"]["unit_count"],
+                            row["inclusion"]["unit_count"],
+                        )
+                        for row in character_row["chapters"]
+                    ],
+                ),
+                "",
+            ]
+        )
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_chapter_analysis_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_chapter_analysis_markdown(analysis))
+
+
+def render_character_annotation_counts_markdown(analysis):
+    lines = [
+        "# Character Annotation Counts",
+        "",
+        f"- Analysis version: `{analysis['character_annotation_counts_version']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Character count: `{analysis['character_count']}`",
+        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
+        "",
+        _markdown_table(
+            ["Character", "Annotation Units", "Local", "Prestige", "Inclusion"],
+            [
+                (
+                    row["character"],
+                    row["annotation_unit_count"],
+                    _format_signed_number(row["local_net_score"]),
+                    _format_signed_number(row["prestige_net_score"]),
+                    _format_signed_number(row["inclusion_net_score"]),
+                )
+                for row in analysis["characters"]
+            ],
+        ),
+        "",
+    ]
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_annotation_counts_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_annotation_counts_markdown(analysis))
+
+
+def render_character_profile_cards_markdown(analysis):
+    lines = [
+        "# Character Profile Cards",
+        "",
+        f"- Analysis version: `{analysis['character_profile_cards_version']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Character count: `{analysis['character_count']}`",
+        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
+        "",
+    ]
+
+    for card in analysis["cards"][:20]:
+        lines.extend(
+            [
+                f"## {card['character']}",
+                "",
+                f"- Annotation units: `{card['annotation_unit_count']}`",
+                f"- Rank spread: `{card['rank_spread']}`",
+                f"- Max score span: `{_format_signed_number(card['max_score_span'])}`",
+                f"- Selected by: `{', '.join(card['selected_by']) or 'none'}`",
+                "",
+                _markdown_table(
+                    ["Lens", "Net Score", "Rank", "Units", "Dominant Dimension", "Score Span"],
+                    [
+                        (
+                            lens,
+                            _format_signed_number(card["lens_scores"][lens]["net_score"]),
+                            card["lens_scores"][lens]["rank"],
+                            card["lens_scores"][lens]["unit_count"],
+                            card["lens_scores"][lens]["dominant_status_dimension"],
+                            _format_signed_number(card["lens_scores"][lens]["score_span"]),
+                        )
+                        for lens in sorted(SCORING_LENS_CONFIGS)
+                    ],
+                ),
+                "",
+                "Top chapters:",
+                "",
+                _markdown_table(
+                    ["Chapter", "Local", "Prestige", "Inclusion"],
+                    [
+                        (
+                            row["chapter_id"],
+                            _format_signed_number(row["local"]["net_score"]),
+                            _format_signed_number(row["prestige"]["net_score"]),
+                            _format_signed_number(row["inclusion"]["net_score"]),
+                        )
+                        for row in card["top_chapters"]
+                    ],
+                ),
+                "",
+            ]
+        )
+
+    if len(analysis["cards"]) > 20:
+        lines.extend([f"_Showing first 20 of {len(analysis['cards'])} cards._", "",])
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_profile_cards_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_profile_cards_markdown(analysis))
+
+
+def write_chapter_overlay_artifacts(dataset, output_dir):
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    manifest_path = output_path / "manifest.json"
+    manifest_path.write_text(json.dumps(dataset["manifest"], ensure_ascii=False, indent=2) + "\n")
+
+    chapters_dir = output_path / "chapters"
+    chapters_dir.mkdir(parents=True, exist_ok=True)
+    for chapter in dataset["chapters"]:
+        chapter_path = chapters_dir / f"{chapter['chapterId']}.json"
+        chapter_path.write_text(json.dumps(chapter, ensure_ascii=False, indent=2) + "\n")
+
+
 def render_corpus_review_markdown(review):
     annotation_summary = review["aggregate_annotation_summary"]
     cross_lens_summary = review["cross_lens_summary"]
@@ -1847,6 +2956,7 @@ def render_corpus_review_markdown(review):
         f"- Run count: `{review['run_count']}`",
         f"- Declared unit count: `{review['declared_unit_count']}`",
         f"- Valid annotation count: `{review['valid_annotation_count']}`",
+        f"- Character normalization applied: `{review['character_normalization']['applied']}`",
         "",
         "## Aggregate Annotation Summary",
         "",
@@ -2793,6 +3903,11 @@ def main(argv=None):
     )
     report_parser.add_argument("--run", required=True, help="Run directory to report on.")
     report_parser.add_argument("--lens", default="local", choices=sorted(SCORING_LENS_CONFIGS), help="Scoring lens.")
+    report_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
 
     corpus_review_parser = subparsers.add_parser(
         "corpus-review",
@@ -2810,8 +3925,146 @@ def main(argv=None):
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
     )
+    corpus_review_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
     corpus_review_parser.add_argument("--output", help="Optional JSON output path.")
     corpus_review_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    corpus_review_parser.add_argument(
+        "--normalization-diff-output",
+        help="Optional Markdown output path for a diff between unnormalized and normalized corpus reviews.",
+    )
+
+    character_analysis_parser = subparsers.add_parser(
+        "character-analysis",
+        help="Build a per-character cross-lens downstream analysis from the corpus review surface.",
+    )
+    character_analysis_parser.add_argument(
+        "--run",
+        dest="runs",
+        action="append",
+        help="Run directory to include. Repeat for multiple runs.",
+    )
+    character_analysis_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_analysis_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
+    character_analysis_parser.add_argument("--output", help="Optional JSON output path.")
+    character_analysis_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+
+    character_chapter_parser = subparsers.add_parser(
+        "character-chapter-analysis",
+        help="Build a chapter-by-chapter cross-lens analysis for the highest-information characters.",
+    )
+    character_chapter_parser.add_argument(
+        "--run",
+        dest="runs",
+        action="append",
+        help="Run directory to include. Repeat for multiple runs.",
+    )
+    character_chapter_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_chapter_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
+    character_chapter_parser.add_argument(
+        "--character",
+        dest="characters",
+        action="append",
+        help="Optional character to include. Repeat for multiple characters. Defaults to the union of top rank-spread and top volatile figures.",
+    )
+    character_chapter_parser.add_argument("--output", help="Optional JSON output path.")
+    character_chapter_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+
+    character_counts_parser = subparsers.add_parser(
+        "character-annotation-counts",
+        help="Build a normalized character list sorted by annotation unit count.",
+    )
+    character_counts_parser.add_argument(
+        "--run",
+        dest="runs",
+        action="append",
+        help="Run directory to include. Repeat for multiple runs.",
+    )
+    character_counts_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_counts_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
+    character_counts_parser.add_argument("--output", help="Optional JSON output path.")
+    character_counts_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+
+    character_cards_parser = subparsers.add_parser(
+        "character-profile-cards",
+        help="Build app-facing cross-lens character profile cards.",
+    )
+    character_cards_parser.add_argument(
+        "--run",
+        dest="runs",
+        action="append",
+        help="Run directory to include. Repeat for multiple runs.",
+    )
+    character_cards_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_cards_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
+    character_cards_parser.add_argument("--output", help="Optional JSON output path.")
+    character_cards_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+
+    chapter_overlay_parser = subparsers.add_parser(
+        "chapter-overlays",
+        help="Export chapter-keyed app overlay JSON from the accepted normalized corpus surface.",
+    )
+    chapter_overlay_parser.add_argument(
+        "--run",
+        dest="runs",
+        action="append",
+        help="Run directory to include. Repeat for multiple runs.",
+    )
+    chapter_overlay_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    chapter_overlay_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
+    chapter_overlay_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory where manifest.json and chapter JSON files should be written.",
+    )
 
     alias_audit_parser = subparsers.add_parser(
         "character-alias-audit",
@@ -2958,18 +4211,29 @@ def main(argv=None):
 
     if args.command == "report":
         try:
-            report = build_outcome_report(args.run, lens=args.lens)
+            character_name_map = (
+                REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
+            )
+            report = build_outcome_report(args.run, lens=args.lens, character_name_map=character_name_map)
         except RunManifestNotFoundError as exc:
             parser.error(str(exc))
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "corpus-review":
+        if args.normalization_diff_output and not args.reviewed_character_normalization:
+            parser.error("--normalization-diff-output requires --reviewed-character-normalization")
         try:
             runs = list(args.runs or [])
             if args.discover_runs:
                 runs.extend(discover_annotation_run_dirs(args.discover_runs))
-            review = build_corpus_sanity_review(runs)
+            character_name_map = (
+                REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
+            )
+            baseline_review = None
+            if args.normalization_diff_output:
+                baseline_review = build_corpus_sanity_review(runs)
+            review = build_corpus_sanity_review(runs, character_name_map=character_name_map)
         except (RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         write_corpus_review_artifacts(
@@ -2977,6 +4241,14 @@ def main(argv=None):
             json_output=args.output,
             markdown_output=args.markdown_output,
         )
+        if args.normalization_diff_output:
+            if baseline_review is None:
+                baseline_review = build_corpus_sanity_review(runs)
+            diff = build_corpus_review_normalization_diff(baseline_review, review)
+            write_corpus_review_normalization_diff_artifacts(
+                diff,
+                markdown_output=args.normalization_diff_output,
+            )
         if args.output or args.markdown_output:
             print(
                 json.dumps(
@@ -2986,6 +4258,7 @@ def main(argv=None):
                         "valid_annotation_count": review["valid_annotation_count"],
                         "json_output": args.output,
                         "markdown_output": args.markdown_output,
+                        "normalization_diff_output": args.normalization_diff_output,
                     },
                     ensure_ascii=False,
                     indent=2,
@@ -3023,6 +4296,165 @@ def main(argv=None):
             )
         else:
             print(json.dumps(audit, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-analysis":
+        try:
+            runs = list(args.runs or [])
+            if args.discover_runs:
+                runs.extend(discover_annotation_run_dirs(args.discover_runs))
+            character_name_map = (
+                REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
+            )
+            review = build_corpus_sanity_review(runs, character_name_map=character_name_map)
+            analysis = build_character_cross_lens_analysis(review)
+        except (RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        write_character_cross_lens_analysis_artifacts(
+            analysis,
+            json_output=args.output,
+            markdown_output=args.markdown_output,
+        )
+        if args.output or args.markdown_output:
+            print(
+                json.dumps(
+                    {
+                        "character_count": analysis["character_count"],
+                        "json_output": args.output,
+                        "markdown_output": args.markdown_output,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            print(json.dumps(analysis, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-chapter-analysis":
+        try:
+            runs = list(args.runs or [])
+            if args.discover_runs:
+                runs.extend(discover_annotation_run_dirs(args.discover_runs))
+            character_name_map = (
+                REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
+            )
+            analysis = build_character_chapter_analysis(
+                runs,
+                character_name_map=character_name_map,
+                target_characters=args.characters,
+            )
+        except (RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        write_character_chapter_analysis_artifacts(
+            analysis,
+            json_output=args.output,
+            markdown_output=args.markdown_output,
+        )
+        if args.output or args.markdown_output:
+            print(
+                json.dumps(
+                    {
+                        "selected_character_count": analysis["selected_character_count"],
+                        "json_output": args.output,
+                        "markdown_output": args.markdown_output,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            print(json.dumps(analysis, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-annotation-counts":
+        try:
+            runs = list(args.runs or [])
+            if args.discover_runs:
+                runs.extend(discover_annotation_run_dirs(args.discover_runs))
+            character_name_map = (
+                REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
+            )
+            review = build_corpus_sanity_review(runs, character_name_map=character_name_map)
+            analysis = build_character_annotation_counts(review)
+        except (RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        write_character_annotation_counts_artifacts(
+            analysis,
+            json_output=args.output,
+            markdown_output=args.markdown_output,
+        )
+        if args.output or args.markdown_output:
+            print(
+                json.dumps(
+                    {
+                        "character_count": analysis["character_count"],
+                        "json_output": args.output,
+                        "markdown_output": args.markdown_output,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            print(json.dumps(analysis, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-profile-cards":
+        try:
+            runs = list(args.runs or [])
+            if args.discover_runs:
+                runs.extend(discover_annotation_run_dirs(args.discover_runs))
+            character_name_map = (
+                REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
+            )
+            analysis = build_character_profile_cards(runs, character_name_map=character_name_map)
+        except (RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        write_character_profile_cards_artifacts(
+            analysis,
+            json_output=args.output,
+            markdown_output=args.markdown_output,
+        )
+        if args.output or args.markdown_output:
+            print(
+                json.dumps(
+                    {
+                        "character_count": analysis["character_count"],
+                        "json_output": args.output,
+                        "markdown_output": args.markdown_output,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            print(json.dumps(analysis, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "chapter-overlays":
+        try:
+            runs = list(args.runs or [])
+            if args.discover_runs:
+                runs.extend(discover_annotation_run_dirs(args.discover_runs))
+            character_name_map = (
+                REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
+            )
+            dataset = build_chapter_overlay_data(runs, character_name_map=character_name_map)
+        except (RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        write_chapter_overlay_artifacts(dataset, args.output_dir)
+        print(
+            json.dumps(
+                {
+                    "chapter_count": dataset["chapter_count"],
+                    "output_dir": args.output_dir,
+                    "character_normalization_applied": dataset["character_normalization"]["applied"],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
         return 0
 
     if args.command == "automate":
