@@ -221,6 +221,7 @@ Purpose:
 
 - provide chapter-keyed, paragraph-range overlay JSON for the `islt` reader
 - bridge normalized aggregate/unit-level annotation data into an app-friendly form
+- include deterministic chapter and unit summaries in the current `chapter_overlay_v2` surface
 
 Use when:
 

@@ -5607,3 +5607,30 @@ Updated stopping point:
 - keep the accepted annotation JSON fixed
 - treat character profile cards and chapter overlays as the default app-facing export surface
 - if app-facing data work continues, add `chapter_overlay_v2` prose summaries as a narrow additive extension
+
+## chapter overlay v2 summaries generated
+
+The chapter overlay export now includes the first additive prose layer.
+
+Generated artifacts:
+
+- [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)
+- [v1-p1-combray.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/chapters/v1-p1-combray.json:1)
+
+Mechanical result:
+
+- the current overlay manifest now reports `chapter_overlay_v2`
+- each chapter file now includes a deterministic chapter-level `summary`
+- each unit row now includes a deterministic unit-level `summary`
+- the structural `v1` overlay fields remain unchanged
+
+Interpretive consequence:
+
+- the app-facing overlay surface is now strong enough to support a first rendering pass without inventing new text in the app
+- the next likely app-facing additions are editorial refinements rather than more basic export plumbing
+
+Updated stopping point:
+
+- keep the accepted annotation JSON fixed
+- treat `chapter_overlay_v2` as the default chapter-overlay surface
+- if app-facing data work continues, prioritize rendering and higher-order editorial framing over new structural export work

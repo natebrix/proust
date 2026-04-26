@@ -953,7 +953,7 @@ def test_build_chapter_overlay_data_exports_normalized_chapter_units(tmp_path):
         character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
     )
 
-    assert dataset["chapter_overlay_version"] == "chapter_overlay_v1"
+    assert dataset["chapter_overlay_version"] == "chapter_overlay_v2"
     assert dataset["chapter_count"] == len(pr.CANONICAL_CHAPTER_SPECS)
     assert dataset["character_normalization"]["applied"] is True
 
@@ -963,6 +963,7 @@ def test_build_chapter_overlay_data_exports_normalized_chapter_units(tmp_path):
 
     chapter = next(row for row in dataset["chapters"] if row["chapterId"] == "v1-p1-combray")
     assert chapter["title"] == "Du Côté de Chez Swann — I. Combray"
+    assert chapter["summary"].startswith("This chapter contains 3 annotated units")
     assert [unit["unitId"] for unit in chapter["units"]] == [
         "v1-p1-combray#p-17",
         "v1-p1-combray#p-274-p-275",
@@ -973,8 +974,10 @@ def test_build_chapter_overlay_data_exports_normalized_chapter_units(tmp_path):
     assert chapter["units"][0]["dominantCharacter"] == "baron de Charlus"
     assert chapter["units"][0]["characters"][0]["character"] == "baron de Charlus"
     assert chapter["units"][0]["characters"][0]["local"]["label"] == "win"
+    assert "baron de Charlus gains social status" in chapter["units"][0]["summary"]
     assert chapter["units"][2]["characters"][0]["character"] == "Swann"
     assert chapter["units"][2]["characters"][0]["local"]["label"] == "loss"
+    assert "Swann loses social status" in chapter["units"][2]["summary"]
 
 
 def test_build_chapter_overlay_data_prefers_latest_reviewed_run_for_duplicate_unit_ids(tmp_path):
@@ -1001,6 +1004,7 @@ def test_build_chapter_overlay_data_prefers_latest_reviewed_run_for_duplicate_un
     chapter = next(row for row in dataset["chapters"] if row["chapterId"] == "v1-p1-combray")
     assert len(chapter["units"]) == 1
     assert chapter["units"][0]["characters"][0]["character"] == "baron de Charlus"
+    assert "baron de Charlus" in chapter["units"][0]["summary"]
     assert dataset["manifest"]["duplicate_resolution"] == "latest_reviewed_run_wins"
 
 
@@ -1040,8 +1044,10 @@ def test_main_chapter_overlays_can_write_artifacts(tmp_path, capsys):
     assert exit_code == 0
     assert payload["chapter_count"] == len(pr.CANONICAL_CHAPTER_SPECS)
     assert payload["character_normalization_applied"] is True
-    assert manifest["chapter_overlay_version"] == "chapter_overlay_v1"
+    assert manifest["chapter_overlay_version"] == "chapter_overlay_v2"
     assert chapter["chapterId"] == "v1-p1-combray"
+    assert "summary" in chapter
+    assert "summary" in chapter["units"][0]
     assert chapter["units"][0]["characters"][0]["character"] == "baron de Charlus"
 
 

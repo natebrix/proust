@@ -42,6 +42,7 @@ This now means:
 - the first character-by-chapter cross-lens analysis artifact has now been generated for the current highest-information figures
 - app-facing cross-lens character profile cards have now been generated
 - app-facing chapter overlay JSON has now been exported for the accepted normalized corpus surface
+- app-facing chapter overlay prose summaries have now been added as `chapter_overlay_v2`
 
 The current question is no longer:
 
@@ -201,8 +202,9 @@ If work resumes from this checkpoint, the next default move is:
 3. treat [character-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.md:1) as the first downstream analysis artifact
 4. treat [character-chapter-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.md:1) as the active checkpoint artifact for the highest-information characters
 5. treat [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1) and [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1) as the default app-facing data products
-6. if app-facing data work continues, make the next additive step `chapter_overlay_v2` prose summaries rather than revisiting `v1`
-7. only reconsider source-annotation rewriting if a later downstream-analysis need clearly justifies it
+6. treat `chapter_overlay_v2` summaries as complete enough for first app rendering
+7. if app-facing data work continues, the next additive step should be richer editorial framing rather than a new structural export
+8. only reconsider source-annotation rewriting if a later downstream-analysis need clearly justifies it
 
 ## Latest checkpoint
 
@@ -267,6 +269,7 @@ Latest mechanical result:
 - first downstream character cross-lens analysis artifacts generated in the working tree
 - first downstream character-by-chapter analysis artifacts generated in the working tree
 - app-facing character profile cards and chapter overlay exports generated in the working tree
+- deterministic chapter overlay summaries generated in the working tree
 
 Current aggregate corpus counts:
 

@@ -271,7 +271,7 @@ Suggested shape:
 
 This is enough for unit shading, chips, and lens toggles.
 
-The first exporter should treat prose `summary` as a `v2` extension rather than a `v1` requirement.
+This export now exists as the current app-facing dataset, and the current `chapter_overlay_v2` payload also includes additive deterministic chapter and unit summaries.
 
 ### Recommended Export 2: Chapter Character Summary Data
 
@@ -386,10 +386,11 @@ Sentence-level highlighting should be treated as a later enhancement, not a requ
 
 ## Recommended Next Technical Step
 
-The character profile card layer is now in place. The next technical step is to build one exporter in the annotation project that produces chapter-level overlay JSON from the accepted normalized corpus.
+The character profile card layer and chapter overlay export are now both in place.
 
-That will answer the practical integration question cleanly:
+The next technical step is to use the current exported datasets in the app:
 
-- can the app consume a stable, chapter-keyed derived dataset rather than the raw annotation workspace?
+- [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
+- [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)
 
-That chapter overlay export is now the most important missing bridge between the analysis project and the reader app.
+If app-facing data work continues beyond that, the next likely additive layer is not a new structural export. It is richer editorial summarization or chapter framing built on top of the existing overlay and chapter-analysis surfaces.

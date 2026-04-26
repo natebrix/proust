@@ -2097,6 +2097,130 @@ def _overlay_dominant_character(characters):
     return max(characters, key=_key)["character"]
 
 
+OVERLAY_DIMENSION_PHRASES = {
+    "general_appraisal": "overall standing",
+    "social_status": "social status",
+    "rhetorical_position": "rhetorical authority",
+    "emotional_position": "emotional standing",
+    "inclusion_exclusion": "inclusion standing",
+}
+
+
+def _natural_join(items):
+    values = [item for item in items if item]
+    if not values:
+        return ""
+    if len(values) == 1:
+        return values[0]
+    if len(values) == 2:
+        return f"{values[0]} and {values[1]}"
+    return f"{', '.join(values[:-1])}, and {values[-1]}"
+
+
+def _overlay_dimension_phrase(dimension):
+    return OVERLAY_DIMENSION_PHRASES.get(dimension, "standing")
+
+
+def _overlay_lens_group_phrase(lenses):
+    if set(lenses) == set(sorted(SCORING_LENS_CONFIGS)):
+        return "across all three lenses"
+    return f"in {_natural_join(lenses)}"
+
+
+def _build_overlay_character_summary(character_row):
+    dimension_phrase = _overlay_dimension_phrase(character_row.get("dominantStatusDimension"))
+    labels_by_lens = {lens: character_row[lens]["label"] for lens in sorted(SCORING_LENS_CONFIGS)}
+    grouped_lenses = defaultdict(list)
+    for lens, label in labels_by_lens.items():
+        grouped_lenses[label].append(lens)
+
+    if len(grouped_lenses) == 1:
+        only_label = next(iter(grouped_lenses))
+        if only_label == "win":
+            return f"{character_row['character']} gains {dimension_phrase} across all three lenses."
+        if only_label == "loss":
+            return f"{character_row['character']} loses {dimension_phrase} across all three lenses."
+        if only_label == "mixed":
+            return f"{character_row['character']} shows mixed {dimension_phrase} across all three lenses."
+        return f"{character_row['character']} remains neutral across all three lenses."
+
+    clauses = []
+    if grouped_lenses.get("win"):
+        clauses.append(
+            f"gains {dimension_phrase} {_overlay_lens_group_phrase(grouped_lenses['win'])}"
+        )
+    if grouped_lenses.get("loss"):
+        clauses.append(
+            f"loses {dimension_phrase} {_overlay_lens_group_phrase(grouped_lenses['loss'])}"
+        )
+    if grouped_lenses.get("mixed"):
+        clauses.append(
+            f"shows mixed {dimension_phrase} {_overlay_lens_group_phrase(grouped_lenses['mixed'])}"
+        )
+    if not clauses:
+        clauses.append("remains neutral")
+
+    return f"{character_row['character']} " + "; ".join(clauses) + "."
+
+
+def _build_overlay_unit_summary(character_rows):
+    if not character_rows:
+        return "No character scoring data is available for this unit."
+
+    active_rows = [
+        row
+        for row in character_rows
+        if any(row[lens]["label"] != "neutral" for lens in sorted(SCORING_LENS_CONFIGS))
+    ]
+    source_rows = active_rows[:2] if active_rows else character_rows[:1]
+    return " ".join(_build_overlay_character_summary(row) for row in source_rows)
+
+
+def _chapter_lens_mode(label_counts):
+    if label_counts["loss"] > max(label_counts["win"], label_counts["mixed"], label_counts["neutral"]):
+        return "loss-heavy"
+    if label_counts["win"] > max(label_counts["loss"], label_counts["mixed"], label_counts["neutral"]):
+        return "win-heavy"
+    if label_counts["mixed"] > max(label_counts["win"], label_counts["loss"], label_counts["neutral"]):
+        return "mixed"
+    return "balanced"
+
+
+def _build_overlay_chapter_summary(units):
+    if not units:
+        return "No reviewed annotation units are currently available for this chapter."
+
+    dominant_character_counts = defaultdict(int)
+    lens_label_counts = {lens: {"win": 0, "loss": 0, "mixed": 0, "neutral": 0} for lens in sorted(SCORING_LENS_CONFIGS)}
+    for unit in units:
+        if unit["dominantCharacter"]:
+            dominant_character_counts[unit["dominantCharacter"]] += 1
+        for character_row in unit["characters"]:
+            for lens in sorted(SCORING_LENS_CONFIGS):
+                lens_label_counts[lens][character_row[lens]["label"]] += 1
+
+    top_characters = [
+        character
+        for character, _count in sorted(
+            dominant_character_counts.items(),
+            key=lambda item: (-item[1], item[0]),
+        )[:3]
+    ]
+    chapter_focus = (
+        f"centered on {_natural_join(top_characters)}"
+        if top_characters
+        else "without a single dominant character focus"
+    )
+    lens_modes = [
+        f"{lens} {_chapter_lens_mode(lens_label_counts[lens])}"
+        for lens in sorted(SCORING_LENS_CONFIGS)
+    ]
+    return (
+        f"This chapter contains {len(units)} annotated units, {chapter_focus}. "
+        f"Overall it is {_natural_join(lens_modes)}."
+    )
+
+
 def build_chapter_overlay_data(run_dirs, character_name_map=None):
     if not run_dirs:
         raise ValueError("At least one run directory is required for chapter overlay export.")
@@ -2181,11 +2305,12 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
                     "paragraphEnd": unit_meta[unit_id]["paragraphEnd"],
                     "dominantCharacter": _overlay_dominant_character(character_rows),
                     "characters": character_rows,
+                    "summary": _build_overlay_unit_summary(character_rows),
                 }
             )
 
         chapter_payload = {
-            "chapter_overlay_version": "chapter_overlay_v1",
+            "chapter_overlay_version": "chapter_overlay_v2",
             "chapterId": chapter.id,
             "chapterNumber": chapter.number,
             "title": chapter.title,
@@ -2195,6 +2320,7 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
             "partTitle": chapter.part_title,
             "sectionTitle": chapter.section_title,
             "characterNormalizationApplied": bool(character_name_map),
+            "summary": _build_overlay_chapter_summary(units),
             "units": units,
         }
         chapters.append(chapter_payload)
@@ -2209,7 +2335,7 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
         )
 
     return {
-        "chapter_overlay_version": "chapter_overlay_v1",
+        "chapter_overlay_version": "chapter_overlay_v2",
         "source_review_version": "corpus_sanity_review_v1",
         "character_normalization": {
             "applied": bool(character_name_map),
@@ -2219,7 +2345,7 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
         "duplicate_resolution": "latest_reviewed_run_wins",
         "chapters": chapters,
         "manifest": {
-            "chapter_overlay_version": "chapter_overlay_v1",
+            "chapter_overlay_version": "chapter_overlay_v2",
             "source_review_version": "corpus_sanity_review_v1",
             "character_normalization": {
                 "applied": bool(character_name_map),

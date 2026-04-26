@@ -1,6 +1,6 @@
 # Chapter Overlay Schema
 
-This document defines the first app-facing JSON schema for chapter-level annotation overlays in the `islt` reader.
+This document defines the current app-facing JSON schema for chapter-level annotation overlays in the `islt` reader.
 
 The goal is:
 
@@ -9,7 +9,7 @@ The goal is:
 - built from the accepted normalized aggregate surface
 - sufficient for paragraph shading, lens toggles, and character chips
 
-This schema is intentionally narrow. It is meant to support a clean `v1` exporter before adding editorial or prose enrichment.
+The schema started as a narrow structural `v1` export. The current artifact is `chapter_overlay_v2`, which keeps the `v1` structure and adds deterministic prose summaries.
 
 Related documents:
 
@@ -23,7 +23,7 @@ Primary source data for the exporter:
 
 ## Design Principles
 
-The first schema should be:
+The overlay schema should be:
 
 - chapter-oriented
 - paragraph-range-based
@@ -31,7 +31,7 @@ The first schema should be:
 - explicit about all three scoring lenses
 - small enough for direct app consumption
 
-The first schema should not require:
+The structural layer should not require:
 
 - sentence-level span mapping
 - new prompt calls
@@ -53,7 +53,7 @@ Recommended manifest shape:
 
 ```json
 {
-  "chapter_overlay_version": "chapter_overlay_v1",
+  "chapter_overlay_version": "chapter_overlay_v2",
   "source_review_version": "corpus_sanity_review_v1",
   "character_normalization": {
     "applied": true,
@@ -89,7 +89,7 @@ Recommended chapter file shape:
 
 ```json
 {
-  "chapter_overlay_version": "chapter_overlay_v1",
+  "chapter_overlay_version": "chapter_overlay_v2",
   "chapterId": "v1-p2-un-amour-de-swann",
   "chapterNumber": 2,
   "title": "Un amour de Swann",
@@ -99,6 +99,7 @@ Recommended chapter file shape:
   "partTitle": "Un amour de Swann",
   "sectionTitle": null,
   "characterNormalizationApplied": true,
+  "summary": "This chapter contains 235 annotated units, centered on Swann, Odette, and Mme Verdurin. Overall it is inclusion loss-heavy, local loss-heavy, and prestige loss-heavy.",
   "units": [
     {
       "unitId": "v1-p2-un-amour-de-swann#p-17-p-21",
@@ -122,7 +123,8 @@ Recommended chapter file shape:
             "label": "loss"
           }
         }
-      ]
+      ],
+      "summary": "Odette loses social status in local and inclusion; shows mixed social status in prestige."
     }
   ]
 }
@@ -137,6 +139,7 @@ Each unit should contain:
 - `paragraphEnd`
 - `dominantCharacter`
 - `characters`
+- `summary` in `v2`
 
 ### `unitId`
 
@@ -201,6 +204,30 @@ This is enough for:
 - lens toggles
 - compact chips
 
+## Summary Fields In V2
+
+`chapter_overlay_v2` adds deterministic prose summaries while keeping the `v1` structural contract intact.
+
+### Chapter `summary`
+
+Short aggregate sentence for the chapter.
+
+Current behavior:
+
+- reports annotated unit count
+- names the most common dominant characters
+- describes whether each lens is broadly win-heavy, loss-heavy, mixed, or balanced
+
+### Unit `summary`
+
+Short deterministic sentence for the unit.
+
+Current behavior:
+
+- uses the highest-salience one or two non-neutral characters
+- describes whether they gain, lose, or split by lens
+- uses the dominant status dimension as the prose noun phrase
+
 ## Sorting Rules
 
 To keep the app logic simple, exported arrays should already be stably sorted.
@@ -211,48 +238,19 @@ Recommended sorting:
 - chapter `units`: by `paragraphStart`, then `paragraphEnd`, then `unitId`
 - unit `characters`: descending maximum absolute net score across the three lenses, then character name
 
-## Why No Prose Summary In V1
+## V1 And V2
 
-Prose summary is useful, but it is not required for the first inline overlay pass.
+`chapter_overlay_v1` deliberately omitted prose summaries.
 
-Leaving it out of `v1` has two advantages:
+That kept the first exporter:
 
 - it keeps the exporter purely structural and deterministic
 - it lets the app team build rendering against a stable minimal contract first
 
-The first app version can already do useful work with:
+`chapter_overlay_v2` is the additive follow-on:
 
-- paragraph ranges
-- lens labels
-- character chips
-- dominant character defaults
+- same manifest and chapter structure
+- same per-unit lens data
+- added deterministic chapter and unit summaries
 
-## Planned V2 Extension
-
-After `chapter_overlay_v1` is working, the next additive step should be `chapter_overlay_v2` with optional prose summaries.
-
-Recommended `v2` additions:
-
-- unit-level `summary`
-- optionally chapter-level `summary`
-
-Example additive unit field:
-
-```json
-{
-  "summary": "Narrator-led diminishment of Albertine's emotional standing."
-}
-```
-
-That should remain additive rather than structural, so the app can adopt `v1` first without blocking on summary generation.
-
-## Recommended Next Implementation Step
-
-Implement a `build_chapter_overlay_data(...)` exporter that:
-
-1. builds normalized per-lens outcome reports
-2. groups unit timeline entries by chapter and `unitId`
-3. emits one chapter JSON file per canonical chapter
-4. writes a small manifest with version and chapter metadata
-
-That will create the main missing data bridge between the annotation project and the `islt` reader.
+The summaries remain additive rather than structural, so rendering can still rely on the original `v1` data shape if needed.

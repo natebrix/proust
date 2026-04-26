@@ -60,6 +60,8 @@ The first app-facing derivative artifacts have now also been generated:
 - [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
 - [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)
 
+The chapter overlay surface now includes additive deterministic prose summaries as `chapter_overlay_v2`.
+
 ## Recommended first artifact
 
 The first artifact is a character-centered downstream report.
@@ -87,7 +89,7 @@ If work resumes from here, the default next move is:
 
 1. read the generated character-by-chapter cross-lens artifact first
 2. use it to identify which chapter-level accumulations are driving the largest lens splits
-3. treat the character profile cards and chapter overlays as the current app-facing export layer
-4. if app-facing export work continues, add `chapter_overlay_v2` prose summaries as an additive extension
+3. treat the character profile cards and `chapter_overlay_v2` overlays as the current app-facing export layer
+4. if app-facing export work continues, prefer richer editorial framing over new structural export work
 5. keep extending aggregate analysis before drilling into individual units
 6. only drill into units if the chapter-level picture shows a genuinely surprising pattern
