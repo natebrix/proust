@@ -12,11 +12,11 @@
 - Max score span: `+8.609`
 - Selected by: `volatility`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -206.613 | 62 | 263 | emotional_position | +7.484 |
-| inclusion | -225.958 | 62 | 263 | emotional_position | +8.609 |
-| prestige | -139.776 | 62 | 263 | emotional_position | +7.545 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -206.613 | 0th | 62 | 263 | emotional_position | +7.484 |
+| inclusion | -225.958 | 0th | 62 | 263 | emotional_position | +8.609 |
+| prestige | -139.776 | 0th | 62 | 263 | emotional_position | +7.545 |
 
 Top chapters:
 
@@ -35,11 +35,11 @@ Top chapters:
 - Max score span: `+7.299`
 - Selected by: `rank_spread, volatility`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -3.318 | 35 | 197 | emotional_position | +6.49 |
-| inclusion | -24.925 | 54 | 197 | emotional_position | +6.25 |
-| prestige | +9.924 | 8 | 197 | emotional_position | +7.299 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -3.318 | 44th | 35 | 197 | emotional_position | +6.49 |
+| inclusion | -24.925 | 13th | 54 | 197 | emotional_position | +6.25 |
+| prestige | +9.924 | 89th | 8 | 197 | emotional_position | +7.299 |
 
 Top chapters:
 
@@ -58,11 +58,11 @@ Top chapters:
 - Max score span: `+8.061`
 - Selected by: `volatility`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -111.185 | 61 | 177 | general_appraisal | +6.472 |
-| inclusion | -121.659 | 61 | 177 | general_appraisal | +8.061 |
-| prestige | -79.975 | 61 | 177 | general_appraisal | +5.631 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -111.185 | 2th | 61 | 177 | general_appraisal | +6.472 |
+| inclusion | -121.659 | 2th | 61 | 177 | general_appraisal | +8.061 |
+| prestige | -79.975 | 2th | 61 | 177 | general_appraisal | +5.631 |
 
 Top chapters:
 
@@ -81,11 +81,11 @@ Top chapters:
 - Max score span: `+5.627`
 - Selected by: `none`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | +95.726 | 1 | 143 | social_status | +5.172 |
-| inclusion | +50.901 | 1 | 143 | social_status | +4.353 |
-| prestige | +102.284 | 1 | 143 | social_status | +5.627 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | +95.726 | 100th | 1 | 143 | social_status | +5.172 |
+| inclusion | +50.901 | 100th | 1 | 143 | social_status | +4.353 |
+| prestige | +102.284 | 100th | 1 | 143 | social_status | +5.627 |
 
 Top chapters:
 
@@ -104,11 +104,11 @@ Top chapters:
 - Max score span: `+7.0`
 - Selected by: `volatility`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -95.347 | 60 | 124 | general_appraisal | +7.0 |
-| inclusion | -86.557 | 60 | 124 | general_appraisal | +6.854 |
-| prestige | -77.192 | 60 | 124 | general_appraisal | +6.188 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -95.347 | 3th | 60 | 124 | general_appraisal | +7.0 |
+| inclusion | -86.557 | 3th | 60 | 124 | general_appraisal | +6.854 |
+| prestige | -77.192 | 3th | 60 | 124 | general_appraisal | +6.188 |
 
 Top chapters:
 
@@ -127,11 +127,11 @@ Top chapters:
 - Max score span: `+7.422`
 - Selected by: `rank_spread, volatility`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -1.638 | 28 | 88 | social_status | +6.598 |
-| inclusion | -23.464 | 52 | 88 | social_status | +6.155 |
-| prestige | +15.86 | 4 | 88 | social_status | +7.422 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -1.638 | 56th | 28 | 88 | social_status | +6.598 |
+| inclusion | -23.464 | 16th | 52 | 88 | social_status | +6.155 |
+| prestige | +15.86 | 95th | 4 | 88 | social_status | +7.422 |
 
 Top chapters:
 
@@ -150,11 +150,11 @@ Top chapters:
 - Max score span: `+7.86`
 - Selected by: `rank_spread, volatility`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -4.415 | 36 | 82 | social_status | +6.624 |
-| inclusion | -11.403 | 42 | 82 | social_status | +4.05 |
-| prestige | +1.839 | 19 | 82 | social_status | +7.86 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -4.415 | 43th | 36 | 82 | social_status | +6.624 |
+| inclusion | -11.403 | 33th | 42 | 82 | social_status | +4.05 |
+| prestige | +1.839 | 70th | 19 | 82 | social_status | +7.86 |
 
 Top chapters:
 
@@ -173,11 +173,11 @@ Top chapters:
 - Max score span: `+5.58`
 - Selected by: `rank_spread`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -12.462 | 46 | 70 | general_appraisal | +5.58 |
-| inclusion | -18.579 | 50 | 70 | general_appraisal | +4.739 |
-| prestige | -4.712 | 40 | 70 | general_appraisal | +4.556 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -12.462 | 26th | 46 | 70 | general_appraisal | +5.58 |
+| inclusion | -18.579 | 20th | 50 | 70 | general_appraisal | +4.739 |
+| prestige | -4.712 | 36th | 40 | 70 | general_appraisal | +4.556 |
 
 Top chapters:
 
@@ -196,11 +196,11 @@ Top chapters:
 - Max score span: `+6.53`
 - Selected by: `none`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -20.762 | 52 | 68 | general_appraisal | +6.53 |
-| inclusion | -25.921 | 55 | 68 | general_appraisal | +6.496 |
-| prestige | -12.093 | 49 | 68 | general_appraisal | +5.85 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -20.762 | 16th | 52 | 68 | general_appraisal | +6.53 |
+| inclusion | -25.921 | 11th | 55 | 68 | general_appraisal | +6.496 |
+| prestige | -12.093 | 21th | 49 | 68 | general_appraisal | +5.85 |
 
 Top chapters:
 
@@ -219,11 +219,11 @@ Top chapters:
 - Max score span: `+5.15`
 - Selected by: `none`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | +14.145 | 4 | 67 | rhetorical_position | +5.15 |
-| inclusion | +4.56 | 10 | 67 | rhetorical_position | +3.735 |
-| prestige | +14.297 | 5 | 67 | rhetorical_position | +5.077 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | +14.145 | 95th | 4 | 67 | rhetorical_position | +5.15 |
+| inclusion | +4.56 | 85th | 10 | 67 | rhetorical_position | +3.735 |
+| prestige | +14.297 | 93th | 5 | 67 | rhetorical_position | +5.077 |
 
 Top chapters:
 
@@ -242,11 +242,11 @@ Top chapters:
 - Max score span: `+5.706`
 - Selected by: `none`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -24.753 | 55 | 65 | general_appraisal | +5.628 |
-| inclusion | -30.265 | 57 | 65 | general_appraisal | +5.706 |
-| prestige | -14.129 | 52 | 65 | general_appraisal | +4.884 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -24.753 | 11th | 55 | 65 | general_appraisal | +5.628 |
+| inclusion | -30.265 | 8th | 57 | 65 | general_appraisal | +5.706 |
+| prestige | -14.129 | 16th | 52 | 65 | general_appraisal | +4.884 |
 
 Top chapters:
 
@@ -265,11 +265,11 @@ Top chapters:
 - Max score span: `+6.817`
 - Selected by: `volatility`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -81.142 | 59 | 61 | general_appraisal | +6.315 |
-| inclusion | -82.66 | 59 | 61 | general_appraisal | +6.633 |
-| prestige | -56.308 | 59 | 61 | general_appraisal | +6.817 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -81.142 | 5th | 59 | 61 | general_appraisal | +6.315 |
+| inclusion | -82.66 | 5th | 59 | 61 | general_appraisal | +6.633 |
+| prestige | -56.308 | 5th | 59 | 61 | general_appraisal | +6.817 |
 
 Top chapters:
 
@@ -288,11 +288,11 @@ Top chapters:
 - Max score span: `+7.073`
 - Selected by: `volatility`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -59.531 | 58 | 61 | general_appraisal | +6.339 |
-| inclusion | -52.097 | 58 | 61 | general_appraisal | +4.055 |
-| prestige | -47.194 | 58 | 61 | general_appraisal | +7.073 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -59.531 | 7th | 58 | 61 | general_appraisal | +6.339 |
+| inclusion | -52.097 | 7th | 58 | 61 | general_appraisal | +4.055 |
+| prestige | -47.194 | 7th | 58 | 61 | general_appraisal | +7.073 |
 
 Top chapters:
 
@@ -311,11 +311,11 @@ Top chapters:
 - Max score span: `+6.239`
 - Selected by: `rank_spread`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | +6.706 | 12 | 44 | social_status | +6.239 |
-| inclusion | -5.8 | 34 | 44 | social_status | +6.197 |
-| prestige | +12.637 | 6 | 44 | social_status | +5.954 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | +6.706 | 82th | 12 | 44 | social_status | +6.239 |
+| inclusion | -5.8 | 46th | 34 | 44 | social_status | +6.197 |
+| prestige | +12.637 | 92th | 6 | 44 | social_status | +5.954 |
 
 Top chapters:
 
@@ -334,11 +334,11 @@ Top chapters:
 - Max score span: `+5.98`
 - Selected by: `none`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -16.987 | 49 | 44 | general_appraisal | +5.98 |
-| inclusion | -18.415 | 48 | 44 | general_appraisal | +4.342 |
-| prestige | -9.216 | 46 | 44 | general_appraisal | +5.882 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -16.987 | 21th | 49 | 44 | general_appraisal | +5.98 |
+| inclusion | -18.415 | 23th | 48 | 44 | general_appraisal | +4.342 |
+| prestige | -9.216 | 26th | 46 | 44 | general_appraisal | +5.882 |
 
 Top chapters:
 
@@ -357,11 +357,11 @@ Top chapters:
 - Max score span: `+4.167`
 - Selected by: `none`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | +7.838 | 9 | 34 | rhetorical_position | +4.167 |
-| inclusion | +5.006 | 8 | 34 | rhetorical_position | +3.21 |
-| prestige | +6.219 | 14 | 34 | rhetorical_position | +3.3 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | +7.838 | 87th | 9 | 34 | rhetorical_position | +4.167 |
+| inclusion | +5.006 | 89th | 8 | 34 | rhetorical_position | +3.21 |
+| prestige | +6.219 | 79th | 14 | 34 | rhetorical_position | +3.3 |
 
 Top chapters:
 
@@ -380,11 +380,11 @@ Top chapters:
 - Max score span: `+6.256`
 - Selected by: `none`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | +17.016 | 3 | 33 | general_appraisal | +6.001 |
-| inclusion | +5.239 | 7 | 33 | general_appraisal | +6.256 |
-| prestige | +18.336 | 3 | 33 | general_appraisal | +5.54 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | +17.016 | 97th | 3 | 33 | general_appraisal | +6.001 |
+| inclusion | +5.239 | 90th | 7 | 33 | general_appraisal | +6.256 |
+| prestige | +18.336 | 97th | 3 | 33 | general_appraisal | +5.54 |
 
 Top chapters:
 
@@ -403,11 +403,11 @@ Top chapters:
 - Max score span: `+6.018`
 - Selected by: `none`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -20.948 | 53 | 23 | general_appraisal | +6.018 |
-| inclusion | -17.656 | 47 | 23 | general_appraisal | +4.221 |
-| prestige | -17.293 | 55 | 23 | general_appraisal | +5.89 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -20.948 | 15th | 53 | 23 | general_appraisal | +6.018 |
+| inclusion | -17.656 | 25th | 47 | 23 | general_appraisal | +4.221 |
+| prestige | -17.293 | 11th | 55 | 23 | general_appraisal | +5.89 |
 
 Top chapters:
 
@@ -426,11 +426,11 @@ Top chapters:
 - Max score span: `+5.938`
 - Selected by: `none`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | -22.629 | 54 | 21 | general_appraisal | +5.392 |
-| inclusion | -24.435 | 53 | 21 | general_appraisal | +5.159 |
-| prestige | -15.493 | 53 | 21 | general_appraisal | +5.938 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -22.629 | 13th | 54 | 21 | general_appraisal | +5.392 |
+| inclusion | -24.435 | 15th | 53 | 21 | general_appraisal | +5.159 |
+| prestige | -15.493 | 15th | 53 | 21 | general_appraisal | +5.938 |
 
 Top chapters:
 
@@ -448,11 +448,11 @@ Top chapters:
 - Max score span: `+6.21`
 - Selected by: `rank_spread`
 
-| Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- |
-| advantage | +9.671 | 7 | 19 | general_appraisal | +6.21 |
-| inclusion | +6.652 | 3 | 19 | general_appraisal | +4.324 |
-| prestige | +6.24 | 13 | 19 | general_appraisal | +6.125 |
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | +9.671 | 90th | 7 | 19 | general_appraisal | +6.21 |
+| inclusion | +6.652 | 97th | 3 | 19 | general_appraisal | +4.324 |
+| prestige | +6.24 | 80th | 13 | 19 | general_appraisal | +6.125 |
 
 Top chapters:
 

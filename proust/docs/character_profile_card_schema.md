@@ -74,6 +74,7 @@ Each card should contain these required fields.
   "lens_scores": {
     "advantage": {
       "net_score": -1.638,
+      "percentile": 56,
       "rank": 28,
       "unit_count": 88,
       "dominant_status_dimension": "social_status",
@@ -82,6 +83,7 @@ Each card should contain these required fields.
     },
     "prestige": {
       "net_score": 15.86,
+      "percentile": 95,
       "rank": 4,
       "unit_count": 88,
       "dominant_status_dimension": "social_status",
@@ -90,6 +92,7 @@ Each card should contain these required fields.
     },
     "inclusion": {
       "net_score": -23.464,
+      "percentile": 16,
       "rank": 52,
       "unit_count": 88,
       "dominant_status_dimension": "social_status",
@@ -167,6 +170,7 @@ Required.
 Each lens should include:
 
 - `net_score`
+- `percentile`
 - `rank`
 - `unit_count`
 - `dominant_status_dimension`
@@ -263,9 +267,9 @@ If the goal is the smallest useful app contract, `v1` can be just:
   "max_score_span": 7.422,
   "selected_by": ["rank_spread", "volatility"],
   "lens_scores": {
-    "advantage": { "net_score": -1.638, "rank": 28, "unit_count": 88 },
-    "prestige": { "net_score": 15.86, "rank": 4, "unit_count": 88 },
-    "inclusion": { "net_score": -23.464, "rank": 52, "unit_count": 88 }
+    "advantage": { "net_score": -1.638, "percentile": 56, "rank": 28, "unit_count": 88 },
+    "prestige": { "net_score": 15.86, "percentile": 95, "rank": 4, "unit_count": 88 },
+    "inclusion": { "net_score": -23.464, "percentile": 16, "rank": 52, "unit_count": 88 }
   },
   "top_chapters": [
     {

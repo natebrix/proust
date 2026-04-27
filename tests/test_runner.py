@@ -711,6 +711,7 @@ def test_build_character_cross_lens_analysis_uses_normalized_review(tmp_path):
     assert analysis["character_count"] == 1
     assert analysis["characters"][0]["character"] == "baron de Charlus"
     assert analysis["characters"][0]["lens_scores"]["advantage"]["unit_count"] == 2
+    assert analysis["characters"][0]["lens_scores"]["advantage"]["percentile"] == 100
     assert "baron de Charlus" in pr.render_character_cross_lens_analysis_markdown(analysis)
 
 
@@ -932,6 +933,7 @@ def test_build_character_profile_cards_uses_existing_derived_fields(tmp_path):
     assert analysis["character_count"] == 2
     assert analysis["cards"][0]["character"] == "baron de Charlus"
     assert analysis["cards"][0]["annotation_unit_count"] == 2
+    assert analysis["cards"][0]["lens_scores"]["advantage"]["percentile"] == 100
     assert analysis["cards"][0]["top_chapters"][0]["chapter_id"] == "v1-p1-combray"
     assert "Top chapters" in pr.render_character_profile_cards_markdown(analysis)
 
@@ -1143,6 +1145,7 @@ def test_build_character_pages_pilot_uses_profile_portraits_and_editorial(tmp_pa
     odette = next(page for page in analysis["pages"] if page["character"] == "Odette")
     assert odette["portrait"]["default"]
     assert odette["editorial"]["primary_pattern"] == "prestige_positive_inclusion_negative"
+    assert odette["profile"]["lens_scores"]["prestige"]["percentile"] is not None
     assert odette["top_chapters"][0]["reader_link"].startswith("/projects/islt/fr-original/")
     assert odette["reading_path"][0]["chapter_id"] == "v2-p1-autour-de-mme-swann"
     saint_loup = next(page for page in analysis["pages"] if page["character"] == "Robert de Saint-Loup")

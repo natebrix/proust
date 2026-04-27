@@ -314,6 +314,216 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
             {"chapter_id": "v5", "label": "Continuation of negative concentration"},
         ],
     },
+    "duchesse de Guermantes": {
+        "dek": "The clearest aggregate winner in the corpus, combining immediate advantage, prestige, and inclusion at the very top of all three lenses.",
+        "summary": "duchesse de Guermantes is the strongest uniformly positive figure in the current corpus surface, with her social command and symbolic force holding across every lens rather than depending on a narrow chapter exception.",
+        "why_interesting": [
+            "She is the cleanest example of a character whose authority remains legible whether the lens tracks immediate advantage, rank, or belonging.",
+            "Her profile shows how a major aristocratic figure can dominate the aggregate surface without needing volatility or cross-lens disagreement to become interesting.",
+        ],
+        "primary_pattern": "uniformly_ascendant",
+        "reading_path": [
+            {"chapter_id": "v3-p1", "label": "First major Guermantes concentration"},
+            {"chapter_id": "v3-p2", "label": "Sustained supremacy in the salon world"},
+            {"chapter_id": "v5", "label": "Later reinforcement of the same social position"},
+        ],
+    },
+    "Mme de Villeparisis": {
+        "dek": "A socially legible figure whose prestige often holds better than her immediate advantage or belonging.",
+        "summary": "Mme de Villeparisis is one of the clearest moderate split figures in the corpus: she remains comparatively strong in prestige while advantage and inclusion drift downward or oscillate by chapter.",
+        "why_interesting": [
+            "She helps separate durable social standing from warmer forms of acceptance or local dominance.",
+            "Her profile is chapter-shaped rather than monotone, especially across Balbec and Guermantes material.",
+        ],
+        "primary_pattern": "prestige_positive_advantage_inclusion_negative",
+        "reading_path": [
+            {"chapter_id": "v3-p1", "label": "Prestige-bearing Guermantes presence"},
+            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Balbec counterweight and social cooling"},
+            {"chapter_id": "v3-p2", "label": "Sharper local reversals after the initial rise"},
+        ],
+    },
+    "Françoise": {
+        "dek": "A frequent figure whose aggregate treatment is mostly negative, but with a few striking pockets of reversal and support.",
+        "summary": "Françoise accumulates as a broadly negative figure across the corpus, though her profile is not flat: a small number of chapters briefly reverse the trend before the longer downward pull returns.",
+        "why_interesting": [
+            "She shows that a highly familiar household figure can remain structurally disadvantaged even while recurring constantly across volumes.",
+            "Her chapter profile includes one especially visible positive pocket that makes the overall negativity more interpretable.",
+        ],
+        "primary_pattern": "broadly_negative_with_reversals",
+        "reading_path": [
+            {"chapter_id": "v1-p1-combray", "label": "Core negative household concentration"},
+            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "The strongest temporary upward reversal"},
+            {"chapter_id": "v3-p1", "label": "Return to pressure in Guermantes society"},
+        ],
+    },
+    "Mme Verdurin": {
+        "dek": "A substantial recurring presence whose aggregate treatment stays negative across all three lenses, especially in Swann-centered and later wartime material.",
+        "summary": "Mme Verdurin is one of the clearest broadly negative salon figures in the corpus, with losses in advantage, prestige, and inclusion all reinforcing rather than offsetting one another.",
+        "why_interesting": [
+            "She is a useful contrast case to aristocratic figures whose rank can stay high even when scenes turn against them.",
+            "Her chapter drivers show how one salon world can define a long-lasting social profile that still echoes later in the novel.",
+        ],
+        "primary_pattern": "consistently_negative",
+        "reading_path": [
+            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "Main salon-world concentration"},
+            {"chapter_id": "v7-p2-m-de-charlus-pendant-la-guerre", "label": "Later wartime continuation"},
+            {"chapter_id": "v4-p2", "label": "Intermediate pressure in the later social field"},
+        ],
+    },
+    "Gilberte": {
+        "dek": "A strongly prestige-positive figure whose advantage remains high while inclusion stays much more mixed and contingent.",
+        "summary": "Gilberte is a compact but revealing cross-lens figure: she scores very well in prestige and immediate advantage, yet her inclusion profile remains markedly less secure.",
+        "why_interesting": [
+            "She is one of the best smaller-footprint examples of how social elevation and emotional incorporation can diverge.",
+            "Her strongest shaping chapters are distributed across early Mme Swann material and later retrospective zones rather than one single dominant block.",
+        ],
+        "primary_pattern": "advantage_prestige_positive_inclusion_mixed",
+        "reading_path": [
+            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Primary prestige and advantage concentration"},
+            {"chapter_id": "v6-p2", "label": "Later inclusion strain and uneven return"},
+            {"chapter_id": "v7-p4-le-bal-de-tetes", "label": "Retrospective late counterweight"},
+        ],
+    },
+    "Norpois": {
+        "dek": "One of the corpus's clearest rhetorical winners, with very high advantage and prestige and comparatively little cross-lens instability.",
+        "summary": "Norpois is a strongly positive figure across all three lenses, driven less by intimacy than by durable rhetorical authority and socially legible judgment.",
+        "why_interesting": [
+            "He is a useful example of a character whose strength comes from voice, sanction, and interpretive authority more than warmth.",
+            "His profile shows how the project captures positive hierarchy without needing romantic or emotional centrality.",
+        ],
+        "primary_pattern": "rhetorically_ascendant",
+        "reading_path": [
+            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Main field of diplomatic and rhetorical authority"},
+            {"chapter_id": "v3-p1", "label": "Guermantes reinforcement of social weight"},
+            {"chapter_id": "v6-p3", "label": "Later counterpressure against the earlier rise"},
+        ],
+    },
+    "la grand-mère": {
+        "dek": "A central emotional figure whose aggregate treatment is strikingly negative, especially in belonging and general appraisal.",
+        "summary": "la grand-mère accumulates as one of the corpus's more strongly negative recurring figures, with the harshest pressure falling on inclusion and broad valuation rather than on a narrow prestige story alone.",
+        "why_interesting": [
+            "She shows how importance in the novel does not guarantee aggregate social or emotional advantage in the annotation surface.",
+            "Her chapter spread distinguishes Balbec tenderness from later Guermantes and illness-weighted decline.",
+        ],
+        "primary_pattern": "emotionally_central_but_negative",
+        "reading_path": [
+            {"chapter_id": "v3-p1", "label": "Strong Guermantes-zone deterioration"},
+            {"chapter_id": "v3-p2", "label": "Continuation of decline and pressure"},
+            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Balbec countertexture with limited prestige recovery"},
+        ],
+    },
+    "Bloch": {
+        "dek": "A heavily annotated figure whose treatment is almost uniformly and intensely negative across all three lenses.",
+        "summary": "Bloch is one of the clearest aggregate negative cases in the corpus, with repeated losses in advantage, prestige, and inclusion reinforcing each other rather than splitting apart.",
+        "why_interesting": [
+            "He is a high-frequency example of durable corpus-wide diminishment rather than a character defined by one isolated late collapse.",
+            "His profile is especially useful for testing whether repeated comic or social discredit remains stable across volumes.",
+        ],
+        "primary_pattern": "uniformly_fallen",
+        "reading_path": [
+            {"chapter_id": "v3-p1", "label": "Main concentration of ridicule and social diminishment"},
+            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Balbec reinforcement of the same pattern"},
+            {"chapter_id": "v4-p2", "label": "Later persistence in a changed social field"},
+        ],
+    },
+    "duc de Guermantes": {
+        "dek": "A major aristocratic figure whose aggregate profile is surprisingly negative across advantage, prestige, and inclusion alike.",
+        "summary": "duc de Guermantes is one of the project's most revealing reversals of expectation: despite formal rank, his annotation surface is broadly negative across all three lenses.",
+        "why_interesting": [
+            "He helps separate nominal social title from actual passage-level advantage and valuation.",
+            "His profile is a strong reminder that the corpus tracks enacted social force, not merely inherited station.",
+        ],
+        "primary_pattern": "rank_without_advantage",
+        "reading_path": [
+            {"chapter_id": "v3-p2", "label": "Main concentration of aggregate decline"},
+            {"chapter_id": "v3-p1", "label": "Earlier Guermantes-stage weakening"},
+            {"chapter_id": "v7-p4-le-bal-de-tetes", "label": "Late retrospective continuation"},
+        ],
+    },
+    "docteur Cottard": {
+        "dek": "A recurrent social presence whose aggregate treatment stays modestly negative, with occasional prestige or advantage recoveries that never fully stabilize.",
+        "summary": "docteur Cottard is a mid-tier negative figure whose profile is shaped by one strong Swann-world concentration, then complicated by smaller later recoveries and uneven prestige moments.",
+        "why_interesting": [
+            "He is useful as a moderate case: neither overwhelmingly central nor trivial, but persistent enough to show how local reversals can coexist with an overall downward pattern.",
+            "His profile also distinguishes prestige blips from broader social and inclusion weakness.",
+        ],
+        "primary_pattern": "moderately_negative_with_recoveries",
+        "reading_path": [
+            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "Primary negative concentration"},
+            {"chapter_id": "v4-p2", "label": "Later mixed prestige recovery"},
+            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Smaller positive countercurrent"},
+        ],
+    },
+    "la mère du narrateur": {
+        "dek": "A strongly positive figure whose gains are grounded less in public rank than in steady rhetorical and relational authority.",
+        "summary": "la mère du narrateur is a quietly high-performing figure across all three lenses, with especially strong advantage and inclusion values driven by stable interpretive and familial force.",
+        "why_interesting": [
+            "She offers a model of positive social power that does not depend on aristocratic prestige or theatrical display.",
+            "Her chapter distribution includes one notable Mme Swann-era counterweight, which makes the overall positivity more informative.",
+        ],
+        "primary_pattern": "quietly_ascendant",
+        "reading_path": [
+            {"chapter_id": "v6-p3", "label": "Strongest concentrated positive treatment"},
+            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Main negative counterweight"},
+            {"chapter_id": "v1-p1-combray", "label": "Early domestic base of authority"},
+        ],
+    },
+    "Bergotte": {
+        "dek": "A highly positive literary figure whose advantage and prestige remain near the top of the corpus, with inclusion somewhat softer but still strong.",
+        "summary": "Bergotte is one of the corpus's clearest positive symbolic figures, with his literary authority translating into very high advantage and prestige across several distinct narrative zones.",
+        "why_interesting": [
+            "He provides a clean case of aesthetic or intellectual distinction remaining socially effective across lenses.",
+            "His profile is also useful because one large chapter block softens his inclusion without undoing the larger positive pattern.",
+        ],
+        "primary_pattern": "symbolically_ascendant",
+        "reading_path": [
+            {"chapter_id": "v3-p1", "label": "Strong Guermantes-era literary authority"},
+            {"chapter_id": "v1-p1-combray", "label": "Early concentration of esteem"},
+            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Longer mixed field with softened inclusion"},
+        ],
+    },
+    "Legrandin": {
+        "dek": "A character of recurrent social and rhetorical diminishment, with especially weak advantage and prestige despite occasional brief reversals.",
+        "summary": "Legrandin is a broadly negative figure whose profile is shaped by repeated discredit and awkward self-positioning, even though a few isolated units briefly interrupt the downward pattern.",
+        "why_interesting": [
+            "He is a good example of how rhetorical self-fashioning can fail across more than one lens at once.",
+            "His profile connects early Combray material to later Guermantes treatment without turning into a single monotone block.",
+        ],
+        "primary_pattern": "self_undermining_negative",
+        "reading_path": [
+            {"chapter_id": "v3-p1", "label": "Strongest later concentration of diminishment"},
+            {"chapter_id": "v1-p1-combray", "label": "Early formation of the negative pattern"},
+            {"chapter_id": "v6-p4", "label": "Brief late reversal against the broader trend"},
+        ],
+    },
+    "Mme de Cambremer": {
+        "dek": "A lower-frequency but consistently negative figure whose aggregate treatment remains weak across all three lenses.",
+        "summary": "Mme de Cambremer is a compact but stable negative case: she does not dominate the corpus by volume, but what is there reads overwhelmingly downward in advantage, prestige, and inclusion.",
+        "why_interesting": [
+            "She helps test whether the analysis stays coherent on mid-sized characters whose signal is distributed across a few compact chapter zones.",
+            "Her profile also shows how a small positive Balbec pocket can exist without changing the overall direction.",
+        ],
+        "primary_pattern": "compact_consistent_negative",
+        "reading_path": [
+            {"chapter_id": "v4-p2", "label": "Strongest later concentration of loss"},
+            {"chapter_id": "v3-p1", "label": "Earlier Guermantes pressure"},
+            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Limited Balbec counterweight"},
+        ],
+    },
+    "M. Vinteuil": {
+        "dek": "A relatively small-footprint but strongly positive figure, especially in inclusion, whose profile mixes early negativity with later recovery and elevation.",
+        "summary": "M. Vinteuil is one of the more surprising positive figures in the corpus: despite some strongly negative early material, his aggregate treatment ends up decisively positive, especially in inclusion.",
+        "why_interesting": [
+            "He is a good example of how the corpus can register rehabilitation or retrospective elevation rather than just cumulative damage.",
+            "His profile is sharply chapter-shaped, which makes him useful for showing how aggregate positivity can arise from uneven terrain.",
+        ],
+        "primary_pattern": "rehabilitated_positive",
+        "reading_path": [
+            {"chapter_id": "v5", "label": "Main late positive recovery"},
+            {"chapter_id": "v1-p1-combray", "label": "Early negative counterweight"},
+            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "Intermediate positive reinforcement"},
+        ],
+    },
 }
 
 
@@ -2046,6 +2256,14 @@ def _character_volatility_by_name(character_volatility):
     return {row["character"]: row for row in character_volatility}
 
 
+def _rank_to_percentile(rank, population_size):
+    if rank is None or population_size <= 0:
+        return None
+    if population_size == 1:
+        return 100
+    return round(((population_size - rank) / (population_size - 1)) * 100)
+
+
 def build_character_cross_lens_analysis(review):
     lenses = sorted(SCORING_LENS_CONFIGS)
     missing_lenses = [lens for lens in lenses if lens not in review["lens_reviews"]]
@@ -2062,6 +2280,10 @@ def build_character_cross_lens_analysis(review):
     }
     volatility_by_lens = {
         lens: _character_volatility_by_name(review["lens_reviews"][lens]["character_volatility"])
+        for lens in lenses
+    }
+    population_sizes = {
+        lens: len(review["lens_reviews"][lens]["character_totals"])
         for lens in lenses
     }
 
@@ -2092,6 +2314,7 @@ def build_character_cross_lens_analysis(review):
             lens_rows[lens] = {
                 "net_score": total["net_score"] if total else 0.0,
                 "rank": rank,
+                "percentile": _rank_to_percentile(rank, population_sizes[lens]),
                 "unit_count": total["unit_count"] if total else 0,
                 "dominant_status_dimension": total["dominant_status_dimension"] if total else None,
                 "score_span": volatility["score_span"] if volatility else 0.0,
@@ -2419,6 +2642,7 @@ def _build_character_page_notable_units(character, overlay_dataset, limit=3):
 
 
 def build_character_pages(run_dirs, character_name_map=None, target_characters=None, top_chapter_limit=5):
+    selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
     review = build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
     profile_cards = build_character_profile_cards(
         run_dirs,
@@ -2428,12 +2652,11 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
     chapter_analysis = build_character_chapter_analysis(
         run_dirs,
         character_name_map=character_name_map,
-        target_characters=target_characters,
+        target_characters=selected_characters,
     )
     overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
     chapter_titles = _chapter_title_map()
 
-    selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
     cards_by_character = {row["character"]: row for row in profile_cards["cards"]}
     chapter_rows_by_character = {row["character"]: row for row in chapter_analysis["characters"]}
 
@@ -3302,11 +3525,16 @@ def render_character_profile_cards_markdown(analysis):
                 f"- Selected by: `{', '.join(card['selected_by']) or 'none'}`",
                 "",
                 _markdown_table(
-                    ["Lens", "Net Score", "Rank", "Units", "Dominant Dimension", "Score Span"],
+                    ["Lens", "Net Score", "Percentile", "Rank", "Units", "Dominant Dimension", "Score Span"],
                     [
                         (
                             lens,
                             _format_signed_number(card["lens_scores"][lens]["net_score"]),
+                            (
+                                f"{card['lens_scores'][lens]['percentile']}th"
+                                if card["lens_scores"][lens]["percentile"] is not None
+                                else ""
+                            ),
                             card["lens_scores"][lens]["rank"],
                             card["lens_scores"][lens]["unit_count"],
                             card["lens_scores"][lens]["dominant_status_dimension"],
@@ -3401,11 +3629,16 @@ def render_character_pages_markdown(analysis):
             [
                 "",
                 _markdown_table(
-                    ["Lens", "Net Score", "Rank", "Units", "Dominant Dimension", "Score Span"],
+                    ["Lens", "Net Score", "Percentile", "Rank", "Units", "Dominant Dimension", "Score Span"],
                     [
                         (
                             lens,
                             _format_signed_number(page["profile"]["lens_scores"][lens]["net_score"]),
+                            (
+                                f"{page['profile']['lens_scores'][lens]['percentile']}th"
+                                if page["profile"]["lens_scores"][lens]["percentile"] is not None
+                                else ""
+                            ),
                             page["profile"]["lens_scores"][lens]["rank"],
                             page["profile"]["lens_scores"][lens]["unit_count"],
                             page["profile"]["lens_scores"][lens]["dominant_status_dimension"],

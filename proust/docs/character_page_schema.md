@@ -106,6 +106,7 @@ Each page should contain these required fields.
     "lens_scores": {
       "advantage": {
         "net_score": -1.638,
+        "percentile": 56,
         "rank": 28,
         "unit_count": 88,
         "dominant_status_dimension": "social_status",
@@ -114,6 +115,7 @@ Each page should contain these required fields.
       },
       "prestige": {
         "net_score": 15.86,
+        "percentile": 95,
         "rank": 4,
         "unit_count": 88,
         "dominant_status_dimension": "social_status",
@@ -122,6 +124,7 @@ Each page should contain these required fields.
       },
       "inclusion": {
         "net_score": -23.464,
+        "percentile": 16,
         "rank": 52,
         "unit_count": 88,
         "dominant_status_dimension": "social_status",
@@ -241,6 +244,8 @@ It should largely embed the existing character-profile-card data unchanged:
 - `lens_scores`
 
 This keeps the page artifact aligned with the existing card artifact instead of inventing a second incompatible representation.
+
+Each lens score block should include additive percentile context alongside raw score and rank, with higher percentile meaning a stronger aggregate position in that lens.
 
 ### `editorial`
 
