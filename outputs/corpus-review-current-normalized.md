@@ -89,6 +89,50 @@ _Showing first 25 of 271 run surface rows._
 
 ## Lens Reviews
 
+### advantage
+
+- Entry count: `1996`
+- Character count: `62`
+
+Label counts:
+
+| Label | Count |
+| --- | --- |
+| win | 604 |
+| loss | 939 |
+| mixed | 122 |
+| neutral | 331 |
+
+Top positive characters:
+
+| Character | Net Score | Units | Dominant Dimension |
+| --- | --- | --- | --- |
+| duchesse de Guermantes | +95.726 | 143 | social_status |
+| Elstir | +29.391 | 18 | general_appraisal |
+| Bergotte | +17.016 | 33 | general_appraisal |
+| Norpois | +14.145 | 67 | rhetorical_position |
+| princesse de Guermantes | +10.865 | 12 | social_status |
+| le peintre | +10.346 | 12 | general_appraisal |
+| M. Vinteuil | +9.671 | 19 | general_appraisal |
+| comte de Forcheville | +9.403 | 12 | social_status |
+| la mère du narrateur | +7.838 | 34 | rhetorical_position |
+| la Berma | +7.514 | 13 | general_appraisal |
+
+Top negative characters:
+
+| Character | Net Score | Units | Dominant Dimension |
+| --- | --- | --- | --- |
+| Swann | -206.613 | 263 | emotional_position |
+| Albertine | -111.185 | 177 | general_appraisal |
+| baron de Charlus | -95.347 | 124 | general_appraisal |
+| Bloch | -81.142 | 61 | general_appraisal |
+| duc de Guermantes | -59.531 | 61 | general_appraisal |
+| Saniette | -30.311 | 11 | social_status |
+| Morel | -25.323 | 17 | general_appraisal |
+| la grand-mère | -24.753 | 65 | general_appraisal |
+| Mme de Cambremer | -22.629 | 21 | general_appraisal |
+| Legrandin | -20.948 | 23 | general_appraisal |
+
 ### inclusion
 
 - Entry count: `1996`
@@ -132,50 +176,6 @@ Top negative characters:
 | Mme Verdurin | -25.921 | 68 | general_appraisal |
 | Robert de Saint-Loup | -24.925 | 197 | emotional_position |
 | Mme de Cambremer | -24.435 | 21 | general_appraisal |
-
-### local
-
-- Entry count: `1996`
-- Character count: `62`
-
-Label counts:
-
-| Label | Count |
-| --- | --- |
-| win | 604 |
-| loss | 939 |
-| mixed | 122 |
-| neutral | 331 |
-
-Top positive characters:
-
-| Character | Net Score | Units | Dominant Dimension |
-| --- | --- | --- | --- |
-| duchesse de Guermantes | +95.726 | 143 | social_status |
-| Elstir | +29.391 | 18 | general_appraisal |
-| Bergotte | +17.016 | 33 | general_appraisal |
-| Norpois | +14.145 | 67 | rhetorical_position |
-| princesse de Guermantes | +10.865 | 12 | social_status |
-| le peintre | +10.346 | 12 | general_appraisal |
-| M. Vinteuil | +9.671 | 19 | general_appraisal |
-| comte de Forcheville | +9.403 | 12 | social_status |
-| la mère du narrateur | +7.838 | 34 | rhetorical_position |
-| la Berma | +7.514 | 13 | general_appraisal |
-
-Top negative characters:
-
-| Character | Net Score | Units | Dominant Dimension |
-| --- | --- | --- | --- |
-| Swann | -206.613 | 263 | emotional_position |
-| Albertine | -111.185 | 177 | general_appraisal |
-| baron de Charlus | -95.347 | 124 | general_appraisal |
-| Bloch | -81.142 | 61 | general_appraisal |
-| duc de Guermantes | -59.531 | 61 | general_appraisal |
-| Saniette | -30.311 | 11 | social_status |
-| Morel | -25.323 | 17 | general_appraisal |
-| la grand-mère | -24.753 | 65 | general_appraisal |
-| Mme de Cambremer | -22.629 | 21 | general_appraisal |
-| Legrandin | -20.948 | 23 | general_appraisal |
 
 ### prestige
 

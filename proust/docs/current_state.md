@@ -278,7 +278,7 @@ Current aggregate corpus counts:
 - `1684` valid annotations
 - cross-lens sign-flip examples in the refreshed corpus review: `0`
 - normalized corpus-review character counts:
-  - `69 -> 62` in `local`
+  - `69 -> 62` in `advantage`
   - `69 -> 62` in `prestige`
   - `69 -> 62` in `inclusion`
 - normalized corpus-review cross-lens summary:
@@ -346,232 +346,232 @@ Current stopping point:
 Latest review surface:
 
 - `run-466` was clean:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 1 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-468` was clean:
-  - mixed counts `{ inclusion: 2, local: 2, prestige: 2 }`
+  - mixed counts `{ inclusion: 2, advantage: 2, prestige: 2 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-470` was clean enough for the higher-variance closing Guermantes material:
-  - mixed counts `{ inclusion: 2, local: 2, prestige: 2 }`
+  - mixed counts `{ inclusion: 2, advantage: 2, prestige: 2 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-472` was clean:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-476` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-474` was acceptable as a short `v4-p1` sequential opener/full-chapter pass:
-  - mixed counts `{ inclusion: 2, local: 2, prestige: 3 }`
+  - mixed counts `{ inclusion: 2, advantage: 2, prestige: 3 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
 - `run-478` was a clean `v4-p2` sequential opener:
-  - mixed counts `{ inclusion: 2, local: 1, prestige: 2 }`
+  - mixed counts `{ inclusion: 2, advantage: 1, prestige: 2 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-480` was clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-482` was clean:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-484` was acceptable:
-  - mixed counts `{ inclusion: 2, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 2, advantage: 1, prestige: 1 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
 - `run-486` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-488` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-490` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-492` was clean:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-494` was acceptable:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
 - `run-496` was acceptable:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 1 }`
   - `2` label disagreements
   - `2` direction disagreements
   - `0` sign flips
 - `run-498` was acceptable at the mixed-unit threshold:
-  - mixed counts `{ inclusion: 3, local: 1, prestige: 3 }`
+  - mixed counts `{ inclusion: 3, advantage: 1, prestige: 3 }`
   - `2` label disagreements
   - `1` direction disagreement
   - `0` sign flips
 - `run-500` was clean as the short `v4-p2` tail:
-  - mixed counts `{ inclusion: 0, local: 1, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 1, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-502` was a clean `v5` opener:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
 - `run-504` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-506` was clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
 - `run-508` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-510` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-512` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-514` was clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 1 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 1 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-516` was clean:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-518` was acceptable:
-  - mixed counts `{ inclusion: 2, local: 2, prestige: 1 }`
+  - mixed counts `{ inclusion: 2, advantage: 2, prestige: 1 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
 - `run-520` was clean:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
 - `run-522` was clean:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-524` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-526` was clean:
-  - mixed counts `{ inclusion: 0, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 0, advantage: 1, prestige: 1 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-528` was acceptable:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 2 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 2 }`
   - `2` label disagreements
   - `1` direction disagreement
   - `0` sign flips
 - `run-530` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-532` was acceptable at the mixed-unit threshold:
-  - mixed counts `{ inclusion: 3, local: 2, prestige: 3 }`
+  - mixed counts `{ inclusion: 3, advantage: 2, prestige: 3 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
 - `run-534` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-536` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-538` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-540` was acceptable:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-542` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-544` was clean:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-546` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-548` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-550` was clean:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-552` was acceptable:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-554` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-556` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips

@@ -155,7 +155,7 @@ At the aggregate layer:
 
 Keep the current three-lens comparison:
 
-- `local_outcome_v1`
+- `advantage_outcome_v1`
 - `prestige_outcome_v1`
 - `inclusion_outcome_v1`
 
@@ -165,7 +165,7 @@ Their purpose is to help distinguish:
 
 - prestige from belonging
 - rhetorical advantage from social incorporation
-- mixed outcomes from clean local wins or losses
+- mixed outcomes from clean advantage wins or losses
 
 ## Operating rule
 

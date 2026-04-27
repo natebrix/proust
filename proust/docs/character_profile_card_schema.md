@@ -72,7 +72,7 @@ Each card should contain these required fields.
   "max_score_span": 7.422,
   "selected_by": ["rank_spread", "volatility"],
   "lens_scores": {
-    "local": {
+    "advantage": {
       "net_score": -1.638,
       "rank": 28,
       "unit_count": 88,
@@ -100,7 +100,7 @@ Each card should contain these required fields.
   "top_chapters": [
     {
       "chapter_id": "v2-p1-autour-de-mme-swann",
-      "local": {
+      "advantage": {
         "net_score": 19.699,
         "unit_count": 32
       },
@@ -135,7 +135,7 @@ This is the count of annotated units in which the character appears on the norma
 
 Difference between the character’s best and worst rank across:
 
-- `local`
+- `advantage`
 - `prestige`
 - `inclusion`
 
@@ -263,14 +263,14 @@ If the goal is the smallest useful app contract, `v1` can be just:
   "max_score_span": 7.422,
   "selected_by": ["rank_spread", "volatility"],
   "lens_scores": {
-    "local": { "net_score": -1.638, "rank": 28, "unit_count": 88 },
+    "advantage": { "net_score": -1.638, "rank": 28, "unit_count": 88 },
     "prestige": { "net_score": 15.86, "rank": 4, "unit_count": 88 },
     "inclusion": { "net_score": -23.464, "rank": 52, "unit_count": 88 }
   },
   "top_chapters": [
     {
       "chapter_id": "v2-p1-autour-de-mme-swann",
-      "local": { "net_score": 19.699, "unit_count": 32 },
+      "advantage": { "net_score": 19.699, "unit_count": 32 },
       "prestige": { "net_score": 24.138, "unit_count": 32 },
       "inclusion": { "net_score": 8.419, "unit_count": 32 }
     }

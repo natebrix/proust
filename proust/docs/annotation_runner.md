@@ -24,7 +24,7 @@ Primary functions:
 - `prepare_annotation_run_from_existing(source_run_dir, output_dir, run_id=None, notes="")`
 - `run_openai_annotation(source_run_dir, output_dir, model="gpt-5", overwrite=False, limit=None, api_key=None)`
 - `run_automated_batch(source_run_dir, output_dir, model="gpt-5", overwrite=False, limit=None, poll_interval=5.0, timeout=None, progress_stream=None, max_mixed_units_per_lens=3)`
-- `score_run_local_outcomes(run_dir)`
+- `score_run_advantage_outcomes(run_dir)`
 - `score_run_inclusion_outcomes(run_dir)`
 - `score_run_prestige_outcomes(run_dir)`
 - `build_outcome_report(run_dir)`
@@ -188,9 +188,9 @@ This is intentionally a filesystem-level comparison, not a semantic scorer. It i
 - did it produce reviewed annotations for them?
 - where did the saved JSON diverge from the benchmark?
 
-## Lightweight local outcome scoring
+## Lightweight advantage outcome scoring
 
-`score_run_local_outcomes(...)` is the first downstream transformation from reduced annotations into candidate local "winning" and "losing" signals.
+`score_run_advantage_outcomes(...)` is the first downstream transformation from reduced annotations into candidate advantage "winning" and "losing" signals.
 
 Its purpose is limited:
 
@@ -218,7 +218,7 @@ This is intentionally a lightweight exploratory layer, not a canonical literary 
 
 ## Outcome report layer
 
-`build_outcome_report(...)` is a compact downstream report built directly on top of `local_outcome_v1`.
+`build_outcome_report(...)` is a compact downstream report built directly on top of `advantage_outcome_v1`.
 
 It is meant to make the score output easier to read, not to introduce a second scoring scheme.
 
@@ -232,12 +232,12 @@ The report includes:
 
 This is the preferred first downstream view for collaborative review of a scored run.
 
-The next recommended downstream comparison is not a retuning of `local_outcome_v1`, but a parallel lens comparison built from the same reduced annotations:
+The next recommended downstream comparison is not a retuning of `advantage_outcome_v1`, but a parallel lens comparison built from the same reduced annotations:
 
 - a prestige-weighted view
 - an inclusion-weighted view
 
-This is motivated by cases like Swann, where local prestige and local incorporation can diverge sharply.
+This is motivated by cases like Swann, where advantage, prestige, and inclusion can diverge sharply.
 
 The currently implemented alternatives are:
 
@@ -380,7 +380,7 @@ python -m proust wait --run outputs/run-003 --reduce --report
 `wait` polls `run.json` until `automation.in_progress` becomes `false`, prints progress updates when counts change, and can chain:
 
 - `reprocess --overwrite --reduce`
-- `report --lens local`
+- `report --lens advantage`
 - `report --lens prestige`
 - `report --lens inclusion`
 

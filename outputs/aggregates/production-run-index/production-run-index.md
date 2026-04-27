@@ -39,7 +39,7 @@ Cross-lens review totals:
 
 Mixed unit counts by lens:
 - `inclusion`: `93`
-- `local`: `63`
+- `advantage`: `63`
 - `prestige`: `86`
 
 ## Run Table

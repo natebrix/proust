@@ -17,6 +17,52 @@
 
 ## Lens Diffs
 
+### advantage
+
+- Character count: `69` -> `62`
+
+Normalized character movement:
+
+| Character | Merged From | Net Before | Net After | Units Before | Units After | Positive Rank | Negative Rank |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| M. Vinteuil | Vinteuil | +9.671 | +9.671 | 19 | 19 | 9 -> 7 | 61 -> 56 |
+| Odette | Mme Swann | -1.638 | -1.638 | 88 | 88 | 46 -> 28 | 24 -> 35 |
+| Robert de Saint-Loup | Saint-Loup | -3.318 | -3.318 | 197 | 197 | 41 -> 35 | 29 -> 28 |
+| baron de Charlus | Charlus | -95.347 | -95.347 | 124 | 124 | 67 -> 60 | 3 -> 3 |
+| duchesse de Guermantes | princesse des Laumes | +95.726 | +95.726 | 143 | 143 | 1 -> 1 | 69 -> 62 |
+| la grand-mère | la grand-mère du narrateur | -24.753 | -24.753 | 65 | 65 | 63 -> 55 | 7 -> 8 |
+| marquise de Saint-Euverte | Mme de Saint-Euverte | -15.461 | -15.461 | 7 | 7 | 57 -> 48 | 13 -> 15 |
+
+Top positive characters:
+
+| Before | After |
+| --- | --- |
+| duchesse de Guermantes | duchesse de Guermantes |
+| Elstir | Elstir |
+| Bergotte | Bergotte |
+| Norpois | Norpois |
+| Charlus | princesse de Guermantes |
+| princesse de Guermantes | le peintre |
+| le peintre | M. Vinteuil |
+| comte de Forcheville | comte de Forcheville |
+| M. Vinteuil | la mère du narrateur |
+| la mère du narrateur | la Berma |
+
+Top negative characters:
+
+| Before | After |
+| --- | --- |
+| Swann | Swann |
+| Albertine | Albertine |
+| baron de Charlus | baron de Charlus |
+| Bloch | Bloch |
+| duc de Guermantes | duc de Guermantes |
+| Saniette | Saniette |
+| la grand-mère | Morel |
+| Morel | la grand-mère |
+| Mme de Cambremer | Mme de Cambremer |
+| Legrandin | Legrandin |
+
 ### inclusion
 
 - Character count: `69` -> `62`
@@ -62,52 +108,6 @@ Top negative characters:
 | Odette | Mme Verdurin |
 | Mme Verdurin | Robert de Saint-Loup |
 | Robert de Saint-Loup | Mme de Cambremer |
-
-### local
-
-- Character count: `69` -> `62`
-
-Normalized character movement:
-
-| Character | Merged From | Net Before | Net After | Units Before | Units After | Positive Rank | Negative Rank |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| M. Vinteuil | Vinteuil | +9.671 | +9.671 | 19 | 19 | 9 -> 7 | 61 -> 56 |
-| Odette | Mme Swann | -1.638 | -1.638 | 88 | 88 | 46 -> 28 | 24 -> 35 |
-| Robert de Saint-Loup | Saint-Loup | -3.318 | -3.318 | 197 | 197 | 41 -> 35 | 29 -> 28 |
-| baron de Charlus | Charlus | -95.347 | -95.347 | 124 | 124 | 67 -> 60 | 3 -> 3 |
-| duchesse de Guermantes | princesse des Laumes | +95.726 | +95.726 | 143 | 143 | 1 -> 1 | 69 -> 62 |
-| la grand-mère | la grand-mère du narrateur | -24.753 | -24.753 | 65 | 65 | 63 -> 55 | 7 -> 8 |
-| marquise de Saint-Euverte | Mme de Saint-Euverte | -15.461 | -15.461 | 7 | 7 | 57 -> 48 | 13 -> 15 |
-
-Top positive characters:
-
-| Before | After |
-| --- | --- |
-| duchesse de Guermantes | duchesse de Guermantes |
-| Elstir | Elstir |
-| Bergotte | Bergotte |
-| Norpois | Norpois |
-| Charlus | princesse de Guermantes |
-| princesse de Guermantes | le peintre |
-| le peintre | M. Vinteuil |
-| comte de Forcheville | comte de Forcheville |
-| M. Vinteuil | la mère du narrateur |
-| la mère du narrateur | la Berma |
-
-Top negative characters:
-
-| Before | After |
-| --- | --- |
-| Swann | Swann |
-| Albertine | Albertine |
-| baron de Charlus | baron de Charlus |
-| Bloch | Bloch |
-| duc de Guermantes | duc de Guermantes |
-| Saniette | Saniette |
-| la grand-mère | Morel |
-| Morel | la grand-mère |
-| Mme de Cambremer | Mme de Cambremer |
-| Legrandin | Legrandin |
 
 ### prestige
 

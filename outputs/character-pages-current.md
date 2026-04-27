@@ -25,13 +25,13 @@ Why interesting:
 
 | Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- |
+| advantage | -206.613 | 62 | 263 | emotional_position | +7.484 |
 | inclusion | -225.958 | 62 | 263 | emotional_position | +8.609 |
-| local | -206.613 | 62 | 263 | emotional_position | +7.484 |
 | prestige | -139.776 | 62 | 263 | emotional_position | +7.545 |
 
 Top chapters:
 
-| Chapter | Local | Prestige | Inclusion |
+| Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
 | v1-p2-un-amour-de-swann | -136.67 | -86.781 | -151.038 |
 | v4-p2 | -26.491 | -22.148 | -22.643 |
@@ -71,13 +71,13 @@ Why interesting:
 
 | Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- |
+| advantage | -3.318 | 35 | 197 | emotional_position | +6.49 |
 | inclusion | -24.925 | 54 | 197 | emotional_position | +6.25 |
-| local | -3.318 | 35 | 197 | emotional_position | +6.49 |
 | prestige | +9.924 | 8 | 197 | emotional_position | +7.299 |
 
 Top chapters:
 
-| Chapter | Local | Prestige | Inclusion |
+| Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
 | v3-p1 | -9.402 | +5.885 | -26.3 |
 | v7-p2-m-de-charlus-pendant-la-guerre | +8.66 | +7.274 | +6.582 |
@@ -117,13 +117,13 @@ Why interesting:
 
 | Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- |
+| advantage | -111.185 | 61 | 177 | general_appraisal | +6.472 |
 | inclusion | -121.659 | 61 | 177 | general_appraisal | +8.061 |
-| local | -111.185 | 61 | 177 | general_appraisal | +6.472 |
 | prestige | -79.975 | 61 | 177 | general_appraisal | +5.631 |
 
 Top chapters:
 
-| Chapter | Local | Prestige | Inclusion |
+| Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
 | v5 | -85.533 | -65.672 | -83.111 |
 | v6-p1 | -22.865 | -17.562 | -25.999 |
@@ -163,13 +163,13 @@ Why interesting:
 
 | Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- |
+| advantage | -95.347 | 60 | 124 | general_appraisal | +7.0 |
 | inclusion | -86.557 | 60 | 124 | general_appraisal | +6.854 |
-| local | -95.347 | 60 | 124 | general_appraisal | +7.0 |
 | prestige | -77.192 | 60 | 124 | general_appraisal | +6.188 |
 
 Top chapters:
 
-| Chapter | Local | Prestige | Inclusion |
+| Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
 | v7-p2-m-de-charlus-pendant-la-guerre | -32.303 | -25.944 | -27.834 |
 | v4-p2 | -25.344 | -24.768 | -18.956 |
@@ -200,7 +200,7 @@ Notable units:
 
 Prestige-positive but inclusion-negative, with her sharpest gains and reversals concentrated in a few high-pressure chapters.
 
-Odette is one of the clearest cross-lens split figures in the corpus: she rises strongly in prestige while remaining far more unstable in belonging and local regard.
+Odette is one of the clearest cross-lens split figures in the corpus: she rises strongly in prestige while remaining far more unstable in belonging and immediate advantage.
 
 Why interesting:
 
@@ -209,13 +209,13 @@ Why interesting:
 
 | Lens | Net Score | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- |
+| advantage | -1.638 | 28 | 88 | social_status | +6.598 |
 | inclusion | -23.464 | 52 | 88 | social_status | +6.155 |
-| local | -1.638 | 28 | 88 | social_status | +6.598 |
 | prestige | +15.86 | 4 | 88 | social_status | +7.422 |
 
 Top chapters:
 
-| Chapter | Local | Prestige | Inclusion |
+| Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
 | v2-p1-autour-de-mme-swann | +19.699 | +24.138 | +8.419 |
 | v3-p1 | -14.112 | -7.537 | -19.441 |

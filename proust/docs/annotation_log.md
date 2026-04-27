@@ -159,7 +159,7 @@ This keeps the first pipeline legible and testable.
 
 It is enough to support later transformations into:
 
-- local advantage/disadvantage scores
+- advantage scores
 - rivalry or prestige graphs
 - social inclusion/exclusion measures
 - alternative "winning" definitions built from the same annotations
@@ -225,7 +225,7 @@ The goal is to see whether the current pipeline is stable enough to produce anal
 Begin using the annotations as inputs to lightweight exploratory summaries such as:
 
 - positive vs negative appraisal counts by character
-- net local movement by status dimension
+- net advantage movement by status dimension
 - narrator-led versus socially voiced valuation
 - inclusion/exclusion patterns
 
@@ -359,7 +359,7 @@ If this lightweight layer is usable, the next iteration can add:
 
 ### Review checkpoint
 
-The first focused review of `local_outcome_v1` is sufficient to keep it without further tuning.
+The first focused review of `advantage_outcome_v1` is sufficient to keep it without further tuning.
 
 Reviewed units:
 
@@ -371,7 +371,7 @@ Reviewed units:
 
 Decision:
 
-- keep `local_outcome_v1` as the current exploratory scoring layer
+- keep `advantage_outcome_v1` as the current exploratory scoring layer
 - do not tune it further at this stage
 - assume that remaining mild misweights are acceptable for higher-level exploratory findings
 
@@ -397,7 +397,7 @@ It suggests that the current annotation plus reduction plus scoring stack is alr
 
 ## Next downstream lens
 
-The next scoring move should not replace `local_outcome_v1`.
+The next scoring move should not replace `advantage_outcome_v1`.
 
 It should define an alternative lens from the same reduced annotations so that different notions of local "winning" can be compared directly.
 
@@ -445,19 +445,19 @@ That contrast should be especially useful later for socially volatile figures su
 
 ### Three-lens checkpoint
 
-The first comparison across `local_outcome_v1`, `prestige_outcome_v1`, and `inclusion_outcome_v1` produces a meaningful conceptual result for Swann.
+The first comparison across `advantage_outcome_v1`, `prestige_outcome_v1`, and `inclusion_outcome_v1` produces a meaningful conceptual result for Swann.
 
 Working reading:
 
 - under `prestige_outcome_v1`, Swann is clearly ahead overall
 - under `inclusion_outcome_v1`, Swann is slightly behind overall
-- under `local_outcome_v1`, Swann remains oscillatory and mildly positive overall
+- under `advantage_outcome_v1`, Swann remains oscillatory and mildly positive overall
 
 Interpretive value:
 
 - prestige lens captures Swann's rank, elite adjacency, and status revelation
 - inclusion lens captures his insecure local belonging and practical exclusion
-- local lens preserves the collision between those two facts rather than resolving them into a single axis
+- advantage lens preserves the collision between those two facts rather than resolving them into a single axis
 
 This is the first real demonstration that the project can distinguish between different kinds of local "winning" without changing the underlying annotation layer.
 
@@ -1348,7 +1348,7 @@ Working judgment:
 
 - treat `run-107` as acceptable for continued scaling
 - no obvious new recurring failure class appeared at the report level
-- the Odette-positive readings are textually grounded in local hostess control and conversational tact, so they do not require intervention
+- the Odette-positive readings are textually grounded in advantage hostess control and conversational tact, so they do not require intervention
 
 Operational note:
 
@@ -1878,7 +1878,7 @@ Preparation notes:
 Report-first reading:
 
 - across all three lenses, the batch is dominated by `Robert de Saint-Loup`
-- `v2-p2-noms-de-pays-le-pays#p-166-p-170` reads as mixed in the local lens and neutral in the inclusion and prestige lenses
+- `v2-p2-noms-de-pays-le-pays#p-166-p-170` reads as mixed in the advantage lens and neutral in the inclusion and prestige lenses
 - `v2-p2-noms-de-pays-le-pays#p-171-p-175` reads as a Saint-Loup win
 - `v2-p2-noms-de-pays-le-pays#p-176-p-180` reads as the strongest Saint-Loup win of the batch, especially in inclusion
 
@@ -2975,7 +2975,7 @@ Interpretive result:
   - loss in `v5#p-231-p-235`
   - strong loss in `v5#p-236-p-240`
 - the three lenses stayed aligned on the broad shape:
-  - `local` read four losses plus one mixed unit
+  - `advantage` read four losses plus one mixed unit
   - `prestige` softened `v5#p-226-p-230` to near-neutral because rhetorical elevation partly offset local diminishment
   - `inclusion` read all five Albertine units as losses and gave the deepest troughs to `v5#p-231-p-235` and `v5#p-236-p-240`
 - `v5#p-226-p-230` was the useful test case in the batch:
@@ -3498,7 +3498,7 @@ Interpretive result:
   - `Swann` negative across five units
   - `Odette` negative once
   - `la mère du narrateur` neutral once
-- no new cross-lens inversion or local-report instability appeared in the resumed batch
+- no new cross-lens inversion or advantage-report instability appeared in the resumed batch
 
 Operational judgment:
 
@@ -3723,12 +3723,12 @@ Accepted state before reboot:
 Latest review details:
 
 - `run-462` was fully clean:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-464` showed bounded local variance:
-  - mixed counts `{ inclusion: 2, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 2, advantage: 1, prestige: 1 }`
   - `2` label disagreements
   - `1` direction disagreement
   - `0` sign flips
@@ -3780,32 +3780,32 @@ Mechanical result:
 Review surface:
 
 - `run-466`:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 1 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-468`:
-  - mixed counts `{ inclusion: 2, local: 2, prestige: 2 }`
+  - mixed counts `{ inclusion: 2, advantage: 2, prestige: 2 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-470`:
-  - mixed counts `{ inclusion: 2, local: 2, prestige: 2 }`
+  - mixed counts `{ inclusion: 2, advantage: 2, prestige: 2 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-472`:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
 - `run-476`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-474`:
-  - mixed counts `{ inclusion: 2, local: 2, prestige: 3 }`
+  - mixed counts `{ inclusion: 2, advantage: 2, prestige: 3 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
@@ -3832,7 +3832,7 @@ Mechanical result:
 
 Review surface:
 
-- mixed counts `{ inclusion: 2, local: 1, prestige: 2 }`
+- mixed counts `{ inclusion: 2, advantage: 1, prestige: 2 }`
 - `1` label disagreement
 - `0` direction disagreements
 - `0` sign flips
@@ -3845,7 +3845,7 @@ Report-first reading:
   - `M. de Vaugoubert`
   - `marquise de Gallardon`
   - `princesse de Guermantes`
-- the dominant movement was local negative pressure around rank, exposure, and social diminishment
+- the dominant movement was advantage negative pressure around rank, exposure, and social diminishment
 - mixed cases stayed bounded:
   - `M. de Vaugoubert` in `v4-p2#p-16-p-20`
   - `princesse de Guermantes` in `v4-p2#p-36-p-40`
@@ -3882,19 +3882,19 @@ Mechanical result:
 Review surface:
 
 - `run-480`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-482`:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 
 Report-first reading:
 
-- `run-480` is dominated by negative local and inclusion pressure around social exclusion and rank:
+- `run-480` is dominated by negative advantage and inclusion pressure around social exclusion and rank:
   - repeated losses for `M. de Vaugoubert`
   - a strong exclusion loss for `Mme de Chaussepierre` in `v4-p2#p-66-p-70`
   - a Swann exclusion loss in `v4-p2#p-76-p-80`
@@ -3935,12 +3935,12 @@ Mechanical result:
 Review surface:
 
 - `run-484`:
-  - mixed counts `{ inclusion: 2, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 2, advantage: 1, prestige: 1 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
 - `run-486`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -3956,7 +3956,7 @@ Report-first reading:
   - Odette has the clearest wins in `v4-p2#p-176-p-180` and `v4-p2#p-181-p-185`
   - la grand-mère has a clean positive appraisal in `v4-p2#p-191-p-195`
   - Albertine has losses in `v4-p2#p-161-p-165` and `v4-p2#p-196-p-200`
-  - Gilberte, Françoise, and le directeur appear as local losses
+  - Gilberte, Françoise, and le directeur appear as advantage losses
 - the only cross-lens disagreement in this pair is the bounded `run-484` duchesse case; no sign flip appears
 
 Operational judgment:
@@ -3990,12 +3990,12 @@ Mechanical result:
 Review surface:
 
 - `run-488`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-490`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4004,7 +4004,7 @@ Report-first reading:
 
 - `run-488` is a clean hotel/social-evaluation stretch:
   - princesse de Parme and Mme de Cambremer carry the main positive movements
-  - le directeur, docteur Cottard, Albertine, and la grand-mère carry local negative pressure
+  - le directeur, docteur Cottard, Albertine, and la grand-mère carry advantage negative pressure
   - Mme de Cambremer appears with both a win and a loss, but without mixed-unit or cross-lens instability
 - `run-490` is narrower and fully coherent:
   - M. Nissim Bernard has the strongest win in `v4-p2#p-261-p-265`
@@ -4043,12 +4043,12 @@ Mechanical result:
 Review surface:
 
 - `run-492`:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
 - `run-494`:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
@@ -4098,12 +4098,12 @@ Mechanical result:
 Review surface:
 
 - `run-496`:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 1 }`
   - `2` label disagreements
   - `2` direction disagreements
   - `0` sign flips
 - `run-498`:
-  - mixed counts `{ inclusion: 3, local: 1, prestige: 3 }`
+  - mixed counts `{ inclusion: 3, advantage: 1, prestige: 3 }`
   - `2` label disagreements
   - `1` direction disagreement
   - `0` sign flips
@@ -4148,7 +4148,7 @@ Mechanical result:
 Review surface:
 
 - `run-500`:
-  - mixed counts `{ inclusion: 0, local: 1, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 1, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
@@ -4158,7 +4158,7 @@ Report-first reading:
 - the final tail is narrow and stable:
   - Bloch carries a loss in `v4-p2#p-441-p-445` across all three lenses
   - Albertine closes the chapter as neutral in the inclusion and prestige lenses
-  - the local lens marks Albertine as mixed in `v4-p2#p-446-p-450`, preserving the positive emotional/elevating pressure alongside discrediting association
+  - the advantage lens marks Albertine as mixed in `v4-p2#p-446-p-450`, preserving the positive emotional/elevating pressure alongside discrediting association
 - this is a bounded label disagreement, not a directional disagreement or sign flip
 
 Operational judgment:
@@ -4186,7 +4186,7 @@ Mechanical result:
 Review surface:
 
 - `run-502`:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
@@ -4227,7 +4227,7 @@ Mechanical result:
 Review surface:
 
 - `run-504`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4266,7 +4266,7 @@ Mechanical result:
 Review surface:
 
 - `run-506`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
@@ -4307,7 +4307,7 @@ Mechanical result:
 Review surface:
 
 - `run-508`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4348,7 +4348,7 @@ Mechanical result:
 Review surface:
 
 - `run-510`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4387,7 +4387,7 @@ Mechanical result:
 Review surface:
 
 - `run-512`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4427,7 +4427,7 @@ Mechanical result:
 Review surface:
 
 - `run-514`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 1 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 1 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
@@ -4467,7 +4467,7 @@ Mechanical result:
 Review surface:
 
 - `run-516`:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
@@ -4507,7 +4507,7 @@ Mechanical result:
 Review surface:
 
 - `run-518`:
-  - mixed counts `{ inclusion: 2, local: 2, prestige: 1 }`
+  - mixed counts `{ inclusion: 2, advantage: 2, prestige: 1 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
@@ -4549,7 +4549,7 @@ Mechanical result:
 Review surface:
 
 - `run-520`:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
@@ -4591,7 +4591,7 @@ Mechanical result:
 Review surface:
 
 - `run-522`:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4631,7 +4631,7 @@ Mechanical result:
 Review surface:
 
 - `run-524`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4671,7 +4671,7 @@ Mechanical result:
 Review surface:
 
 - `run-526`:
-  - mixed counts `{ inclusion: 0, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 0, advantage: 1, prestige: 1 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
@@ -4682,7 +4682,7 @@ Report-first reading:
   - Albertine carries the strongest loss in `v6-p1#p-41-p-45`
   - Robert de Saint-Loup carries a loss in `v6-p1#p-56-p-60`
   - Françoise carries a loss in `v6-p1#p-61-p-65`
-  - Albertine is neutral in inclusion but mixed in local/prestige at `v6-p1#p-66-p-70`
+  - Albertine is neutral in inclusion but mixed in advantage/prestige at `v6-p1#p-66-p-70`
   - Aimé carries a win in `v6-p1#p-71-p-75`
   - Albertine carries the strongest win in `v6-p1#p-76-p-80`
 - no direction disagreements or sign flips appear
@@ -4690,7 +4690,7 @@ Report-first reading:
 Operational judgment:
 
 - `v6-p1` remains stable through the second production batch
-- the local/prestige mixed unit is bounded and does not represent a stop condition
+- the advantage/prestige mixed unit is bounded and does not represent a stop condition
 - `v6-p1` is now accepted through `p-80`
 - the next default move is to prepare source `run-527` for `v6-p1#p-81-p-120`, then launch output `run-528`
 
@@ -4713,7 +4713,7 @@ Mechanical result:
 Review surface:
 
 - `run-528`:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 2 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 2 }`
   - `2` label disagreements
   - `1` direction disagreement
   - `0` sign flips
@@ -4754,7 +4754,7 @@ Mechanical result:
 Review surface:
 
 - `run-530`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4796,7 +4796,7 @@ Mechanical result:
 Review surface:
 
 - `run-532`:
-  - mixed counts `{ inclusion: 3, local: 2, prestige: 3 }`
+  - mixed counts `{ inclusion: 3, advantage: 2, prestige: 3 }`
   - `1` label disagreement
   - `1` direction disagreement
   - `0` sign flips
@@ -4839,7 +4839,7 @@ Mechanical result:
 Review surface:
 
 - `run-534`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4880,7 +4880,7 @@ Mechanical result:
 Review surface:
 
 - `run-536`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4921,7 +4921,7 @@ Mechanical result:
 Review surface:
 
 - `run-538`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -4961,7 +4961,7 @@ Mechanical result:
 Review surface:
 
 - `run-540`:
-  - mixed counts `{ inclusion: 1, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 0, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
@@ -5003,7 +5003,7 @@ Mechanical result:
 Review surface:
 
 - `run-542`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -5045,7 +5045,7 @@ Mechanical result:
 Review surface:
 
 - `run-544`:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -5086,7 +5086,7 @@ Mechanical result:
 Review surface:
 
 - `run-546`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -5127,7 +5127,7 @@ Mechanical result:
 Review surface:
 
 - `run-548`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -5164,7 +5164,7 @@ Mechanical result:
 Review surface:
 
 - `run-550`:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 1 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 1 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -5207,7 +5207,7 @@ Mechanical result:
 Review surface:
 
 - `run-552`:
-  - mixed counts `{ inclusion: 1, local: 1, prestige: 0 }`
+  - mixed counts `{ inclusion: 1, advantage: 1, prestige: 0 }`
   - `1` label disagreement
   - `0` direction disagreements
   - `0` sign flips
@@ -5219,7 +5219,7 @@ Report-first reading:
   - Bloch carries a win in `v7-p4-le-bal-de-tetes#p-46-p-50`
   - Swann carries a loss in `v7-p4-le-bal-de-tetes#p-51-p-55`
   - duchesse de Guermantes carries a loss in `v7-p4-le-bal-de-tetes#p-56-p-60`
-  - Bloch is mixed in inclusion and local, but neutral in prestige, in `v7-p4-le-bal-de-tetes#p-61-p-65`
+  - Bloch is mixed in inclusion and advantage, but neutral in prestige, in `v7-p4-le-bal-de-tetes#p-61-p-65`
   - Gilberte is neutral and Robert de Saint-Loup carries a win in `v7-p4-le-bal-de-tetes#p-66-p-70`
   - Gilberte carries a loss in `v7-p4-le-bal-de-tetes#p-71-p-75`
   - la Berma carries the strongest inclusion loss in `v7-p4-le-bal-de-tetes#p-76-p-80`
@@ -5252,7 +5252,7 @@ Mechanical result:
 Review surface:
 
 - `run-554`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -5294,7 +5294,7 @@ Mechanical result:
 Review surface:
 
 - `run-556`:
-  - mixed counts `{ inclusion: 0, local: 0, prestige: 0 }`
+  - mixed counts `{ inclusion: 0, advantage: 0, prestige: 0 }`
   - `0` label disagreements
   - `0` direction disagreements
   - `0` sign flips
@@ -5509,17 +5509,17 @@ Generated artifacts:
 Mechanical result:
 
 - `62` normalized aggregate characters were included
-- the artifact records per-character `local`, `prestige`, and `inclusion` scores side by side
+- the artifact records per-character `advantage`, `prestige`, and `inclusion` scores side by side
 - it also records cross-lens rank spread and within-lens score-span volatility
 
 Immediate high-information readings:
 
 - `Odette` shows the largest cross-lens rank spread:
-  - local rank `28`
+  - advantage rank `28`
   - prestige rank `4`
   - inclusion rank `52`
 - `Robert de Saint-Loup` also shows a very large cross-lens split:
-  - local rank `35`
+  - advantage rank `35`
   - prestige rank `8`
   - inclusion rank `54`
 - the highest-volatility repeated characters remain the expected major figures:
@@ -5549,7 +5549,7 @@ Generated artifacts:
 Mechanical result:
 
 - `16` characters were selected from the union of the current top rank-spread and top volatility sets
-- each selected character now has chapter-level `local`, `prestige`, and `inclusion` totals plus chapter-level unit counts
+- each selected character now has chapter-level `advantage`, `prestige`, and `inclusion` totals plus chapter-level unit counts
 
 Immediate high-information readings:
 
@@ -5559,7 +5559,7 @@ Immediate high-information readings:
   - the prestige/inclusion gap remains visible chapter by chapter
 - `Robert de Saint-Loup`'s split is concentrated heavily in `v3-p1`
   - prestige remains positive there
-  - local is negative
+  - advantage is negative
   - inclusion is sharply more negative
 - `Mme de Villeparisis` also shows a chapter-structured split rather than simple aggregate noise:
   - notably positive in `v3-p1`

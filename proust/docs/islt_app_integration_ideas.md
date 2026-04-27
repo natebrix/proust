@@ -117,7 +117,7 @@ At the first paragraph of the unit, show a compact header:
 Example:
 
 - `Odette  prestige +`
-- `Swann  local -`
+- `Swann  advantage -`
 - `Albertine  inclusion -`
 
 This is the best first feature because it maps directly to the unit structure you already have.
@@ -126,7 +126,7 @@ This is the best first feature because it maps directly to the unit structure yo
 
 Add a chapter-level toggle:
 
-- `Local`
+- `Advantage`
 - `Prestige`
 - `Inclusion`
 
@@ -148,7 +148,7 @@ Example:
 
 - `Robert de Saint-Loup  prestige +`
 - `Odette  inclusion -`
-- `baron de Charlus  local -`
+- `baron de Charlus  advantage -`
 
 ### 4. Chapter Heat Strip
 
@@ -190,7 +190,7 @@ Current artifacts:
 
 Each current card already includes:
 
-- overall local / prestige / inclusion totals
+- overall advantage / prestige / inclusion totals
 - current rank in each lens
 - rank spread
 - top chapters driving the result
@@ -261,7 +261,7 @@ Suggested shape:
         {
           "character": "Albertine",
           "dominantStatusDimension": "general_appraisal",
-          "local": { "netScore": -2.6, "label": "loss" },
+          "advantage": { "netScore": -2.6, "label": "loss" },
           "prestige": { "netScore": -1.9, "label": "loss" },
           "inclusion": { "netScore": -2.8, "label": "loss" }
         }
@@ -288,7 +288,7 @@ Suggested shape:
   "characters": [
     {
       "character": "Robert de Saint-Loup",
-      "local": -9.402,
+      "advantage": -9.402,
       "prestige": 5.885,
       "inclusion": -26.3,
       "unitCount": 132
@@ -332,7 +332,7 @@ Build:
 1. export chapter overlay JSON from the annotation project
 2. load overlay JSON in the `islt` chapter page
 3. shade annotated paragraph ranges
-4. add a `Local / Prestige / Inclusion` toggle
+4. add a `Advantage / Prestige / Inclusion` toggle
 5. show normalized character chips and a one-line unit summary
 
 This phase is enough to make the project legible inside the text.

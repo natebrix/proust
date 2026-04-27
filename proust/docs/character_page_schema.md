@@ -104,7 +104,7 @@ Each page should contain these required fields.
     "max_score_span": 7.422,
     "selected_by": ["rank_spread", "volatility"],
     "lens_scores": {
-      "local": {
+      "advantage": {
         "net_score": -1.638,
         "rank": 28,
         "unit_count": 88,
@@ -132,7 +132,7 @@ Each page should contain these required fields.
   },
   "editorial": {
     "dek": "Prestige-positive but inclusion-negative, with the split concentrated in Swann- and Guermantes-adjacent chapters.",
-    "summary": "Odette is one of the sharpest cross-lens split figures in the corpus: she rises strongly in prestige while remaining much more unstable in belonging and local regard.",
+    "summary": "Odette is one of the sharpest cross-lens split figures in the corpus: she rises strongly in prestige while remaining much more unstable in belonging and immediate advantage.",
     "why_interesting": [
       "Her prestige and inclusion readings diverge far more than her raw frequency alone would predict.",
       "Her profile is driven by a small number of chapters rather than uniform treatment across the novel."
@@ -143,7 +143,7 @@ Each page should contain these required fields.
     {
       "chapter_id": "v2-p1-autour-de-mme-swann",
       "chapter_title": "À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann",
-      "local": {
+      "advantage": {
         "net_score": 19.699,
         "unit_count": 32
       },
@@ -268,7 +268,7 @@ Recommended subfields:
 
 - `chapter_id`
 - `chapter_title`
-- `local`
+- `advantage`
 - `prestige`
 - `inclusion`
 - `reader_link`

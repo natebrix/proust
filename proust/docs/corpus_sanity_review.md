@@ -78,13 +78,13 @@ The disagreement cases are mostly threshold or mixedness cases, not outright rev
 Representative examples:
 
 - `run-211`, `M. de Vaugoubert`:
-  - `neutral` in local
+  - `neutral` in advantage
   - `mixed` in prestige and inclusion
 - `run-238`, `baron de Charlus`:
-  - `neutral` in local
+  - `neutral` in advantage
   - `mixed` in prestige and inclusion
 - `run-231`, `Robert de Saint-Loup`:
-  - `win` in local
+  - `win` in advantage
   - `mixed` in prestige and inclusion
 
 What did **not** appear:

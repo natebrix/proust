@@ -8,12 +8,12 @@
 ## Odette
 
 - Selected by: `rank_spread, volatility`
-- Local / Prestige / Inclusion ranks: `28` / `4` / `52`
+- Advantage / Prestige / Inclusion ranks: `28` / `4` / `52`
 - Rank spread: `48`
 - Max units: `88`
 - Max score span: `+7.422`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p1-combray | +1.76 | +1.496 | +1.32 | 1 | 1 | 1 |
 | v1-p2-un-amour-de-swann | -16.823 | -13.653 | -14.761 | 36 | 36 | 36 |
@@ -27,12 +27,12 @@
 ## Robert de Saint-Loup
 
 - Selected by: `rank_spread, volatility`
-- Local / Prestige / Inclusion ranks: `35` / `8` / `54`
+- Advantage / Prestige / Inclusion ranks: `35` / `8` / `54`
 - Rank spread: `46`
 - Max units: `197`
 - Max score span: `+7.299`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v2-p2-noms-de-pays-le-pays | +7.911 | +5.515 | +4.858 | 33 | 33 | 33 |
 | v3-p1 | -9.402 | +5.885 | -26.3 | 132 | 132 | 132 |
@@ -47,12 +47,12 @@
 ## Gilberte
 
 - Selected by: `rank_spread`
-- Local / Prestige / Inclusion ranks: `12` / `6` / `34`
+- Advantage / Prestige / Inclusion ranks: `12` / `6` / `34`
 - Rank spread: `28`
 - Max units: `44`
 - Max score span: `+6.239`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p1-combray | -0.026 | -0.038 | -0.207 | 2 | 2 | 2 |
 | v1-p3-noms-de-pays-le-nom | +2.6 | +2.647 | +0.284 | 10 | 10 | 10 |
@@ -67,12 +67,12 @@
 ## Mme de Villeparisis
 
 - Selected by: `rank_spread, volatility`
-- Local / Prestige / Inclusion ranks: `36` / `19` / `42`
+- Advantage / Prestige / Inclusion ranks: `36` / `19` / `42`
 - Rank spread: `23`
 - Max units: `82`
 - Max score span: `+7.86`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p2-un-amour-de-swann | -1.576 | -1.528 | -1.344 | 1 | 1 | 1 |
 | v2-p2-noms-de-pays-le-pays | -3.537 | -0.46 | -6.705 | 30 | 30 | 30 |
@@ -83,12 +83,12 @@
 ## le père du narrateur
 
 - Selected by: `rank_spread, volatility`
-- Local / Prestige / Inclusion ranks: `40` / `30` / `45`
+- Advantage / Prestige / Inclusion ranks: `40` / `30` / `45`
 - Rank spread: `15`
 - Max units: `15`
 - Max score span: `+6.624`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p1-combray | -0.384 | +0.38 | -1.798 | 4 | 4 | 4 |
 | v2-p1-autour-de-mme-swann | +1.502 | +1.187 | +1.112 | 2 | 2 | 2 |
@@ -99,12 +99,12 @@
 ## marquise de Saint-Euverte
 
 - Selected by: `rank_spread`
-- Local / Prestige / Inclusion ranks: `48` / `54` / `41`
+- Advantage / Prestige / Inclusion ranks: `48` / `54` / `41`
 - Rank spread: `13`
 - Max units: `7`
 - Max score span: `+5.979`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v3-p1 | -1.47 | -1.176 | -1.25 | 1 | 1 | 1 |
 | v4-p2 | -13.991 | -15.085 | -10.029 | 6 | 6 | 6 |
@@ -112,12 +112,12 @@
 ## Aimé
 
 - Selected by: `rank_spread`
-- Local / Prestige / Inclusion ranks: `25` / `36` / `26`
+- Advantage / Prestige / Inclusion ranks: `25` / `36` / `26`
 - Rank spread: `11`
 - Max units: `15`
 - Max score span: `+3.42`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v2-p2-noms-de-pays-le-pays | -2.563 | -1.933 | -2.131 | 3 | 3 | 3 |
 | v3-p1 | +2.969 | +2.345 | +2.197 | 2 | 2 | 2 |
@@ -128,24 +128,24 @@
 ## princesse de Luxembourg
 
 - Selected by: `rank_spread`
-- Local / Prestige / Inclusion ranks: `37` / `42` / `31`
+- Advantage / Prestige / Inclusion ranks: `37` / `42` / `31`
 - Rank spread: `11`
 - Max units: `4`
 - Max score span: `+2.066`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v2-p2-noms-de-pays-le-pays | -5.009 | -6.109 | -3.165 | 4 | 4 | 4 |
 
 ## Françoise
 
 - Selected by: `rank_spread`
-- Local / Prestige / Inclusion ranks: `46` / `40` / `50`
+- Advantage / Prestige / Inclusion ranks: `46` / `40` / `50`
 - Rank spread: `10`
 - Max units: `70`
 - Max score span: `+5.58`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p1-combray | -7.881 | -5.07 | -8.911 | 22 | 22 | 22 |
 | v2-p1-autour-de-mme-swann | +8.379 | +7.097 | +6.031 | 4 | 4 | 4 |
@@ -163,12 +163,12 @@
 ## M. Vinteuil
 
 - Selected by: `rank_spread`
-- Local / Prestige / Inclusion ranks: `7` / `13` / `3`
+- Advantage / Prestige / Inclusion ranks: `7` / `13` / `3`
 - Rank spread: `10`
 - Max units: `19`
 - Max score span: `+6.21`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p1-combray | -5.673 | -6.43 | -4.322 | 10 | 10 | 10 |
 | v1-p2-un-amour-de-swann | +5.454 | +4.502 | +3.444 | 5 | 5 | 5 |
@@ -178,12 +178,12 @@
 ## Swann
 
 - Selected by: `volatility`
-- Local / Prestige / Inclusion ranks: `62` / `62` / `62`
+- Advantage / Prestige / Inclusion ranks: `62` / `62` / `62`
 - Rank spread: `0`
 - Max units: `263`
 - Max score span: `+8.609`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p1-combray | -8.02 | -5.161 | -12.108 | 17 | 17 | 17 |
 | v1-p2-un-amour-de-swann | -136.67 | -86.781 | -151.038 | 168 | 168 | 168 |
@@ -202,12 +202,12 @@
 ## Albertine
 
 - Selected by: `volatility`
-- Local / Prestige / Inclusion ranks: `61` / `61` / `61`
+- Advantage / Prestige / Inclusion ranks: `61` / `61` / `61`
 - Rank spread: `0`
 - Max units: `177`
 - Max score span: `+8.061`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v2-p2-noms-de-pays-le-pays | +9.825 | +10.0 | +5.895 | 17 | 17 | 17 |
 | v3-p1 | -1.268 | -0.952 | -1.11 | 1 | 1 | 1 |
@@ -223,12 +223,12 @@
 ## duc de Guermantes
 
 - Selected by: `volatility`
-- Local / Prestige / Inclusion ranks: `58` / `58` / `58`
+- Advantage / Prestige / Inclusion ranks: `58` / `58` / `58`
 - Rank spread: `0`
 - Max units: `61`
 - Max score span: `+7.073`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p2-un-amour-de-swann | -1.73 | -1.384 | -1.471 | 1 | 1 | 1 |
 | v3-p1 | -10.399 | -5.797 | -10.113 | 16 | 16 | 16 |
@@ -241,12 +241,12 @@
 ## baron de Charlus
 
 - Selected by: `volatility`
-- Local / Prestige / Inclusion ranks: `60` / `60` / `60`
+- Advantage / Prestige / Inclusion ranks: `60` / `60` / `60`
 - Rank spread: `0`
 - Max units: `124`
 - Max score span: `+7.0`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p2-un-amour-de-swann | +1.609 | +1.271 | +1.19 | 1 | 1 | 1 |
 | v2-p2-noms-de-pays-le-pays | +8.966 | +11.761 | +1.467 | 31 | 31 | 31 |
@@ -262,12 +262,12 @@
 ## Bloch
 
 - Selected by: `volatility`
-- Local / Prestige / Inclusion ranks: `59` / `59` / `59`
+- Advantage / Prestige / Inclusion ranks: `59` / `59` / `59`
 - Rank spread: `0`
 - Max units: `61`
 - Max score span: `+6.817`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v1-p1-combray | -6.368 | -4.228 | -6.861 | 3 | 3 | 3 |
 | v2-p1-autour-de-mme-swann | -1.8 | -1.35 | -1.708 | 3 | 3 | 3 |
@@ -283,12 +283,12 @@
 ## le narrateur
 
 - Selected by: `volatility`
-- Local / Prestige / Inclusion ranks: `38` / `37` / `38`
+- Advantage / Prestige / Inclusion ranks: `38` / `37` / `38`
 - Rank spread: `1`
 - Max units: `6`
 - Max score span: `+6.539`
 
-| Chapter | Local | Prestige | Inclusion | Local Units | Prestige Units | Inclusion Units |
+| Chapter | Advantage | Prestige | Inclusion | Advantage Units | Prestige Units | Inclusion Units |
 | --- | --- | --- | --- | --- | --- | --- |
 | v2-p1-autour-de-mme-swann | 0.0 | 0.0 | 0.0 | 1 | 1 | 1 |
 | v2-p2-noms-de-pays-le-pays | -5.616 | -1.508 | -9.101 | 5 | 5 | 5 |

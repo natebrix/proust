@@ -99,7 +99,7 @@ Recommended chapter file shape:
   "partTitle": "Un amour de Swann",
   "sectionTitle": null,
   "characterNormalizationApplied": true,
-  "summary": "This chapter contains 235 annotated units, centered on Swann, Odette, and Mme Verdurin. Overall it is inclusion loss-heavy, local loss-heavy, and prestige loss-heavy.",
+  "summary": "This chapter contains 235 annotated units, centered on Swann, Odette, and Mme Verdurin. Overall it is inclusion loss-heavy, advantage loss-heavy, and prestige loss-heavy.",
   "units": [
     {
       "unitId": "v1-p2-un-amour-de-swann#p-17-p-21",
@@ -110,7 +110,7 @@ Recommended chapter file shape:
         {
           "character": "Odette",
           "dominantStatusDimension": "social_status",
-          "local": {
+          "advantage": {
             "netScore": -1.638,
             "label": "loss"
           },
@@ -124,7 +124,7 @@ Recommended chapter file shape:
           }
         }
       ],
-      "summary": "Odette loses social status in local and inclusion; shows mixed social status in prestige."
+      "summary": "Odette loses social status in advantage and inclusion; shows mixed social status in prestige."
     }
   ]
 }
@@ -162,7 +162,7 @@ Single character name chosen for compact UI defaults.
 
 The first implementation should keep this rule simple:
 
-- choose the character with the largest absolute `local` net score in the unit
+- choose the character with the largest absolute `advantage` net score in the unit
 - break ties by absolute `prestige`, then absolute `inclusion`, then character name
 
 This is only a convenience field. The app should still receive the full `characters` list.
@@ -175,7 +175,7 @@ Each entry should contain:
 
 - `character`
 - `dominantStatusDimension`
-- `local`
+- `advantage`
 - `prestige`
 - `inclusion`
 
@@ -190,7 +190,7 @@ Example:
 
 ```json
 {
-  "local": {
+  "advantage": {
     "netScore": -2.6,
     "label": "loss"
   }

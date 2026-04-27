@@ -7,6 +7,21 @@
 
 ## Top Positive By Lens
 
+### advantage
+
+| Character | Net Score | Units |
+| --- | --- | --- |
+| duchesse de Guermantes | +95.726 | 143 |
+| Elstir | +29.391 | 18 |
+| Bergotte | +17.016 | 33 |
+| Norpois | +14.145 | 67 |
+| princesse de Guermantes | +10.865 | 12 |
+| le peintre | +10.346 | 12 |
+| M. Vinteuil | +9.671 | 19 |
+| comte de Forcheville | +9.403 | 12 |
+| la mère du narrateur | +7.838 | 34 |
+| la Berma | +7.514 | 13 |
+
 ### inclusion
 
 | Character | Net Score | Units |
@@ -21,21 +36,6 @@
 | la mère du narrateur | +5.006 | 34 |
 | Jupien | +4.831 | 5 |
 | Norpois | +4.56 | 67 |
-
-### local
-
-| Character | Net Score | Units |
-| --- | --- | --- |
-| duchesse de Guermantes | +95.726 | 143 |
-| Elstir | +29.391 | 18 |
-| Bergotte | +17.016 | 33 |
-| Norpois | +14.145 | 67 |
-| princesse de Guermantes | +10.865 | 12 |
-| le peintre | +10.346 | 12 |
-| M. Vinteuil | +9.671 | 19 |
-| comte de Forcheville | +9.403 | 12 |
-| la mère du narrateur | +7.838 | 34 |
-| la Berma | +7.514 | 13 |
 
 ### prestige
 
@@ -54,6 +54,21 @@
 
 ## Top Negative By Lens
 
+### advantage
+
+| Character | Net Score | Units |
+| --- | --- | --- |
+| Swann | -206.613 | 263 |
+| Albertine | -111.185 | 177 |
+| baron de Charlus | -95.347 | 124 |
+| Bloch | -81.142 | 61 |
+| duc de Guermantes | -59.531 | 61 |
+| Saniette | -30.311 | 11 |
+| Morel | -25.323 | 17 |
+| la grand-mère | -24.753 | 65 |
+| Mme de Cambremer | -22.629 | 21 |
+| Legrandin | -20.948 | 23 |
+
 ### inclusion
 
 | Character | Net Score | Units |
@@ -68,21 +83,6 @@
 | Mme Verdurin | -25.921 | 68 |
 | Robert de Saint-Loup | -24.925 | 197 |
 | Mme de Cambremer | -24.435 | 21 |
-
-### local
-
-| Character | Net Score | Units |
-| --- | --- | --- |
-| Swann | -206.613 | 263 |
-| Albertine | -111.185 | 177 |
-| baron de Charlus | -95.347 | 124 |
-| Bloch | -81.142 | 61 |
-| duc de Guermantes | -59.531 | 61 |
-| Saniette | -30.311 | 11 |
-| Morel | -25.323 | 17 |
-| la grand-mère | -24.753 | 65 |
-| Mme de Cambremer | -22.629 | 21 |
-| Legrandin | -20.948 | 23 |
 
 ### prestige
 
@@ -101,7 +101,7 @@
 
 ## Largest Cross-Lens Rank Spread
 
-| Character | Local Rank | Prestige Rank | Inclusion Rank | Rank Spread | Max Units |
+| Character | Advantage Rank | Prestige Rank | Inclusion Rank | Rank Spread | Max Units |
 | --- | --- | --- | --- | --- | --- |
 | Odette | 28 | 4 | 52 | 48 | 88 |
 | Robert de Saint-Loup | 35 | 8 | 54 | 46 | 197 |
@@ -121,7 +121,7 @@
 
 ## Highest Volatility
 
-| Character | Local Span | Prestige Span | Inclusion Span | Max Span | Max Units |
+| Character | Advantage Span | Prestige Span | Inclusion Span | Max Span | Max Units |
 | --- | --- | --- | --- | --- | --- |
 | Swann | +7.484 | +7.545 | +8.609 | +8.609 | 263 |
 | Albertine | +6.472 | +5.631 | +8.061 | +8.061 | 177 |
@@ -141,7 +141,7 @@
 
 ## Character Table
 
-| Character | Local | Prestige | Inclusion | Local Rank | Prestige Rank | Inclusion Rank | Max Units | Max Span |
+| Character | Advantage | Prestige | Inclusion | Advantage Rank | Prestige Rank | Inclusion Rank | Max Units | Max Span |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | duchesse de Guermantes | +95.726 | +102.284 | +50.901 | 1 | 1 | 1 | 143 | +5.627 |
 | Elstir | +29.391 | +25.428 | +21.649 | 2 | 2 | 2 | 18 | +4.51 |

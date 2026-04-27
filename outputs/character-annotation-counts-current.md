@@ -5,7 +5,7 @@
 - Character count: `62`
 - Character normalization applied: `True`
 
-| Character | Annotation Units | Local | Prestige | Inclusion |
+| Character | Annotation Units | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- | --- |
 | Swann | 263 | -206.613 | -139.776 | -225.958 |
 | Robert de Saint-Loup | 197 | -3.318 | +9.924 | -24.925 |

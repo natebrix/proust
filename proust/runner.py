@@ -136,7 +136,7 @@ PREFERRED_STATUS_DIMENSION_ORDER = {
     "rhetorical_position": 3,
     "emotional_position": 4,
 }
-LOCAL_OUTCOME_EVENT_WEIGHTS = {
+ADVANTAGE_OUTCOME_EVENT_WEIGHTS = {
     "narrated_elevation": 1.0,
     "prestige_association": 1.0,
     "admiration": 0.9,
@@ -146,24 +146,24 @@ LOCAL_OUTCOME_EVENT_WEIGHTS = {
     "blame": 0.9,
     "other": 0.6,
 }
-LOCAL_OUTCOME_STATUS_WEIGHTS = {
+ADVANTAGE_OUTCOME_STATUS_WEIGHTS = {
     "social_status": 1.3,
     "inclusion_exclusion": 1.2,
     "general_appraisal": 1.0,
     "rhetorical_position": 0.8,
     "emotional_position": 0.6,
 }
-LOCAL_OUTCOME_STANCE_MULTIPLIERS = {
+ADVANTAGE_OUTCOME_STANCE_MULTIPLIERS = {
     "endorsed": 1.0,
     "neutral_report": 0.9,
     "ironized": 0.7,
     "uncertain": 0.5,
 }
-LOCAL_OUTCOME_LABEL_THRESHOLDS = {
+ADVANTAGE_OUTCOME_LABEL_THRESHOLDS = {
     "win": 0.75,
     "loss": -0.75,
 }
-LOCAL_OUTCOME_AMBIGUITY_PENALTY = 0.4
+ADVANTAGE_OUTCOME_AMBIGUITY_PENALTY = 0.4
 PRESTIGE_OUTCOME_EVENT_WEIGHTS = {
     "narrated_elevation": 0.9,
     "prestige_association": 1.4,
@@ -199,29 +199,29 @@ INCLUSION_OUTCOME_STATUS_WEIGHTS = {
     "emotional_position": 0.5,
 }
 SCORING_LENS_CONFIGS = {
-    "local": {
-        "scoring_version": "local_outcome_v1",
-        "event_weights": LOCAL_OUTCOME_EVENT_WEIGHTS,
-        "status_weights": LOCAL_OUTCOME_STATUS_WEIGHTS,
-        "stance_multipliers": LOCAL_OUTCOME_STANCE_MULTIPLIERS,
-        "label_thresholds": LOCAL_OUTCOME_LABEL_THRESHOLDS,
-        "ambiguity_penalty": LOCAL_OUTCOME_AMBIGUITY_PENALTY,
+    "advantage": {
+        "scoring_version": "advantage_outcome_v1",
+        "event_weights": ADVANTAGE_OUTCOME_EVENT_WEIGHTS,
+        "status_weights": ADVANTAGE_OUTCOME_STATUS_WEIGHTS,
+        "stance_multipliers": ADVANTAGE_OUTCOME_STANCE_MULTIPLIERS,
+        "label_thresholds": ADVANTAGE_OUTCOME_LABEL_THRESHOLDS,
+        "ambiguity_penalty": ADVANTAGE_OUTCOME_AMBIGUITY_PENALTY,
     },
     "prestige": {
         "scoring_version": "prestige_outcome_v1",
         "event_weights": PRESTIGE_OUTCOME_EVENT_WEIGHTS,
         "status_weights": PRESTIGE_OUTCOME_STATUS_WEIGHTS,
-        "stance_multipliers": LOCAL_OUTCOME_STANCE_MULTIPLIERS,
-        "label_thresholds": LOCAL_OUTCOME_LABEL_THRESHOLDS,
-        "ambiguity_penalty": LOCAL_OUTCOME_AMBIGUITY_PENALTY,
+        "stance_multipliers": ADVANTAGE_OUTCOME_STANCE_MULTIPLIERS,
+        "label_thresholds": ADVANTAGE_OUTCOME_LABEL_THRESHOLDS,
+        "ambiguity_penalty": ADVANTAGE_OUTCOME_AMBIGUITY_PENALTY,
     },
     "inclusion": {
         "scoring_version": "inclusion_outcome_v1",
         "event_weights": INCLUSION_OUTCOME_EVENT_WEIGHTS,
         "status_weights": INCLUSION_OUTCOME_STATUS_WEIGHTS,
-        "stance_multipliers": LOCAL_OUTCOME_STANCE_MULTIPLIERS,
-        "label_thresholds": LOCAL_OUTCOME_LABEL_THRESHOLDS,
-        "ambiguity_penalty": LOCAL_OUTCOME_AMBIGUITY_PENALTY,
+        "stance_multipliers": ADVANTAGE_OUTCOME_STANCE_MULTIPLIERS,
+        "label_thresholds": ADVANTAGE_OUTCOME_LABEL_THRESHOLDS,
+        "ambiguity_penalty": ADVANTAGE_OUTCOME_AMBIGUITY_PENALTY,
     },
 }
 
@@ -246,7 +246,7 @@ CHARACTER_PORTRAIT_SLUGS = {
 CHARACTER_PAGE_PILOT_EDITORIAL = {
     "Odette": {
         "dek": "Prestige-positive but inclusion-negative, with her sharpest gains and reversals concentrated in a few high-pressure chapters.",
-        "summary": "Odette is one of the clearest cross-lens split figures in the corpus: she rises strongly in prestige while remaining far more unstable in belonging and local regard.",
+        "summary": "Odette is one of the clearest cross-lens split figures in the corpus: she rises strongly in prestige while remaining far more unstable in belonging and immediate advantage.",
         "why_interesting": [
             "Her prestige and inclusion readings diverge much more sharply than her raw frequency alone would predict.",
             "Her profile is driven by a few concentrated chapter zones rather than a flat corpus-wide pattern.",
@@ -1371,7 +1371,7 @@ def _outcome_label(net_score, lens_config):
     return "mixed"
 
 
-def _score_run_outcomes(run_dir, lens="local"):
+def _score_run_outcomes(run_dir, lens="advantage"):
     lens_config = _resolve_scoring_lens(lens)
     status = get_run_status(run_dir)
     manifest = status["manifest"]
@@ -1481,8 +1481,8 @@ def _score_run_outcomes(run_dir, lens="local"):
     return summary
 
 
-def score_run_local_outcomes(run_dir):
-    return _score_run_outcomes(run_dir, lens="local")
+def score_run_advantage_outcomes(run_dir):
+    return _score_run_outcomes(run_dir, lens="advantage")
 
 
 def score_run_prestige_outcomes(run_dir):
@@ -1581,7 +1581,7 @@ def _build_unit_outcome_entry(unit_id, character, scores):
     }
 
 
-def build_outcome_report(run_dir, lens="local", character_name_map=None):
+def build_outcome_report(run_dir, lens="advantage", character_name_map=None):
     score_summary = _score_run_outcomes(run_dir, lens=lens)
     lens_config = SCORING_LENS_CONFIGS[lens]
     character_name_map = _normalize_character_name_map(character_name_map)
@@ -1730,14 +1730,14 @@ def build_corpus_sanity_review(run_dirs, character_name_map=None):
         for dimension, total in raw_summary["status_dimension_totals"].items():
             aggregate_status_dimension_totals[dimension] = aggregate_status_dimension_totals.get(dimension, 0) + total
 
-        local_report = run_reports[run_id]["local"]
+        advantage_report = run_reports[run_id]["advantage"]
         unit_character_counts = defaultdict(int)
-        for entry in local_report["timeline"]:
+        for entry in advantage_report["timeline"]:
             unit_character_counts[entry["unit_id"]] += 1
 
         unit_count = len(manifest["unit_ids"])
-        scored_unit_count = local_report["scored_unit_count"]
-        unique_character_count = local_report["character_count"]
+        scored_unit_count = advantage_report["scored_unit_count"]
+        unique_character_count = advantage_report["character_count"]
         single_character_unit_count = sum(1 for count in unit_character_counts.values() if count == 1)
         zero_character_unit_count = unit_count - len(unit_character_counts)
         avg_characters_per_scored_unit = (
@@ -2125,7 +2125,7 @@ def build_character_cross_lens_analysis(review):
         "characters": sorted(
             character_rows,
             key=lambda item: (
-                -item["lens_scores"]["local"]["net_score"],
+                -item["lens_scores"]["advantage"]["net_score"],
                 item["character"],
             ),
         ),
@@ -2164,7 +2164,7 @@ def _paragraph_range_from_unit_id(unit_id):
 def _overlay_character_sort_key(character_row):
     return (
         -max(
-            abs(character_row["local"]["netScore"]),
+            abs(character_row["advantage"]["netScore"]),
             abs(character_row["prestige"]["netScore"]),
             abs(character_row["inclusion"]["netScore"]),
         ),
@@ -2178,7 +2178,7 @@ def _overlay_dominant_character(characters):
 
     def _key(row):
         return (
-            abs(row["local"]["netScore"]),
+            abs(row["advantage"]["netScore"]),
             abs(row["prestige"]["netScore"]),
             abs(row["inclusion"]["netScore"]),
             row["character"],
@@ -2400,7 +2400,7 @@ def _build_character_page_notable_units(character, overlay_dataset, limit=3):
                         "paragraph_start": unit["paragraphStart"],
                         "summary": unit["summary"],
                         "max_abs_score": max(
-                            abs(character_row["local"]["netScore"]),
+                            abs(character_row["advantage"]["netScore"]),
                             abs(character_row["prestige"]["netScore"]),
                             abs(character_row["inclusion"]["netScore"]),
                         ),
@@ -2449,7 +2449,7 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
         top_chapters = sorted(
             chapter_rows,
             key=lambda item: max(
-                abs(item["local"]["net_score"]),
+                abs(item["advantage"]["net_score"]),
                 abs(item["prestige"]["net_score"]),
                 abs(item["inclusion"]["net_score"]),
             ),
@@ -2479,7 +2479,7 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
                     {
                         "chapter_id": row["chapter_id"],
                         "chapter_title": chapter_titles.get(row["chapter_id"], row["chapter_id"]),
-                        "local": row["local"],
+                        "advantage": row["advantage"],
                         "prestige": row["prestige"],
                         "inclusion": row["inclusion"],
                         "reader_link": _reader_chapter_link(row["chapter_id"]),
@@ -2718,9 +2718,9 @@ def build_character_chapter_analysis(
             chapters.append(
                 {
                     "chapter_id": chapter_id,
-                    "local": {
-                        "net_score": round(chapter_lenses["local"]["net_score"], 3),
-                        "unit_count": chapter_lenses["local"]["unit_count"],
+                    "advantage": {
+                        "net_score": round(chapter_lenses["advantage"]["net_score"], 3),
+                        "unit_count": chapter_lenses["advantage"]["unit_count"],
                     },
                     "prestige": {
                         "net_score": round(chapter_lenses["prestige"]["net_score"], 3),
@@ -2753,14 +2753,14 @@ def build_character_chapter_analysis(
 
 
 def build_character_annotation_counts(review):
-    local_totals = review["lens_reviews"]["local"]["character_totals"]
+    advantage_totals = review["lens_reviews"]["advantage"]["character_totals"]
     rows = []
-    for row in local_totals:
+    for row in advantage_totals:
         rows.append(
             {
                 "character": row["character"],
                 "annotation_unit_count": row["unit_count"],
-                "local_net_score": row["net_score"],
+                "advantage_net_score": row["net_score"],
                 "prestige_net_score": next(
                     item["net_score"]
                     for item in review["lens_reviews"]["prestige"]["character_totals"]
@@ -2804,7 +2804,7 @@ def build_character_profile_cards(run_dirs, character_name_map=None, top_chapter
         top_chapters = sorted(
             chapter_rows,
             key=lambda item: max(
-                abs(item["local"]["net_score"]),
+                abs(item["advantage"]["net_score"]),
                 abs(item["prestige"]["net_score"]),
                 abs(item["inclusion"]["net_score"]),
             ),
@@ -3092,11 +3092,11 @@ def render_character_cross_lens_analysis_markdown(analysis):
             "## Largest Cross-Lens Rank Spread",
             "",
             _markdown_table(
-                ["Character", "Local Rank", "Prestige Rank", "Inclusion Rank", "Rank Spread", "Max Units"],
+                ["Character", "Advantage Rank", "Prestige Rank", "Inclusion Rank", "Rank Spread", "Max Units"],
                 [
                     (
                         row["character"],
-                        row["lens_scores"]["local"]["rank"],
+                        row["lens_scores"]["advantage"]["rank"],
                         row["lens_scores"]["prestige"]["rank"],
                         row["lens_scores"]["inclusion"]["rank"],
                         row["rank_spread"],
@@ -3109,11 +3109,11 @@ def render_character_cross_lens_analysis_markdown(analysis):
             "## Highest Volatility",
             "",
             _markdown_table(
-                ["Character", "Local Span", "Prestige Span", "Inclusion Span", "Max Span", "Max Units"],
+                ["Character", "Advantage Span", "Prestige Span", "Inclusion Span", "Max Span", "Max Units"],
                 [
                     (
                         row["character"],
-                        _format_signed_number(row["lens_scores"]["local"]["score_span"]),
+                        _format_signed_number(row["lens_scores"]["advantage"]["score_span"]),
                         _format_signed_number(row["lens_scores"]["prestige"]["score_span"]),
                         _format_signed_number(row["lens_scores"]["inclusion"]["score_span"]),
                         _format_signed_number(row["max_score_span"]),
@@ -3128,10 +3128,10 @@ def render_character_cross_lens_analysis_markdown(analysis):
             _markdown_table(
                 [
                     "Character",
-                    "Local",
+                    "Advantage",
                     "Prestige",
                     "Inclusion",
-                    "Local Rank",
+                    "Advantage Rank",
                     "Prestige Rank",
                     "Inclusion Rank",
                     "Max Units",
@@ -3140,10 +3140,10 @@ def render_character_cross_lens_analysis_markdown(analysis):
                 [
                     (
                         row["character"],
-                        _format_signed_number(row["lens_scores"]["local"]["net_score"]),
+                        _format_signed_number(row["lens_scores"]["advantage"]["net_score"]),
                         _format_signed_number(row["lens_scores"]["prestige"]["net_score"]),
                         _format_signed_number(row["lens_scores"]["inclusion"]["net_score"]),
-                        row["lens_scores"]["local"]["rank"],
+                        row["lens_scores"]["advantage"]["rank"],
                         row["lens_scores"]["prestige"]["rank"],
                         row["lens_scores"]["inclusion"]["rank"],
                         row["max_unit_count"],
@@ -3196,7 +3196,7 @@ def render_character_chapter_analysis_markdown(analysis):
                 f"## {character_row['character']}",
                 "",
                 f"- Selected by: `{', '.join(character_row['selected_by']) or 'manual'}`",
-                f"- Local / Prestige / Inclusion ranks: `{summary['lens_scores']['local']['rank']}` / `{summary['lens_scores']['prestige']['rank']}` / `{summary['lens_scores']['inclusion']['rank']}`",
+                f"- Advantage / Prestige / Inclusion ranks: `{summary['lens_scores']['advantage']['rank']}` / `{summary['lens_scores']['prestige']['rank']}` / `{summary['lens_scores']['inclusion']['rank']}`",
                 f"- Rank spread: `{summary['rank_spread']}`",
                 f"- Max units: `{summary['max_unit_count']}`",
                 f"- Max score span: `{_format_signed_number(summary['max_score_span'])}`",
@@ -3204,20 +3204,20 @@ def render_character_chapter_analysis_markdown(analysis):
                 _markdown_table(
                     [
                         "Chapter",
-                        "Local",
+                        "Advantage",
                         "Prestige",
                         "Inclusion",
-                        "Local Units",
+                        "Advantage Units",
                         "Prestige Units",
                         "Inclusion Units",
                     ],
                     [
                         (
                             row["chapter_id"],
-                            _format_signed_number(row["local"]["net_score"]),
+                            _format_signed_number(row["advantage"]["net_score"]),
                             _format_signed_number(row["prestige"]["net_score"]),
                             _format_signed_number(row["inclusion"]["net_score"]),
-                            row["local"]["unit_count"],
+                            row["advantage"]["unit_count"],
                             row["prestige"]["unit_count"],
                             row["inclusion"]["unit_count"],
                         )
@@ -3252,12 +3252,12 @@ def render_character_annotation_counts_markdown(analysis):
         f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
         "",
         _markdown_table(
-            ["Character", "Annotation Units", "Local", "Prestige", "Inclusion"],
+            ["Character", "Annotation Units", "Advantage", "Prestige", "Inclusion"],
             [
                 (
                     row["character"],
                     row["annotation_unit_count"],
-                    _format_signed_number(row["local_net_score"]),
+                    _format_signed_number(row["advantage_net_score"]),
                     _format_signed_number(row["prestige_net_score"]),
                     _format_signed_number(row["inclusion_net_score"]),
                 )
@@ -3319,11 +3319,11 @@ def render_character_profile_cards_markdown(analysis):
                 "Top chapters:",
                 "",
                 _markdown_table(
-                    ["Chapter", "Local", "Prestige", "Inclusion"],
+                    ["Chapter", "Advantage", "Prestige", "Inclusion"],
                     [
                         (
                             row["chapter_id"],
-                            _format_signed_number(row["local"]["net_score"]),
+                            _format_signed_number(row["advantage"]["net_score"]),
                             _format_signed_number(row["prestige"]["net_score"]),
                             _format_signed_number(row["inclusion"]["net_score"]),
                         )
@@ -3418,11 +3418,11 @@ def render_character_pages_markdown(analysis):
                 "Top chapters:",
                 "",
                 _markdown_table(
-                    ["Chapter", "Local", "Prestige", "Inclusion"],
+                    ["Chapter", "Advantage", "Prestige", "Inclusion"],
                     [
                         (
                             row["chapter_id"],
-                            _format_signed_number(row["local"]["net_score"]),
+                            _format_signed_number(row["advantage"]["net_score"]),
                             _format_signed_number(row["prestige"]["net_score"]),
                             _format_signed_number(row["inclusion"]["net_score"]),
                         )
@@ -4405,17 +4405,17 @@ def main(argv=None):
 
     score_parser = subparsers.add_parser(
         "score",
-        help='Compute a lightweight local "winning"/"losing" transformation for a run.',
+        help='Compute a lightweight advantage "winning"/"losing" transformation for a run.',
     )
     score_parser.add_argument("--run", required=True, help="Run directory to score.")
-    score_parser.add_argument("--lens", default="local", choices=sorted(SCORING_LENS_CONFIGS), help="Scoring lens.")
+    score_parser.add_argument("--lens", default="advantage", choices=sorted(SCORING_LENS_CONFIGS), help="Scoring lens.")
 
     report_parser = subparsers.add_parser(
         "report",
-        help="Build a compact downstream outcome report from local outcome scores.",
+        help="Build a compact downstream outcome report from advantage outcome scores.",
     )
     report_parser.add_argument("--run", required=True, help="Run directory to report on.")
-    report_parser.add_argument("--lens", default="local", choices=sorted(SCORING_LENS_CONFIGS), help="Scoring lens.")
+    report_parser.add_argument("--lens", default="advantage", choices=sorted(SCORING_LENS_CONFIGS), help="Scoring lens.")
     report_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
@@ -4702,7 +4702,7 @@ def main(argv=None):
     wait_parser.add_argument(
         "--report",
         action="store_true",
-        help="Build local, prestige, and inclusion reports after completion.",
+        help="Build advantage, prestige, and inclusion reports after completion.",
     )
 
     reprocess_parser = subparsers.add_parser("reprocess", help="Re-parse saved raw outputs into annotations.")

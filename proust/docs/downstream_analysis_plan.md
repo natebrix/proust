@@ -69,7 +69,7 @@ The first artifact is a character-centered downstream report.
 Recommended sections:
 
 - top positive and negative characters by lens
-- one row per character with `local`, `prestige`, and `inclusion` net scores side by side
+- one row per character with `advantage`, `prestige`, and `inclusion` net scores side by side
 - cross-lens rank movement for the same character
 - unit-count context for each character
 - volatility summary for characters with repeated appearances

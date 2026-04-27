@@ -161,7 +161,7 @@ These are the first post-normalization analysis layers built on top of the accep
 
 Purpose:
 
-- compare `local`, `prestige`, and `inclusion` for each normalized character
+- compare `advantage`, `prestige`, and `inclusion` for each normalized character
 - surface rank spread and volatility
 
 Use when:

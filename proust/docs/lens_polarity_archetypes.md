@@ -2,7 +2,7 @@
 
 This document defines a small shorthand rubric for interpreting the sign pattern across the three scoring lenses:
 
-- `local`
+- `advantage`
 - `prestige`
 - `inclusion`
 
@@ -24,13 +24,13 @@ They should not be treated as:
 
 ## Lens Reminders
 
-- `local`: immediate gain or loss in the social and emotional balance of the passage
+- `advantage`: immediate gain or loss in the social and emotional balance of the passage
 - `prestige`: gain or loss in visible rank, distinction, authority, or standing
 - `inclusion`: gain or loss in belonging, acceptance, or incorporation
 
 ## The Eight Archetypes
 
-### `local + / prestige + / inclusion +`
+### `advantage + / prestige + / inclusion +`
 
 Label:
 
@@ -41,7 +41,7 @@ Interpretive shorthand:
 - doing well on all fronts
 - immediate advantage, rank, and belonging all reinforce each other
 
-### `local + / prestige + / inclusion -`
+### `advantage + / prestige + / inclusion -`
 
 Label:
 
@@ -52,7 +52,7 @@ Interpretive shorthand:
 - powerful or impressive, but not embraced
 - rises and wins in ways that cost acceptance or intimacy
 
-### `local + / prestige - / inclusion +`
+### `advantage + / prestige - / inclusion +`
 
 Label:
 
@@ -62,7 +62,7 @@ Interpretive shorthand:
 
 - warmly held and locally effective without corresponding public distinction
 
-### `local + / prestige - / inclusion -`
+### `advantage + / prestige - / inclusion -`
 
 Label:
 
@@ -70,9 +70,9 @@ Label:
 
 Interpretive shorthand:
 
-- capable of local wins from a socially marginal or unincorporated position
+- capable of advantage wins from a socially marginal or unincorporated position
 
-### `local - / prestige + / inclusion +`
+### `advantage - / prestige + / inclusion +`
 
 Label:
 
@@ -80,9 +80,9 @@ Label:
 
 Interpretive shorthand:
 
-- retains standing and belonging despite repeated local setbacks
+- retains standing and belonging despite repeated advantage setbacks
 
-### `local - / prestige + / inclusion -`
+### `advantage - / prestige + / inclusion -`
 
 Label:
 
@@ -92,7 +92,7 @@ Interpretive shorthand:
 
 - recognized, elevated, or distinguished, but locally damaged and cut off from belonging
 
-### `local - / prestige - / inclusion +`
+### `advantage - / prestige - / inclusion +`
 
 Label:
 
@@ -102,7 +102,7 @@ Interpretive shorthand:
 
 - loved or accepted without corresponding rank or immediate advantage
 
-### `local - / prestige - / inclusion -`
+### `advantage - / prestige - / inclusion -`
 
 Label:
 

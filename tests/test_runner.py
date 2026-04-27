@@ -290,7 +290,7 @@ def test_summarize_run_annotations_aggregates_events_and_status_effects(tmp_path
     assert summary["character_status_totals"] == {"Swann": {"social_status": 2}}
 
 
-def test_score_run_local_outcomes_combines_event_and_status_signals(tmp_path):
+def test_score_run_advantage_outcomes_combines_event_and_status_signals(tmp_path):
     run_dir = tmp_path / "run-score"
     pn.prepare_annotation_run(run_dir)
     pn.write_annotation_result(
@@ -359,14 +359,14 @@ def test_score_run_local_outcomes_combines_event_and_status_signals(tmp_path):
                 }
             ],
             "status_effects": [],
-            "ambiguities": ["unstable local uplift"],
+            "ambiguities": ["unstable advantage uplift"],
         },
     )
 
-    summary = pn.score_run_local_outcomes(run_dir)
+    summary = pn.score_run_advantage_outcomes(run_dir)
 
     assert summary["run_id"] == "run-score"
-    assert summary["scoring_version"] == "local_outcome_v1"
+    assert summary["scoring_version"] == "advantage_outcome_v1"
     assert summary["scored_unit_count"] == 2
     swann = next(unit for unit in summary["units"] if unit["unit_id"] == "v1-p1-combray#p-17")["characters"]["Swann"]
     legrandin = next(unit for unit in summary["units"] if unit["unit_id"] == "v1-p1-combray#p-274-p-275")["characters"][
@@ -404,7 +404,7 @@ def test_main_score_reports_json_summary(tmp_path, capsys):
     output = json.loads(captured.out)
 
     assert output["run_id"] == "run-score-cli"
-    assert output["scoring_version"] == "local_outcome_v1"
+    assert output["scoring_version"] == "advantage_outcome_v1"
 
 
 def test_build_outcome_report_summarizes_characters_and_timeline(tmp_path):
@@ -493,7 +493,7 @@ def test_build_outcome_report_summarizes_characters_and_timeline(tmp_path):
 
     assert report["run_id"] == "run-report"
     assert report["report_version"] == "outcome_report_v1"
-    assert report["scoring_version"] == "local_outcome_v1"
+    assert report["scoring_version"] == "advantage_outcome_v1"
     assert report["character_count"] == 2
     assert [entry["character"] for entry in report["character_summaries"]] == ["Swann", "Legrandin"]
     assert report["character_summaries"][0]["top_win"]["unit_id"] == "v1-p1-combray#p-17"
@@ -595,14 +595,14 @@ def test_build_corpus_sanity_review_can_apply_character_normalization_and_diff(t
     )
     diff = pr.build_corpus_review_normalization_diff(before_review, after_review)
 
-    assert before_review["lens_reviews"]["local"]["character_count"] == 2
+    assert before_review["lens_reviews"]["advantage"]["character_count"] == 2
     assert after_review["character_normalization"]["applied"] is True
-    assert after_review["lens_reviews"]["local"]["character_count"] == 1
-    assert after_review["lens_reviews"]["local"]["top_positive_characters"][0]["character"] == "baron de Charlus"
-    assert diff["lens_diffs"]["local"]["character_count_before"] == 2
-    assert diff["lens_diffs"]["local"]["character_count_after"] == 1
-    assert diff["lens_diffs"]["local"]["normalized_characters"][0]["character"] == "baron de Charlus"
-    assert diff["lens_diffs"]["local"]["normalized_characters"][0]["merged_from"] == ["Charlus"]
+    assert after_review["lens_reviews"]["advantage"]["character_count"] == 1
+    assert after_review["lens_reviews"]["advantage"]["top_positive_characters"][0]["character"] == "baron de Charlus"
+    assert diff["lens_diffs"]["advantage"]["character_count_before"] == 2
+    assert diff["lens_diffs"]["advantage"]["character_count_after"] == 1
+    assert diff["lens_diffs"]["advantage"]["normalized_characters"][0]["character"] == "baron de Charlus"
+    assert diff["lens_diffs"]["advantage"]["normalized_characters"][0]["merged_from"] == ["Charlus"]
 
 
 def test_main_corpus_review_can_discover_and_write_artifacts(tmp_path, capsys):
@@ -680,7 +680,7 @@ def test_main_corpus_review_can_write_normalized_artifacts_and_diff(tmp_path, ca
     assert exit_code == 0
     assert payload["normalization_diff_output"] == str(diff_output)
     assert review["character_normalization"]["applied"] is True
-    assert review["lens_reviews"]["local"]["character_count"] == 1
+    assert review["lens_reviews"]["advantage"]["character_count"] == 1
     assert markdown_output.read_text().startswith("# Corpus Review\n")
     assert diff_output.read_text().startswith("# Corpus Review Normalization Diff\n")
 
@@ -710,7 +710,7 @@ def test_build_character_cross_lens_analysis_uses_normalized_review(tmp_path):
     assert analysis["character_normalization"]["applied"] is True
     assert analysis["character_count"] == 1
     assert analysis["characters"][0]["character"] == "baron de Charlus"
-    assert analysis["characters"][0]["lens_scores"]["local"]["unit_count"] == 2
+    assert analysis["characters"][0]["lens_scores"]["advantage"]["unit_count"] == 2
     assert "baron de Charlus" in pr.render_character_cross_lens_analysis_markdown(analysis)
 
 
@@ -781,7 +781,7 @@ def test_build_character_chapter_analysis_groups_scores_by_chapter(tmp_path):
     assert analysis["selected_character_count"] == 1
     assert analysis["characters"][0]["character"] == "baron de Charlus"
     assert analysis["characters"][0]["chapters"][0]["chapter_id"] == "v1-p1-combray"
-    assert analysis["characters"][0]["chapters"][0]["local"]["unit_count"] == 2
+    assert analysis["characters"][0]["chapters"][0]["advantage"]["unit_count"] == 2
     assert "v1-p1-combray" in pr.render_character_chapter_analysis_markdown(analysis)
 
 
@@ -1023,10 +1023,10 @@ def test_build_chapter_overlay_data_exports_normalized_chapter_units(tmp_path):
     assert chapter["units"][1]["paragraphEnd"] == 275
     assert chapter["units"][0]["dominantCharacter"] == "baron de Charlus"
     assert chapter["units"][0]["characters"][0]["character"] == "baron de Charlus"
-    assert chapter["units"][0]["characters"][0]["local"]["label"] == "win"
+    assert chapter["units"][0]["characters"][0]["advantage"]["label"] == "win"
     assert "baron de Charlus gains social status" in chapter["units"][0]["summary"]
     assert chapter["units"][2]["characters"][0]["character"] == "Swann"
-    assert chapter["units"][2]["characters"][0]["local"]["label"] == "loss"
+    assert chapter["units"][2]["characters"][0]["advantage"]["label"] == "loss"
     assert "Swann loses social status" in chapter["units"][2]["summary"]
 
 
@@ -1402,7 +1402,7 @@ def test_score_run_prestige_outcomes_reweights_prestige_and_inclusion(tmp_path):
         },
     )
 
-    local_summary = pn.score_run_local_outcomes(run_dir)
+    local_summary = pn.score_run_advantage_outcomes(run_dir)
     prestige_summary = pn.score_run_prestige_outcomes(run_dir)
 
     local_positive = next(unit for unit in local_summary["units"] if unit["unit_id"] == "v1-p1-combray#p-17")["characters"][
@@ -1529,7 +1529,7 @@ def test_score_run_inclusion_outcomes_reweights_exclusion_and_prestige(tmp_path)
         },
     )
 
-    local_summary = pn.score_run_local_outcomes(run_dir)
+    local_summary = pn.score_run_advantage_outcomes(run_dir)
     inclusion_summary = pn.score_run_inclusion_outcomes(run_dir)
 
     local_positive = next(unit for unit in local_summary["units"] if unit["unit_id"] == "v1-p1-combray#p-17")["characters"][
@@ -1803,7 +1803,7 @@ def test_main_wait_can_reduce_and_report_finished_run(tmp_path, capsys):
     assert exit_code == 0
     assert payload["wait"]["completed_unit_count"] == 3
     assert payload["reprocess"]["run"] == str(run_dir)
-    assert sorted(payload["reports"]) == ["inclusion", "local", "prestige"]
+    assert sorted(payload["reports"]) == ["advantage", "inclusion", "prestige"]
 
 
 def test_main_compare_reports_missing_run_manifest_without_traceback(tmp_path, capsys):
