@@ -43,6 +43,7 @@ This now means:
 - app-facing cross-lens character profile cards have now been generated
 - app-facing chapter overlay JSON has now been exported for the accepted normalized corpus surface
 - app-facing chapter overlay prose summaries have now been added as `chapter_overlay_v2`
+- app-facing chapter summary export data has now been generated as `chapter_summary_export_v2`
 
 The current question is no longer:
 
@@ -162,9 +163,17 @@ The current accepted evidence now includes:
 - app-facing character profile card artifacts:
   - [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
   - [character-profile-cards-current.md](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.md:1)
+- app-facing character page artifacts:
+  - [character-pages-current.json](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.json:1)
+  - [character-pages-current.md](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.md:1)
 - app-facing chapter overlay artifacts:
   - [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)
   - [v1-p1-combray.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/chapters/v1-p1-combray.json:1)
+- app-facing chapter summary artifacts:
+  - [chapter-summaries-current.json](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.json:1)
+  - [chapter-summaries-current.md](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.md:1)
+- app-facing planning document for the chapter-summary layer:
+  - [chapter_summary_export_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/chapter_summary_export_plan.md:1)
 
 Stress-pack result:
 
@@ -203,8 +212,9 @@ If work resumes from this checkpoint, the next default move is:
 4. treat [character-chapter-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.md:1) as the active checkpoint artifact for the highest-information characters
 5. treat [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1) and [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1) as the default app-facing data products
 6. treat `chapter_overlay_v2` summaries as complete enough for first app rendering
-7. if app-facing data work continues, the next additive step should be richer editorial framing rather than a new structural export
-8. only reconsider source-annotation rewriting if a later downstream-analysis need clearly justifies it
+7. treat [chapter-summaries-current.json](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.json:1) as the new chapter-level app-facing middle layer, now centered on chapter prose, tonal archetypes, lens densities, impact-mass top characters, and distinguishing passages
+8. after that, prioritize richer editorial framing on top of the chapter-summary and overlay surfaces
+9. only reconsider source-annotation rewriting if a later downstream-analysis need clearly justifies it
 
 ## Latest checkpoint
 

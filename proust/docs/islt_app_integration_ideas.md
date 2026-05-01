@@ -100,7 +100,29 @@ Those are harder because the current corpus does not store sentence-addressed sp
 
 but not exact sentence ids.
 
-## Best First UI Ideas
+## Completed Foundations
+
+Several of the original app-integration ideas are now complete as data products:
+
+- chapter overlay export exists as `chapter_overlay_v2`
+- cross-lens character profile cards exist as a stable JSON contract
+- character pages now exist as a fuller editorial/app-facing JSON contract
+- lens naming is now standardized as `advantage / prestige / inclusion`
+- character-facing lens display should now be treated as percentile-first, with raw score and rank preserved as additive detail
+
+Current key artifacts:
+
+- [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
+- [character-pages-current.json](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.json:1)
+- [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)
+
+For the `islt` app, this means the main remaining work is no longer inventing a character layer. It is:
+
+- rendering and linking the existing character data products
+- adding chapter-level framing between character pages and inline overlays
+- supporting chapter-level exploration such as character focus mode and chapter summary banners
+
+## Best Current UI Ideas
 
 These are the highest-value ideas that fit the current data with low friction.
 
@@ -180,7 +202,7 @@ The aggregate artifacts create opportunities beyond simple inline annotation.
 
 ### Cross-Lens Character Profiles
 
-This is now largely complete as a derived data product.
+This is now complete enough as a derived data product and should be treated as a rendering problem, not a missing-analysis problem.
 
 Current artifacts:
 
@@ -191,9 +213,16 @@ Current artifacts:
 Each current card already includes:
 
 - overall advantage / prestige / inclusion totals
+- percentile in each lens, with higher = better
 - current rank in each lens
 - rank spread
 - top chapters driving the result
+
+Recommended display policy:
+
+- use percentile as the primary reader-facing measure
+- keep rank as secondary precision
+- keep raw score as optional deeper analytic detail
 
 So for the `islt` app, the remaining work here is rendering and linking, not inventing a new analysis layer.
 
@@ -201,9 +230,11 @@ So for the `islt` app, the remaining work here is rendering and linking, not inv
 
 At the top of selected chapters, show a short structured summary such as:
 
-- main active characters
-- dominant positive and negative figures
-- strongest lens disagreement
+- a chapter-centered prose summary
+- a tonal archetype
+- chapter lens densities and ranks
+- top characters by impact mass
+- distinguishing passages
 
 This would work well for chapters like:
 
@@ -297,13 +328,34 @@ Suggested shape:
 }
 ```
 
-This is enough for chapter headers, sidebars, and character-focus mode.
+This is enough for:
+
+- chapter headers
+- chapter framing banners
+- sidebars
+- character-focus mode
 
 The current project already has most of this information in aggregate form via:
 
 - [character-chapter-cross-lens-current.json](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.json:1)
 
 So the remaining gap is mainly app-oriented packaging by chapter rather than new analysis.
+
+The next planning document for this layer is:
+
+- [chapter_summary_export_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/chapter_summary_export_plan.md:1)
+
+The first current artifact is now available at:
+
+- [chapter-summaries-current.json](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.json:1)
+- [chapter-summaries-current.md](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.md:1)
+
+The current chapter-summary layer should now be treated as:
+
+- `chapter_summary_export_v2`
+- chapter-centered rather than report-centered
+- based on chapter lens densities rather than character-in-chapter percentiles
+- impact-mass based for top chapter characters
 
 ### Recommended Export 3: Current Canonical Aggregate Manifest
 
@@ -345,10 +397,10 @@ Goal:
 
 Build:
 
-1. character-focus filter
-2. chapter-level character summary panel
-3. render the existing character profile card JSON in the app
-4. links from character cards to the paragraph ranges where the score is coming from
+1. render the existing character profile/page JSON in the app
+2. character-focus filter
+3. chapter-level character summary panel
+4. links from character cards/pages to the paragraph ranges where the score is coming from
 
 This phase would let a reader move from aggregate finding to textual evidence efficiently.
 
@@ -360,9 +412,10 @@ Goal:
 
 Build:
 
-1. chapter heat strip
+1. chapter summary export `v2`
 2. chapter framing banner
-3. “why this chapter matters for this character” summaries using the chapter cross-lens artifact
+3. chapter heat strip
+4. “why this chapter matters for this character” summaries using the chapter cross-lens artifact
 
 This is where the downstream analysis work becomes editorially strong.
 
@@ -389,11 +442,17 @@ Sentence-level highlighting should be treated as a later enhancement, not a requ
 
 ## Recommended Next Technical Step
 
-The character profile card layer and chapter overlay export are now both in place.
+The character profile/page layers and chapter overlay export are now in place.
 
-The next technical step is to use the current exported datasets in the app:
+The next technical step on the data side is a chapter-summary export that sits between character pages and inline overlays.
+
+Current app-facing inputs already available:
 
 - [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
+- [character-pages-current.json](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.json:1)
 - [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1)
 
-If app-facing data work continues beyond that, the next likely additive layer is not a new structural export. It is richer editorial summarization or chapter framing built on top of the existing overlay and chapter-analysis surfaces.
+If app-facing data work continues beyond that, the next highest-value additive layer is:
+
+- chapter-summary export
+- then chapter framing/editorial summarization built on top of it

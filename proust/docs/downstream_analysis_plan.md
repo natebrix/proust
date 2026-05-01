@@ -62,6 +62,23 @@ The first app-facing derivative artifacts have now also been generated:
 
 The chapter overlay surface now includes additive deterministic prose summaries as `chapter_overlay_v2`.
 
+The chapter-summary export layer has now also been generated:
+
+- [chapter-summaries-current.json](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.json:1)
+- [chapter-summaries-current.md](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.md:1)
+
+It should now be treated as `chapter_summary_export_v2`, with:
+
+- chapter-centered prose summaries
+- tonal archetypes
+- chapter-level lens densities and chapter-vs-chapter ranks
+- impact-mass based top characters
+- distinguishing passages
+
+The planning document for that layer is:
+
+- [chapter_summary_export_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/chapter_summary_export_plan.md:1)
+
 ## Recommended first artifact
 
 The first artifact is a character-centered downstream report.
@@ -90,6 +107,7 @@ If work resumes from here, the default next move is:
 1. read the generated character-by-chapter cross-lens artifact first
 2. use it to identify which chapter-level accumulations are driving the largest lens splits
 3. treat the character profile cards and `chapter_overlay_v2` overlays as the current app-facing export layer
-4. if app-facing export work continues, prefer richer editorial framing over new structural export work
-5. keep extending aggregate analysis before drilling into individual units
-6. only drill into units if the chapter-level picture shows a genuinely surprising pattern
+4. treat the chapter-summary export as the current chapter-level app-facing middle layer
+5. if app-facing export work continues, prioritize chapter framing and character-focus mode on top of it
+6. keep extending aggregate analysis before drilling into individual units
+7. only drill into units if the chapter-level picture shows a genuinely surprising pattern

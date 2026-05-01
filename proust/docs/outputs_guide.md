@@ -39,7 +39,8 @@ The `outputs/` directory now contains five main artifact families:
 6. character profile-card artifacts
 7. character page artifacts for the `islt` app
 8. chapter overlay artifacts for the `islt` app
-9. historical milestone artifacts kept for comparison
+9. chapter summary artifacts for the `islt` app
+10. historical milestone artifacts kept for comparison
 
 ## Granular Runs
 
@@ -243,6 +244,23 @@ Use when:
 
 - you want inline chapter overlays, lens toggles, or character chips in the reader
 - you want one canonical per-unit overlay surface, with later reviewed runs superseding earlier duplicate units
+
+### Chapter Summaries
+
+- [chapter-summaries-current.json](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.json:1)
+- [chapter-summaries-current.md](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.md:1)
+
+Purpose:
+
+- provide chapter-keyed app-facing summary data that sits between character pages and unit overlays
+- expose chapter-centered prose summaries, tonal archetypes, and chapter-level lens densities
+- expose top chapter characters by impact mass and distinguishing passages
+- support chapter framing banners, sidebars, and character-focus mode
+
+Use when:
+
+- you want to explain a chapter as a social field before drilling into paragraph overlays
+- you want the next app-facing middle layer after character pages and chapter overlays
 
 ## Historical Milestone Artifacts
 

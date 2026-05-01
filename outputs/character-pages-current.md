@@ -33,11 +33,11 @@ Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v1-p2-un-amour-de-swann | -136.67 | -86.781 | -151.038 |
-| v4-p2 | -26.491 | -22.148 | -22.643 |
-| v2-p1-autour-de-mme-swann | -21.731 | -18.064 | -19.879 |
-| v1-p1-combray | -8.02 | -5.161 | -12.108 |
+| v1-p2-un-amour-de-swann | -131.884 | -83.052 | -145.721 |
+| v1-p1-combray | -11.003 | -7.807 | -13.963 |
+| v4-p2 | -11.352 | -7.931 | -11.451 |
 | v3-p2 | -8.321 | -5.679 | -9.204 |
+| v2-p1-autour-de-mme-swann | -8.289 | -5.915 | -9.099 |
 
 Reading path:
 
@@ -79,11 +79,11 @@ Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | -9.402 | +5.885 | -26.3 |
-| v7-p2-m-de-charlus-pendant-la-guerre | +8.66 | +7.274 | +6.582 |
-| v2-p2-noms-de-pays-le-pays | +7.911 | +5.515 | +4.858 |
-| v4-p2 | -5.996 | -6.509 | -4.314 |
-| v6-p1 | -5.918 | -4.615 | -4.975 |
+| v3-p1 | -6.445 | +0.317 | -12.5 |
+| v2-p2-noms-de-pays-le-pays | +5.044 | +3.09 | +3.56 |
+| v3-p2 | +4.711 | +4.772 | +2.45 |
+| v7-p1-a-tansonville | -4.498 | -3.487 | -3.909 |
+| v4-p2 | -3.696 | -4.081 | -2.558 |
 
 Reading path:
 
@@ -117,18 +117,18 @@ Why interesting:
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -111.185 | 2th | 61 | 177 | general_appraisal | +6.472 |
-| inclusion | -121.659 | 2th | 61 | 177 | general_appraisal | +8.061 |
-| prestige | -79.975 | 2th | 61 | 177 | general_appraisal | +5.631 |
+| advantage | -111.185 | 2nd | 61 | 177 | general_appraisal | +6.472 |
+| inclusion | -121.659 | 2nd | 61 | 177 | general_appraisal | +8.061 |
+| prestige | -79.975 | 2nd | 61 | 177 | general_appraisal | +5.631 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v5 | -85.533 | -65.672 | -83.111 |
-| v6-p1 | -22.865 | -17.562 | -25.999 |
-| v4-p2 | -8.971 | -6.108 | -11.211 |
-| v2-p2-noms-de-pays-le-pays | +9.825 | +10.0 | +5.895 |
+| v5 | -52.445 | -39.637 | -50.831 |
+| v4-p2 | -9.586 | -6.832 | -11.146 |
+| v6-p1 | -6.735 | -4.456 | -9.115 |
+| v2-p2-noms-de-pays-le-pays | +8.108 | +8.273 | +4.777 |
 | v3-p2 | +5.837 | +5.712 | +2.695 |
 
 Reading path:
@@ -171,11 +171,11 @@ Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | +39.598 | +42.658 | +21.234 |
 | v3-p2 | +39.41 | +41.883 | +20.555 |
-| v5 | +11.717 | +9.678 | +8.816 |
-| v4-p2 | +3.339 | +5.386 | +0.227 |
+| v3-p1 | +14.54 | +16.483 | +6.67 |
+| v5 | +5.937 | +4.906 | +4.484 |
 | v1-p1-combray | +2.614 | +3.561 | +0.947 |
+| v4-p2 | +1.627 | +2.644 | +0.089 |
 
 Reading path:
 
@@ -209,19 +209,19 @@ Why interesting:
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -95.347 | 3th | 60 | 124 | general_appraisal | +7.0 |
-| inclusion | -86.557 | 3th | 60 | 124 | general_appraisal | +6.854 |
-| prestige | -77.192 | 3th | 60 | 124 | general_appraisal | +6.188 |
+| advantage | -95.347 | 3rd | 60 | 124 | general_appraisal | +7.0 |
+| inclusion | -86.557 | 3rd | 60 | 124 | general_appraisal | +6.854 |
+| prestige | -77.192 | 3rd | 60 | 124 | general_appraisal | +6.188 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v7-p2-m-de-charlus-pendant-la-guerre | -32.303 | -25.944 | -27.834 |
-| v4-p2 | -25.344 | -24.768 | -18.956 |
-| v5 | -24.419 | -20.57 | -21.094 |
-| v2-p2-noms-de-pays-le-pays | +8.966 | +11.761 | +1.467 |
+| v5 | -16.961 | -15.05 | -13.732 |
+| v7-p2-m-de-charlus-pendant-la-guerre | -16.739 | -14.259 | -13.831 |
 | v3-p1 | -9.939 | -7.455 | -9.463 |
+| v4-p2 | -8.101 | -7.233 | -6.832 |
+| v2-p2-noms-de-pays-le-pays | +5.951 | +6.539 | +2.153 |
 
 Reading path:
 
@@ -263,11 +263,11 @@ Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v2-p1-autour-de-mme-swann | +19.699 | +24.138 | +8.419 |
-| v3-p1 | -14.112 | -7.537 | -19.441 |
-| v1-p2-un-amour-de-swann | -16.823 | -13.653 | -14.761 |
-| v4-p2 | +5.74 | +8.141 | +1.168 |
-| v1-p3-noms-de-pays-le-nom | +6.598 | +6.875 | +3.607 |
+| v1-p2-un-amour-de-swann | -17.815 | -14.352 | -15.39 |
+| v2-p1-autour-de-mme-swann | +11.425 | +13.717 | +4.402 |
+| v3-p1 | -8.417 | -4.614 | -11.461 |
+| v1-p3-noms-de-pays-le-nom | +6.212 | +6.736 | +3.52 |
+| v4-p2 | +5.218 | +5.84 | +3.094 |
 
 Reading path:
 
@@ -301,17 +301,17 @@ Why interesting:
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -4.415 | 43th | 36 | 82 | social_status | +6.624 |
-| inclusion | -11.403 | 33th | 42 | 82 | social_status | +4.05 |
+| advantage | -4.415 | 43rd | 36 | 82 | social_status | +6.624 |
+| inclusion | -11.403 | 33rd | 42 | 82 | social_status | +4.05 |
 | prestige | +1.839 | 70th | 19 | 82 | social_status | +7.86 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | +8.074 | +9.252 | +3.303 |
-| v2-p2-noms-de-pays-le-pays | -3.537 | -0.46 | -6.705 |
 | v3-p2 | -4.917 | -3.918 | -4.085 |
+| v2-p2-noms-de-pays-le-pays | -1.866 | -1.476 | -3.031 |
+| v3-p1 | +2.811 | +2.885 | +0.895 |
 | v6-p3 | -2.459 | -1.507 | -2.572 |
 | v1-p2-un-amour-de-swann | -1.576 | -1.528 | -1.344 |
 
@@ -356,10 +356,10 @@ Top chapters:
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
 | v1-p1-combray | -7.881 | -5.07 | -8.911 |
-| v2-p1-autour-de-mme-swann | +8.379 | +7.097 | +6.031 |
-| v3-p1 | -4.138 | -2.519 | -4.167 |
-| v7-p2-m-de-charlus-pendant-la-guerre | -3.52 | -2.816 | -2.992 |
-| v6-p1 | -3.27 | -2.616 | -2.783 |
+| v2-p1-autour-de-mme-swann | +5.849 | +5.091 | +4.115 |
+| v3-p1 | -2.686 | -2.378 | -2.089 |
+| v6-p2 | -1.883 | -0.98 | -2.623 |
+| v5 | +0.93 | +1.879 | -0.1 |
 
 Reading path:
 
@@ -395,17 +395,17 @@ Why interesting:
 | --- | --- | --- | --- | --- | --- | --- |
 | advantage | -20.762 | 16th | 52 | 68 | general_appraisal | +6.53 |
 | inclusion | -25.921 | 11th | 55 | 68 | general_appraisal | +6.496 |
-| prestige | -12.093 | 21th | 49 | 68 | general_appraisal | +5.85 |
+| prestige | -12.093 | 21st | 49 | 68 | general_appraisal | +5.85 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v1-p2-un-amour-de-swann | -12.548 | -9.122 | -14.151 |
-| v7-p2-m-de-charlus-pendant-la-guerre | -6.166 | -3.644 | -6.304 |
+| v1-p2-un-amour-de-swann | -13.614 | -10.434 | -14.725 |
 | v5 | -3.29 | -1.692 | -4.606 |
 | v7-p4-le-bal-de-tetes | +2.87 | +3.288 | +1.665 |
-| v4-p2 | -2.236 | -1.303 | -2.981 |
+| v7-p2-m-de-charlus-pendant-la-guerre | -3.054 | -1.782 | -3.138 |
+| v4-p2 | -0.04 | +0.308 | -0.66 |
 
 Reading path:
 
@@ -441,16 +441,15 @@ Why interesting:
 | --- | --- | --- | --- | --- | --- | --- |
 | advantage | +14.145 | 95th | 4 | 67 | rhetorical_position | +5.15 |
 | inclusion | +4.56 | 85th | 10 | 67 | rhetorical_position | +3.735 |
-| prestige | +14.297 | 93th | 5 | 67 | rhetorical_position | +5.077 |
+| prestige | +14.297 | 93rd | 5 | 67 | rhetorical_position | +5.077 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | +10.907 | +9.485 | +6.724 |
-| v2-p1-autour-de-mme-swann | +9.64 | +10.002 | +3.481 |
+| v3-p1 | +6.959 | +6.088 | +4.18 |
+| v2-p1-autour-de-mme-swann | +4.657 | +4.185 | +1.24 |
 | v6-p3 | -3.234 | -2.762 | -2.975 |
-| v2-p2-noms-de-pays-le-pays | -1.8 | -1.44 | -1.53 |
 | v3-p2 | -1.368 | -0.988 | -1.14 |
 
 Reading path:
@@ -493,11 +492,11 @@ Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | -10.354 | -7.853 | -9.03 |
 | v3-p2 | -7.166 | -5.857 | -6.485 |
-| v2-p2-noms-de-pays-le-pays | +0.713 | +5.264 | -6.509 |
-| v4-p2 | -4.818 | -3.195 | -5.669 |
+| v3-p1 | -7.044 | -5.205 | -6.296 |
+| v2-p2-noms-de-pays-le-pays | -3.642 | -0.965 | -6.958 |
 | v1-p1-combray | -3.128 | -2.488 | -2.572 |
+| v4-p2 | -0.53 | -0.442 | -0.691 |
 
 Reading path:
 
@@ -539,11 +538,11 @@ Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | -44.335 | -28.839 | -48.679 |
-| v2-p2-noms-de-pays-le-pays | -13.981 | -10.2 | -13.616 |
+| v3-p1 | -23.723 | -15.478 | -25.915 |
 | v1-p1-combray | -6.368 | -4.228 | -6.861 |
+| v2-p2-noms-de-pays-le-pays | -4.847 | -3.072 | -5.444 |
 | v3-p2 | -3.24 | -3.6 | -2.07 |
-| v4-p2 | -3.394 | -2.698 | -2.788 |
+| v7-p4-le-bal-de-tetes | -3.04 | -1.541 | -2.828 |
 
 Reading path:
 
@@ -586,10 +585,10 @@ Top chapters:
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
 | v3-p2 | -27.49 | -20.104 | -26.107 |
-| v3-p1 | -10.399 | -5.797 | -10.113 |
 | v7-p4-le-bal-de-tetes | -8.038 | -8.424 | -5.483 |
-| v5 | -6.366 | -7.064 | -4.075 |
-| v4-p2 | -3.708 | -2.981 | -3.318 |
+| v5 | -3.096 | -3.44 | -1.978 |
+| v3-p1 | -1.559 | +0.219 | -1.966 |
+| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle | -1.8 | -1.44 | -1.53 |
 
 Reading path:
 
@@ -623,19 +622,19 @@ Why interesting:
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | +6.706 | 82th | 12 | 44 | social_status | +6.239 |
+| advantage | +6.706 | 82nd | 12 | 44 | social_status | +6.239 |
 | inclusion | -5.8 | 46th | 34 | 44 | social_status | +6.197 |
-| prestige | +12.637 | 92th | 6 | 44 | social_status | +5.954 |
+| prestige | +12.637 | 92nd | 6 | 44 | social_status | +5.954 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v2-p1-autour-de-mme-swann | +8.596 | +9.24 | +2.136 |
+| v2-p1-autour-de-mme-swann | +5.083 | +5.464 | +0.738 |
 | v6-p2 | -1.345 | +1.46 | -4.06 |
-| v4-p2 | -3.408 | -2.512 | -2.96 |
 | v7-p2-m-de-charlus-pendant-la-guerre | +3.054 | +3.4 | +1.746 |
 | v7-p4-le-bal-de-tetes | -2.986 | -3.035 | -2.199 |
+| v1-p3-noms-de-pays-le-nom | +2.6 | +2.647 | +0.284 |
 
 Reading path:
 
@@ -669,8 +668,8 @@ Why interesting:
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -16.987 | 21th | 49 | 44 | general_appraisal | +5.98 |
-| inclusion | -18.415 | 23th | 48 | 44 | general_appraisal | +4.342 |
+| advantage | -16.987 | 21st | 49 | 44 | general_appraisal | +5.98 |
+| inclusion | -18.415 | 23rd | 48 | 44 | general_appraisal | +4.342 |
 | prestige | -9.216 | 26th | 46 | 44 | general_appraisal | +5.882 |
 
 Top chapters:
@@ -678,8 +677,8 @@ Top chapters:
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
 | v1-p2-un-amour-de-swann | -19.283 | -14.988 | -16.662 |
-| v4-p2 | -2.396 | +1.184 | -4.277 |
-| v2-p1-autour-de-mme-swann | +2.682 | +2.195 | +1.756 |
+| v4-p2 | -5.34 | -4.272 | -4.54 |
+| v2-p1-autour-de-mme-swann | +3.626 | +3.092 | +2.744 |
 | v1-p3-noms-de-pays-le-nom | +2.652 | +2.043 | +1.919 |
 | v1-p1-combray | -2.482 | -1.985 | -2.088 |
 
@@ -724,10 +723,10 @@ Top chapters:
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
 | v6-p3 | +5.05 | +4.034 | +3.794 |
-| v2-p1-autour-de-mme-swann | -4.314 | -3.66 | -3.66 |
-| v4-p2 | +2.232 | +2.022 | +1.518 |
+| v4-p2 | +1.72 | +1.462 | +1.29 |
 | v3-p2 | +1.68 | +1.428 | +1.26 |
 | v1-p1-combray | +1.642 | +1.191 | +0.976 |
+| v2-p1-autour-de-mme-swann | -1.557 | -1.23 | -1.23 |
 
 Reading path:
 
@@ -769,11 +768,11 @@ Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | +5.553 | +5.916 | +3.167 |
 | v1-p1-combray | +5.497 | +4.473 | +4.192 |
 | v2-p1-autour-de-mme-swann | -0.27 | +1.215 | -5.364 |
-| v5 | +5.34 | +4.45 | +4.094 |
-| v2-p2-noms-de-pays-le-pays | +1.886 | +2.05 | +1.148 |
+| v3-p1 | +3.036 | +3.423 | +1.655 |
+| v5 | +2.7 | +2.25 | +2.07 |
+| v3-p2 | -0.2 | +0.938 | -1.034 |
 
 Reading path:
 
@@ -815,11 +814,11 @@ Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | -13.746 | -12.419 | -10.74 |
 | v1-p1-combray | -12.443 | -9.921 | -10.526 |
+| v3-p1 | -5.568 | -4.936 | -4.431 |
 | v6-p4 | +3.188 | +3.626 | +1.862 |
 | v7-p4-le-bal-de-tetes | -2.66 | -2.128 | -2.218 |
-| v2-p2-noms-de-pays-le-pays | +2.255 | +1.784 | +1.685 |
+| v3-p2 | +1.302 | +0.874 | +1.445 |
 
 Reading path:
 
@@ -861,10 +860,10 @@ Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | -13.671 | -10.56 | -13.425 |
-| v4-p2 | -10.861 | -8.23 | -9.707 |
+| v3-p1 | -7.964 | -6.666 | -7.438 |
+| v4-p2 | -2.84 | -1.573 | -2.882 |
 | v1-p2-un-amour-de-swann | -0.378 | +1.01 | -2.629 |
-| v2-p2-noms-de-pays-le-pays | +2.281 | +2.287 | +1.326 |
+| v2-p2-noms-de-pays-le-pays | +0.604 | +0.455 | +0.31 |
 
 Reading path:
 
