@@ -3,6 +3,7 @@ from pathlib import Path
 from urllib import request as urllib_request
 
 import proust as pn
+import proust.editorial as pe
 import proust.runner as pr
 import pytest
 
@@ -1151,7 +1152,7 @@ def test_build_character_pages_pilot_uses_profile_portraits_and_editorial(tmp_pa
     saint_loup = next(page for page in analysis["pages"] if page["character"] == "Robert de Saint-Loup")
     assert saint_loup["portrait"]["default"]
     assert saint_loup["slug"] == "robert-de-saint-loup"
-    assert "core prestige/inclusion split" in saint_loup["reading_path"][0]["label"].lower()
+    assert "prestige / inclusion divergence" in saint_loup["reading_path"][0]["label"].lower()
     assert "Why interesting" in pr.render_character_pages_markdown(analysis)
 
 
@@ -1264,6 +1265,24 @@ def test_build_chapter_summary_export_groups_chapter_character_rows(tmp_path):
     assert combray["summary"].startswith("Combray is organized around the household and its visitors")
     assert "cross-lens split" not in combray["summary"]
     assert "Swann" in pr.render_chapter_summary_export_markdown(analysis)
+
+
+def test_chapter_summary_editorial_covers_canonical_chapters():
+    canonical_ids = {chapter.id for chapter in pn.CANONICAL_CHAPTER_SPECS}
+    assert set(pe.CHAPTER_SUMMARY_EDITORIAL) == canonical_ids
+
+
+def test_build_chapter_summary_export_requires_complete_editorial(tmp_path, monkeypatch):
+    run_dir = tmp_path / "run-001"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(run_dir, "v1-p1-combray#p-17", _minimal_annotation("v1-p1-combray#p-17"))
+
+    broken_editorial = dict(pr.CHAPTER_SUMMARY_EDITORIAL)
+    broken_editorial.pop("v1-p1-combray")
+    monkeypatch.setattr(pr, "CHAPTER_SUMMARY_EDITORIAL", broken_editorial)
+
+    with pytest.raises(ValueError, match="Chapter summary editorial coverage does not match canonical chapters"):
+        pr.build_chapter_summary_export([run_dir], character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP)
 
 
 def test_main_chapter_summaries_can_write_artifacts(tmp_path, capsys):

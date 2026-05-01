@@ -24,6 +24,11 @@ from .annotation import (
     load_prompt_template,
     render_prompt_input,
 )
+from .editorial import (
+    CHARACTER_PAGE_PILOT_EDITORIAL,
+    CHARACTER_PORTRAIT_SLUGS,
+    CHAPTER_SUMMARY_EDITORIAL,
+)
 from .export import CANONICAL_CHAPTER_SPECS
 from .paths import ALIASES_CSV
 
@@ -235,390 +240,6 @@ REVIEWED_CHARACTER_NORMALIZATION_MAP = {
     "la grand-mère du narrateur": "la grand-mère",
     "Vinteuil": "M. Vinteuil",
     "Mme de Saint-Euverte": "marquise de Saint-Euverte",
-}
-
-CHARACTER_PORTRAIT_SLUGS = {
-    "Albertine": "albertine",
-    "Odette": "odette",
-    "Robert de Saint-Loup": "saint-loup",
-    "Swann": "swann",
-    "baron de Charlus": "charlus",
-}
-
-CHARACTER_PAGE_PILOT_EDITORIAL = {
-    "Odette": {
-        "dek": "Prestige-positive but inclusion-negative, with her sharpest gains and reversals concentrated in a few high-pressure chapters.",
-        "summary": "Odette is one of the clearest cross-lens split figures in the corpus: she rises strongly in prestige while remaining far more unstable in belonging and immediate advantage.",
-        "why_interesting": [
-            "Her prestige and inclusion readings diverge much more sharply than her raw frequency alone would predict.",
-            "Her profile is driven by a few concentrated chapter zones rather than a flat corpus-wide pattern.",
-        ],
-        "primary_pattern": "prestige_positive_inclusion_negative",
-        "reading_path": [
-            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Prestige ascent around Mme Swann"},
-            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "Negative counterweight in Swann's love"},
-            {"chapter_id": "v3-p1", "label": "Later reversals in Guermantes-adjacent society"},
-        ],
-    },
-    "Robert de Saint-Loup": {
-        "dek": "One of the most frequent figures in the corpus, but also one of the most sharply split across prestige and inclusion.",
-        "summary": "Robert de Saint-Loup combines very high annotation frequency with one of the largest lens spreads in the corpus, especially where aristocratic polish and emotional belonging pull apart.",
-        "why_interesting": [
-            "He is not just volatile; he is structurally split across lenses in a way that makes him central to the project's interpretive payoff.",
-            "His strongest divergence is heavily chapter-located, especially in v3-p1.",
-        ],
-        "primary_pattern": "prestige_positive_inclusion_negative",
-        "reading_path": [
-            {"chapter_id": "v3-p1", "label": "Core prestige/inclusion split"},
-            {"chapter_id": "v7-p2-m-de-charlus-pendant-la-guerre", "label": "Later stabilizing wartime treatment"},
-            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Earlier positive social energy"},
-        ],
-    },
-    "Swann": {
-        "dek": "The most annotated figure in the corpus and one of its most consistently negative, especially in emotionally charged social passages.",
-        "summary": "Swann dominates the corpus by sheer annotation footprint, and his aggregate profile remains broadly and repeatedly negative across all three lenses.",
-        "why_interesting": [
-            "He is the clearest example of frequency and stability combining into a durable corpus-wide shape.",
-            "His chapter drivers reveal how strongly one major narrative zone can define a character's aggregate outcome.",
-        ],
-        "primary_pattern": "consistently_negative",
-        "reading_path": [
-            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "The main negative core of the profile"},
-            {"chapter_id": "v4-p2", "label": "Later social afterlife and residue"},
-            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Secondary shaping around Mme Swann"},
-        ],
-    },
-    "Albertine": {
-        "dek": "Highly central and highly negative, with much of her profile concentrated in the captivity and aftermath volumes.",
-        "summary": "Albertine is one of the largest and most persistently negative figures in the corpus, with her strongest shaping concentrated in the prison and disappearance chapters.",
-        "why_interesting": [
-            "Her aggregate pattern is less about lens disagreement than about strong repeated negative accumulation.",
-            "She helps distinguish cross-lens split figures from characters whose importance lies in concentrated directional force.",
-        ],
-        "primary_pattern": "broadly_negative",
-        "reading_path": [
-            {"chapter_id": "v5", "label": "The main captivity-zone accumulation"},
-            {"chapter_id": "v6-p1", "label": "Aftermath and disappearance"},
-            {"chapter_id": "v4-p2", "label": "Earlier social framing before concentration in v5"},
-        ],
-    },
-    "baron de Charlus": {
-        "dek": "A major recurrent figure whose treatment is strongly negative overall but distributed across several distinct social terrains.",
-        "summary": "baron de Charlus is a highly annotated and highly volatile figure whose negative aggregate treatment is spread across salon, sexual, and wartime configurations rather than one single narrative block.",
-        "why_interesting": [
-            "He is central both to corpus-wide negativity and to some of the project's richest later-terrain dynamics.",
-            "His profile is broad enough to test whether the analysis stays coherent across very different social worlds.",
-        ],
-        "primary_pattern": "volatile_negative",
-        "reading_path": [
-            {"chapter_id": "v7-p2-m-de-charlus-pendant-la-guerre", "label": "Wartime concentration"},
-            {"chapter_id": "v4-p2", "label": "Salon and sexual volatility"},
-            {"chapter_id": "v5", "label": "Continuation of negative concentration"},
-        ],
-    },
-    "duchesse de Guermantes": {
-        "dek": "The clearest aggregate winner in the corpus, combining immediate advantage, prestige, and inclusion at the very top of all three lenses.",
-        "summary": "duchesse de Guermantes is the strongest uniformly positive figure in the current corpus surface, with her social command and symbolic force holding across every lens rather than depending on a narrow chapter exception.",
-        "why_interesting": [
-            "She is the cleanest example of a character whose authority remains legible whether the lens tracks immediate advantage, rank, or belonging.",
-            "Her profile shows how a major aristocratic figure can dominate the aggregate surface without needing volatility or cross-lens disagreement to become interesting.",
-        ],
-        "primary_pattern": "uniformly_ascendant",
-        "reading_path": [
-            {"chapter_id": "v3-p1", "label": "First major Guermantes concentration"},
-            {"chapter_id": "v3-p2", "label": "Sustained supremacy in the salon world"},
-            {"chapter_id": "v5", "label": "Later reinforcement of the same social position"},
-        ],
-    },
-    "Mme de Villeparisis": {
-        "dek": "A socially legible figure whose prestige often holds better than her immediate advantage or belonging.",
-        "summary": "Mme de Villeparisis is one of the clearest moderate split figures in the corpus: she remains comparatively strong in prestige while advantage and inclusion drift downward or oscillate by chapter.",
-        "why_interesting": [
-            "She helps separate durable social standing from warmer forms of acceptance or local dominance.",
-            "Her profile is chapter-shaped rather than monotone, especially across Balbec and Guermantes material.",
-        ],
-        "primary_pattern": "prestige_positive_advantage_inclusion_negative",
-        "reading_path": [
-            {"chapter_id": "v3-p1", "label": "Prestige-bearing Guermantes presence"},
-            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Balbec counterweight and social cooling"},
-            {"chapter_id": "v3-p2", "label": "Sharper local reversals after the initial rise"},
-        ],
-    },
-    "Françoise": {
-        "dek": "A frequent figure whose aggregate treatment is mostly negative, but with a few striking pockets of reversal and support.",
-        "summary": "Françoise accumulates as a broadly negative figure across the corpus, though her profile is not flat: a small number of chapters briefly reverse the trend before the longer downward pull returns.",
-        "why_interesting": [
-            "She shows that a highly familiar household figure can remain structurally disadvantaged even while recurring constantly across volumes.",
-            "Her chapter profile includes one especially visible positive pocket that makes the overall negativity more interpretable.",
-        ],
-        "primary_pattern": "broadly_negative_with_reversals",
-        "reading_path": [
-            {"chapter_id": "v1-p1-combray", "label": "Core negative household concentration"},
-            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "The strongest temporary upward reversal"},
-            {"chapter_id": "v3-p1", "label": "Return to pressure in Guermantes society"},
-        ],
-    },
-    "Mme Verdurin": {
-        "dek": "A substantial recurring presence whose aggregate treatment stays negative across all three lenses, especially in Swann-centered and later wartime material.",
-        "summary": "Mme Verdurin is one of the clearest broadly negative salon figures in the corpus, with losses in advantage, prestige, and inclusion all reinforcing rather than offsetting one another.",
-        "why_interesting": [
-            "She is a useful contrast case to aristocratic figures whose rank can stay high even when scenes turn against them.",
-            "Her chapter drivers show how one salon world can define a long-lasting social profile that still echoes later in the novel.",
-        ],
-        "primary_pattern": "consistently_negative",
-        "reading_path": [
-            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "Main salon-world concentration"},
-            {"chapter_id": "v7-p2-m-de-charlus-pendant-la-guerre", "label": "Later wartime continuation"},
-            {"chapter_id": "v4-p2", "label": "Intermediate pressure in the later social field"},
-        ],
-    },
-    "Gilberte": {
-        "dek": "A strongly prestige-positive figure whose advantage remains high while inclusion stays much more mixed and contingent.",
-        "summary": "Gilberte is a compact but revealing cross-lens figure: she scores very well in prestige and immediate advantage, yet her inclusion profile remains markedly less secure.",
-        "why_interesting": [
-            "She is one of the best smaller-footprint examples of how social elevation and emotional incorporation can diverge.",
-            "Her strongest shaping chapters are distributed across early Mme Swann material and later retrospective zones rather than one single dominant block.",
-        ],
-        "primary_pattern": "advantage_prestige_positive_inclusion_mixed",
-        "reading_path": [
-            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Primary prestige and advantage concentration"},
-            {"chapter_id": "v6-p2", "label": "Later inclusion strain and uneven return"},
-            {"chapter_id": "v7-p4-le-bal-de-tetes", "label": "Retrospective late counterweight"},
-        ],
-    },
-    "Norpois": {
-        "dek": "One of the corpus's clearest rhetorical winners, with very high advantage and prestige and comparatively little cross-lens instability.",
-        "summary": "Norpois is a strongly positive figure across all three lenses, driven less by intimacy than by durable rhetorical authority and socially legible judgment.",
-        "why_interesting": [
-            "He is a useful example of a character whose strength comes from voice, sanction, and interpretive authority more than warmth.",
-            "His profile shows how the project captures positive hierarchy without needing romantic or emotional centrality.",
-        ],
-        "primary_pattern": "rhetorically_ascendant",
-        "reading_path": [
-            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Main field of diplomatic and rhetorical authority"},
-            {"chapter_id": "v3-p1", "label": "Guermantes reinforcement of social weight"},
-            {"chapter_id": "v6-p3", "label": "Later counterpressure against the earlier rise"},
-        ],
-    },
-    "la grand-mère": {
-        "dek": "A central emotional figure whose aggregate treatment is strikingly negative, especially in belonging and general appraisal.",
-        "summary": "la grand-mère accumulates as one of the corpus's more strongly negative recurring figures, with the harshest pressure falling on inclusion and broad valuation rather than on a narrow prestige story alone.",
-        "why_interesting": [
-            "She shows how importance in the novel does not guarantee aggregate social or emotional advantage in the annotation surface.",
-            "Her chapter spread distinguishes Balbec tenderness from later Guermantes and illness-weighted decline.",
-        ],
-        "primary_pattern": "emotionally_central_but_negative",
-        "reading_path": [
-            {"chapter_id": "v3-p1", "label": "Strong Guermantes-zone deterioration"},
-            {"chapter_id": "v3-p2", "label": "Continuation of decline and pressure"},
-            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Balbec countertexture with limited prestige recovery"},
-        ],
-    },
-    "Bloch": {
-        "dek": "A heavily annotated figure whose treatment is almost uniformly and intensely negative across all three lenses.",
-        "summary": "Bloch is one of the clearest aggregate negative cases in the corpus, with repeated losses in advantage, prestige, and inclusion reinforcing each other rather than splitting apart.",
-        "why_interesting": [
-            "He is a high-frequency example of durable corpus-wide diminishment rather than a character defined by one isolated late collapse.",
-            "His profile is especially useful for testing whether repeated comic or social discredit remains stable across volumes.",
-        ],
-        "primary_pattern": "uniformly_fallen",
-        "reading_path": [
-            {"chapter_id": "v3-p1", "label": "Main concentration of ridicule and social diminishment"},
-            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Balbec reinforcement of the same pattern"},
-            {"chapter_id": "v4-p2", "label": "Later persistence in a changed social field"},
-        ],
-    },
-    "duc de Guermantes": {
-        "dek": "A major aristocratic figure whose aggregate profile is surprisingly negative across advantage, prestige, and inclusion alike.",
-        "summary": "duc de Guermantes is one of the project's most revealing reversals of expectation: despite formal rank, his annotation surface is broadly negative across all three lenses.",
-        "why_interesting": [
-            "He helps separate nominal social title from actual passage-level advantage and valuation.",
-            "His profile is a strong reminder that the corpus tracks enacted social force, not merely inherited station.",
-        ],
-        "primary_pattern": "rank_without_advantage",
-        "reading_path": [
-            {"chapter_id": "v3-p2", "label": "Main concentration of aggregate decline"},
-            {"chapter_id": "v3-p1", "label": "Earlier Guermantes-stage weakening"},
-            {"chapter_id": "v7-p4-le-bal-de-tetes", "label": "Late retrospective continuation"},
-        ],
-    },
-    "docteur Cottard": {
-        "dek": "A recurrent social presence whose aggregate treatment stays modestly negative, with occasional prestige or advantage recoveries that never fully stabilize.",
-        "summary": "docteur Cottard is a mid-tier negative figure whose profile is shaped by one strong Swann-world concentration, then complicated by smaller later recoveries and uneven prestige moments.",
-        "why_interesting": [
-            "He is useful as a moderate case: neither overwhelmingly central nor trivial, but persistent enough to show how local reversals can coexist with an overall downward pattern.",
-            "His profile also distinguishes prestige blips from broader social and inclusion weakness.",
-        ],
-        "primary_pattern": "moderately_negative_with_recoveries",
-        "reading_path": [
-            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "Primary negative concentration"},
-            {"chapter_id": "v4-p2", "label": "Later mixed prestige recovery"},
-            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Smaller positive countercurrent"},
-        ],
-    },
-    "la mère du narrateur": {
-        "dek": "A strongly positive figure whose gains are grounded less in public rank than in steady rhetorical and relational authority.",
-        "summary": "la mère du narrateur is a quietly high-performing figure across all three lenses, with especially strong advantage and inclusion values driven by stable interpretive and familial force.",
-        "why_interesting": [
-            "She offers a model of positive social power that does not depend on aristocratic prestige or theatrical display.",
-            "Her chapter distribution includes one notable Mme Swann-era counterweight, which makes the overall positivity more informative.",
-        ],
-        "primary_pattern": "quietly_ascendant",
-        "reading_path": [
-            {"chapter_id": "v6-p3", "label": "Strongest concentrated positive treatment"},
-            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Main negative counterweight"},
-            {"chapter_id": "v1-p1-combray", "label": "Early domestic base of authority"},
-        ],
-    },
-    "Bergotte": {
-        "dek": "A highly positive literary figure whose advantage and prestige remain near the top of the corpus, with inclusion somewhat softer but still strong.",
-        "summary": "Bergotte is one of the corpus's clearest positive symbolic figures, with his literary authority translating into very high advantage and prestige across several distinct narrative zones.",
-        "why_interesting": [
-            "He provides a clean case of aesthetic or intellectual distinction remaining socially effective across lenses.",
-            "His profile is also useful because one large chapter block softens his inclusion without undoing the larger positive pattern.",
-        ],
-        "primary_pattern": "symbolically_ascendant",
-        "reading_path": [
-            {"chapter_id": "v3-p1", "label": "Strong Guermantes-era literary authority"},
-            {"chapter_id": "v1-p1-combray", "label": "Early concentration of esteem"},
-            {"chapter_id": "v2-p1-autour-de-mme-swann", "label": "Longer mixed field with softened inclusion"},
-        ],
-    },
-    "Legrandin": {
-        "dek": "A character of recurrent social and rhetorical diminishment, with especially weak advantage and prestige despite occasional brief reversals.",
-        "summary": "Legrandin is a broadly negative figure whose profile is shaped by repeated discredit and awkward self-positioning, even though a few isolated units briefly interrupt the downward pattern.",
-        "why_interesting": [
-            "He is a good example of how rhetorical self-fashioning can fail across more than one lens at once.",
-            "His profile connects early Combray material to later Guermantes treatment without turning into a single monotone block.",
-        ],
-        "primary_pattern": "self_undermining_negative",
-        "reading_path": [
-            {"chapter_id": "v3-p1", "label": "Strongest later concentration of diminishment"},
-            {"chapter_id": "v1-p1-combray", "label": "Early formation of the negative pattern"},
-            {"chapter_id": "v6-p4", "label": "Brief late reversal against the broader trend"},
-        ],
-    },
-    "Mme de Cambremer": {
-        "dek": "A lower-frequency but consistently negative figure whose aggregate treatment remains weak across all three lenses.",
-        "summary": "Mme de Cambremer is a compact but stable negative case: she does not dominate the corpus by volume, but what is there reads overwhelmingly downward in advantage, prestige, and inclusion.",
-        "why_interesting": [
-            "She helps test whether the analysis stays coherent on mid-sized characters whose signal is distributed across a few compact chapter zones.",
-            "Her profile also shows how a small positive Balbec pocket can exist without changing the overall direction.",
-        ],
-        "primary_pattern": "compact_consistent_negative",
-        "reading_path": [
-            {"chapter_id": "v4-p2", "label": "Strongest later concentration of loss"},
-            {"chapter_id": "v3-p1", "label": "Earlier Guermantes pressure"},
-            {"chapter_id": "v2-p2-noms-de-pays-le-pays", "label": "Limited Balbec counterweight"},
-        ],
-    },
-    "M. Vinteuil": {
-        "dek": "A relatively small-footprint but strongly positive figure, especially in inclusion, whose profile mixes early negativity with later recovery and elevation.",
-        "summary": "M. Vinteuil is one of the more surprising positive figures in the corpus: despite some strongly negative early material, his aggregate treatment ends up decisively positive, especially in inclusion.",
-        "why_interesting": [
-            "He is a good example of how the corpus can register rehabilitation or retrospective elevation rather than just cumulative damage.",
-            "His profile is sharply chapter-shaped, which makes him useful for showing how aggregate positivity can arise from uneven terrain.",
-        ],
-        "primary_pattern": "rehabilitated_positive",
-        "reading_path": [
-            {"chapter_id": "v5", "label": "Main late positive recovery"},
-            {"chapter_id": "v1-p1-combray", "label": "Early negative counterweight"},
-            {"chapter_id": "v1-p2-un-amour-de-swann", "label": "Intermediate positive reinforcement"},
-        ],
-    },
-}
-
-CHAPTER_SUMMARY_EDITORIAL = {
-    "v1-p1-combray": (
-        "Combray is organized around the household and its visitors, with Françoise, Swann, Legrandin, and the Vinteuil circle repeatedly coming under scrutiny. "
-        "What stands out is not one decisive reversal but a steady accumulation of slights, embarrassments, and exclusions, especially around Swann and Legrandin. "
-        "The chapter's social world feels watchful and punitive, turning ordinary encounters into tests of place and acceptance."
-    ),
-    "v1-p2-un-amour-de-swann": (
-        "This chapter is dominated by Swann's pursuit of Odette and by the salon world around the Verdurins, Cottard, and their circle. "
-        "Attachment, jealousy, dependence, and access to Odette matter more here than formal rank, and Swann absorbs the heaviest losses by far. "
-        "Even when other figures are humiliated or briefly advanced, the chapter keeps returning to Swann's growing emotional subjection."
-    ),
-    "v1-p3-noms-de-pays-le-nom": (
-        "This section is centered on the young narrator's idealizing imagination, especially around Gilberte, Swann, and Odette. "
-        "Unlike the darker social weather of the earlier chapters, it is largely buoyed by fascination, projection, and moments of elevation, though Gilberte's hold over the scene can flip from promise to hurt. "
-        "The chapter feels lighter and more aspirational, with desire and fantasy doing more work than humiliation."
-    ),
-    "v2-p1-autour-de-mme-swann": (
-        "The chapter revolves around Odette's renewed brilliance, Swann's diminished position beside her, and the narrator's fascination with the Swann household and its orbit. "
-        "Its most revealing pattern is the contrast between Odette's steady rise and Swann's repeated weakening, which gives the chapter the shape of a social reordering inside an apparently elegant world. "
-        "Rather than one sharp crisis, it builds its meaning through repeated scenes in which glamour and access gather around Odette."
-    ),
-    "v2-p2-noms-de-pays-le-pays": (
-        "Balbec is organized around new encounters and shifting attractions, especially Elstir, Albertine, Charlus, Saint-Loup, and the narrator's movements among them. "
-        "The chapter's most striking pattern is its mixed social weather: artistic and social arrival on one side, awkwardness and exclusion on the other, so that discovery and discomfort keep alternating. "
-        "Elstir emerges as the clearest source of uplift, while the narrator's own footing remains noticeably less secure."
-    ),
-    "v3-p1": (
-        "This chapter is centered on entry into the Guermantes world, with the duchesse, Saint-Loup, Bloch, Charlus, and Odette all helping define its social landscape. "
-        "What makes it interesting is the split between glitter at the top and repeated embarrassment lower down: the duchesse is repeatedly confirmed, while Bloch is persistently cut down, and Saint-Loup looks admirable in public yet less secure in matters of closeness and belonging. "
-        "High society dazzles here, but it also exposes how unevenly its rewards are distributed."
-    ),
-    "v3-p2": (
-        "This chapter is dominated by the Guermantes world, with the duchesse repeatedly gathering brilliance and authority around herself while the duc, Swann, and the narrator's family move through a more exposed atmosphere. "
-        "What stands out is the contrast between her sustained command of the room and the steady diminishment of figures around her, especially the duc and Swann. "
-        "The chapter feels less like a single reversal than a long society performance in which one woman keeps controlling the terms."
-    ),
-    "v4-p1": (
-        "This short chapter is centered almost entirely on the charged encounter between Charlus and Jupien. "
-        "Its interest lies in the abrupt swing from Charlus's initial excitement to his loss of footing, while Jupien emerges unexpectedly strengthened. "
-        "The scene reads like a compressed seduction and reversal, with power passing more quickly than the surface first suggests."
-    ),
-    "v4-p2": (
-        "This chapter moves through salons, humiliations, and uneasy encounters, with Swann, Albertine, Vaugoubert, and Charlus all caught in a social world that keeps turning against them. "
-        "The strongest pressure is not just embarrassment but repeated public diminishment, especially in the scenes around Swann and the smaller cruelties inflicted on figures like Saniette and Saint-Euverte. "
-        "Even when someone briefly recovers, the larger impression is of a chapter that strips people of ease, dignity, and welcome."
-    ),
-    "v5": (
-        "This chapter is overwhelmingly organized around Albertine, with Charlus and Morel forming a secondary line of strain around her. "
-        "The most striking feature is how relentlessly Albertine is placed under suspicion, confinement, and emotional pressure, so that nearly every temporary recovery gives way to another loss of ground. "
-        "The chapter is shaped less by one scandal than by sustained possession, surveillance, and attrition."
-    ),
-    "v6-p1": (
-        "This chapter centers on Albertine in absence, with Saint-Loup and a few others entering a field shaped by memory, inquiry, and grief after her disappearance. "
-        "The pressure is quieter and more uneven than in the previous chapter: Albertine still absorbs the deepest losses, especially around intimacy and belonging, but the chapter keeps wavering between recollection, idealization, and renewed hurt. "
-        "It feels like mourning that cannot settle into a single story."
-    ),
-    "v6-p2": (
-        "This chapter turns around Swann, Albertine, and Gilberte, with Gilberte especially moving in and out of favor as the social mood shifts around her. "
-        "Its most revealing pattern is the contrast between brief moments of renewed brightness and the stronger undertow of estrangement, particularly for Swann and Albertine. "
-        "The chapter feels like one of unstable remembrance, where recognition and loss keep interrupting one another."
-    ),
-    "v6-p3": (
-        "This chapter is organized around Albertine's absence, the narrator's family world, and a smaller set of recurring figures such as Norpois and Mme de Villeparisis. "
-        "What stands out is the contrast between private consolation and lingering damage: the narrator's mother can still steady the scene, while Albertine and Villeparisis keep pulling it back toward loss and diminishment. "
-        "The effect is quieter than the surrounding chapters, but the grief remains active beneath the surface."
-    ),
-    "v6-p4": (
-        "This short section centers on Legrandin, Robert de Saint-Loup, and Gilberte. "
-        "Its most interesting feature is the unstable balance between brief social recovery and renewed distance, especially around Saint-Loup, who can look momentarily restored before the chapter turns again. "
-        "The result is a compact chapter of partial repair that never fully settles into reassurance."
-    ),
-    "v7-p1-a-tansonville": (
-        "This chapter is organized around Robert de Saint-Loup, Mme Bontemps, Swann, and the lingering afterlife of earlier attachments. "
-        "What dominates is not brilliance but loss: even when Swann briefly brightens the scene, Saint-Loup and those around him are pulled back toward diminishment and damage. "
-        "The chapter feels like a return under shadow, with memory and decline arriving together."
-    ),
-    "v7-p2-m-de-charlus-pendant-la-guerre": (
-        "This chapter is dominated by Charlus in wartime, with Gilberte and Mme Verdurin forming the most important counterweights around him. "
-        "Charlus absorbs the heaviest damage, but the chapter is not flatly downward: figures like Gilberte and Mme Verdurin can still rise sharply inside the same harsh field. "
-        "The result is a wartime chapter of exposure and reversal, where ruin and sudden social advantage coexist."
-    ),
-    "v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle": (
-        "This chapter returns to the high society world in a late, exhausted form, with Charlus, the duc de Guermantes, Swann, and other major figures appearing under the sign of decline. "
-        "What matters most is the cumulative sense of diminishment: prestige remains visible, but it is no longer renewing anyone, and even the most famous figures now appear worn down. "
-        "The chapter reads like an inventory of faded greatness rather than a fresh social ascent."
-    ),
-    "v7-p4-le-bal-de-tetes": (
-        "The final chapter is centered on the spectacle of aging and reappearance, with the duc de Guermantes, la Berma, Gilberte, and other once-commanding figures returning in altered form. "
-        "The dominant pattern is broad diminishment: rank, poise, and belonging all come under pressure at once, so that even famous names seem exposed to time rather than protected by status. "
-        "Swann stands out as an especially uneven figure here, but the larger effect is a society seen through its losses."
-    ),
 }
 
 
@@ -2666,59 +2287,6 @@ def _chapter_signature_phrase(lens_profile, limit=2):
     return _natural_join(phrases) if phrases else "mixed pressure"
 
 
-def _chapter_pressure_gloss(lens, direction):
-    if lens == "advantage":
-        if direction == "positive":
-            return "immediate advantages and recoveries"
-        if direction == "negative":
-            return "setbacks and humiliations"
-        return "mixed immediate pressures"
-    if lens == "prestige":
-        if direction == "positive":
-            return "social elevation and distinction"
-        if direction == "negative":
-            return "public diminishment and loss of standing"
-        return "mixed public standing"
-    if lens == "inclusion":
-        if direction == "positive":
-            return "welcome, attachment, and belonging"
-        if direction == "negative":
-            return "estrangement, exclusion, and distance"
-        return "mixed belonging"
-    return f"mixed {lens} pressure"
-
-
-def _chapter_tonal_archetype_gloss(label):
-    return {
-        "Diffuse": "The pressure is present but relatively scattered rather than concentrated in one sustained pattern.",
-        "Intimate": "The chapter leans most strongly on attachment, welcome, and exclusion rather than on overt rank competition.",
-        "Ceremonial": "The chapter leans most strongly on public rank, distinction, and display.",
-        "Social": "The pressure falls most strongly on public standing and belonging together.",
-        "Confrontational": "The chapter leans most strongly on immediate clashes, reversals, and local advantage.",
-        "Volatile": "The chapter combines sharp immediate reversals with unstable belonging.",
-        "Competitive": "The chapter combines immediate contest with visible rank pressure.",
-        "Totalizing": "The pressure is broad, touching immediate position, public standing, and belonging all at once.",
-    }[label]
-
-
-def _chapter_plain_pressure_summary(lens_profile):
-    ordered = sorted(
-        lens_profile.items(),
-        key=lambda item: (-item[1]["intensity_density"], item[0]),
-    )
-    active = [(lens, row) for lens, row in ordered if row["intensity_density"] > 0][:3]
-    if not active:
-        return "The chapter's social pressure stays relatively muted."
-
-    directions = {row["direction"] for _lens, row in active}
-    phrases = [_chapter_pressure_gloss(lens, row["direction"]) for lens, row in active]
-    if len(directions) == 1 and "balanced" not in directions:
-        if "positive" in directions:
-            return f"Across the chapter, { _natural_join(phrases) } outweigh strain or reversal."
-        return f"Across the chapter, { _natural_join(phrases) } outweigh moments of recovery."
-    return f"Across the chapter, the pressure is mixed, combining { _natural_join(phrases) }."
-
-
 def _chapter_tonal_archetype_label(intensity_flags):
     key = "".join("1" if intensity_flags[lens] else "0" for lens in SCORING_LENS_ORDER)
     return {
@@ -2802,32 +2370,6 @@ def _build_chapter_distinguishing_passages(chapter_overlay_row, limit=5):
     return passages[:limit]
 
 
-def _build_chapter_social_field_summary(top_characters, lens_profile, tonal_archetype, strongest_split_character=None):
-    return _build_chapter_social_field_summary_fallback(
-        top_characters,
-        lens_profile,
-        tonal_archetype,
-        strongest_split_character=strongest_split_character,
-    )
-
-
-def _build_chapter_social_field_summary_fallback(top_characters, lens_profile, tonal_archetype, strongest_split_character=None):
-    if not top_characters:
-        return "No reviewed annotation units are currently available for this chapter."
-
-    top_names = [row["character"] for row in top_characters[:3]]
-    sentences = [
-        f"This chapter is organized above all around {_natural_join(top_names)}.",
-        _chapter_plain_pressure_summary(lens_profile),
-        _chapter_tonal_archetype_gloss(tonal_archetype["label"]),
-    ]
-    if strongest_split_character and strongest_split_character["rank_spread"] > 0:
-        sentences.append(
-            f"{strongest_split_character['character']} is the most unevenly treated figure here, looking stronger in some respects than in others."
-        )
-    return " ".join(sentences)
-
-
 def _slugify_text(value):
     normalized = unicodedata.normalize("NFKD", value)
     ascii_value = normalized.encode("ascii", "ignore").decode("ascii")
@@ -2844,6 +2386,20 @@ def _reader_chapter_link(chapter_id, paragraph_start=None):
 
 def _chapter_title_map():
     return {chapter.id: chapter.title for chapter in CANONICAL_CHAPTER_SPECS}
+
+
+def _validate_chapter_summary_editorial():
+    canonical_ids = {chapter.id for chapter in CANONICAL_CHAPTER_SPECS}
+    editorial_ids = set(CHAPTER_SUMMARY_EDITORIAL)
+    missing = sorted(canonical_ids - editorial_ids)
+    extra = sorted(editorial_ids - canonical_ids)
+    if missing or extra:
+        problems = []
+        if missing:
+            problems.append(f"missing: {', '.join(missing)}")
+        if extra:
+            problems.append(f"extra: {', '.join(extra)}")
+        raise ValueError("Chapter summary editorial coverage does not match canonical chapters: " + "; ".join(problems))
 
 
 def _discover_character_portraits(character):
@@ -3032,6 +2588,7 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
 
 
 def build_chapter_summary_export(run_dirs, character_name_map=None, top_character_limit=8, top_passage_limit=5):
+    _validate_chapter_summary_editorial()
     review = build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
     cross_lens = build_character_cross_lens_analysis(review)
     chapter_analysis = build_character_chapter_analysis(
@@ -3068,14 +2625,12 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
     chapters = []
     for chapter in CANONICAL_CHAPTER_SPECS:
         rows = chapter_character_rows.get(chapter.id, [])
-        population_size = len(rows)
         if rows:
             for lens in SCORING_LENS_ORDER:
                 ordered = sorted(rows, key=lambda item: (-item[lens]["net_score"], item["character"]))
                 for rank, row in enumerate(ordered, start=1):
                     row.setdefault("chapter_ranks", {})
                     row["chapter_ranks"][lens] = rank
-                    row[lens]["percentile"] = _rank_to_percentile(rank, population_size)
 
         top_character_rows = sorted(
             rows,
@@ -3213,15 +2768,7 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
             "intensity_signature": intensity_flags,
         }
         chapter["tonal_archetype"] = tonal_archetype
-        chapter["summary"] = CHAPTER_SUMMARY_EDITORIAL.get(
-            chapter["chapter_id"],
-            _build_chapter_social_field_summary(
-                chapter["top_characters"],
-                chapter["lens_profile"],
-                tonal_archetype,
-                strongest_split_character=chapter["strongest_split_character"],
-            ),
-        )
+        chapter["summary"] = CHAPTER_SUMMARY_EDITORIAL[chapter["chapter_id"]]
         chapters.append(chapter)
 
     return {
