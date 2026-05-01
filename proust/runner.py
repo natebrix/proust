@@ -11,6 +11,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from http.client import RemoteDisconnected
 from pathlib import Path
+from statistics import median
 import unicodedata
 from urllib import error as urllib_error
 from urllib import request as urllib_request
@@ -224,6 +225,7 @@ SCORING_LENS_CONFIGS = {
         "ambiguity_penalty": ADVANTAGE_OUTCOME_AMBIGUITY_PENALTY,
     },
 }
+SCORING_LENS_ORDER = ("advantage", "prestige", "inclusion")
 
 REVIEWED_CHARACTER_NORMALIZATION_MAP = {
     "Saint-Loup": "Robert de Saint-Loup",
@@ -524,6 +526,99 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
             {"chapter_id": "v1-p2-un-amour-de-swann", "label": "Intermediate positive reinforcement"},
         ],
     },
+}
+
+CHAPTER_SUMMARY_EDITORIAL = {
+    "v1-p1-combray": (
+        "Combray is organized around the household and its visitors, with Françoise, Swann, Legrandin, and the Vinteuil circle repeatedly coming under scrutiny. "
+        "What stands out is not one decisive reversal but a steady accumulation of slights, embarrassments, and exclusions, especially around Swann and Legrandin. "
+        "The chapter's social world feels watchful and punitive, turning ordinary encounters into tests of place and acceptance."
+    ),
+    "v1-p2-un-amour-de-swann": (
+        "This chapter is dominated by Swann's pursuit of Odette and by the salon world around the Verdurins, Cottard, and their circle. "
+        "Attachment, jealousy, dependence, and access to Odette matter more here than formal rank, and Swann absorbs the heaviest losses by far. "
+        "Even when other figures are humiliated or briefly advanced, the chapter keeps returning to Swann's growing emotional subjection."
+    ),
+    "v1-p3-noms-de-pays-le-nom": (
+        "This section is centered on the young narrator's idealizing imagination, especially around Gilberte, Swann, and Odette. "
+        "Unlike the darker social weather of the earlier chapters, it is largely buoyed by fascination, projection, and moments of elevation, though Gilberte's hold over the scene can flip from promise to hurt. "
+        "The chapter feels lighter and more aspirational, with desire and fantasy doing more work than humiliation."
+    ),
+    "v2-p1-autour-de-mme-swann": (
+        "The chapter revolves around Odette's renewed brilliance, Swann's diminished position beside her, and the narrator's fascination with the Swann household and its orbit. "
+        "Its most revealing pattern is the contrast between Odette's steady rise and Swann's repeated weakening, which gives the chapter the shape of a social reordering inside an apparently elegant world. "
+        "Rather than one sharp crisis, it builds its meaning through repeated scenes in which glamour and access gather around Odette."
+    ),
+    "v2-p2-noms-de-pays-le-pays": (
+        "Balbec is organized around new encounters and shifting attractions, especially Elstir, Albertine, Charlus, Saint-Loup, and the narrator's movements among them. "
+        "The chapter's most striking pattern is its mixed social weather: artistic and social arrival on one side, awkwardness and exclusion on the other, so that discovery and discomfort keep alternating. "
+        "Elstir emerges as the clearest source of uplift, while the narrator's own footing remains noticeably less secure."
+    ),
+    "v3-p1": (
+        "This chapter is centered on entry into the Guermantes world, with the duchesse, Saint-Loup, Bloch, Charlus, and Odette all helping define its social landscape. "
+        "What makes it interesting is the split between glitter at the top and repeated embarrassment lower down: the duchesse is repeatedly confirmed, while Bloch is persistently cut down, and Saint-Loup looks admirable in public yet less secure in matters of closeness and belonging. "
+        "High society dazzles here, but it also exposes how unevenly its rewards are distributed."
+    ),
+    "v3-p2": (
+        "This chapter is dominated by the Guermantes world, with the duchesse repeatedly gathering brilliance and authority around herself while the duc, Swann, and the narrator's family move through a more exposed atmosphere. "
+        "What stands out is the contrast between her sustained command of the room and the steady diminishment of figures around her, especially the duc and Swann. "
+        "The chapter feels less like a single reversal than a long society performance in which one woman keeps controlling the terms."
+    ),
+    "v4-p1": (
+        "This short chapter is centered almost entirely on the charged encounter between Charlus and Jupien. "
+        "Its interest lies in the abrupt swing from Charlus's initial excitement to his loss of footing, while Jupien emerges unexpectedly strengthened. "
+        "The scene reads like a compressed seduction and reversal, with power passing more quickly than the surface first suggests."
+    ),
+    "v4-p2": (
+        "This chapter moves through salons, humiliations, and uneasy encounters, with Swann, Albertine, Vaugoubert, and Charlus all caught in a social world that keeps turning against them. "
+        "The strongest pressure is not just embarrassment but repeated public diminishment, especially in the scenes around Swann and the smaller cruelties inflicted on figures like Saniette and Saint-Euverte. "
+        "Even when someone briefly recovers, the larger impression is of a chapter that strips people of ease, dignity, and welcome."
+    ),
+    "v5": (
+        "This chapter is overwhelmingly organized around Albertine, with Charlus and Morel forming a secondary line of strain around her. "
+        "The most striking feature is how relentlessly Albertine is placed under suspicion, confinement, and emotional pressure, so that nearly every temporary recovery gives way to another loss of ground. "
+        "The chapter is shaped less by one scandal than by sustained possession, surveillance, and attrition."
+    ),
+    "v6-p1": (
+        "This chapter centers on Albertine in absence, with Saint-Loup and a few others entering a field shaped by memory, inquiry, and grief after her disappearance. "
+        "The pressure is quieter and more uneven than in the previous chapter: Albertine still absorbs the deepest losses, especially around intimacy and belonging, but the chapter keeps wavering between recollection, idealization, and renewed hurt. "
+        "It feels like mourning that cannot settle into a single story."
+    ),
+    "v6-p2": (
+        "This chapter turns around Swann, Albertine, and Gilberte, with Gilberte especially moving in and out of favor as the social mood shifts around her. "
+        "Its most revealing pattern is the contrast between brief moments of renewed brightness and the stronger undertow of estrangement, particularly for Swann and Albertine. "
+        "The chapter feels like one of unstable remembrance, where recognition and loss keep interrupting one another."
+    ),
+    "v6-p3": (
+        "This chapter is organized around Albertine's absence, the narrator's family world, and a smaller set of recurring figures such as Norpois and Mme de Villeparisis. "
+        "What stands out is the contrast between private consolation and lingering damage: the narrator's mother can still steady the scene, while Albertine and Villeparisis keep pulling it back toward loss and diminishment. "
+        "The effect is quieter than the surrounding chapters, but the grief remains active beneath the surface."
+    ),
+    "v6-p4": (
+        "This short section centers on Legrandin, Robert de Saint-Loup, and Gilberte. "
+        "Its most interesting feature is the unstable balance between brief social recovery and renewed distance, especially around Saint-Loup, who can look momentarily restored before the chapter turns again. "
+        "The result is a compact chapter of partial repair that never fully settles into reassurance."
+    ),
+    "v7-p1-a-tansonville": (
+        "This chapter is organized around Robert de Saint-Loup, Mme Bontemps, Swann, and the lingering afterlife of earlier attachments. "
+        "What dominates is not brilliance but loss: even when Swann briefly brightens the scene, Saint-Loup and those around him are pulled back toward diminishment and damage. "
+        "The chapter feels like a return under shadow, with memory and decline arriving together."
+    ),
+    "v7-p2-m-de-charlus-pendant-la-guerre": (
+        "This chapter is dominated by Charlus in wartime, with Gilberte and Mme Verdurin forming the most important counterweights around him. "
+        "Charlus absorbs the heaviest damage, but the chapter is not flatly downward: figures like Gilberte and Mme Verdurin can still rise sharply inside the same harsh field. "
+        "The result is a wartime chapter of exposure and reversal, where ruin and sudden social advantage coexist."
+    ),
+    "v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle": (
+        "This chapter returns to the high society world in a late, exhausted form, with Charlus, the duc de Guermantes, Swann, and other major figures appearing under the sign of decline. "
+        "What matters most is the cumulative sense of diminishment: prestige remains visible, but it is no longer renewing anyone, and even the most famous figures now appear worn down. "
+        "The chapter reads like an inventory of faded greatness rather than a fresh social ascent."
+    ),
+    "v7-p4-le-bal-de-tetes": (
+        "The final chapter is centered on the spectacle of aging and reappearance, with the duc de Guermantes, la Berma, Gilberte, and other once-commanding figures returning in altered form. "
+        "The dominant pattern is broad diminishment: rank, poise, and belonging all come under pressure at once, so that even famous names seem exposed to time rather than protected by status. "
+        "Swann stands out as an especially uneven figure here, but the larger effect is a society seen through its losses."
+    ),
 }
 
 
@@ -2240,6 +2335,16 @@ def _format_signed_number(value):
     return str(value)
 
 
+def _format_ordinal(value):
+    if value is None:
+        return ""
+    if 10 <= value % 100 <= 20:
+        suffix = "th"
+    else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(value % 10, "th")
+    return f"{value}{suffix}"
+
+
 def _character_ranks(character_totals, reverse=True):
     ordered = sorted(
         character_totals,
@@ -2534,6 +2639,195 @@ def _build_overlay_chapter_summary(units):
     )
 
 
+def _chapter_density_direction(value):
+    if value > 0:
+        return "positive"
+    if value < 0:
+        return "negative"
+    return "balanced"
+
+
+def _chapter_signature_phrase(lens_profile, limit=2):
+    ordered = sorted(
+        lens_profile.items(),
+        key=lambda item: (-item[1]["intensity_density"], item[0]),
+    )
+    phrases = []
+    for lens, row in ordered:
+        if row["intensity_density"] == 0:
+            continue
+        direction = row["direction"]
+        if direction == "balanced":
+            phrases.append(f"mixed {lens}")
+        else:
+            phrases.append(f"{direction} {lens}")
+        if len(phrases) >= limit:
+            break
+    return _natural_join(phrases) if phrases else "mixed pressure"
+
+
+def _chapter_pressure_gloss(lens, direction):
+    if lens == "advantage":
+        if direction == "positive":
+            return "immediate advantages and recoveries"
+        if direction == "negative":
+            return "setbacks and humiliations"
+        return "mixed immediate pressures"
+    if lens == "prestige":
+        if direction == "positive":
+            return "social elevation and distinction"
+        if direction == "negative":
+            return "public diminishment and loss of standing"
+        return "mixed public standing"
+    if lens == "inclusion":
+        if direction == "positive":
+            return "welcome, attachment, and belonging"
+        if direction == "negative":
+            return "estrangement, exclusion, and distance"
+        return "mixed belonging"
+    return f"mixed {lens} pressure"
+
+
+def _chapter_tonal_archetype_gloss(label):
+    return {
+        "Diffuse": "The pressure is present but relatively scattered rather than concentrated in one sustained pattern.",
+        "Intimate": "The chapter leans most strongly on attachment, welcome, and exclusion rather than on overt rank competition.",
+        "Ceremonial": "The chapter leans most strongly on public rank, distinction, and display.",
+        "Social": "The pressure falls most strongly on public standing and belonging together.",
+        "Confrontational": "The chapter leans most strongly on immediate clashes, reversals, and local advantage.",
+        "Volatile": "The chapter combines sharp immediate reversals with unstable belonging.",
+        "Competitive": "The chapter combines immediate contest with visible rank pressure.",
+        "Totalizing": "The pressure is broad, touching immediate position, public standing, and belonging all at once.",
+    }[label]
+
+
+def _chapter_plain_pressure_summary(lens_profile):
+    ordered = sorted(
+        lens_profile.items(),
+        key=lambda item: (-item[1]["intensity_density"], item[0]),
+    )
+    active = [(lens, row) for lens, row in ordered if row["intensity_density"] > 0][:3]
+    if not active:
+        return "The chapter's social pressure stays relatively muted."
+
+    directions = {row["direction"] for _lens, row in active}
+    phrases = [_chapter_pressure_gloss(lens, row["direction"]) for lens, row in active]
+    if len(directions) == 1 and "balanced" not in directions:
+        if "positive" in directions:
+            return f"Across the chapter, { _natural_join(phrases) } outweigh strain or reversal."
+        return f"Across the chapter, { _natural_join(phrases) } outweigh moments of recovery."
+    return f"Across the chapter, the pressure is mixed, combining { _natural_join(phrases) }."
+
+
+def _chapter_tonal_archetype_label(intensity_flags):
+    key = "".join("1" if intensity_flags[lens] else "0" for lens in SCORING_LENS_ORDER)
+    return {
+        "000": "Diffuse",
+        "001": "Intimate",
+        "010": "Ceremonial",
+        "011": "Social",
+        "100": "Confrontational",
+        "101": "Volatile",
+        "110": "Competitive",
+        "111": "Totalizing",
+    }[key]
+
+
+def _chapter_character_signature(row):
+    parts = []
+    for lens in SCORING_LENS_ORDER:
+        direction = _chapter_density_direction(row[lens]["net_score"])
+        if direction == "balanced":
+            parts.append(f"{lens} mixed")
+        else:
+            parts.append(f"{lens} {direction}")
+    return ", ".join(parts)
+
+
+def _chapter_impact_mass(row):
+    return round(
+        sum(abs(row[lens]["net_score"]) for lens in SCORING_LENS_ORDER),
+        3,
+    )
+
+
+def _unit_impact_mass(unit):
+    return round(
+        sum(
+            abs(character_row[lens]["netScore"])
+            for character_row in unit["characters"]
+            for lens in SCORING_LENS_ORDER
+        ),
+        3,
+    )
+
+
+def _build_chapter_distinguishing_passages(chapter_overlay_row, limit=5):
+    passages = []
+    for unit in chapter_overlay_row.get("units", []):
+        lens_totals = {
+            lens: round(
+                sum(character_row[lens]["netScore"] for character_row in unit["characters"]),
+                3,
+            )
+            for lens in SCORING_LENS_ORDER
+        }
+        passages.append(
+            {
+                "unit_id": unit["unitId"],
+                "paragraph_start": unit["paragraphStart"],
+                "paragraph_end": unit["paragraphEnd"],
+                "reader_link": _reader_chapter_link(
+                    chapter_overlay_row["chapterId"],
+                    paragraph_start=unit["paragraphStart"],
+                ),
+                "summary": unit["summary"],
+                "dominant_character": unit["dominantCharacter"],
+                "impact_mass": _unit_impact_mass(unit),
+                "lens_signature": {
+                    lens: _chapter_density_direction(value)
+                    for lens, value in lens_totals.items()
+                },
+            }
+        )
+
+    passages.sort(
+        key=lambda item: (
+            -item["impact_mass"],
+            item["paragraph_start"],
+            item["paragraph_end"],
+            item["unit_id"],
+        )
+    )
+    return passages[:limit]
+
+
+def _build_chapter_social_field_summary(top_characters, lens_profile, tonal_archetype, strongest_split_character=None):
+    return _build_chapter_social_field_summary_fallback(
+        top_characters,
+        lens_profile,
+        tonal_archetype,
+        strongest_split_character=strongest_split_character,
+    )
+
+
+def _build_chapter_social_field_summary_fallback(top_characters, lens_profile, tonal_archetype, strongest_split_character=None):
+    if not top_characters:
+        return "No reviewed annotation units are currently available for this chapter."
+
+    top_names = [row["character"] for row in top_characters[:3]]
+    sentences = [
+        f"This chapter is organized above all around {_natural_join(top_names)}.",
+        _chapter_plain_pressure_summary(lens_profile),
+        _chapter_tonal_archetype_gloss(tonal_archetype["label"]),
+    ]
+    if strongest_split_character and strongest_split_character["rank_spread"] > 0:
+        sentences.append(
+            f"{strongest_split_character['character']} is the most unevenly treated figure here, looking stronger in some respects than in others."
+        )
+    return " ".join(sentences)
+
+
 def _slugify_text(value):
     normalized = unicodedata.normalize("NFKD", value)
     ascii_value = normalized.encode("ascii", "ignore").decode("ascii")
@@ -2737,6 +3031,209 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
     }
 
 
+def build_chapter_summary_export(run_dirs, character_name_map=None, top_character_limit=8, top_passage_limit=5):
+    review = build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    cross_lens = build_character_cross_lens_analysis(review)
+    chapter_analysis = build_character_chapter_analysis(
+        run_dirs,
+        character_name_map=character_name_map,
+        target_characters=[row["character"] for row in cross_lens["characters"]],
+    )
+    overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
+    chapter_titles = _chapter_title_map()
+    chapter_manifest_rows = {row["chapterId"]: row for row in overlay_dataset["manifest"]["chapters"]}
+    overlay_rows = {row["chapterId"]: row for row in overlay_dataset["chapters"]}
+
+    chapter_character_rows = defaultdict(list)
+    for character_row in chapter_analysis["characters"]:
+        summary = character_row["cross_lens_summary"]
+        for row in character_row["chapters"]:
+            chapter_character_rows[row["chapter_id"]].append(
+                {
+                    "character": character_row["character"],
+                    "unit_count": max(
+                        row["advantage"]["unit_count"],
+                        row["prestige"]["unit_count"],
+                        row["inclusion"]["unit_count"],
+                    ),
+                    "advantage": {"net_score": row["advantage"]["net_score"]},
+                    "prestige": {"net_score": row["prestige"]["net_score"]},
+                    "inclusion": {"net_score": row["inclusion"]["net_score"]},
+                    "rank_spread": summary["rank_spread"],
+                    "max_score_span": summary["max_score_span"],
+                }
+            )
+
+    chapter_payloads = []
+    chapters = []
+    for chapter in CANONICAL_CHAPTER_SPECS:
+        rows = chapter_character_rows.get(chapter.id, [])
+        population_size = len(rows)
+        if rows:
+            for lens in SCORING_LENS_ORDER:
+                ordered = sorted(rows, key=lambda item: (-item[lens]["net_score"], item["character"]))
+                for rank, row in enumerate(ordered, start=1):
+                    row.setdefault("chapter_ranks", {})
+                    row["chapter_ranks"][lens] = rank
+                    row[lens]["percentile"] = _rank_to_percentile(rank, population_size)
+
+        top_character_rows = sorted(
+            rows,
+            key=lambda item: (
+                -_chapter_impact_mass(item),
+                -item["unit_count"],
+                item["character"],
+            ),
+        )[:top_character_limit]
+        top_characters = [
+            {
+                "character": row["character"],
+                "unit_count": row["unit_count"],
+                "impact_mass": _chapter_impact_mass(row),
+                "dominant_lens": max(
+                    SCORING_LENS_ORDER,
+                    key=lambda lens: (abs(row[lens]["net_score"]), lens),
+                ),
+                "lens_signature": _chapter_character_signature(row),
+                "advantage": {"net_score": row["advantage"]["net_score"]},
+                "prestige": {"net_score": row["prestige"]["net_score"]},
+                "inclusion": {"net_score": row["inclusion"]["net_score"]},
+            }
+            for row in top_character_rows
+        ]
+
+        strongest_split_character = None
+        if rows:
+            for row in rows:
+                chapter_ranks = row.get("chapter_ranks", {})
+                if chapter_ranks:
+                    row["chapter_rank_spread"] = max(chapter_ranks.values()) - min(chapter_ranks.values())
+                else:
+                    row["chapter_rank_spread"] = 0
+            strongest = max(
+                rows,
+                key=lambda item: (
+                    item["chapter_rank_spread"],
+                    item["unit_count"],
+                    max(
+                        abs(item["advantage"]["net_score"]),
+                        abs(item["prestige"]["net_score"]),
+                        abs(item["inclusion"]["net_score"]),
+                    ),
+                    item["character"],
+                ),
+            )
+            strongest_split_character = {
+                "character": strongest["character"],
+                "rank_spread": strongest["chapter_rank_spread"],
+                "unit_count": strongest["unit_count"],
+            }
+
+        unit_count = chapter_manifest_rows.get(chapter.id, {}).get("unitCount", 0)
+        lens_totals = {
+            lens: round(sum(row[lens]["net_score"] for row in rows), 3)
+            for lens in SCORING_LENS_ORDER
+        }
+        intensity_totals = {
+            lens: round(sum(abs(row[lens]["net_score"]) for row in rows), 3)
+            for lens in SCORING_LENS_ORDER
+        }
+        lens_profile = {
+            lens: {
+                "net_score_total": lens_totals[lens],
+                "signed_density": round(lens_totals[lens] / unit_count, 3) if unit_count else 0.0,
+                "intensity_density": round(intensity_totals[lens] / unit_count, 3) if unit_count else 0.0,
+                "direction": _chapter_density_direction(lens_totals[lens]),
+            }
+            for lens in SCORING_LENS_ORDER
+        }
+        distinguishing_passages = _build_chapter_distinguishing_passages(
+            overlay_rows.get(chapter.id, {}),
+            limit=top_passage_limit,
+        )
+        chapter_payloads.append(
+            {
+                "chapter_id": chapter.id,
+                "chapter_title": chapter_titles.get(chapter.id, chapter.id),
+                "reader_link": _reader_chapter_link(chapter.id),
+                "unit_count": unit_count,
+                "top_characters": top_characters,
+                "strongest_split_character": strongest_split_character,
+                "lens_profile": lens_profile,
+                "distinguishing_passages": distinguishing_passages,
+            }
+        )
+
+    chapter_population_size = len(chapter_payloads)
+    intensity_medians = {
+        lens: round(
+            median(
+                chapter["lens_profile"][lens]["intensity_density"]
+                for chapter in chapter_payloads
+            ),
+            3,
+        )
+        if chapter_payloads
+        else 0.0
+        for lens in SCORING_LENS_ORDER
+    }
+    signed_density_ranks = {
+        lens: {
+            chapter["chapter_id"]: index + 1
+            for index, chapter in enumerate(
+                sorted(
+                    chapter_payloads,
+                    key=lambda item: (
+                        -item["lens_profile"][lens]["signed_density"],
+                        item["chapter_id"],
+                    ),
+                )
+            )
+        }
+        for lens in SCORING_LENS_ORDER
+    }
+
+    for chapter in chapter_payloads:
+        intensity_flags = {}
+        for lens in SCORING_LENS_ORDER:
+            lens_row = chapter["lens_profile"][lens]
+            lens_row["chapter_rank"] = signed_density_ranks[lens][chapter["chapter_id"]]
+            lens_row["chapter_percentile"] = _rank_to_percentile(
+                lens_row["chapter_rank"],
+                chapter_population_size,
+            )
+            lens_row["intensity_above_median"] = lens_row["intensity_density"] > intensity_medians[lens]
+            intensity_flags[lens] = lens_row["intensity_above_median"]
+
+        tonal_archetype = {
+            "label": _chapter_tonal_archetype_label(intensity_flags),
+            "intense_lenses": [
+                lens for lens in SCORING_LENS_ORDER if intensity_flags[lens]
+            ],
+            "intensity_signature": intensity_flags,
+        }
+        chapter["tonal_archetype"] = tonal_archetype
+        chapter["summary"] = CHAPTER_SUMMARY_EDITORIAL.get(
+            chapter["chapter_id"],
+            _build_chapter_social_field_summary(
+                chapter["top_characters"],
+                chapter["lens_profile"],
+                tonal_archetype,
+                strongest_split_character=chapter["strongest_split_character"],
+            ),
+        )
+        chapters.append(chapter)
+
+    return {
+        "chapter_summary_export_version": "chapter_summary_export_v2",
+        "source_review_version": review["corpus_review_version"],
+        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
+        "intensity_medians": intensity_medians,
+        "chapter_count": len(chapters),
+        "chapters": chapters,
+    }
+
+
 def build_chapter_overlay_data(run_dirs, character_name_map=None):
     if not run_dirs:
         raise ValueError("At least one run directory is required for chapter overlay export.")
@@ -2905,17 +3402,37 @@ def build_character_chapter_analysis(
 
     chapter_order = [chapter.id for chapter in CANONICAL_CHAPTER_SPECS]
     chapter_positions = {chapter_id: index for index, chapter_id in enumerate(chapter_order)}
+    preferred_run_by_unit = {}
+    for run_dir in run_dirs:
+        status = get_run_status(run_dir)
+        run_id = status["manifest"]["run_id"]
+        for unit in status["units"]:
+            if unit["review_state"] != "reviewed":
+                continue
+            unit_id = unit["unit_id"]
+            existing_run_id = preferred_run_by_unit.get(unit_id)
+            if existing_run_id is None or _run_id_sort_key(run_id) > _run_id_sort_key(existing_run_id):
+                preferred_run_by_unit[unit_id] = run_id
     lens_reports = {lens: [] for lens in sorted(SCORING_LENS_CONFIGS)}
     for run_dir in run_dirs:
+        status = get_run_status(run_dir)
+        run_id = status["manifest"]["run_id"]
         for lens in sorted(SCORING_LENS_CONFIGS):
-            lens_reports[lens].append(build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map))
+            lens_reports[lens].append(
+                (
+                    run_id,
+                    build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map),
+                )
+            )
 
     selected_set = set(selected_characters)
     chapter_rows = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: {"net_score": 0.0, "unit_count": 0})))
 
     for lens, reports in lens_reports.items():
-        for report in reports:
+        for run_id, report in reports:
             for entry in report["timeline"]:
+                if preferred_run_by_unit.get(entry["unit_id"]) != run_id:
+                    continue
                 character = entry["character"]
                 if character not in selected_set:
                     continue
@@ -3531,7 +4048,7 @@ def render_character_profile_cards_markdown(analysis):
                             lens,
                             _format_signed_number(card["lens_scores"][lens]["net_score"]),
                             (
-                                f"{card['lens_scores'][lens]['percentile']}th"
+                                _format_ordinal(card["lens_scores"][lens]["percentile"])
                                 if card["lens_scores"][lens]["percentile"] is not None
                                 else ""
                             ),
@@ -3635,7 +4152,7 @@ def render_character_pages_markdown(analysis):
                             lens,
                             _format_signed_number(page["profile"]["lens_scores"][lens]["net_score"]),
                             (
-                                f"{page['profile']['lens_scores'][lens]['percentile']}th"
+                                _format_ordinal(page["profile"]["lens_scores"][lens]["percentile"])
                                 if page["profile"]["lens_scores"][lens]["percentile"] is not None
                                 else ""
                             ),
@@ -3690,6 +4207,94 @@ def write_character_pages_artifacts(analysis, json_output=None, markdown_output=
         markdown_path = Path(markdown_output)
         markdown_path.parent.mkdir(parents=True, exist_ok=True)
         markdown_path.write_text(render_character_pages_markdown(analysis))
+
+
+def render_chapter_summary_export_markdown(analysis):
+    lines = [
+        "# Chapter Summary Export",
+        "",
+        f"- Analysis version: `{analysis['chapter_summary_export_version']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Chapter count: `{analysis['chapter_count']}`",
+        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
+        f"- Intensity medians: `advantage={analysis['intensity_medians']['advantage']}`, `prestige={analysis['intensity_medians']['prestige']}`, `inclusion={analysis['intensity_medians']['inclusion']}`",
+        "",
+    ]
+
+    for chapter in analysis["chapters"]:
+        strongest_split = chapter.get("strongest_split_character")
+        lines.extend(
+            [
+                f"## {chapter['chapter_id']}",
+                "",
+                f"- Title: `{chapter['chapter_title']}`",
+                f"- Unit count: `{chapter['unit_count']}`",
+                f"- Reader link: `{chapter['reader_link']}`",
+                f"- Tonal archetype: `{chapter['tonal_archetype']['label']}`",
+                f"- Strongest split: `{strongest_split['character'] if strongest_split else 'none'}`",
+                "",
+                chapter["summary"] or "No summary available.",
+                "",
+                _markdown_table(
+                    ["Lens", "Direction", "Signed Density", "Intensity Density", "Chapter Rank"],
+                    [
+                        (
+                            lens,
+                            chapter["lens_profile"][lens]["direction"],
+                            _format_signed_number(chapter["lens_profile"][lens]["signed_density"]),
+                            chapter["lens_profile"][lens]["intensity_density"],
+                            f"{chapter['lens_profile'][lens]['chapter_rank']} ({_format_ordinal(chapter['lens_profile'][lens]['chapter_percentile'])})",
+                        )
+                        for lens in SCORING_LENS_ORDER
+                    ],
+                ),
+                "",
+                _markdown_table(
+                    ["Character", "Units", "Impact Mass", "Dominant Lens", "Signature"],
+                    [
+                        (
+                            row["character"],
+                            row["unit_count"],
+                            row["impact_mass"],
+                            row["dominant_lens"],
+                            row["lens_signature"],
+                        )
+                        for row in chapter["top_characters"]
+                    ],
+                ),
+                "",
+                _markdown_table(
+                    ["Passage", "Impact Mass", "Dominant Character", "Lens Signature", "Summary"],
+                    [
+                        (
+                            f"{row['unit_id']} ({row['paragraph_start']}-{row['paragraph_end']})",
+                            row["impact_mass"],
+                            row["dominant_character"] or "none",
+                            ", ".join(
+                                f"{lens} {row['lens_signature'][lens]}"
+                                for lens in SCORING_LENS_ORDER
+                            ),
+                            row["summary"],
+                        )
+                        for row in chapter["distinguishing_passages"]
+                    ],
+                ),
+                "",
+            ]
+        )
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_chapter_summary_export_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_chapter_summary_export_markdown(analysis))
 
 
 def render_corpus_review_markdown(review):
@@ -4815,6 +5420,30 @@ def main(argv=None):
     character_pages_parser.add_argument("--output", help="Optional JSON output path.")
     character_pages_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
+    chapter_summaries_parser = subparsers.add_parser(
+        "chapter-summaries",
+        help="Build chapter-keyed app-facing chapter summary export data.",
+    )
+    chapter_summaries_parser.add_argument(
+        "--run",
+        dest="runs",
+        action="append",
+        help="Run directory to include. Repeat for multiple runs.",
+    )
+    chapter_summaries_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    chapter_summaries_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
+    chapter_summaries_parser.add_argument("--output", help="Optional JSON output path.")
+    chapter_summaries_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+
     chapter_overlay_parser = subparsers.add_parser(
         "chapter-overlays",
         help="Export chapter-keyed app overlay JSON from the accepted normalized corpus surface.",
@@ -5258,6 +5887,38 @@ def main(argv=None):
                 json.dumps(
                     {
                         "character_count": analysis["character_count"],
+                        "json_output": args.output,
+                        "markdown_output": args.markdown_output,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            print(json.dumps(analysis, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "chapter-summaries":
+        try:
+            runs = list(args.runs or [])
+            if args.discover_runs:
+                runs.extend(discover_annotation_run_dirs(args.discover_runs))
+            character_name_map = (
+                REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
+            )
+            analysis = build_chapter_summary_export(runs, character_name_map=character_name_map)
+        except (RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        write_chapter_summary_export_artifacts(
+            analysis,
+            json_output=args.output,
+            markdown_output=args.markdown_output,
+        )
+        if args.output or args.markdown_output:
+            print(
+                json.dumps(
+                    {
+                        "chapter_count": analysis["chapter_count"],
                         "json_output": args.output,
                         "markdown_output": args.markdown_output,
                     },

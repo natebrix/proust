@@ -1221,6 +1221,92 @@ def test_main_character_pages_can_write_artifacts(tmp_path, capsys):
     assert markdown_output.read_text().startswith("# Character Pages\n")
 
 
+def test_build_chapter_summary_export_groups_chapter_character_rows(tmp_path):
+    run_dir = tmp_path / "run-001"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        _multi_character_annotation(
+            "v1-p1-combray#p-17",
+            [
+                {"character": "Odette", "delta": -1},
+                {"character": "Saint-Loup", "delta": 1},
+            ],
+        ),
+    )
+    pn.write_annotation_result(
+        run_dir,
+        "v2-p1-autour-de-mme-swann#p-1",
+        _multi_character_annotation(
+            "v2-p1-autour-de-mme-swann#p-1",
+            [
+                {"character": "Odette", "delta": 1},
+                {"character": "Swann", "delta": -1},
+            ],
+        ),
+    )
+
+    analysis = pr.build_chapter_summary_export(
+        [run_dir],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+
+    assert analysis["chapter_summary_export_version"] == "chapter_summary_export_v2"
+    assert analysis["chapter_count"] >= 2
+    combray = next(row for row in analysis["chapters"] if row["chapter_id"] == "v1-p1-combray")
+    assert combray["unit_count"] == 1
+    assert combray["top_characters"][0]["character"] == "Odette"
+    assert combray["top_characters"][0]["impact_mass"] == pytest.approx(6.3)
+    assert combray["tonal_archetype"]["label"]
+    assert "signed_density" in combray["lens_profile"]["advantage"]
+    assert combray["distinguishing_passages"][0]["unit_id"] == "v1-p1-combray#p-17"
+    assert combray["summary"].startswith("Combray is organized around the household and its visitors")
+    assert "cross-lens split" not in combray["summary"]
+    assert "Swann" in pr.render_chapter_summary_export_markdown(analysis)
+
+
+def test_main_chapter_summaries_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    json_output = tmp_path / "chapter-summaries.json"
+    markdown_output = tmp_path / "chapter-summaries.md"
+    pn.prepare_annotation_run(run_a)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _multi_character_annotation(
+            "v1-p1-combray#p-17",
+            [
+                {"character": "Odette", "delta": -1},
+                {"character": "Saint-Loup", "delta": 1},
+            ],
+        ),
+    )
+
+    exit_code = pr.main(
+        [
+            "chapter-summaries",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    analysis = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["chapter_count"] == analysis["chapter_count"]
+    assert analysis["character_normalization"]["applied"] is True
+    assert analysis["chapter_summary_export_version"] == "chapter_summary_export_v2"
+    assert markdown_output.read_text().startswith("# Chapter Summary Export\n")
+
+
 def test_build_character_alias_audit_reports_candidate_merge_groups(tmp_path):
     outputs_dir = tmp_path / "outputs"
     aliases_csv = tmp_path / "aliases.csv"
