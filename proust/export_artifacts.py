@@ -374,6 +374,203 @@ def write_character_annotation_counts_artifacts(analysis, json_output=None, mark
         markdown_path.write_text(render_character_annotation_counts_markdown(analysis))
 
 
+def render_character_elo_markdown(analysis):
+    lines = [
+        "# Character ELO",
+        "",
+        f"- Analysis version: `{analysis['character_elo_version']}`",
+        f"- Lens: `{analysis['lens']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Character count: `{analysis['character_count']}`",
+        f"- Match count: `{analysis['match_count']}`",
+        f"- Draw rate: `{analysis['draw_rate']}`",
+        f"- Initial rating: `{analysis['initial_rating']}`",
+        f"- K factor: `{analysis['k_factor']}`",
+        f"- Epsilon: `{analysis['epsilon']}`",
+        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
+        "",
+        "## Top Rated Characters",
+        "",
+        legacy._markdown_table(
+            ["Character", "ELO", "Matches", "W-L-D", "Units", "Mean Advantage"],
+            [
+                (
+                    row["character"],
+                    row["elo"],
+                    row["match_count"],
+                    f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
+                    row["unit_count"],
+                    legacy._format_signed_number(row["mean_advantage_net_score"]),
+                )
+                for row in analysis["top_rated_characters"]
+            ],
+        ),
+        "",
+        "## Lowest Rated Characters",
+        "",
+        legacy._markdown_table(
+            ["Character", "ELO", "Matches", "W-L-D", "Units", "Mean Advantage"],
+            [
+                (
+                    row["character"],
+                    row["elo"],
+                    row["match_count"],
+                    f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
+                    row["unit_count"],
+                    legacy._format_signed_number(row["mean_advantage_net_score"]),
+                )
+                for row in analysis["lowest_rated_characters"]
+            ],
+        ),
+        "",
+        "## Largest Rank Mismatches",
+        "",
+        legacy._markdown_table(
+            ["Character", "ELO Rank", "Mean Score Rank", "Delta", "ELO", "Mean Advantage"],
+            [
+                (
+                    row["character"],
+                    row["elo_rank"],
+                    row["mean_score_rank"],
+                    row["elo_rank_minus_mean_score_rank"],
+                    row["elo"],
+                    legacy._format_signed_number(row["mean_advantage_net_score"]),
+                )
+                for row in analysis["largest_rank_mismatches"]
+            ],
+        ),
+        "",
+        "## Character Table",
+        "",
+        legacy._markdown_table(
+            [
+                "Character",
+                "ELO",
+                "ELO Rank",
+                "Matches",
+                "W-L-D",
+                "Units",
+                "Mean Advantage",
+                "Top Positive Unit",
+                "Top Negative Unit",
+            ],
+            [
+                (
+                    row["character"],
+                    row["elo"],
+                    row["elo_rank"],
+                    row["match_count"],
+                    f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
+                    row["unit_count"],
+                    legacy._format_signed_number(row["mean_advantage_net_score"]),
+                    (
+                        f"{row['top_positive_unit']['unit_id']} ({legacy._format_signed_number(row['top_positive_unit']['net_score'])})"
+                        if row["top_positive_unit"]
+                        else ""
+                    ),
+                    (
+                        f"{row['top_negative_unit']['unit_id']} ({legacy._format_signed_number(row['top_negative_unit']['net_score'])})"
+                        if row["top_negative_unit"]
+                        else ""
+                    ),
+                )
+                for row in analysis["characters"]
+            ],
+        ),
+        "",
+    ]
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_elo_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_elo_markdown(analysis))
+
+
+def render_character_elo_timeline_markdown(analysis):
+    lines = [
+        "# Character ELO Timeline",
+        "",
+        f"- Analysis version: `{analysis['character_elo_timeline_version']}`",
+        f"- Lens: `{analysis['lens']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Timeline type: `{analysis['timeline_type']}`",
+        f"- Tracked character count: `{analysis['tracked_character_count']}`",
+        f"- Point count: `{analysis['point_count']}`",
+        f"- Initial rating: `{analysis['initial_rating']}`",
+        f"- K factor: `{analysis['k_factor']}`",
+        f"- Epsilon: `{analysis['epsilon']}`",
+        "",
+        "## Character Coverage",
+        "",
+        legacy._markdown_table(
+            ["Character", "Points", "Final ELO", "Latest Unit"],
+            [
+                (
+                    row["character"],
+                    row["point_count"],
+                    row["final_elo"],
+                    (
+                        row["latest_corpus_position"]["unit_id"]
+                        if row["latest_corpus_position"]
+                        else ""
+                    ),
+                )
+                for row in analysis["characters"]
+            ],
+        ),
+        "",
+        "## Sample Points",
+        "",
+        legacy._markdown_table(
+            [
+                "Character",
+                "ELO",
+                "Advantage",
+                "Label",
+                "Chapter",
+                "Unit",
+                "Cumulative Unit",
+                "Cumulative Words",
+            ],
+            [
+                (
+                    row["character"],
+                    row["elo"],
+                    legacy._format_signed_number(row["advantage_net_score"]),
+                    row["advantage_label"],
+                    row["corpus_position"]["chapter_id"],
+                    row["corpus_position"]["unit_id"],
+                    row["corpus_position"]["cumulative_unit_index"],
+                    row["corpus_position"]["cumulative_word_count"],
+                )
+                for row in analysis["points"][:40]
+            ],
+        ),
+        "",
+    ]
+    if len(analysis["points"]) > 40:
+        lines.extend([f"_Showing first 40 of {len(analysis['points'])} timeline points._", "",])
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_elo_timeline_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_elo_timeline_markdown(analysis))
+
+
 def render_character_profile_cards_markdown(analysis):
     lines = [
         "# Character Profile Cards",

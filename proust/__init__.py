@@ -74,6 +74,12 @@ from .export import (
     build_reader_manifest,
     export_reader_dataset,
 )
+from .elo_plots import (
+    get_character_elo_points,
+    load_character_elo_timeline,
+    plot_character_elo_comparison,
+    plot_character_elo_timeline,
+)
 from .nlp import (
     canonicalize_entity,
     entities,
@@ -89,6 +95,8 @@ from .nlp import (
 )
 from .app_exports import (
     build_character_annotation_counts,
+    build_character_elo,
+    build_character_elo_timeline,
     build_character_pages,
     build_chapter_overlay_data,
     build_chapter_summary_export,
@@ -99,6 +107,8 @@ from .app_exports import (
 )
 from .export_artifacts import (
     render_character_annotation_counts_markdown,
+    render_character_elo_markdown,
+    render_character_elo_timeline_markdown,
     render_character_chapter_analysis_markdown,
     render_character_cross_lens_analysis_markdown,
     render_character_pages_markdown,
@@ -106,6 +116,8 @@ from .export_artifacts import (
     render_chapter_summary_export_markdown,
     render_corpus_review_normalization_diff_markdown,
     write_character_annotation_counts_artifacts,
+    write_character_elo_artifacts,
+    write_character_elo_timeline_artifacts,
     write_character_chapter_analysis_artifacts,
     write_character_cross_lens_analysis_artifacts,
     write_character_pages_artifacts,
@@ -155,6 +167,8 @@ __all__ = [
     "build_annotation_unit",
     "build_character_alias_audit",
     "build_character_annotation_counts",
+    "build_character_elo",
+    "build_character_elo_timeline",
     "build_character_pages",
     "build_chapter_overlay_data",
     "build_chapter_summary_export",
@@ -179,6 +193,7 @@ __all__ = [
     "entity_table",
     "export_reader_dataset",
     "flatten_islt",
+    "get_character_elo_points",
     "get_aliases",
     "get_canonical_chapter",
     "get_canonical_chapter_ids",
@@ -210,6 +225,7 @@ __all__ = [
     "honorific",
     "is_entity_pos",
     "join_sentiment",
+    "load_character_elo_timeline",
     "load_spacy",
     "load_prompt_template",
     "map_source_paragraph_to_canonical",
@@ -221,6 +237,8 @@ __all__ = [
     "proper_name_exceptions",
     "proust_proper_name",
     "proust_sentence_start",
+    "plot_character_elo_timeline",
+    "plot_character_elo_comparison",
     "prepare_annotation_run_from_existing",
     "READER_EDITIONS",
     "REVIEWED_CHARACTER_NORMALIZATION_MAP",
@@ -232,6 +250,8 @@ __all__ = [
     "reduce_run_annotations",
     "render_character_alias_audit_markdown",
     "render_character_annotation_counts_markdown",
+    "render_character_elo_markdown",
+    "render_character_elo_timeline_markdown",
     "render_character_chapter_analysis_markdown",
     "render_character_cross_lens_analysis_markdown",
     "render_character_pages_markdown",
@@ -268,6 +288,8 @@ __all__ = [
     "CANONICAL_CHAPTER_SPECS",
     "write_character_alias_audit_artifacts",
     "write_character_annotation_counts_artifacts",
+    "write_character_elo_artifacts",
+    "write_character_elo_timeline_artifacts",
     "write_character_chapter_analysis_artifacts",
     "write_character_cross_lens_analysis_artifacts",
     "write_character_pages_artifacts",

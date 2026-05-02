@@ -151,6 +151,50 @@ def build_parser():
     character_counts_parser.add_argument("--output", help="Optional JSON output path.")
     character_counts_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
+    character_elo_parser = subparsers.add_parser(
+        "character-elo",
+        help="Build an advantage-lens ELO ranking from pairwise within-unit character comparisons.",
+    )
+    character_elo_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
+    character_elo_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_elo_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
+    character_elo_parser.add_argument("--output", help="Optional JSON output path.")
+    character_elo_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+
+    character_elo_timeline_parser = subparsers.add_parser(
+        "character-elo-timeline",
+        help="Build sparse per-unit ELO timeline points for the tracked character set.",
+    )
+    character_elo_timeline_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
+    character_elo_timeline_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_elo_timeline_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+    )
+    character_elo_timeline_parser.add_argument(
+        "--character",
+        dest="characters",
+        action="append",
+        help="Optional tracked character to include. Repeat for multiple characters.",
+    )
+    character_elo_timeline_parser.add_argument("--output", help="Optional JSON output path.")
+    character_elo_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+
     character_cards_parser = subparsers.add_parser(
         "character-profile-cards",
         help="Build app-facing cross-lens character profile cards.",
@@ -431,6 +475,47 @@ def main(argv=None):
         if args.output or args.markdown_output:
             print(json.dumps({
                 "character_count": analysis["character_count"],
+                "json_output": args.output,
+                "markdown_output": args.markdown_output,
+            }, ensure_ascii=False, indent=2))
+        else:
+            print(json.dumps(analysis, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-elo":
+        try:
+            analysis = core.build_character_elo(
+                _collect_runs(args),
+                character_name_map=_character_name_map(args),
+            )
+        except (core.RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        core.write_character_elo_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
+        if args.output or args.markdown_output:
+            print(json.dumps({
+                "character_count": analysis["character_count"],
+                "match_count": analysis["match_count"],
+                "json_output": args.output,
+                "markdown_output": args.markdown_output,
+            }, ensure_ascii=False, indent=2))
+        else:
+            print(json.dumps(analysis, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-elo-timeline":
+        try:
+            analysis = core.build_character_elo_timeline(
+                _collect_runs(args),
+                character_name_map=_character_name_map(args),
+                target_characters=args.characters,
+            )
+        except (core.RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        core.write_character_elo_timeline_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
+        if args.output or args.markdown_output:
+            print(json.dumps({
+                "tracked_character_count": analysis["tracked_character_count"],
+                "point_count": analysis["point_count"],
                 "json_output": args.output,
                 "markdown_output": args.markdown_output,
             }, ensure_ascii=False, indent=2))

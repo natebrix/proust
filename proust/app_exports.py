@@ -1,10 +1,13 @@
 from collections import defaultdict
+from itertools import combinations
+import json
 from pathlib import Path
 import re
 from statistics import median
 import unicodedata
 
 from . import runner as legacy
+from .paths import ISLT_EDITIONS_DIR
 
 
 def _character_volatility_by_name(character_volatility):
@@ -1080,6 +1083,339 @@ def build_character_annotation_counts(review):
         "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
         "character_count": len(rows),
         "characters": rows,
+    }
+
+
+def _elo_expected_score(rating_a, rating_b):
+    return 1.0 / (1.0 + 10 ** ((rating_b - rating_a) / 400.0))
+
+
+def _elo_observed_scores(score_a, score_b, epsilon):
+    difference = score_a - score_b
+    if difference > epsilon:
+        return 1.0, 0.0
+    if difference < -epsilon:
+        return 0.0, 1.0
+    return 0.5, 0.5
+
+
+def _word_count(text):
+    return len(re.findall(r"\S+", text or ""))
+
+
+def _load_canonical_chapter_json_silent(chapter_id, edition="fr-original"):
+    chapter_path = ISLT_EDITIONS_DIR / edition / "chapters" / f"{chapter_id}.json"
+    return json.loads(chapter_path.read_text())
+
+
+def _build_corpus_position_index(units_by_chapter):
+    chapter_order = [chapter.id for chapter in legacy.CANONICAL_CHAPTER_SPECS]
+    chapter_titles = _chapter_title_map()
+    chapter_index = {}
+    cumulative_unit_index = 0
+    cumulative_paragraph_offset = 0
+    cumulative_word_offset = 0
+
+    for chapter_number, chapter_id in enumerate(chapter_order, start=1):
+        chapter_json = _load_canonical_chapter_json_silent(chapter_id)
+        paragraphs = chapter_json["paragraphs"]
+        chapter_spec = next(chapter for chapter in legacy.CANONICAL_CHAPTER_SPECS if chapter.id == chapter_id)
+        paragraph_word_counts = [_word_count(paragraph["text"]) for paragraph in paragraphs]
+        cumulative_words_by_paragraph_end = []
+        cumulative_words_by_paragraph_start = []
+        running_word_count = cumulative_word_offset
+        for count in paragraph_word_counts:
+            cumulative_words_by_paragraph_start.append(running_word_count)
+            running_word_count += count
+            cumulative_words_by_paragraph_end.append(running_word_count)
+
+        unit_rows = units_by_chapter.get(chapter_id, [])
+        for unit_index_within_chapter, unit in enumerate(unit_rows, start=1):
+            cumulative_unit_index += 1
+            paragraph_start = unit["paragraphStart"]
+            paragraph_end = unit["paragraphEnd"]
+            chapter_index[unit["unitId"]] = {
+                "volume_number": chapter_spec.volume_number,
+                "chapter_id": chapter_id,
+                "chapter_title": chapter_titles.get(chapter_id, chapter_id),
+                "chapter_index": chapter_number,
+                "unit_id": unit["unitId"],
+                "unit_index_within_chapter": unit_index_within_chapter,
+                "cumulative_unit_index": cumulative_unit_index,
+                "paragraph_start": paragraph_start,
+                "paragraph_end": paragraph_end,
+                "cumulative_paragraph_index": cumulative_paragraph_offset + paragraph_start,
+                "cumulative_paragraph_index_end": cumulative_paragraph_offset + paragraph_end,
+                "cumulative_word_count": cumulative_words_by_paragraph_start[paragraph_start - 1],
+                "cumulative_word_count_end": cumulative_words_by_paragraph_end[paragraph_end - 1],
+            }
+
+        cumulative_paragraph_offset += len(paragraphs)
+        cumulative_word_offset = running_word_count
+
+    return chapter_index
+
+
+def build_character_elo(
+    run_dirs,
+    character_name_map=None,
+    lens="advantage",
+    initial_rating=1500.0,
+    k_factor=24.0,
+    epsilon=0.25,
+):
+    if lens != "advantage":
+        raise ValueError("character_elo_v1 currently supports only the advantage lens.")
+    if not run_dirs:
+        raise ValueError("At least one run directory is required for character ELO.")
+
+    review = legacy.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
+
+    ratings = {}
+    diagnostics = {}
+    unit_order_rows = []
+    draw_count = 0
+    match_count = 0
+
+    for chapter in overlay_dataset["chapters"]:
+        for unit in chapter["units"]:
+            for character_row in unit["characters"]:
+                character = character_row["character"]
+                ratings.setdefault(character, float(initial_rating))
+                diagnostics.setdefault(
+                    character,
+                    {
+                        "character": character,
+                        "match_count": 0,
+                        "win_count": 0,
+                        "loss_count": 0,
+                        "draw_count": 0,
+                        "unit_count": 0,
+                        "net_scores": [],
+                        "top_positive_unit": None,
+                        "top_negative_unit": None,
+                    },
+                )
+                net_score = character_row[lens]["netScore"]
+                diagnostics[character]["unit_count"] += 1
+                diagnostics[character]["net_scores"].append(net_score)
+                positive_unit = diagnostics[character]["top_positive_unit"]
+                if positive_unit is None or net_score > positive_unit["net_score"]:
+                    diagnostics[character]["top_positive_unit"] = {
+                        "unit_id": unit["unitId"],
+                        "net_score": net_score,
+                    }
+                negative_unit = diagnostics[character]["top_negative_unit"]
+                if negative_unit is None or net_score < negative_unit["net_score"]:
+                    diagnostics[character]["top_negative_unit"] = {
+                        "unit_id": unit["unitId"],
+                        "net_score": net_score,
+                    }
+
+            ordered_rows = sorted(unit["characters"], key=lambda row: row["character"])
+            unit_order_rows.append((chapter["chapterId"], unit, ordered_rows))
+
+    for _chapter_id, unit, ordered_rows in unit_order_rows:
+        for row_a, row_b in combinations(ordered_rows, 2):
+            character_a = row_a["character"]
+            character_b = row_b["character"]
+            score_a = row_a[lens]["netScore"]
+            score_b = row_b[lens]["netScore"]
+            observed_a, observed_b = _elo_observed_scores(score_a, score_b, epsilon)
+
+            rating_a = ratings[character_a]
+            rating_b = ratings[character_b]
+            expected_a = _elo_expected_score(rating_a, rating_b)
+            expected_b = _elo_expected_score(rating_b, rating_a)
+            ratings[character_a] = rating_a + k_factor * (observed_a - expected_a)
+            ratings[character_b] = rating_b + k_factor * (observed_b - expected_b)
+
+            match_count += 1
+            if observed_a == observed_b == 0.5:
+                draw_count += 1
+                diagnostics[character_a]["draw_count"] += 1
+                diagnostics[character_b]["draw_count"] += 1
+            elif observed_a > observed_b:
+                diagnostics[character_a]["win_count"] += 1
+                diagnostics[character_b]["loss_count"] += 1
+            else:
+                diagnostics[character_a]["loss_count"] += 1
+                diagnostics[character_b]["win_count"] += 1
+
+            diagnostics[character_a]["match_count"] += 1
+            diagnostics[character_b]["match_count"] += 1
+
+    characters = []
+    for character, row in diagnostics.items():
+        top_positive_unit = row["top_positive_unit"]
+        top_negative_unit = row["top_negative_unit"]
+        characters.append(
+            {
+                "character": character,
+                "elo": round(ratings[character], 3),
+                "match_count": row["match_count"],
+                "win_count": row["win_count"],
+                "loss_count": row["loss_count"],
+                "draw_count": row["draw_count"],
+                "unit_count": row["unit_count"],
+                "mean_advantage_net_score": round(sum(row["net_scores"]) / len(row["net_scores"]), 3)
+                if row["net_scores"]
+                else 0.0,
+                "top_positive_unit": top_positive_unit,
+                "top_negative_unit": top_negative_unit,
+            }
+        )
+
+    score_rank = {
+        row["character"]: rank
+        for rank, row in enumerate(
+            sorted(
+                characters,
+                key=lambda item: (-item["mean_advantage_net_score"], item["character"]),
+            ),
+            start=1,
+        )
+    }
+    elo_rank = {
+        row["character"]: rank
+        for rank, row in enumerate(
+            sorted(
+                characters,
+                key=lambda item: (-item["elo"], item["character"]),
+            ),
+            start=1,
+        )
+    }
+
+    for row in characters:
+        row["elo_rank"] = elo_rank[row["character"]]
+        row["mean_score_rank"] = score_rank[row["character"]]
+        row["elo_rank_minus_mean_score_rank"] = row["elo_rank"] - row["mean_score_rank"]
+
+    characters.sort(key=lambda item: (-item["elo"], item["character"]))
+    return {
+        "character_elo_version": "character_elo_advantage_v1",
+        "lens": lens,
+        "source_review_version": review["corpus_review_version"],
+        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
+        "duplicate_resolution": overlay_dataset["duplicate_resolution"],
+        "initial_rating": initial_rating,
+        "k_factor": k_factor,
+        "epsilon": epsilon,
+        "ordering_rule": "canonical_chapter_then_paragraph_then_unit_then_pair",
+        "character_count": len(characters),
+        "match_count": match_count,
+        "draw_rate": round(draw_count / match_count, 3) if match_count else 0.0,
+        "top_rated_characters": characters[:10],
+        "lowest_rated_characters": sorted(characters, key=lambda item: (item["elo"], item["character"]))[:10],
+        "highest_match_count_characters": sorted(
+            characters,
+            key=lambda item: (-item["match_count"], -item["unit_count"], item["character"]),
+        )[:10],
+        "largest_rank_mismatches": sorted(
+            characters,
+            key=lambda item: (-abs(item["elo_rank_minus_mean_score_rank"]), item["character"]),
+        )[:10],
+        "characters": characters,
+    }
+
+
+def build_character_elo_timeline(
+    run_dirs,
+    character_name_map=None,
+    lens="advantage",
+    target_characters=None,
+    initial_rating=1500.0,
+    k_factor=24.0,
+    epsilon=0.25,
+):
+    if lens != "advantage":
+        raise ValueError("character_elo_timeline_v1 currently supports only the advantage lens.")
+    if not run_dirs:
+        raise ValueError("At least one run directory is required for character ELO timeline export.")
+
+    selected_characters = list(target_characters or legacy.CHARACTER_PAGE_PILOT_EDITORIAL.keys())
+    selected_set = set(selected_characters)
+    review = legacy.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
+
+    units_by_chapter = {chapter["chapterId"]: chapter["units"] for chapter in overlay_dataset["chapters"]}
+    corpus_positions = _build_corpus_position_index(units_by_chapter)
+    ratings = {character: float(initial_rating) for character in selected_characters}
+    points = []
+
+    for chapter in overlay_dataset["chapters"]:
+        for unit in chapter["units"]:
+            ordered_rows = sorted(unit["characters"], key=lambda row: row["character"])
+            for row_a, row_b in combinations(ordered_rows, 2):
+                character_a = row_a["character"]
+                character_b = row_b["character"]
+                score_a = row_a[lens]["netScore"]
+                score_b = row_b[lens]["netScore"]
+                observed_a, observed_b = _elo_observed_scores(score_a, score_b, epsilon)
+
+                ratings.setdefault(character_a, float(initial_rating))
+                ratings.setdefault(character_b, float(initial_rating))
+                rating_a = ratings[character_a]
+                rating_b = ratings[character_b]
+                expected_a = _elo_expected_score(rating_a, rating_b)
+                expected_b = _elo_expected_score(rating_b, rating_a)
+                ratings[character_a] = rating_a + k_factor * (observed_a - expected_a)
+                ratings[character_b] = rating_b + k_factor * (observed_b - expected_b)
+
+            position = corpus_positions[unit["unitId"]]
+            for character_row in ordered_rows:
+                character = character_row["character"]
+                if character not in selected_set:
+                    continue
+                ratings.setdefault(character, float(initial_rating))
+                points.append(
+                    {
+                        "character": character,
+                        "elo": round(ratings[character], 3),
+                        "advantage_net_score": character_row[lens]["netScore"],
+                        "advantage_label": character_row[lens]["label"],
+                        "unit_character_count": len(ordered_rows),
+                        "corpus_position": dict(position),
+                    }
+                )
+
+    point_counts = defaultdict(int)
+    latest_points = {}
+    for point in points:
+        character = point["character"]
+        point_counts[character] += 1
+        latest_points[character] = point
+
+    characters = []
+    for character in selected_characters:
+        latest = latest_points.get(character)
+        characters.append(
+            {
+                "character": character,
+                "point_count": point_counts.get(character, 0),
+                "final_elo": latest["elo"] if latest else round(initial_rating, 3),
+                "latest_corpus_position": latest["corpus_position"] if latest else None,
+            }
+        )
+
+    characters.sort(key=lambda item: (-item["point_count"], -item["final_elo"], item["character"]))
+    return {
+        "character_elo_timeline_version": "character_elo_timeline_v1",
+        "lens": lens,
+        "source_review_version": review["corpus_review_version"],
+        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
+        "duplicate_resolution": overlay_dataset["duplicate_resolution"],
+        "initial_rating": initial_rating,
+        "k_factor": k_factor,
+        "epsilon": epsilon,
+        "timeline_type": "sparse_by_character_participation",
+        "tracked_character_count": len(selected_characters),
+        "tracked_characters": selected_characters,
+        "point_count": len(points),
+        "characters": characters,
+        "points": points,
     }
 
 

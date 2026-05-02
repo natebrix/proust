@@ -2036,6 +2036,48 @@ def build_character_annotation_counts(review):
     return impl(review)
 
 
+def build_character_elo(
+    run_dirs,
+    character_name_map=None,
+    lens="advantage",
+    initial_rating=1500.0,
+    k_factor=24.0,
+    epsilon=0.25,
+):
+    from .app_exports import build_character_elo as impl
+
+    return impl(
+        run_dirs,
+        character_name_map=character_name_map,
+        lens=lens,
+        initial_rating=initial_rating,
+        k_factor=k_factor,
+        epsilon=epsilon,
+    )
+
+
+def build_character_elo_timeline(
+    run_dirs,
+    character_name_map=None,
+    lens="advantage",
+    target_characters=None,
+    initial_rating=1500.0,
+    k_factor=24.0,
+    epsilon=0.25,
+):
+    from .app_exports import build_character_elo_timeline as impl
+
+    return impl(
+        run_dirs,
+        character_name_map=character_name_map,
+        lens=lens,
+        target_characters=target_characters,
+        initial_rating=initial_rating,
+        k_factor=k_factor,
+        epsilon=epsilon,
+    )
+
+
 def build_character_profile_cards(run_dirs, character_name_map=None, top_chapter_limit=5):
     from .app_exports import build_character_profile_cards as impl
 
@@ -2094,8 +2136,32 @@ def render_character_annotation_counts_markdown(analysis):
     return impl(analysis)
 
 
+def render_character_elo_markdown(analysis):
+    from .export_artifacts import render_character_elo_markdown as impl
+
+    return impl(analysis)
+
+
+def render_character_elo_timeline_markdown(analysis):
+    from .export_artifacts import render_character_elo_timeline_markdown as impl
+
+    return impl(analysis)
+
+
 def write_character_annotation_counts_artifacts(analysis, json_output=None, markdown_output=None):
     from .export_artifacts import write_character_annotation_counts_artifacts as impl
+
+    return impl(analysis, json_output=json_output, markdown_output=markdown_output)
+
+
+def write_character_elo_artifacts(analysis, json_output=None, markdown_output=None):
+    from .export_artifacts import write_character_elo_artifacts as impl
+
+    return impl(analysis, json_output=json_output, markdown_output=markdown_output)
+
+
+def write_character_elo_timeline_artifacts(analysis, json_output=None, markdown_output=None):
+    from .export_artifacts import write_character_elo_timeline_artifacts as impl
 
     return impl(analysis, json_output=json_output, markdown_output=markdown_output)
 

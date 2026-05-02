@@ -1326,6 +1326,303 @@ def test_main_chapter_summaries_can_write_artifacts(tmp_path, capsys):
     assert markdown_output.read_text().startswith("# Chapter Summary Export\n")
 
 
+def test_build_character_elo_ranks_pairwise_advantage_outcomes(tmp_path):
+    run_dir = tmp_path / "run-001"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        _multi_character_annotation(
+            "v1-p1-combray#p-17",
+            [
+                {"character": "Swann", "delta": 1},
+                {"character": "Odette", "delta": -1},
+            ],
+        ),
+    )
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-274-p-275",
+        _multi_character_annotation(
+            "v1-p1-combray#p-274-p-275",
+            [
+                {"character": "Swann", "delta": 1},
+                {"character": "Albertine", "delta": -1},
+            ],
+        ),
+    )
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-312-p-313",
+        _multi_character_annotation(
+            "v1-p1-combray#p-312-p-313",
+            [
+                {"character": "Odette", "delta": 1},
+                {"character": "Albertine", "delta": 1},
+            ],
+        ),
+    )
+    analysis = pr.build_character_elo([run_dir])
+
+    assert analysis["character_elo_version"] == "character_elo_advantage_v1"
+    assert analysis["lens"] == "advantage"
+    assert analysis["match_count"] == 3
+    assert analysis["draw_rate"] == pytest.approx(0.333, abs=0.001)
+    rows = {row["character"]: row for row in analysis["characters"]}
+    assert rows["Swann"]["elo"] > rows["Odette"]["elo"]
+    assert rows["Swann"]["elo"] > rows["Albertine"]["elo"]
+    assert rows["Swann"]["win_count"] == 2
+    assert rows["Swann"]["loss_count"] == 0
+    assert rows["Swann"]["draw_count"] == 0
+    assert rows["Odette"]["draw_count"] == 1
+    assert rows["Albertine"]["draw_count"] == 1
+    assert rows["Swann"]["top_positive_unit"]["unit_id"] == "v1-p1-combray#p-17"
+    assert pr.render_character_elo_markdown(analysis).startswith("# Character ELO\n")
+
+
+def test_main_character_elo_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    json_output = tmp_path / "character-elo.json"
+    markdown_output = tmp_path / "character-elo.md"
+    pn.prepare_annotation_run(run_a)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _multi_character_annotation(
+            "v1-p1-combray#p-17",
+            [
+                {"character": "Saint-Loup", "delta": 1},
+                {"character": "Odette", "delta": -1},
+            ],
+        ),
+    )
+
+    exit_code = pr.main(
+        [
+            "character-elo",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    analysis = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["character_count"] == analysis["character_count"]
+    assert payload["match_count"] == analysis["match_count"]
+    assert analysis["character_normalization"]["applied"] is True
+    assert any(row["character"] == "Robert de Saint-Loup" for row in analysis["characters"])
+    assert markdown_output.read_text().startswith("# Character ELO\n")
+
+
+def test_build_character_elo_timeline_emits_sparse_points_with_corpus_position(tmp_path):
+    run_dir = tmp_path / "run-001"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        _multi_character_annotation(
+            "v1-p1-combray#p-17",
+            [
+                {"character": "Swann", "delta": 1},
+                {"character": "Odette", "delta": -1},
+            ],
+        ),
+    )
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-274-p-275",
+        _multi_character_annotation(
+            "v1-p1-combray#p-274-p-275",
+            [
+                {"character": "Swann", "delta": 1},
+                {"character": "Albertine", "delta": -1},
+            ],
+        ),
+    )
+
+    analysis = pr.build_character_elo_timeline(
+        [run_dir],
+        target_characters=["Swann", "Odette"],
+    )
+
+    assert analysis["character_elo_timeline_version"] == "character_elo_timeline_v1"
+    assert analysis["timeline_type"] == "sparse_by_character_participation"
+    assert analysis["tracked_character_count"] == 2
+    assert analysis["point_count"] == 3
+    assert [row["character"] for row in analysis["points"]] == ["Odette", "Swann", "Swann"]
+    first_point = analysis["points"][0]
+    assert first_point["corpus_position"]["chapter_id"] == "v1-p1-combray"
+    assert first_point["corpus_position"]["volume_number"] == 1
+    assert first_point["corpus_position"]["unit_id"] == "v1-p1-combray#p-17"
+    assert first_point["corpus_position"]["unit_index_within_chapter"] == 1
+    assert first_point["corpus_position"]["cumulative_unit_index"] == 1
+    assert first_point["corpus_position"]["paragraph_start"] == 17
+    assert first_point["corpus_position"]["paragraph_end"] == 17
+    assert first_point["corpus_position"]["cumulative_paragraph_index"] == 17
+    assert first_point["corpus_position"]["cumulative_word_count"] > 0
+    assert pr.render_character_elo_timeline_markdown(analysis).startswith("# Character ELO Timeline\n")
+
+
+def test_main_character_elo_timeline_can_write_artifacts(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    json_output = tmp_path / "character-elo-timeline.json"
+    markdown_output = tmp_path / "character-elo-timeline.md"
+    pn.prepare_annotation_run(run_a)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _multi_character_annotation(
+            "v1-p1-combray#p-17",
+            [
+                {"character": "Saint-Loup", "delta": 1},
+                {"character": "Odette", "delta": -1},
+            ],
+        ),
+    )
+
+    exit_code = pr.main(
+        [
+            "character-elo-timeline",
+            "--discover-runs",
+            str(outputs_dir),
+            "--reviewed-character-normalization",
+            "--character",
+            "Robert de Saint-Loup",
+            "--character",
+            "Odette",
+            "--output",
+            str(json_output),
+            "--markdown-output",
+            str(markdown_output),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    analysis = json.loads(json_output.read_text())
+    assert exit_code == 0
+    assert payload["tracked_character_count"] == 2
+    assert payload["point_count"] == analysis["point_count"]
+    assert analysis["character_normalization"]["applied"] is True
+    assert analysis["tracked_characters"] == ["Robert de Saint-Loup", "Odette"]
+    assert markdown_output.read_text().startswith("# Character ELO Timeline\n")
+
+
+def test_plot_character_elo_timeline_saves_png(tmp_path):
+    timeline = {
+        "points": [
+            {
+                "character": "Swann",
+                "elo": 1500.0,
+                "advantage_net_score": -1.0,
+                "advantage_label": "loss",
+                "corpus_position": {
+                    "volume_number": 1,
+                    "chapter_id": "v1-p1-combray",
+                    "unit_id": "v1-p1-combray#p-17",
+                    "cumulative_unit_index": 1,
+                    "cumulative_word_count": 100,
+                },
+            },
+            {
+                "character": "Swann",
+                "elo": 1488.0,
+                "advantage_net_score": 1.0,
+                "advantage_label": "win",
+                "corpus_position": {
+                    "volume_number": 1,
+                    "chapter_id": "v1-p1-combray",
+                    "unit_id": "v1-p1-combray#p-18",
+                    "cumulative_unit_index": 2,
+                    "cumulative_word_count": 120,
+                },
+            },
+        ]
+    }
+    output_path = tmp_path / "swann-elo.png"
+
+    result = pn.plot_character_elo_timeline(timeline, "Swann", output_path)
+
+    assert result == output_path
+    assert output_path.exists()
+    assert output_path.stat().st_size > 0
+
+
+def test_plot_character_elo_comparison_saves_png(tmp_path):
+    timeline = {
+        "points": [
+            {
+                "character": "Swann",
+                "elo": 1500.0,
+                "advantage_net_score": -1.0,
+                "advantage_label": "loss",
+                "corpus_position": {
+                    "volume_number": 1,
+                    "chapter_id": "v1-p1-combray",
+                    "unit_id": "v1-p1-combray#p-17",
+                    "cumulative_unit_index": 1,
+                    "cumulative_word_count": 100,
+                },
+            },
+            {
+                "character": "Swann",
+                "elo": 1488.0,
+                "advantage_net_score": 1.0,
+                "advantage_label": "win",
+                "corpus_position": {
+                    "volume_number": 1,
+                    "chapter_id": "v1-p1-combray",
+                    "unit_id": "v1-p1-combray#p-18",
+                    "cumulative_unit_index": 2,
+                    "cumulative_word_count": 120,
+                },
+            },
+            {
+                "character": "Odette",
+                "elo": 1500.0,
+                "advantage_net_score": 1.0,
+                "advantage_label": "win",
+                "corpus_position": {
+                    "volume_number": 1,
+                    "chapter_id": "v1-p1-combray",
+                    "unit_id": "v1-p1-combray#p-17",
+                    "cumulative_unit_index": 1,
+                    "cumulative_word_count": 100,
+                },
+            },
+            {
+                "character": "Odette",
+                "elo": 1512.0,
+                "advantage_net_score": -1.0,
+                "advantage_label": "loss",
+                "corpus_position": {
+                    "volume_number": 1,
+                    "chapter_id": "v1-p1-combray",
+                    "unit_id": "v1-p1-combray#p-18",
+                    "cumulative_unit_index": 2,
+                    "cumulative_word_count": 120,
+                },
+            },
+        ]
+    }
+    output_path = tmp_path / "swann-odette-elo.png"
+
+    result = pn.plot_character_elo_comparison(timeline, ["Swann", "Odette"], output_path)
+
+    assert result == output_path
+    assert output_path.exists()
+    assert output_path.stat().st_size > 0
+
+
 def test_build_character_alias_audit_reports_candidate_merge_groups(tmp_path):
     outputs_dir = tmp_path / "outputs"
     aliases_csv = tmp_path / "aliases.csv"
