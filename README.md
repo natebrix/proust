@@ -6,9 +6,9 @@ The current center of gravity is not generic NLP exploration. It is:
 
 - a canonicalized accepted annotation corpus over the full French text
 - corpus-level social-outcome analysis across three lenses:
-  - `advantage`
-  - `prestige`
-  - `inclusion`
+  - `advantage`: immediate scene-level gain or loss
+  - `prestige`: change in visible rank, distinction, or standing
+  - `inclusion`: change in belonging, acceptance, or incorporation
 - app-facing export layers for the separate `islt` web reader
 - experimental derived ranking surfaces such as character ELO on the `advantage` lens
 
