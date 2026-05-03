@@ -68,13 +68,14 @@ The project is no longer in pre-full-corpus validation.
 
 The current phase is:
 
-- post-production normalized aggregate analysis
+- post-production canonicalized corpus analysis
 
 That means:
 
 - the canonical full-corpus annotation pass is complete
-- the accepted annotation JSON should remain fixed by default
-- the normalized aggregate review surface is now the default character surface
+- the reviewed same-person name merges have been applied upstream to the accepted corpus
+- the accepted annotation JSON should remain fixed by default after that canonicalization pass
+- the current corpus-review surface is now the default character surface
 - new work should primarily happen in downstream analysis and app-facing exports
 
 The main questions are now:
@@ -145,11 +146,10 @@ For current work:
 - prefer bounded alias maintenance over broad alias proliferation
 - avoid generic title aliases when they risk colliding with distinct titled figures in the same run
 
-At the aggregate layer:
+At the corpus level:
 
-- use the reviewed explicit normalization map where needed
-- prefer explicit reviewed merges over broad heuristic identity collapsing
-- keep source annotations unchanged unless a later high-value reason clearly justifies rewriting them
+- use explicit reviewed same-person merges rather than broad heuristic identity collapsing
+- keep the accepted canonicalized annotation corpus fixed unless a genuinely new naming issue is discovered
 
 ## Scoring lenses
 
@@ -204,14 +204,14 @@ The default should be:
 
 - keep the prompt, reducer, and lenses fixed
 - keep accepted annotation JSON fixed
-- treat the normalized aggregate surface as the default analysis surface
+- treat the canonicalized corpus surface as the default analysis surface
 - intervene only if downstream analysis exposes a genuinely new report-level failure class
 
 For downstream analysis work:
 
 - read aggregate artifacts first
 - only drill back into unit-level evidence when the aggregate picture shows a genuinely surprising signal
-- prefer new downstream views over source-annotation rewriting
+- prefer new downstream views over further source-annotation rewriting
 
 ## Runtime rule
 
@@ -252,7 +252,7 @@ Do not reopen the whole stack by default.
 
 The project should now treat these as the default current surfaces:
 
-- normalized corpus review
+- corpus review
 - character cross-lens analysis
 - character-by-chapter cross-lens analysis
 - character profile cards
@@ -269,7 +269,7 @@ These are the current bridges between:
 If work resumes from this plan, the default next move is:
 
 1. keep the accepted annotation JSON unchanged
-2. treat the normalized corpus-review surface as canonical
+2. treat the current corpus-review surface as canonical
 3. extend downstream analysis before reopening annotation production
-4. treat app-facing exports as derivative layers over the accepted normalized corpus
+4. treat app-facing exports as derivative layers over the accepted canonicalized corpus
 5. only reopen source annotation or stack behavior if a later report-level problem clearly justifies it

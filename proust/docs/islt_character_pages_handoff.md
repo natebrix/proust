@@ -64,7 +64,7 @@ This set was chosen to cover:
 The app should assume:
 
 - normalized character identity is canonical
-- page data is derived from the accepted normalized corpus surface
+- page data is derived from the accepted canonicalized corpus surface
 - the page artifact already separates computed versus editorial layers
 - chapter links should route into the existing French reader pages
 

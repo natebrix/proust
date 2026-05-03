@@ -22,7 +22,7 @@ For project history and judgments, see:
 If you are re-entering the project and want the shortest useful path, read in this order:
 
 1. [current_state.md](/Users/nathan_brixius/dev/proust/proust/docs/current_state.md:1)
-2. [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1)
+2. [corpus-review-current.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.md:1)
 3. [character-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.md:1)
 4. [character-chapter-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.md:1)
 5. [annotation_log.md](/Users/nathan_brixius/dev/proust/proust/docs/annotation_log.md:1) only if you need the historical path
@@ -83,28 +83,14 @@ Do not start with granular runs if the question is corpus-level.
 
 These are the current default aggregate artifacts.
 
-### 1. Unnormalized Current Corpus Review
+### 1. Current Corpus Review
 
 - [corpus-review-current.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.json:1)
 - [corpus-review-current.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.md:1)
 
 Purpose:
 
-- refreshed whole-corpus aggregate review over accepted annotations before aggregate-layer character normalization
-
-Use when:
-
-- you want the pre-normalization surface for comparison
-
-### 2. Normalized Current Corpus Review
-
-- [corpus-review-current-normalized.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.json:1)
-- [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1)
-
-Purpose:
-
-- current default corpus-level review surface
-- per-character summaries after reviewed explicit aggregate-layer name merges
+- refreshed whole-corpus aggregate review over the accepted canonicalized annotations
 
 Use when:
 
@@ -114,9 +100,23 @@ Use when:
 
 This is the default corpus-review artifact to read first.
 
+### 2. Historical Normalized Comparison Surface
+
+- [corpus-review-current-normalized.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.json:1)
+- [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1)
+
+Purpose:
+
+- historical comparison surface from the period when same-person name merges were still applied downstream
+
+Use when:
+
+- you want to verify equivalence against the current source-canonicalized corpus
+- you want to revisit the transition away from downstream normalization
+
 ## Alias And Normalization Artifacts
 
-These explain how the project moved from split character identities to a cleaner aggregate surface.
+These explain how the project moved from split character identities to the current source-canonicalized corpus.
 
 ### Alias Audit
 
@@ -138,6 +138,7 @@ Use when:
 Purpose:
 
 - record the reviewed explicit merge decisions
+- record the migration from downstream normalization to upstream source canonicalization
 
 ### Normalization Diff
 
@@ -237,7 +238,7 @@ Use when:
 Purpose:
 
 - provide chapter-keyed, paragraph-range overlay JSON for the `islt` reader
-- bridge normalized aggregate/unit-level annotation data into an app-friendly form
+- bridge canonicalized aggregate/unit-level annotation data into an app-friendly form
 - include deterministic chapter and unit summaries in the current `chapter_overlay_v2` surface
 
 Use when:
@@ -294,7 +295,7 @@ Do not treat them as the current default reading surface.
 If the question is:
 
 - "What is the current corpus-wide picture?"  
-  Read [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1)
+  Read [corpus-review-current.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.md:1)
 
 - "Which characters diverge most across lenses?"  
   Read [character-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.md:1)

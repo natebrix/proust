@@ -3,7 +3,7 @@
 - Analysis version: `character_pages_v1`
 - Source review version: `corpus_sanity_review_v1`
 - Character count: `20`
-- Character normalization applied: `True`
+- Character normalization applied: `False`
 
 ## Swann
 

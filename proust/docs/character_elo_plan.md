@@ -22,7 +22,7 @@ That is no longer true.
 The project now has:
 
 - a completed full-corpus accepted annotation surface
-- reviewed aggregate-layer character normalization
+- reviewed same-person source canonicalization
 - stable per-unit lens scoring
 - deterministic duplicate-run resolution for aggregate outputs
 
@@ -55,7 +55,7 @@ It should not be treated as:
 
 Version `v1` should use only:
 
-- the normalized accepted corpus surface
+- the accepted canonicalized corpus surface
 - the `advantage` lens
 
 It should not initially try to:
@@ -122,7 +122,7 @@ Characters with `neutral` or very small scores may still participate, because:
 
 ## Duplicate Resolution
 
-The ELO surface must inherit the same duplicate policy used in the normalized aggregate exports:
+The ELO surface must inherit the same duplicate policy used in the current aggregate exports:
 
 - `latest_reviewed_run_wins`
 
@@ -135,19 +135,19 @@ The implementation should reuse the same preferred-run logic already used by:
 - chapter overlays
 - character chapter analysis
 
-## Normalization Rule
+## Identity Rule
 
 The default ELO surface should use:
 
-- the reviewed explicit character normalization map
+- the accepted source-canonicalized character identities
 
-That is, it should run on the same normalized identity surface as:
+That is, it should run on the same identity surface as:
 
-- `corpus-review-current-normalized`
+- `corpus-review-current`
 - `character-cross-lens-current`
 - `chapter-overlays-current`
 
-The artifact metadata should explicitly record whether normalization was applied.
+Historical normalized artifacts remain useful for comparison, but they are no longer the default source for current ELO computation.
 
 ## Rating Algorithm
 

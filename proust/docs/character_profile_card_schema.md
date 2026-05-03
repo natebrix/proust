@@ -132,7 +132,7 @@ This should always be the reviewed aggregate-layer name, not an unnormalized ali
 
 Primary ranking field for “most annotated.”
 
-This is the count of annotated units in which the character appears on the normalized aggregate surface.
+This is the count of annotated units in which the character appears on the current canonicalized corpus surface.
 
 ### `rank_spread`
 

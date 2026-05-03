@@ -1,18 +1,18 @@
 # Downstream Analysis Plan
 
-This document records the default next analysis step after the normalized corpus-review pass.
+This document records the default downstream analysis step after the completed source-canonicalization pass.
 
 It assumes:
 
 - the accepted annotation JSON remains fixed
-- the reviewed aggregate-layer character normalization is accepted
-- the normalized corpus-review artifacts are now the default per-character aggregate surface
+- the reviewed same-person name merges have been applied upstream
+- the current corpus-review artifacts are now the default per-character aggregate surface
 
 Primary inputs:
 
-- [corpus-review-current-normalized.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.json:1)
-- [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1)
-- [corpus-review-normalization-diff.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-normalization-diff.md:1)
+- [corpus-review-current.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.json:1)
+- [corpus-review-current.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.md:1)
+- [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1) as the historical comparison baseline
 
 General artifact map:
 
@@ -96,7 +96,7 @@ This should stay aggregate-first and should not reopen routine unit interpretati
 ## Guardrails
 
 - do not rewrite accepted annotation JSON
-- do not add new alias heuristics beyond the reviewed explicit normalization map
+- do not add new alias heuristics beyond reviewed explicit same-person merges
 - do not treat ranking movement alone as an interpretive finding without unit-count context
 - do not re-open prompt, reducer, or schema tuning unless a new report-level problem appears
 

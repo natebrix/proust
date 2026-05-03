@@ -1,6 +1,7 @@
 import argparse
 import csv
 from collections import defaultdict
+from copy import deepcopy
 import json
 import os
 import re
@@ -2985,6 +2986,186 @@ def write_annotation_result(run_dir, unit_id, annotation):
     annotation_path.parent.mkdir(parents=True, exist_ok=True)
     annotation_path.write_text(json.dumps(annotation, ensure_ascii=False, indent=2) + "\n")
     return annotation_path
+
+
+def _rewrite_annotation_character_fields(annotation, character_name_map):
+    normalized_map = normalize_character_name_map(character_name_map)
+    rewritten = deepcopy(annotation)
+    field_change_counts = {
+        "characters_present.canonical_name": 0,
+        "appraisal_events.source": 0,
+        "appraisal_events.target": 0,
+        "status_effects.character": 0,
+    }
+
+    for row in rewritten.get("characters_present", []):
+        original = row.get("canonical_name")
+        updated = normalize_character_name(original, normalized_map)
+        if updated != original:
+            row["canonical_name"] = updated
+            field_change_counts["characters_present.canonical_name"] += 1
+
+    for event in rewritten.get("appraisal_events", []):
+        for field, counter_key in (
+            ("source", "appraisal_events.source"),
+            ("target", "appraisal_events.target"),
+        ):
+            original = event.get(field)
+            updated = normalize_character_name(original, normalized_map)
+            if updated != original:
+                event[field] = updated
+                field_change_counts[counter_key] += 1
+
+    for row in rewritten.get("status_effects", []):
+        original = row.get("character")
+        updated = normalize_character_name(original, normalized_map)
+        if updated != original:
+            row["character"] = updated
+            field_change_counts["status_effects.character"] += 1
+
+    return rewritten, field_change_counts
+
+
+def _merge_alias_lists(*alias_lists):
+    merged = []
+    seen = set()
+    for aliases in alias_lists:
+        for alias in aliases or []:
+            if alias not in seen:
+                seen.add(alias)
+                merged.append(alias)
+    return merged
+
+
+def _rewrite_run_alias_map(alias_map, character_name_map):
+    normalized_map = normalize_character_name_map(character_name_map)
+    rewritten = {}
+    merged_key_count = 0
+
+    for canonical_name, meta in (alias_map or {}).items():
+        target_name = normalize_character_name(canonical_name, normalized_map)
+        existing = rewritten.get(target_name)
+        aliases = list((meta or {}).get("aliases") or [])
+        if canonical_name != target_name and canonical_name not in aliases:
+            aliases.append(canonical_name)
+
+        if existing is None:
+            rewritten[target_name] = {
+                **{k: v for k, v in (meta or {}).items() if k not in {"aliases", "notes"}},
+                "aliases": _merge_alias_lists(aliases),
+                "notes": (meta or {}).get("notes", ""),
+            }
+            if canonical_name != target_name:
+                merged_key_count += 1
+            continue
+
+        rewritten[target_name] = {
+            **existing,
+            **{k: v for k, v in (meta or {}).items() if k not in {"aliases", "notes"} and k not in existing},
+            "aliases": _merge_alias_lists(existing.get("aliases"), aliases),
+            "notes": existing.get("notes") or (meta or {}).get("notes", ""),
+        }
+        if canonical_name != target_name:
+            merged_key_count += 1
+
+    return rewritten, merged_key_count
+
+
+def rewrite_run_character_identities(run_dir, character_name_map, update_alias_map=True, dry_run=False):
+    run_path = Path(run_dir)
+    manifest = _read_run_manifest(run_path)
+    normalized_map = normalize_character_name_map(character_name_map)
+    if not normalized_map:
+        raise ValueError("A non-empty character_name_map is required for source canonicalization.")
+
+    annotation_dir = Path(manifest["directories"]["annotations"])
+    changed_annotation_files = 0
+    total_field_changes = {
+        "characters_present.canonical_name": 0,
+        "appraisal_events.source": 0,
+        "appraisal_events.target": 0,
+        "status_effects.character": 0,
+    }
+
+    for unit_id in manifest["unit_ids"]:
+        annotation_path = annotation_dir / _annotation_filename(unit_id)
+        if not annotation_path.exists():
+            continue
+
+        annotation = _read_json(annotation_path)
+        rewritten, field_change_counts = _rewrite_annotation_character_fields(annotation, normalized_map)
+        if rewritten == annotation:
+            continue
+
+        errors = validate_annotation_result(rewritten, expected_unit_id=unit_id)
+        if errors:
+            raise ValueError(f"Rewritten annotation for {unit_id} is invalid: {'; '.join(errors)}")
+
+        changed_annotation_files += 1
+        for key, count in field_change_counts.items():
+            total_field_changes[key] += count
+
+        if not dry_run:
+            write_annotation_result(run_path, unit_id, rewritten)
+
+    alias_map_merged_key_count = 0
+    if update_alias_map:
+        rewritten_alias_map, alias_map_merged_key_count = _rewrite_run_alias_map(
+            manifest.get("alias_map") or {},
+            normalized_map,
+        )
+        if rewritten_alias_map != (manifest.get("alias_map") or {}):
+            manifest["alias_map"] = rewritten_alias_map
+            if not dry_run:
+                _write_run_manifest(run_path, manifest)
+
+    return {
+        "run_id": manifest["run_id"],
+        "annotation_files_rewritten": changed_annotation_files,
+        "field_change_counts": total_field_changes,
+        "alias_map_merged_key_count": alias_map_merged_key_count,
+        "dry_run": dry_run,
+        "updated_alias_map": update_alias_map,
+    }
+
+
+def rewrite_corpus_character_identities(run_dirs, character_name_map, update_alias_map=True, dry_run=False):
+    if not run_dirs:
+        raise ValueError("At least one run directory is required for source canonicalization.")
+
+    run_summaries = []
+    total_field_changes = {
+        "characters_present.canonical_name": 0,
+        "appraisal_events.source": 0,
+        "appraisal_events.target": 0,
+        "status_effects.character": 0,
+    }
+    total_annotation_files_rewritten = 0
+    total_alias_map_merges = 0
+
+    for run_dir in run_dirs:
+        summary = rewrite_run_character_identities(
+            run_dir,
+            character_name_map=character_name_map,
+            update_alias_map=update_alias_map,
+            dry_run=dry_run,
+        )
+        run_summaries.append(summary)
+        total_annotation_files_rewritten += summary["annotation_files_rewritten"]
+        total_alias_map_merges += summary["alias_map_merged_key_count"]
+        for key, count in summary["field_change_counts"].items():
+            total_field_changes[key] += count
+
+    return {
+        "source_canonicalization_version": "source_canonicalization_v1",
+        "run_count": len(run_summaries),
+        "annotation_files_rewritten": total_annotation_files_rewritten,
+        "alias_map_merged_key_count": total_alias_map_merges,
+        "field_change_counts": total_field_changes,
+        "dry_run": dry_run,
+        "updated_alias_map": update_alias_map,
+        "runs": run_summaries,
+    }
 
 
 def main(argv=None):

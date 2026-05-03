@@ -92,7 +92,7 @@ _Showing first 25 of 271 run surface rows._
 ### advantage
 
 - Entry count: `1996`
-- Character count: `69`
+- Character count: `62`
 
 Label counts:
 
@@ -107,16 +107,16 @@ Top positive characters:
 
 | Character | Net Score | Units | Dominant Dimension |
 | --- | --- | --- | --- |
-| duchesse de Guermantes | +95.726 | 141 | social_status |
+| duchesse de Guermantes | +95.726 | 143 | social_status |
 | Elstir | +29.391 | 18 | general_appraisal |
 | Bergotte | +17.016 | 33 | general_appraisal |
 | Norpois | +14.145 | 67 | rhetorical_position |
-| Charlus | +11.035 | 16 | social_status |
 | princesse de Guermantes | +10.865 | 12 | social_status |
 | le peintre | +10.346 | 12 | general_appraisal |
+| M. Vinteuil | +9.671 | 19 | general_appraisal |
 | comte de Forcheville | +9.403 | 12 | social_status |
-| M. Vinteuil | +8.114 | 18 | general_appraisal |
 | la mère du narrateur | +7.838 | 34 | rhetorical_position |
+| la Berma | +7.514 | 13 | general_appraisal |
 
 Top negative characters:
 
@@ -124,19 +124,19 @@ Top negative characters:
 | --- | --- | --- | --- |
 | Swann | -206.613 | 263 | emotional_position |
 | Albertine | -111.185 | 177 | general_appraisal |
-| baron de Charlus | -106.382 | 108 | general_appraisal |
+| baron de Charlus | -95.347 | 124 | general_appraisal |
 | Bloch | -81.142 | 61 | general_appraisal |
 | duc de Guermantes | -59.531 | 61 | general_appraisal |
 | Saniette | -30.311 | 11 | social_status |
-| la grand-mère | -26.797 | 62 | general_appraisal |
 | Morel | -25.323 | 17 | general_appraisal |
+| la grand-mère | -24.753 | 65 | general_appraisal |
 | Mme de Cambremer | -22.629 | 21 | general_appraisal |
 | Legrandin | -20.948 | 23 | general_appraisal |
 
 ### inclusion
 
 - Entry count: `1996`
-- Character count: `69`
+- Character count: `62`
 
 Label counts:
 
@@ -151,16 +151,16 @@ Top positive characters:
 
 | Character | Net Score | Units | Dominant Dimension |
 | --- | --- | --- | --- |
-| duchesse de Guermantes | +50.901 | 141 | social_status |
+| duchesse de Guermantes | +50.901 | 143 | social_status |
 | Elstir | +21.649 | 18 | general_appraisal |
-| Charlus | +6.942 | 16 | social_status |
+| M. Vinteuil | +6.652 | 19 | general_appraisal |
 | comte de Forcheville | +6.54 | 12 | social_status |
 | le peintre | +6.365 | 12 | general_appraisal |
 | princesse de Guermantes | +5.569 | 12 | social_status |
-| M. Vinteuil | +5.5 | 18 | general_appraisal |
 | Bergotte | +5.239 | 33 | general_appraisal |
 | la mère du narrateur | +5.006 | 34 | rhetorical_position |
 | Jupien | +4.831 | 5 | general_appraisal |
+| Norpois | +4.56 | 67 | rhetorical_position |
 
 Top negative characters:
 
@@ -168,19 +168,19 @@ Top negative characters:
 | --- | --- | --- | --- |
 | Swann | -225.958 | 263 | emotional_position |
 | Albertine | -121.659 | 177 | general_appraisal |
-| baron de Charlus | -93.499 | 108 | general_appraisal |
+| baron de Charlus | -86.557 | 124 | general_appraisal |
 | Bloch | -82.66 | 61 | general_appraisal |
 | duc de Guermantes | -52.097 | 61 | general_appraisal |
-| la grand-mère | -31.421 | 62 | general_appraisal |
+| la grand-mère | -30.265 | 65 | general_appraisal |
 | Saniette | -28.381 | 11 | social_status |
-| Odette | -26.537 | 85 | social_status |
 | Mme Verdurin | -25.921 | 68 | general_appraisal |
-| Robert de Saint-Loup | -24.925 | 193 | emotional_position |
+| Robert de Saint-Loup | -24.925 | 197 | emotional_position |
+| Mme de Cambremer | -24.435 | 21 | general_appraisal |
 
 ### prestige
 
 - Entry count: `1996`
-- Character count: `69`
+- Character count: `62`
 
 Label counts:
 
@@ -195,31 +195,31 @@ Top positive characters:
 
 | Character | Net Score | Units | Dominant Dimension |
 | --- | --- | --- | --- |
-| duchesse de Guermantes | +102.284 | 141 | social_status |
+| duchesse de Guermantes | +102.284 | 143 | social_status |
 | Elstir | +25.428 | 18 | general_appraisal |
 | Bergotte | +18.336 | 33 | general_appraisal |
+| Odette | +15.86 | 88 | social_status |
 | Norpois | +14.297 | 67 | rhetorical_position |
 | Gilberte | +12.637 | 44 | social_status |
 | princesse de Guermantes | +12.067 | 12 | social_status |
-| Odette | +11.413 | 85 | social_status |
-| Charlus | +10.435 | 16 | social_status |
-| Robert de Saint-Loup | +9.924 | 193 | emotional_position |
+| Robert de Saint-Loup | +9.924 | 197 | emotional_position |
 | comte de Forcheville | +9.845 | 12 | social_status |
+| le peintre | +9.151 | 12 | general_appraisal |
 
 Top negative characters:
 
 | Character | Net Score | Units | Dominant Dimension |
 | --- | --- | --- | --- |
 | Swann | -139.776 | 263 | emotional_position |
-| baron de Charlus | -87.627 | 108 | general_appraisal |
 | Albertine | -79.975 | 177 | general_appraisal |
+| baron de Charlus | -77.192 | 124 | general_appraisal |
 | Bloch | -56.308 | 61 | general_appraisal |
 | duc de Guermantes | -47.194 | 61 | general_appraisal |
 | Saniette | -25.672 | 11 | social_status |
 | Morel | -18.788 | 17 | general_appraisal |
-| marquise de Saint-Euverte | -18.52 | 6 | social_status |
 | Legrandin | -17.293 | 23 | general_appraisal |
-| la grand-mère | -16.797 | 62 | general_appraisal |
+| marquise de Saint-Euverte | -16.261 | 7 | social_status |
+| Mme de Cambremer | -15.493 | 21 | general_appraisal |
 
 ## Cross-Lens Summary
 

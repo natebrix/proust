@@ -1,15 +1,35 @@
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from . import runner as core
 
 
-def _collect_runs(args):
+def _load_accepted_run_ids(review_path):
+    payload = json.loads(Path(review_path).read_text())
+    run_ids = payload.get("run_ids")
+    if not isinstance(run_ids, list) or not all(isinstance(run_id, str) for run_id in run_ids):
+        raise ValueError(f"Accepted review surface at {review_path} is missing a valid run_ids list.")
+    return set(run_ids)
+
+
+def _collect_runs(args, accepted_review_path=None):
     runs = list(args.runs or [])
     if getattr(args, "discover_runs", None):
-        runs.extend(core.discover_annotation_run_dirs(args.discover_runs))
-    return runs
+        discovered = core.discover_annotation_run_dirs(args.discover_runs)
+        if accepted_review_path is not None:
+            accepted_run_ids = _load_accepted_run_ids(accepted_review_path)
+            discovered = [run for run in discovered if Path(run).name in accepted_run_ids]
+        runs.extend(discovered)
+    deduped = []
+    seen = set()
+    for run in runs:
+        key = str(Path(run))
+        if key not in seen:
+            seen.add(key)
+            deduped.append(run)
+    return deduped
 
 
 def _character_name_map(args):
@@ -62,7 +82,7 @@ def build_parser():
     report_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
 
     corpus_review_parser = subparsers.add_parser(
@@ -79,13 +99,46 @@ def build_parser():
     corpus_review_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     corpus_review_parser.add_argument("--output", help="Optional JSON output path.")
     corpus_review_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
     corpus_review_parser.add_argument(
         "--normalization-diff-output",
         help="Optional Markdown output path for a diff between unnormalized and normalized corpus reviews.",
+    )
+
+    source_canonicalization_parser = subparsers.add_parser(
+        "source-canonicalize",
+        help="Rewrite accepted annotation identities upstream using the reviewed same-person canonicalization map.",
+    )
+    source_canonicalization_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
+    source_canonicalization_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    source_canonicalization_parser.add_argument(
+        "--accepted-review",
+        default="outputs/corpus-review-current.json",
+        help="Corpus review JSON whose run_ids define the accepted runs eligible for source canonicalization.",
+    )
+    source_canonicalization_parser.add_argument(
+        "--reviewed-character-normalization",
+        action="store_true",
+        required=True,
+        help="Use the reviewed explicit same-person canonicalization map.",
+    )
+    source_canonicalization_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Report the rewrite surface without modifying files.",
+    )
+    source_canonicalization_parser.add_argument(
+        "--skip-alias-map-update",
+        action="store_true",
+        help="Rewrite accepted annotations only and leave run.json alias_map blocks unchanged.",
     )
 
     character_analysis_parser = subparsers.add_parser(
@@ -102,7 +155,7 @@ def build_parser():
     character_analysis_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_analysis_parser.add_argument("--output", help="Optional JSON output path.")
     character_analysis_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
@@ -121,7 +174,7 @@ def build_parser():
     character_chapter_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_chapter_parser.add_argument(
         "--character",
@@ -146,7 +199,7 @@ def build_parser():
     character_counts_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_counts_parser.add_argument("--output", help="Optional JSON output path.")
     character_counts_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
@@ -165,7 +218,7 @@ def build_parser():
     character_elo_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_elo_parser.add_argument("--output", help="Optional JSON output path.")
     character_elo_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
@@ -184,7 +237,7 @@ def build_parser():
     character_elo_timeline_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_elo_timeline_parser.add_argument(
         "--character",
@@ -209,7 +262,7 @@ def build_parser():
     character_cards_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_cards_parser.add_argument("--output", help="Optional JSON output path.")
     character_cards_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
@@ -228,7 +281,7 @@ def build_parser():
     character_pages_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_pages_parser.add_argument(
         "--character",
@@ -253,14 +306,14 @@ def build_parser():
     chapter_summaries_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     chapter_summaries_parser.add_argument("--output", help="Optional JSON output path.")
     chapter_summaries_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
     chapter_overlay_parser = subparsers.add_parser(
         "chapter-overlays",
-        help="Export chapter-keyed app overlay JSON from the accepted normalized corpus surface.",
+        help="Export chapter-keyed app overlay JSON from the accepted canonicalized corpus surface.",
     )
     chapter_overlay_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
     chapter_overlay_parser.add_argument(
@@ -272,7 +325,7 @@ def build_parser():
     chapter_overlay_parser.add_argument(
         "--reviewed-character-normalization",
         action="store_true",
-        help="Apply the reviewed explicit aggregate-layer character normalization map.",
+        help="Apply the reviewed explicit same-person character mapping.",
     )
     chapter_overlay_parser.add_argument(
         "--output-dir",
@@ -409,6 +462,19 @@ def main(argv=None):
             }, ensure_ascii=False, indent=2))
         else:
             print(json.dumps(review, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "source-canonicalize":
+        try:
+            summary = core.rewrite_corpus_character_identities(
+                _collect_runs(args, accepted_review_path=args.accepted_review),
+                character_name_map=_character_name_map(args),
+                update_alias_map=not args.skip_alias_map_update,
+                dry_run=args.dry_run,
+            )
+        except (core.RunManifestNotFoundError, ValueError, OSError, json.JSONDecodeError) as exc:
+            parser.error(str(exc))
+        print(json.dumps(summary, ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "character-alias-audit":

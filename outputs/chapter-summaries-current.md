@@ -3,7 +3,7 @@
 - Analysis version: `chapter_summary_export_v2`
 - Source review version: `corpus_sanity_review_v1`
 - Chapter count: `18`
-- Character normalization applied: `True`
+- Character normalization applied: `False`
 - Intensity medians: `advantage=1.073`, `prestige=0.863`, `inclusion=0.939`
 
 ## v1-p1-combray

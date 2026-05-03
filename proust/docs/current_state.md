@@ -20,7 +20,7 @@ For the longer running history, decisions, and examples, see:
 
 The project is in:
 
-- post-production normalized aggregate analysis
+- post-production canonicalized corpus analysis
 
 This now means:
 
@@ -35,13 +35,13 @@ This now means:
 - a refreshed full-corpus review has been generated over all currently accepted annotation outputs
 - a character-alias audit has been completed
 - the first character-alias normalization plan has been reviewed and documented
-- optional aggregate-layer character normalization has now been implemented
-- normalized corpus-review artifacts have now been generated and reviewed
-- the normalized aggregate surface has now been accepted as the default downstream analysis surface
+- the reviewed same-person name merges have now been applied upstream to the accepted corpus
+- the rewritten source corpus has now been verified against the historical normalized aggregate baseline
+- the accepted corpus now serves directly as the default downstream analysis surface
 - the first downstream character cross-lens analysis artifact has now been generated
 - the first character-by-chapter cross-lens analysis artifact has now been generated for the current highest-information figures
 - app-facing cross-lens character profile cards have now been generated
-- app-facing chapter overlay JSON has now been exported for the accepted normalized corpus surface
+- app-facing chapter overlay JSON has now been exported for the accepted canonicalized corpus surface
 - app-facing chapter overlay prose summaries have now been added as `chapter_overlay_v2`
 - app-facing chapter summary export data has now been generated as `chapter_summary_export_v2`
 
@@ -53,7 +53,7 @@ The current question is no longer:
 
 The current question is:
 
-- what downstream analysis surfaces should be built from the accepted normalized production corpus?
+- what downstream analysis surfaces should be built from the accepted canonicalized production corpus?
 
 ## Current stack status
 
@@ -81,7 +81,7 @@ Current read:
 - interruption-state handling has now been patched in the runner
 - controlled chapter-internal parallelism has now been repeatedly validated in production chapters
 - the current aggregate review surface is good enough to expose identity-splitting issues that were not obvious batch by batch
-- the reviewed normalization pass cleaned up per-character aggregate summaries without changing the core cross-lens stability read
+- the upstream canonicalization pass cleaned up per-character aggregate summaries without changing the core cross-lens stability read
 
 ## Current review rule
 
@@ -121,14 +121,14 @@ The default should be:
 
 - keep the prompt, reducer, and lenses fixed
 - keep accepted annotation JSON fixed
-- treat the normalized aggregate surface as the default analysis surface
+- treat the canonicalized accepted corpus surface as the default analysis surface
 - intervene only if downstream analysis exposes a genuinely new report-level failure class
 
 For downstream analysis work:
 
 - read aggregate artifacts first
 - only drill back into unit-level evidence when the aggregate picture shows a genuinely surprising signal
-- prefer new downstream views over source-annotation rewriting
+- prefer new downstream views over further source-annotation rewriting
 
 ## Latest accepted evidence
 
@@ -150,10 +150,11 @@ The current accepted evidence now includes:
   - [character-alias-audit-current.md](/Users/nathan_brixius/dev/proust/outputs/character-alias-audit-current.md:1)
 - a reviewed character alias normalization plan:
   - [character_alias_normalization_plan.md](/Users/nathan_brixius/dev/proust/proust/docs/character_alias_normalization_plan.md:1)
-- completed normalized aggregate artifacts:
+- historical normalized aggregate artifacts kept for verification:
   - [corpus-review-current-normalized.json](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.json:1)
   - [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1)
   - [corpus-review-normalization-diff.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-normalization-diff.md:1)
+- completed upstream canonicalization of the accepted corpus, with regenerated current artifacts matching the historical normalized baseline
 - the first downstream character analysis artifacts:
   - [character-cross-lens-current.json](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.json:1)
   - [character-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.md:1)
@@ -196,25 +197,25 @@ The project has completed the full-corpus automation and first aggregate refresh
 
 Current conclusion:
 
-- keep source annotations fixed
+- keep the accepted annotation corpus fixed by default after the completed canonicalization pass
 - treat the accepted annotation corpus as stable enough for downstream analysis
 - use explicit reviewed mappings rather than broad alias heuristics
-- use the normalized aggregate review surface as the default per-character surface
+- use the canonicalized corpus-review surface as the default per-character surface
 - make the next changes in downstream analysis, not in prompt/reducer/schema behavior
 
 ## Default next move
 
 If work resumes from this checkpoint, the next default move is:
 
-1. keep the accepted annotation JSON unchanged
-2. treat [corpus-review-current-normalized.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current-normalized.md:1) as the default aggregate review surface
+1. keep the accepted annotation JSON unchanged by default
+2. treat [corpus-review-current.md](/Users/nathan_brixius/dev/proust/outputs/corpus-review-current.md:1) as the default aggregate review surface
 3. treat [character-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-cross-lens-current.md:1) as the first downstream analysis artifact
 4. treat [character-chapter-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.md:1) as the active checkpoint artifact for the highest-information characters
 5. treat [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1) and [chapter-overlays-current/manifest.json](/Users/nathan_brixius/dev/proust/outputs/chapter-overlays-current/manifest.json:1) as the default app-facing data products
 6. treat `chapter_overlay_v2` summaries as complete enough for first app rendering
 7. treat [chapter-summaries-current.json](/Users/nathan_brixius/dev/proust/outputs/chapter-summaries-current.json:1) as the new chapter-level app-facing middle layer, now centered on chapter prose, tonal archetypes, lens densities, impact-mass top characters, and distinguishing passages
 8. after that, prioritize richer editorial framing on top of the chapter-summary and overlay surfaces
-9. only reconsider source-annotation rewriting if a later downstream-analysis need clearly justifies it
+9. only reopen source canonicalization if a genuinely new same-person naming issue appears
 
 ## Latest checkpoint
 
@@ -275,7 +276,7 @@ Latest mechanical result:
 - current corpus review workflow and refreshed artifacts committed in `499ad3a`
 - character alias audit committed in `522d51e`
 - reviewed character alias normalization plan committed in `82137dc`
-- aggregate-layer character normalization, normalized corpus-review artifacts, and normalization diff generated in the working tree
+- aggregate-layer normalization verified historically and upstream canonicalization completed in the accepted corpus
 - first downstream character cross-lens analysis artifacts generated in the working tree
 - first downstream character-by-chapter analysis artifacts generated in the working tree
 - app-facing character profile cards and chapter overlay exports generated in the working tree
@@ -287,11 +288,11 @@ Current aggregate corpus counts:
 - `1684` declared units
 - `1684` valid annotations
 - cross-lens sign-flip examples in the refreshed corpus review: `0`
-- normalized corpus-review character counts:
+- current corpus-review character counts after source canonicalization:
   - `69 -> 62` in `advantage`
   - `69 -> 62` in `prestige`
   - `69 -> 62` in `inclusion`
-- normalized corpus-review cross-lens summary:
+- current corpus-review cross-lens summary:
   - `1996` comparable entries
   - `128` label disagreements
   - `93` direction disagreements
@@ -299,11 +300,11 @@ Current aggregate corpus counts:
 
 Current stopping point:
 
-- the earlier identity splits (`Charlus` / `baron de Charlus`, `Mme Swann` / `Odette`, etc.) have now been merged at the aggregate layer using the reviewed explicit mapping
-- the normalized aggregate surface is cleaner and still preserves the same core stability read
+- the earlier identity splits (`Charlus` / `baron de Charlus`, `Mme Swann` / `Odette`, etc.) have now been canonicalized upstream in the accepted corpus
+- the current canonicalized corpus surface is cleaner and still preserves the same core stability read
 - the first downstream per-character cross-lens surface now exists and is suitable as the default starting point for further analysis
 - the next reading surface should be the character-by-chapter cross-lens artifact for the current highest-information figures
-- the next session should extend downstream analysis on that normalized chapter-aware surface, not return to new annotation production
+- the next session should extend downstream analysis on that canonicalized chapter-aware surface, not return to new annotation production
 
 - `run-466`: `8/8` completed, `0` parse errors, `0` validation errors
 - `run-468`: `8/8` completed, `0` parse errors, `0` validation errors

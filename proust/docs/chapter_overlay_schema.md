@@ -6,7 +6,7 @@ The goal is:
 
 - one stable minimal export for inline reader overlays
 - keyed by canonical chapter id
-- built from the accepted normalized aggregate surface
+- built from the accepted canonicalized corpus surface
 - sufficient for paragraph shading, lens toggles, and character chips
 
 The schema started as a narrow structural `v1` export. The current artifact is `chapter_overlay_v2`, which keeps the `v1` structure and adds deterministic prose summaries.
@@ -18,7 +18,7 @@ Related documents:
 
 Primary source data for the exporter:
 
-- normalized `build_outcome_report(...)` unit timelines
+- canonicalized `build_outcome_report(...)` unit timelines
 - canonical chapter metadata from [export.py](/Users/nathan_brixius/dev/proust/proust/export.py:1)
 
 ## Design Principles
@@ -27,7 +27,7 @@ The overlay schema should be:
 
 - chapter-oriented
 - paragraph-range-based
-- normalized by reviewed character identity
+- canonicalized by reviewed same-person identity
 - explicit about all three scoring lenses
 - small enough for direct app consumption
 

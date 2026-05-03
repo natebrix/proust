@@ -4,7 +4,7 @@ This document defines a first app-facing JSON schema for full character pages in
 
 The goal is:
 
-- one stable derived JSON artifact per normalized character
+- one stable derived JSON artifact per canonicalized character
 - built on top of existing analysis outputs rather than new scoring logic
 - explicit about computed versus editorial fields
 - easy for the `islt` app to render using its existing conventions
@@ -33,7 +33,7 @@ Portrait source directory:
 The first schema should be:
 
 - character-centric
-- normalized by reviewed identity
+- canonicalized by reviewed identity
 - strong enough to power a real page, not just a card
 - explicit about what is computed versus what is editorial
 - portrait-aware without hard-coding rendering choices

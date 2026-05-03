@@ -607,6 +607,188 @@ def test_build_corpus_sanity_review_can_apply_character_normalization_and_diff(t
     assert diff["lens_diffs"]["advantage"]["normalized_characters"][0]["merged_from"] == ["Charlus"]
 
 
+def test_rewrite_run_character_identities_updates_annotations_and_alias_map(tmp_path):
+    run_dir = tmp_path / "run-001"
+    pn.prepare_annotation_run(
+        run_dir,
+        alias_map={
+            "Charlus": {"aliases": ["Charlus"], "notes": "Baron de Charlus"},
+            "la grand-mère du narrateur": {"aliases": ["la grand-mère du narrateur"], "notes": ""},
+        },
+    )
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        {
+            "unit_id": "v1-p1-combray#p-17",
+            "characters_present": [
+                {
+                    "canonical_name": "Charlus",
+                    "surface_forms": ["Charlus"],
+                    "presence_type": "explicit",
+                    "presence_confidence": 0.99,
+                },
+                {
+                    "canonical_name": "la grand-mère du narrateur",
+                    "surface_forms": ["la grand-mère du narrateur"],
+                    "presence_type": "implicit",
+                    "presence_confidence": 0.9,
+                },
+            ],
+            "appraisal_events": [
+                {
+                    "event_id": "E1",
+                    "source": "Charlus",
+                    "target": "la grand-mère du narrateur",
+                    "type": "prestige_association",
+                    "polarity": "positive",
+                    "narrative_stance": "endorsed",
+                    "confidence": 1.0,
+                    "evidence": "x",
+                    "explanation": "x",
+                }
+            ],
+            "status_effects": [
+                {
+                    "character": "la grand-mère du narrateur",
+                    "dimension": "social_status",
+                    "delta": 1,
+                    "based_on_events": ["E1"],
+                    "confidence": 1.0,
+                    "explanation": "x",
+                }
+            ],
+            "ambiguities": [],
+        },
+    )
+
+    summary = pr.rewrite_run_character_identities(run_dir, pr.REVIEWED_CHARACTER_NORMALIZATION_MAP)
+    assert summary["annotation_files_rewritten"] == 1
+    assert summary["field_change_counts"]["characters_present.canonical_name"] == 2
+    assert summary["field_change_counts"]["appraisal_events.source"] == 1
+    assert summary["field_change_counts"]["appraisal_events.target"] == 1
+    assert summary["field_change_counts"]["status_effects.character"] == 1
+
+    annotation = json.loads((run_dir / "annotations" / "v1-p1-combray#p-17.json").read_text())
+    assert annotation["characters_present"][0]["canonical_name"] == "baron de Charlus"
+    assert annotation["appraisal_events"][0]["source"] == "baron de Charlus"
+    assert annotation["appraisal_events"][0]["target"] == "la grand-mère"
+    assert annotation["status_effects"][0]["character"] == "la grand-mère"
+
+    manifest = json.loads((run_dir / "run.json").read_text())
+    assert "Charlus" not in manifest["alias_map"]
+    assert "la grand-mère du narrateur" not in manifest["alias_map"]
+    assert "baron de Charlus" in manifest["alias_map"]
+    assert "la grand-mère" in manifest["alias_map"]
+    assert "Charlus" in manifest["alias_map"]["baron de Charlus"]["aliases"]
+    assert "la grand-mère du narrateur" in manifest["alias_map"]["la grand-mère"]["aliases"]
+
+
+def test_source_canonicalization_matches_normalized_review_surface(tmp_path):
+    run_a = tmp_path / "run-001"
+    run_b = tmp_path / "run-002"
+    pn.prepare_annotation_run(run_a)
+    pn.prepare_annotation_run(run_b)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _multi_character_annotation(
+            "v1-p1-combray#p-17",
+            [
+                {"character": "Charlus", "delta": -1},
+                {"character": "Saint-Loup", "delta": 1},
+            ],
+        ),
+    )
+    pn.write_annotation_result(
+        run_b,
+        "v1-p1-combray#p-274-p-275",
+        _multi_character_annotation(
+            "v1-p1-combray#p-274-p-275",
+            [
+                {"character": "baron de Charlus", "delta": 1},
+                {"character": "Robert de Saint-Loup", "delta": -1},
+            ],
+        ),
+    )
+
+    normalized_review = pr.build_corpus_sanity_review(
+        [run_a, run_b],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+    normalized_overlay = pr.build_chapter_overlay_data(
+        [run_a, run_b],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+    normalized_elo = pr.build_character_elo(
+        [run_a, run_b],
+        character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    )
+
+    pr.rewrite_corpus_character_identities([run_a, run_b], pr.REVIEWED_CHARACTER_NORMALIZATION_MAP)
+
+    source_review = pr.build_corpus_sanity_review([run_a, run_b])
+    source_overlay = pr.build_chapter_overlay_data([run_a, run_b])
+    source_elo = pr.build_character_elo([run_a, run_b])
+
+    assert source_review["lens_reviews"] == normalized_review["lens_reviews"]
+    assert source_review["cross_lens_summary"] == normalized_review["cross_lens_summary"]
+
+    def _overlay_units(dataset):
+        return [
+            {
+                "chapterId": chapter["chapterId"],
+                "units": chapter["units"],
+                "summary": chapter["summary"],
+            }
+            for chapter in dataset["chapters"]
+        ]
+
+    assert _overlay_units(source_overlay) == _overlay_units(normalized_overlay)
+    assert source_elo["characters"] == normalized_elo["characters"]
+
+
+def test_main_source_canonicalize_discover_uses_accepted_review_surface(tmp_path, capsys):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    run_b = outputs_dir / "run-002"
+    accepted_review = tmp_path / "accepted-review.json"
+    pn.prepare_annotation_run(run_a)
+    pn.prepare_annotation_run(run_b)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _minimal_annotation("v1-p1-combray#p-17", character="Charlus"),
+    )
+    pn.write_annotation_result(
+        run_b,
+        "v1-p1-combray#p-274-p-275",
+        _minimal_annotation("v1-p1-combray#p-274-p-275", character="Charlus"),
+    )
+    accepted_review.write_text(json.dumps({"run_ids": ["run-001"]}))
+
+    exit_code = pr.main(
+        [
+            "source-canonicalize",
+            "--discover-runs",
+            str(outputs_dir),
+            "--accepted-review",
+            str(accepted_review),
+            "--reviewed-character-normalization",
+        ]
+    )
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    rewritten_a = json.loads((run_a / "annotations" / "v1-p1-combray#p-17.json").read_text())
+    untouched_b = json.loads((run_b / "annotations" / "v1-p1-combray#p-274-p-275.json").read_text())
+    assert exit_code == 0
+    assert payload["run_count"] == 1
+    assert payload["runs"][0]["run_id"] == "run-001"
+    assert rewritten_a["characters_present"][0]["canonical_name"] == "baron de Charlus"
+    assert untouched_b["characters_present"][0]["canonical_name"] == "Charlus"
+
+
 def test_main_corpus_review_can_discover_and_write_artifacts(tmp_path, capsys):
     outputs_dir = tmp_path / "outputs"
     run_dir = outputs_dir / "run-001"

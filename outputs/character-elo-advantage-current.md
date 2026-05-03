@@ -9,7 +9,7 @@
 - Initial rating: `1500.0`
 - K factor: `24.0`
 - Epsilon: `0.25`
-- Character normalization applied: `True`
+- Character normalization applied: `False`
 
 ## Top Rated Characters
 

@@ -3,7 +3,7 @@
 - Analysis version: `character_annotation_counts_v1`
 - Source review version: `corpus_sanity_review_v1`
 - Character count: `62`
-- Character normalization applied: `True`
+- Character normalization applied: `False`
 
 | Character | Annotation Units | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- | --- |
