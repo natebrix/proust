@@ -1,7 +1,12 @@
 import json
 from pathlib import Path
 
-from . import runner as legacy
+from .reporting_utils import (
+    format_ordinal,
+    format_signed_number,
+    markdown_table,
+)
+from .scoring import SCORING_LENS_CONFIGS, SCORING_LENS_ORDER
 
 
 def render_corpus_review_normalization_diff_markdown(diff):
@@ -13,7 +18,7 @@ def render_corpus_review_normalization_diff_markdown(diff):
         "",
         "## Character Map",
         "",
-        legacy._markdown_table(
+        markdown_table(
             ["Source Name", "Normalized Name"],
             diff["character_normalization_map"].items(),
         ),
@@ -31,7 +36,7 @@ def render_corpus_review_normalization_diff_markdown(diff):
                 "",
                 "Normalized character movement:",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     [
                         "Character",
                         "Merged From",
@@ -46,8 +51,8 @@ def render_corpus_review_normalization_diff_markdown(diff):
                         (
                             row["character"],
                             ", ".join(row["merged_from"]),
-                            legacy._format_signed_number(row["net_score_before"]),
-                            legacy._format_signed_number(row["net_score_after"]),
+                            format_signed_number(row["net_score_before"]),
+                            format_signed_number(row["net_score_after"]),
                             row["unit_count_before"],
                             row["unit_count_after"],
                             f"{row['positive_rank_before']} -> {row['positive_rank_after']}",
@@ -59,7 +64,7 @@ def render_corpus_review_normalization_diff_markdown(diff):
                 "",
                 "Top positive characters:",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Before", "After"],
                     [
                         (
@@ -78,7 +83,7 @@ def render_corpus_review_normalization_diff_markdown(diff):
                 "",
                 "Top negative characters:",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Before", "After"],
                     [
                         (
@@ -134,17 +139,17 @@ def render_character_cross_lens_analysis_markdown(analysis):
         "",
     ]
 
-    for lens in sorted(legacy.SCORING_LENS_CONFIGS):
+    for lens in sorted(SCORING_LENS_CONFIGS):
         lines.extend(
             [
                 f"### {lens}",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Character", "Net Score", "Units"],
                     [
                         (
                             row["character"],
-                            legacy._format_signed_number(row["net_score"]),
+                            format_signed_number(row["net_score"]),
                             row["unit_count"],
                         )
                         for row in analysis["top_positive_by_lens"][lens]
@@ -161,17 +166,17 @@ def render_character_cross_lens_analysis_markdown(analysis):
         ]
     )
 
-    for lens in sorted(legacy.SCORING_LENS_CONFIGS):
+    for lens in sorted(SCORING_LENS_CONFIGS):
         lines.extend(
             [
                 f"### {lens}",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Character", "Net Score", "Units"],
                     [
                         (
                             row["character"],
-                            legacy._format_signed_number(row["net_score"]),
+                            format_signed_number(row["net_score"]),
                             row["unit_count"],
                         )
                         for row in analysis["top_negative_by_lens"][lens]
@@ -185,7 +190,7 @@ def render_character_cross_lens_analysis_markdown(analysis):
         [
             "## Largest Cross-Lens Rank Spread",
             "",
-            legacy._markdown_table(
+            markdown_table(
                 ["Character", "Advantage Rank", "Prestige Rank", "Inclusion Rank", "Rank Spread", "Max Units"],
                 [
                     (
@@ -202,15 +207,15 @@ def render_character_cross_lens_analysis_markdown(analysis):
             "",
             "## Highest Volatility",
             "",
-            legacy._markdown_table(
+            markdown_table(
                 ["Character", "Advantage Span", "Prestige Span", "Inclusion Span", "Max Span", "Max Units"],
                 [
                     (
                         row["character"],
-                        legacy._format_signed_number(row["lens_scores"]["advantage"]["score_span"]),
-                        legacy._format_signed_number(row["lens_scores"]["prestige"]["score_span"]),
-                        legacy._format_signed_number(row["lens_scores"]["inclusion"]["score_span"]),
-                        legacy._format_signed_number(row["max_score_span"]),
+                        format_signed_number(row["lens_scores"]["advantage"]["score_span"]),
+                        format_signed_number(row["lens_scores"]["prestige"]["score_span"]),
+                        format_signed_number(row["lens_scores"]["inclusion"]["score_span"]),
+                        format_signed_number(row["max_score_span"]),
                         row["max_unit_count"],
                     )
                     for row in analysis["top_volatile_characters"]
@@ -219,7 +224,7 @@ def render_character_cross_lens_analysis_markdown(analysis):
             "",
             "## Character Table",
             "",
-            legacy._markdown_table(
+            markdown_table(
                 [
                     "Character",
                     "Advantage",
@@ -234,14 +239,14 @@ def render_character_cross_lens_analysis_markdown(analysis):
                 [
                     (
                         row["character"],
-                        legacy._format_signed_number(row["lens_scores"]["advantage"]["net_score"]),
-                        legacy._format_signed_number(row["lens_scores"]["prestige"]["net_score"]),
-                        legacy._format_signed_number(row["lens_scores"]["inclusion"]["net_score"]),
+                        format_signed_number(row["lens_scores"]["advantage"]["net_score"]),
+                        format_signed_number(row["lens_scores"]["prestige"]["net_score"]),
+                        format_signed_number(row["lens_scores"]["inclusion"]["net_score"]),
                         row["lens_scores"]["advantage"]["rank"],
                         row["lens_scores"]["prestige"]["rank"],
                         row["lens_scores"]["inclusion"]["rank"],
                         row["max_unit_count"],
-                        legacy._format_signed_number(row["max_score_span"]),
+                        format_signed_number(row["max_score_span"]),
                     )
                     for row in analysis["characters"][:40]
                 ],
@@ -293,9 +298,9 @@ def render_character_chapter_analysis_markdown(analysis):
                 f"- Advantage / Prestige / Inclusion ranks: `{summary['lens_scores']['advantage']['rank']}` / `{summary['lens_scores']['prestige']['rank']}` / `{summary['lens_scores']['inclusion']['rank']}`",
                 f"- Rank spread: `{summary['rank_spread']}`",
                 f"- Max units: `{summary['max_unit_count']}`",
-                f"- Max score span: `{legacy._format_signed_number(summary['max_score_span'])}`",
+                f"- Max score span: `{format_signed_number(summary['max_score_span'])}`",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     [
                         "Chapter",
                         "Advantage",
@@ -308,9 +313,9 @@ def render_character_chapter_analysis_markdown(analysis):
                     [
                         (
                             row["chapter_id"],
-                            legacy._format_signed_number(row["advantage"]["net_score"]),
-                            legacy._format_signed_number(row["prestige"]["net_score"]),
-                            legacy._format_signed_number(row["inclusion"]["net_score"]),
+                            format_signed_number(row["advantage"]["net_score"]),
+                            format_signed_number(row["prestige"]["net_score"]),
+                            format_signed_number(row["inclusion"]["net_score"]),
                             row["advantage"]["unit_count"],
                             row["prestige"]["unit_count"],
                             row["inclusion"]["unit_count"],
@@ -345,15 +350,15 @@ def render_character_annotation_counts_markdown(analysis):
         f"- Character count: `{analysis['character_count']}`",
         f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
         "",
-        legacy._markdown_table(
+        markdown_table(
             ["Character", "Annotation Units", "Advantage", "Prestige", "Inclusion"],
             [
                 (
                     row["character"],
                     row["annotation_unit_count"],
-                    legacy._format_signed_number(row["advantage_net_score"]),
-                    legacy._format_signed_number(row["prestige_net_score"]),
-                    legacy._format_signed_number(row["inclusion_net_score"]),
+                    format_signed_number(row["advantage_net_score"]),
+                    format_signed_number(row["prestige_net_score"]),
+                    format_signed_number(row["inclusion_net_score"]),
                 )
                 for row in analysis["characters"]
             ],
@@ -391,7 +396,7 @@ def render_character_elo_markdown(analysis):
         "",
         "## Top Rated Characters",
         "",
-        legacy._markdown_table(
+        markdown_table(
             ["Character", "ELO", "Matches", "W-L-D", "Units", "Mean Advantage"],
             [
                 (
@@ -400,7 +405,7 @@ def render_character_elo_markdown(analysis):
                     row["match_count"],
                     f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
                     row["unit_count"],
-                    legacy._format_signed_number(row["mean_advantage_net_score"]),
+                    format_signed_number(row["mean_advantage_net_score"]),
                 )
                 for row in analysis["top_rated_characters"]
             ],
@@ -408,7 +413,7 @@ def render_character_elo_markdown(analysis):
         "",
         "## Lowest Rated Characters",
         "",
-        legacy._markdown_table(
+        markdown_table(
             ["Character", "ELO", "Matches", "W-L-D", "Units", "Mean Advantage"],
             [
                 (
@@ -417,7 +422,7 @@ def render_character_elo_markdown(analysis):
                     row["match_count"],
                     f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
                     row["unit_count"],
-                    legacy._format_signed_number(row["mean_advantage_net_score"]),
+                    format_signed_number(row["mean_advantage_net_score"]),
                 )
                 for row in analysis["lowest_rated_characters"]
             ],
@@ -425,7 +430,7 @@ def render_character_elo_markdown(analysis):
         "",
         "## Largest Rank Mismatches",
         "",
-        legacy._markdown_table(
+        markdown_table(
             ["Character", "ELO Rank", "Mean Score Rank", "Delta", "ELO", "Mean Advantage"],
             [
                 (
@@ -434,7 +439,7 @@ def render_character_elo_markdown(analysis):
                     row["mean_score_rank"],
                     row["elo_rank_minus_mean_score_rank"],
                     row["elo"],
-                    legacy._format_signed_number(row["mean_advantage_net_score"]),
+                    format_signed_number(row["mean_advantage_net_score"]),
                 )
                 for row in analysis["largest_rank_mismatches"]
             ],
@@ -442,7 +447,7 @@ def render_character_elo_markdown(analysis):
         "",
         "## Character Table",
         "",
-        legacy._markdown_table(
+        markdown_table(
             [
                 "Character",
                 "ELO",
@@ -462,14 +467,14 @@ def render_character_elo_markdown(analysis):
                     row["match_count"],
                     f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
                     row["unit_count"],
-                    legacy._format_signed_number(row["mean_advantage_net_score"]),
+                    format_signed_number(row["mean_advantage_net_score"]),
                     (
-                        f"{row['top_positive_unit']['unit_id']} ({legacy._format_signed_number(row['top_positive_unit']['net_score'])})"
+                        f"{row['top_positive_unit']['unit_id']} ({format_signed_number(row['top_positive_unit']['net_score'])})"
                         if row["top_positive_unit"]
                         else ""
                     ),
                     (
-                        f"{row['top_negative_unit']['unit_id']} ({legacy._format_signed_number(row['top_negative_unit']['net_score'])})"
+                        f"{row['top_negative_unit']['unit_id']} ({format_signed_number(row['top_negative_unit']['net_score'])})"
                         if row["top_negative_unit"]
                         else ""
                     ),
@@ -509,7 +514,7 @@ def render_character_elo_timeline_markdown(analysis):
         "",
         "## Character Coverage",
         "",
-        legacy._markdown_table(
+        markdown_table(
             ["Character", "Points", "Final ELO", "Latest Unit"],
             [
                 (
@@ -528,7 +533,7 @@ def render_character_elo_timeline_markdown(analysis):
         "",
         "## Sample Points",
         "",
-        legacy._markdown_table(
+        markdown_table(
             [
                 "Character",
                 "ELO",
@@ -543,7 +548,7 @@ def render_character_elo_timeline_markdown(analysis):
                 (
                     row["character"],
                     row["elo"],
-                    legacy._format_signed_number(row["advantage_net_score"]),
+                    format_signed_number(row["advantage_net_score"]),
                     row["advantage_label"],
                     row["corpus_position"]["chapter_id"],
                     row["corpus_position"]["unit_id"],
@@ -589,39 +594,39 @@ def render_character_profile_cards_markdown(analysis):
                 "",
                 f"- Annotation units: `{card['annotation_unit_count']}`",
                 f"- Rank spread: `{card['rank_spread']}`",
-                f"- Max score span: `{legacy._format_signed_number(card['max_score_span'])}`",
+                f"- Max score span: `{format_signed_number(card['max_score_span'])}`",
                 f"- Selected by: `{', '.join(card['selected_by']) or 'none'}`",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Lens", "Net Score", "Percentile", "Rank", "Units", "Dominant Dimension", "Score Span"],
                     [
                         (
                             lens,
-                            legacy._format_signed_number(card["lens_scores"][lens]["net_score"]),
+                            format_signed_number(card["lens_scores"][lens]["net_score"]),
                             (
-                                legacy._format_ordinal(card["lens_scores"][lens]["percentile"])
+                                format_ordinal(card["lens_scores"][lens]["percentile"])
                                 if card["lens_scores"][lens]["percentile"] is not None
                                 else ""
                             ),
                             card["lens_scores"][lens]["rank"],
                             card["lens_scores"][lens]["unit_count"],
                             card["lens_scores"][lens]["dominant_status_dimension"],
-                            legacy._format_signed_number(card["lens_scores"][lens]["score_span"]),
+                            format_signed_number(card["lens_scores"][lens]["score_span"]),
                         )
-                        for lens in sorted(legacy.SCORING_LENS_CONFIGS)
+                        for lens in sorted(SCORING_LENS_CONFIGS)
                     ],
                 ),
                 "",
                 "Top chapters:",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Chapter", "Advantage", "Prestige", "Inclusion"],
                     [
                         (
                             row["chapter_id"],
-                            legacy._format_signed_number(row["advantage"]["net_score"]),
-                            legacy._format_signed_number(row["prestige"]["net_score"]),
-                            legacy._format_signed_number(row["inclusion"]["net_score"]),
+                            format_signed_number(row["advantage"]["net_score"]),
+                            format_signed_number(row["prestige"]["net_score"]),
+                            format_signed_number(row["inclusion"]["net_score"]),
                         )
                         for row in card["top_chapters"]
                     ],
@@ -681,10 +686,10 @@ def render_character_pages_markdown(analysis):
                 f"- Portrait default: `{page['portrait']['default'] or 'none'}`",
                 f"- Annotation units: `{page['profile']['annotation_unit_count']}`",
                 f"- Rank spread: `{page['profile']['rank_spread']}`",
-                f"- Max score span: `{legacy._format_signed_number(page['profile']['max_score_span'])}`",
+                f"- Max score span: `{format_signed_number(page['profile']['max_score_span'])}`",
                 f"- Pattern: `{page['editorial']['primary_pattern']}`",
                 "",
-                page["editorial"]["dek"],
+                page["editorial"]["subheading"],
                 "",
                 page["editorial"]["summary"],
                 "",
@@ -696,36 +701,36 @@ def render_character_pages_markdown(analysis):
         lines.extend(
             [
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Lens", "Net Score", "Percentile", "Rank", "Units", "Dominant Dimension", "Score Span"],
                     [
                         (
                             lens,
-                            legacy._format_signed_number(page["profile"]["lens_scores"][lens]["net_score"]),
+                            format_signed_number(page["profile"]["lens_scores"][lens]["net_score"]),
                             (
-                                legacy._format_ordinal(page["profile"]["lens_scores"][lens]["percentile"])
+                                format_ordinal(page["profile"]["lens_scores"][lens]["percentile"])
                                 if page["profile"]["lens_scores"][lens]["percentile"] is not None
                                 else ""
                             ),
                             page["profile"]["lens_scores"][lens]["rank"],
                             page["profile"]["lens_scores"][lens]["unit_count"],
                             page["profile"]["lens_scores"][lens]["dominant_status_dimension"],
-                            legacy._format_signed_number(page["profile"]["lens_scores"][lens]["score_span"]),
+                            format_signed_number(page["profile"]["lens_scores"][lens]["score_span"]),
                         )
-                        for lens in sorted(legacy.SCORING_LENS_CONFIGS)
+                        for lens in sorted(SCORING_LENS_CONFIGS)
                     ],
                 ),
                 "",
                 "Top chapters:",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Chapter", "Advantage", "Prestige", "Inclusion"],
                     [
                         (
                             row["chapter_id"],
-                            legacy._format_signed_number(row["advantage"]["net_score"]),
-                            legacy._format_signed_number(row["prestige"]["net_score"]),
-                            legacy._format_signed_number(row["inclusion"]["net_score"]),
+                            format_signed_number(row["advantage"]["net_score"]),
+                            format_signed_number(row["prestige"]["net_score"]),
+                            format_signed_number(row["inclusion"]["net_score"]),
                         )
                         for row in page["top_chapters"]
                     ],
@@ -786,21 +791,21 @@ def render_chapter_summary_export_markdown(analysis):
                 "",
                 chapter["summary"] or "No summary available.",
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Lens", "Direction", "Signed Density", "Intensity Density", "Chapter Rank"],
                     [
                         (
                             lens,
                             chapter["lens_profile"][lens]["direction"],
-                            legacy._format_signed_number(chapter["lens_profile"][lens]["signed_density"]),
+                            format_signed_number(chapter["lens_profile"][lens]["signed_density"]),
                             chapter["lens_profile"][lens]["intensity_density"],
-                            f"{chapter['lens_profile'][lens]['chapter_rank']} ({legacy._format_ordinal(chapter['lens_profile'][lens]['chapter_percentile'])})",
+                            f"{chapter['lens_profile'][lens]['chapter_rank']} ({format_ordinal(chapter['lens_profile'][lens]['chapter_percentile'])})",
                         )
-                        for lens in legacy.SCORING_LENS_ORDER
+                        for lens in SCORING_LENS_ORDER
                     ],
                 ),
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Character", "Units", "Impact Mass", "Dominant Lens", "Signature"],
                     [
                         (
@@ -814,7 +819,7 @@ def render_chapter_summary_export_markdown(analysis):
                     ],
                 ),
                 "",
-                legacy._markdown_table(
+                markdown_table(
                     ["Passage", "Impact Mass", "Dominant Character", "Lens Signature", "Summary"],
                     [
                         (
@@ -823,7 +828,7 @@ def render_chapter_summary_export_markdown(analysis):
                             row["dominant_character"] or "none",
                             ", ".join(
                                 f"{lens} {row['lens_signature'][lens]}"
-                                for lens in legacy.SCORING_LENS_ORDER
+                                for lens in SCORING_LENS_ORDER
                             ),
                             row["summary"],
                         )

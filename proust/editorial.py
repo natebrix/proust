@@ -9,7 +9,7 @@ CHARACTER_PORTRAIT_SLUGS = {
 
 CHARACTER_PAGE_PILOT_EDITORIAL = {
     "Odette": {
-        "dek": "Prestige-positive but inclusion-negative, with her sharpest gains and reversals concentrated in a few high-pressure chapters.",
+        "subheading": "Prestige-positive but inclusion-negative, with her sharpest gains and reversals concentrated in a few high-pressure chapters.",
         "summary": "Odette is one of the clearest cross-lens split figures in the corpus: she rises strongly in prestige while remaining far more unstable in belonging and immediate advantage.",
         "why_interesting": [
             "Her prestige and inclusion readings diverge much more sharply than her raw frequency alone would predict.",
@@ -23,7 +23,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Robert de Saint-Loup": {
-        "dek": "A highly frequent aristocratic figure whose prestige often holds even where belonging and immediate advantage give way.",
+        "subheading": "A highly frequent aristocratic figure whose prestige often holds even where belonging and immediate advantage give way.",
         "summary": "Robert de Saint-Loup combines very high annotation frequency with one of the largest lens spreads in the corpus, especially where aristocratic polish and emotional belonging pull apart.",
         "why_interesting": [
             "He is central enough to matter structurally, not just as a curiosity of one chapter.",
@@ -37,7 +37,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Swann": {
-        "dek": "The corpus's most annotated figure, overwhelmingly shaped by repeated immediate, social, and emotional losses.",
+        "subheading": "The corpus's most annotated figure, overwhelmingly shaped by repeated immediate, social, and emotional losses.",
         "summary": "Swann dominates the corpus by sheer annotation footprint, and his aggregate profile remains broadly and repeatedly negative across all three lenses.",
         "why_interesting": [
             "He is both the most annotated character and one of the clearest broad negative cases.",
@@ -51,7 +51,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Albertine": {
-        "dek": "A heavily annotated recurring figure whose strongest shaping comes from imprisonment, suspicion, disappearance, and loss.",
+        "subheading": "A heavily annotated recurring figure whose strongest shaping comes from imprisonment, suspicion, disappearance, and loss.",
         "summary": "Albertine is one of the largest and most persistently negative figures in the corpus, with her strongest shaping concentrated in the prison and disappearance chapters.",
         "why_interesting": [
             "Her profile is both high-volume and highly concentrated in a few major late narrative blocks.",
@@ -65,7 +65,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "baron de Charlus": {
-        "dek": "A highly volatile major figure whose aggregate negatives are spread across salon, sexual, and wartime terrains.",
+        "subheading": "A highly volatile major figure whose aggregate negatives are spread across salon, sexual, and wartime terrains.",
         "summary": "baron de Charlus is a highly annotated and highly volatile figure whose negative aggregate treatment is spread across salon, sexual, and wartime configurations rather than one single narrative block.",
         "why_interesting": [
             "He is too frequent and too spread out to read as a one-zone anomaly.",
@@ -79,7 +79,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "duchesse de Guermantes": {
-        "dek": "The corpus's clearest uniformly positive great-world figure, with command and symbolic force holding across all three lenses.",
+        "subheading": "The corpus's clearest uniformly positive great-world figure, with command and symbolic force holding across all three lenses.",
         "summary": "duchesse de Guermantes is the strongest uniformly positive figure in the current corpus surface, with her social command and symbolic force holding across every lens rather than depending on a narrow chapter exception.",
         "why_interesting": [
             "She provides a counterexample to the many elite figures whose rank does not convert cleanly into broad advantage.",
@@ -93,7 +93,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Mme de Villeparisis": {
-        "dek": "A moderate but revealing split figure, relatively strong in prestige while advantage and inclusion drift downward.",
+        "subheading": "A moderate but revealing split figure, relatively strong in prestige while advantage and inclusion drift downward.",
         "summary": "Mme de Villeparisis is one of the clearest moderate split figures in the corpus: she remains comparatively strong in prestige while advantage and inclusion drift downward or oscillate by chapter.",
         "why_interesting": [
             "She shows the lens split in a quieter register than Odette or Saint-Loup.",
@@ -107,7 +107,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Françoise": {
-        "dek": "A frequent recurring figure whose overall downward pull includes a few brief local reversals.",
+        "subheading": "A frequent recurring figure whose overall downward pull includes a few brief local reversals.",
         "summary": "Françoise accumulates as a broadly negative figure across the corpus, though her profile is not flat: a small number of chapters briefly reverse the trend before the longer downward pull returns.",
         "why_interesting": [
             "She is frequent enough to matter, but not in the same aristocratic pattern as Swann or Charlus.",
@@ -121,7 +121,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Mme Verdurin": {
-        "dek": "A salon figure whose aggregate reading is broadly negative across all three lenses.",
+        "subheading": "A salon figure whose aggregate reading is broadly negative across all three lenses.",
         "summary": "Mme Verdurin is one of the clearest broadly negative salon figures in the corpus, with losses in advantage, prestige, and inclusion all reinforcing rather than offsetting one another.",
         "why_interesting": [
             "She is central enough to shape multiple social zones without becoming a prestige split case.",
@@ -135,7 +135,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Gilberte": {
-        "dek": "A compact but telling figure whose strength in prestige and immediate advantage does not translate into equal belonging.",
+        "subheading": "A compact but telling figure whose strength in prestige and immediate advantage does not translate into equal belonging.",
         "summary": "Gilberte is a compact but revealing cross-lens figure: she scores very well in prestige and immediate advantage, yet her inclusion profile remains markedly less secure.",
         "why_interesting": [
             "She is a smaller but especially clear example of lens divergence.",
@@ -149,7 +149,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Norpois": {
-        "dek": "A strongly positive figure whose main force comes from durable rhetorical and social authority rather than intimacy.",
+        "subheading": "A strongly positive figure whose main force comes from durable rhetorical and social authority rather than intimacy.",
         "summary": "Norpois is a strongly positive figure across all three lenses, driven less by intimacy than by durable rhetorical authority and socially legible judgment.",
         "why_interesting": [
             "He helps separate prestige-positive authority from the more emotionally charged positive figures.",
@@ -163,7 +163,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "la grand-mère": {
-        "dek": "A recurring family figure whose harshest pressure falls on belonging and broader valuation.",
+        "subheading": "A recurring family figure whose harshest pressure falls on belonging and broader valuation.",
         "summary": "la grand-mère accumulates as one of the corpus's more strongly negative recurring figures, with the harshest pressure falling on inclusion and broad valuation rather than on a narrow prestige story alone.",
         "why_interesting": [
             "She is a strongly negative recurring figure outside the main salon/aristocratic pattern.",
@@ -177,7 +177,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Bloch": {
-        "dek": "A strongly negative recurring figure whose losses reinforce each other across all three lenses.",
+        "subheading": "A strongly negative recurring figure whose losses reinforce each other across all three lenses.",
         "summary": "Bloch is one of the clearest aggregate negative cases in the corpus, with repeated losses in advantage, prestige, and inclusion reinforcing each other rather than splitting apart.",
         "why_interesting": [
             "He is one of the cleanest examples of consistent multi-lens damage.",
@@ -191,7 +191,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "duc de Guermantes": {
-        "dek": "A revealing reversal-of-expectation figure: high rank without correspondingly positive aggregate treatment.",
+        "subheading": "A revealing reversal-of-expectation figure: high rank without correspondingly positive aggregate treatment.",
         "summary": "duc de Guermantes is one of the project's most revealing reversals of expectation: despite formal rank, his annotation surface is broadly negative across all three lenses.",
         "why_interesting": [
             "He demonstrates that aristocratic title alone does not guarantee positive aggregate treatment in the corpus.",
@@ -205,7 +205,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "docteur Cottard": {
-        "dek": "A mid-tier negative figure shaped by a strong Swann-world concentration and then smaller, uneven later reversals.",
+        "subheading": "A mid-tier negative figure shaped by a strong Swann-world concentration and then smaller, uneven later reversals.",
         "summary": "docteur Cottard is a mid-tier negative figure whose profile is shaped by one strong Swann-world concentration, then complicated by smaller later recoveries and uneven prestige moments.",
         "why_interesting": [
             "He is a useful moderate case rather than an extreme corpus outlier.",
@@ -219,7 +219,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "la mère du narrateur": {
-        "dek": "A quiet but high-performing recurring figure, especially strong in advantage and inclusion.",
+        "subheading": "A quiet but high-performing recurring figure, especially strong in advantage and inclusion.",
         "summary": "la mère du narrateur is a quietly high-performing figure across all three lenses, with especially strong advantage and inclusion values driven by stable interpretive and familial force.",
         "why_interesting": [
             "She offers a positive familial counterpoint to the more socially competitive figures.",
@@ -233,7 +233,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Bergotte": {
-        "dek": "A symbolic positive figure whose literary authority carries strongly across advantage and prestige.",
+        "subheading": "A symbolic positive figure whose literary authority carries strongly across advantage and prestige.",
         "summary": "Bergotte is one of the corpus's clearest positive symbolic figures, with his literary authority translating into very high advantage and prestige across several distinct narrative zones.",
         "why_interesting": [
             "He is strongly positive without being primarily a belonging-driven figure.",
@@ -247,7 +247,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Legrandin": {
-        "dek": "A broadly negative recurring figure marked by repeated self-positioning failures and social discredit.",
+        "subheading": "A broadly negative recurring figure marked by repeated self-positioning failures and social discredit.",
         "summary": "Legrandin is a broadly negative figure whose profile is shaped by repeated discredit and awkward self-positioning, even though a few isolated units briefly interrupt the downward pattern.",
         "why_interesting": [
             "He is a clear recurring loser without depending on a single chapter block.",
@@ -261,7 +261,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "Mme de Cambremer": {
-        "dek": "A compact but stable negative case: limited in footprint, but strongly downward where it appears.",
+        "subheading": "A compact but stable negative case: limited in footprint, but strongly downward where it appears.",
         "summary": "Mme de Cambremer is a compact but stable negative case: she does not dominate the corpus by volume, but what is there reads overwhelmingly downward in advantage, prestige, and inclusion.",
         "why_interesting": [
             "She is useful as a smaller-scale confirmation that consistent multi-lens negativity is not limited to the biggest characters.",
@@ -275,7 +275,7 @@ CHARACTER_PAGE_PILOT_EDITORIAL = {
         ],
     },
     "M. Vinteuil": {
-        "dek": "A surprising aggregate positive whose late recoveries outweigh strongly negative early material.",
+        "subheading": "A surprising aggregate positive whose late recoveries outweigh strongly negative early material.",
         "summary": "M. Vinteuil is one of the more surprising positive figures in the corpus: despite some strongly negative early material, his aggregate treatment ends up decisively positive, especially in inclusion.",
         "why_interesting": [
             "He is a genuine reversal case rather than a merely stable positive.",

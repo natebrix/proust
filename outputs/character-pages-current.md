@@ -12,16 +12,16 @@
 - Annotation units: `263`
 - Rank spread: `0`
 - Max score span: `+8.609`
-- Pattern: `consistently_negative`
+- Pattern: `broad_negative`
 
-The most annotated figure in the corpus and one of its most consistently negative, especially in emotionally charged social passages.
+The corpus's most annotated figure, overwhelmingly shaped by repeated immediate, social, and emotional losses.
 
 Swann dominates the corpus by sheer annotation footprint, and his aggregate profile remains broadly and repeatedly negative across all three lenses.
 
 Why interesting:
 
-- He is the clearest example of frequency and stability combining into a durable corpus-wide shape.
-- His chapter drivers reveal how strongly one major narrative zone can define a character's aggregate outcome.
+- He is both the most annotated character and one of the clearest broad negative cases.
+- His profile is not a narrow anomaly but a corpus-defining social pattern, especially in Un amour de Swann.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -41,9 +41,9 @@ Top chapters:
 
 Reading path:
 
-- The main negative core of the profile: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
-- Later social afterlife and residue: `/projects/islt/fr-original/v4-p2`
-- Secondary shaping around Mme Swann: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Primary negative concentration: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
+- Early counterweight and setup: `/projects/islt/fr-original/v1-p1-combray`
+- Later negative reinforcement: `/projects/islt/fr-original/v4-p2`
 
 Notable units:
 
@@ -60,14 +60,14 @@ Notable units:
 - Max score span: `+7.299`
 - Pattern: `prestige_positive_inclusion_negative`
 
-One of the most frequent figures in the corpus, but also one of the most sharply split across prestige and inclusion.
+A highly frequent aristocratic figure whose prestige often holds even where belonging and immediate advantage give way.
 
 Robert de Saint-Loup combines very high annotation frequency with one of the largest lens spreads in the corpus, especially where aristocratic polish and emotional belonging pull apart.
 
 Why interesting:
 
-- He is not just volatile; he is structurally split across lenses in a way that makes him central to the project's interpretive payoff.
-- His strongest divergence is heavily chapter-located, especially in v3-p1.
+- He is central enough to matter structurally, not just as a curiosity of one chapter.
+- His strongest divergence is chapter-shaped rather than corpus-flat, especially in the Guermantes material.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -87,9 +87,9 @@ Top chapters:
 
 Reading path:
 
-- Core prestige/inclusion split: `/projects/islt/fr-original/v3-p1`
-- Later stabilizing wartime treatment: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre`
-- Earlier positive social energy: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
+- Main prestige / inclusion divergence: `/projects/islt/fr-original/v3-p1`
+- Earlier positive concentration: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
+- Late negative pressure: `/projects/islt/fr-original/v7-p1-a-tansonville`
 
 Notable units:
 
@@ -104,16 +104,16 @@ Notable units:
 - Annotation units: `177`
 - Rank spread: `0`
 - Max score span: `+8.061`
-- Pattern: `broadly_negative`
+- Pattern: `broad_negative`
 
-Highly central and highly negative, with much of her profile concentrated in the captivity and aftermath volumes.
+A heavily annotated recurring figure whose strongest shaping comes from imprisonment, suspicion, disappearance, and loss.
 
 Albertine is one of the largest and most persistently negative figures in the corpus, with her strongest shaping concentrated in the prison and disappearance chapters.
 
 Why interesting:
 
-- Her aggregate pattern is less about lens disagreement than about strong repeated negative accumulation.
-- She helps distinguish cross-lens split figures from characters whose importance lies in concentrated directional force.
+- Her profile is both high-volume and highly concentrated in a few major late narrative blocks.
+- She helps distinguish broad negative centrality from the more split prestige/inclusion cases.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -133,9 +133,9 @@ Top chapters:
 
 Reading path:
 
-- The main captivity-zone accumulation: `/projects/islt/fr-original/v5`
-- Aftermath and disappearance: `/projects/islt/fr-original/v6-p1`
-- Earlier social framing before concentration in v5: `/projects/islt/fr-original/v4-p2`
+- Main negative concentration in La Prisonnière: `/projects/islt/fr-original/v5`
+- Afterlife of loss in Albertine disparue: `/projects/islt/fr-original/v6-p1`
+- Continuing exclusion pressure: `/projects/islt/fr-original/v6-p2`
 
 Notable units:
 
@@ -150,16 +150,16 @@ Notable units:
 - Annotation units: `143`
 - Rank spread: `0`
 - Max score span: `+5.627`
-- Pattern: `uniformly_ascendant`
+- Pattern: `uniform_positive`
 
-The clearest aggregate winner in the corpus, combining immediate advantage, prestige, and inclusion at the very top of all three lenses.
+The corpus's clearest uniformly positive great-world figure, with command and symbolic force holding across all three lenses.
 
 duchesse de Guermantes is the strongest uniformly positive figure in the current corpus surface, with her social command and symbolic force holding across every lens rather than depending on a narrow chapter exception.
 
 Why interesting:
 
-- She is the cleanest example of a character whose authority remains legible whether the lens tracks immediate advantage, rank, or belonging.
-- Her profile shows how a major aristocratic figure can dominate the aggregate surface without needing volatility or cross-lens disagreement to become interesting.
+- She provides a counterexample to the many elite figures whose rank does not convert cleanly into broad advantage.
+- Her positivity is repeated enough to matter structurally, not merely as a prestige cameo.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -179,9 +179,9 @@ Top chapters:
 
 Reading path:
 
-- First major Guermantes concentration: `/projects/islt/fr-original/v3-p1`
-- Sustained supremacy in the salon world: `/projects/islt/fr-original/v3-p2`
-- Later reinforcement of the same social position: `/projects/islt/fr-original/v5`
+- High Guermantes concentration: `/projects/islt/fr-original/v3-p1`
+- Continued positive confirmation: `/projects/islt/fr-original/v3-p2`
+- Late reinforcing appearances: `/projects/islt/fr-original/v4-p2`
 
 Notable units:
 
@@ -196,16 +196,16 @@ Notable units:
 - Annotation units: `124`
 - Rank spread: `0`
 - Max score span: `+7.0`
-- Pattern: `volatile_negative`
+- Pattern: `volatile_broad_negative`
 
-A major recurrent figure whose treatment is strongly negative overall but distributed across several distinct social terrains.
+A highly volatile major figure whose aggregate negatives are spread across salon, sexual, and wartime terrains.
 
 baron de Charlus is a highly annotated and highly volatile figure whose negative aggregate treatment is spread across salon, sexual, and wartime configurations rather than one single narrative block.
 
 Why interesting:
 
-- He is central both to corpus-wide negativity and to some of the project's richest later-terrain dynamics.
-- His profile is broad enough to test whether the analysis stays coherent across very different social worlds.
+- He is too frequent and too spread out to read as a one-zone anomaly.
+- His profile shows how a major character can be broadly negative without collapsing into a single repeated scene type.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -225,9 +225,9 @@ Top chapters:
 
 Reading path:
 
-- Wartime concentration: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre`
-- Salon and sexual volatility: `/projects/islt/fr-original/v4-p2`
-- Continuation of negative concentration: `/projects/islt/fr-original/v5`
+- Salon-world negative pressure: `/projects/islt/fr-original/v4-p2`
+- Late negative cluster with Morel: `/projects/islt/fr-original/v5`
+- Wartime degradation: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre`
 
 Notable units:
 
@@ -288,16 +288,16 @@ Notable units:
 - Annotation units: `82`
 - Rank spread: `23`
 - Max score span: `+7.86`
-- Pattern: `prestige_positive_advantage_inclusion_negative`
+- Pattern: `prestige_positive_inclusion_negative`
 
-A socially legible figure whose prestige often holds better than her immediate advantage or belonging.
+A moderate but revealing split figure, relatively strong in prestige while advantage and inclusion drift downward.
 
 Mme de Villeparisis is one of the clearest moderate split figures in the corpus: she remains comparatively strong in prestige while advantage and inclusion drift downward or oscillate by chapter.
 
 Why interesting:
 
-- She helps separate durable social standing from warmer forms of acceptance or local dominance.
-- Her profile is chapter-shaped rather than monotone, especially across Balbec and Guermantes material.
+- She shows the lens split in a quieter register than Odette or Saint-Loup.
+- Her chapter distribution helps distinguish sustained social authority from weaker interpersonal footing.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -317,9 +317,9 @@ Top chapters:
 
 Reading path:
 
-- Prestige-bearing Guermantes presence: `/projects/islt/fr-original/v3-p1`
-- Balbec counterweight and social cooling: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
-- Sharper local reversals after the initial rise: `/projects/islt/fr-original/v3-p2`
+- Main split concentration: `/projects/islt/fr-original/v3-p1`
+- Prestige support zone: `/projects/islt/fr-original/v3-p2`
+- Late negative counterweight: `/projects/islt/fr-original/v6-p3`
 
 Notable units:
 
@@ -334,16 +334,16 @@ Notable units:
 - Annotation units: `70`
 - Rank spread: `10`
 - Max score span: `+5.58`
-- Pattern: `broadly_negative_with_reversals`
+- Pattern: `broad_negative_with_reversals`
 
-A frequent figure whose aggregate treatment is mostly negative, but with a few striking pockets of reversal and support.
+A frequent recurring figure whose overall downward pull includes a few brief local reversals.
 
 Françoise accumulates as a broadly negative figure across the corpus, though her profile is not flat: a small number of chapters briefly reverse the trend before the longer downward pull returns.
 
 Why interesting:
 
-- She shows that a highly familiar household figure can remain structurally disadvantaged even while recurring constantly across volumes.
-- Her chapter profile includes one especially visible positive pocket that makes the overall negativity more interpretable.
+- She is frequent enough to matter, but not in the same aristocratic pattern as Swann or Charlus.
+- Her profile is useful for distinguishing domestic/local authority from broader belonging and valuation.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -363,9 +363,9 @@ Top chapters:
 
 Reading path:
 
-- Core negative household concentration: `/projects/islt/fr-original/v1-p1-combray`
-- The strongest temporary upward reversal: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
-- Return to pressure in Guermantes society: `/projects/islt/fr-original/v3-p1`
+- Early domestic concentration: `/projects/islt/fr-original/v1-p1-combray`
+- Late negative reinforcement: `/projects/islt/fr-original/v5`
+- Brief local reversal: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
 
 Notable units:
 
@@ -380,16 +380,16 @@ Notable units:
 - Annotation units: `68`
 - Rank spread: `6`
 - Max score span: `+6.53`
-- Pattern: `consistently_negative`
+- Pattern: `broad_negative`
 
-A substantial recurring presence whose aggregate treatment stays negative across all three lenses, especially in Swann-centered and later wartime material.
+A salon figure whose aggregate reading is broadly negative across all three lenses.
 
 Mme Verdurin is one of the clearest broadly negative salon figures in the corpus, with losses in advantage, prestige, and inclusion all reinforcing rather than offsetting one another.
 
 Why interesting:
 
-- She is a useful contrast case to aristocratic figures whose rank can stay high even when scenes turn against them.
-- Her chapter drivers show how one salon world can define a long-lasting social profile that still echoes later in the novel.
+- She is central enough to shape multiple social zones without becoming a prestige split case.
+- Her profile helps define the project's recurrent salon-world negative pattern.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -409,9 +409,9 @@ Top chapters:
 
 Reading path:
 
-- Main salon-world concentration: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
-- Later wartime continuation: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre`
-- Intermediate pressure in the later social field: `/projects/islt/fr-original/v4-p2`
+- Primary Verdurin-world concentration: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
+- Late negative counterpoint: `/projects/islt/fr-original/v5`
+- Wartime reversal zone: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre`
 
 Notable units:
 
@@ -426,16 +426,16 @@ Notable units:
 - Annotation units: `67`
 - Rank spread: `6`
 - Max score span: `+5.15`
-- Pattern: `rhetorically_ascendant`
+- Pattern: `authority_positive`
 
-One of the corpus's clearest rhetorical winners, with very high advantage and prestige and comparatively little cross-lens instability.
+A strongly positive figure whose main force comes from durable rhetorical and social authority rather than intimacy.
 
 Norpois is a strongly positive figure across all three lenses, driven less by intimacy than by durable rhetorical authority and socially legible judgment.
 
 Why interesting:
 
-- He is a useful example of a character whose strength comes from voice, sanction, and interpretive authority more than warmth.
-- His profile shows how the project captures positive hierarchy without needing romantic or emotional centrality.
+- He helps separate prestige-positive authority from the more emotionally charged positive figures.
+- His positivity is anchored in repeated interpretive command rather than one dramatic narrative reversal.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -454,9 +454,9 @@ Top chapters:
 
 Reading path:
 
-- Main field of diplomatic and rhetorical authority: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
-- Guermantes reinforcement of social weight: `/projects/islt/fr-original/v3-p1`
-- Later counterpressure against the earlier rise: `/projects/islt/fr-original/v6-p3`
+- Main authority concentration: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Secondary Guermantes reinforcement: `/projects/islt/fr-original/v3-p1`
+- Late echo of rhetorical force: `/projects/islt/fr-original/v6-p3`
 
 Notable units:
 
@@ -471,16 +471,16 @@ Notable units:
 - Annotation units: `65`
 - Rank spread: `5`
 - Max score span: `+5.706`
-- Pattern: `emotionally_central_but_negative`
+- Pattern: `inclusion_negative`
 
-A central emotional figure whose aggregate treatment is strikingly negative, especially in belonging and general appraisal.
+A recurring family figure whose harshest pressure falls on belonging and broader valuation.
 
 la grand-mère accumulates as one of the corpus's more strongly negative recurring figures, with the harshest pressure falling on inclusion and broad valuation rather than on a narrow prestige story alone.
 
 Why interesting:
 
-- She shows how importance in the novel does not guarantee aggregate social or emotional advantage in the annotation surface.
-- Her chapter spread distinguishes Balbec tenderness from later Guermantes and illness-weighted decline.
+- She is a strongly negative recurring figure outside the main salon/aristocratic pattern.
+- Her profile is useful for showing how intimate and familial figures can be damaged without being prestige-centered.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -500,9 +500,9 @@ Top chapters:
 
 Reading path:
 
-- Strong Guermantes-zone deterioration: `/projects/islt/fr-original/v3-p1`
-- Continuation of decline and pressure: `/projects/islt/fr-original/v3-p2`
-- Balbec countertexture with limited prestige recovery: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
+- Early family-world pressure: `/projects/islt/fr-original/v1-p1-combray`
+- Guermantes-world counterweight: `/projects/islt/fr-original/v3-p1`
+- Main split concentration: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
 
 Notable units:
 
@@ -517,16 +517,16 @@ Notable units:
 - Annotation units: `61`
 - Rank spread: `0`
 - Max score span: `+6.817`
-- Pattern: `uniformly_fallen`
+- Pattern: `broad_negative`
 
-A heavily annotated figure whose treatment is almost uniformly and intensely negative across all three lenses.
+A strongly negative recurring figure whose losses reinforce each other across all three lenses.
 
 Bloch is one of the clearest aggregate negative cases in the corpus, with repeated losses in advantage, prestige, and inclusion reinforcing each other rather than splitting apart.
 
 Why interesting:
 
-- He is a high-frequency example of durable corpus-wide diminishment rather than a character defined by one isolated late collapse.
-- His profile is especially useful for testing whether repeated comic or social discredit remains stable across volumes.
+- He is one of the cleanest examples of consistent multi-lens damage.
+- His profile helps clarify the difference between broad negative treatment and more prestige-divergent cases.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -546,9 +546,9 @@ Top chapters:
 
 Reading path:
 
-- Main concentration of ridicule and social diminishment: `/projects/islt/fr-original/v3-p1`
-- Balbec reinforcement of the same pattern: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
-- Later persistence in a changed social field: `/projects/islt/fr-original/v4-p2`
+- Primary Guermantes-world humiliation zone: `/projects/islt/fr-original/v3-p1`
+- Early negative setup: `/projects/islt/fr-original/v1-p1-combray`
+- Continued social diminishment: `/projects/islt/fr-original/v3-p2`
 
 Notable units:
 
@@ -563,16 +563,16 @@ Notable units:
 - Annotation units: `61`
 - Rank spread: `0`
 - Max score span: `+7.073`
-- Pattern: `rank_without_advantage`
+- Pattern: `prestige_expectation_reversed`
 
-A major aristocratic figure whose aggregate profile is surprisingly negative across advantage, prestige, and inclusion alike.
+A revealing reversal-of-expectation figure: high rank without correspondingly positive aggregate treatment.
 
 duc de Guermantes is one of the project's most revealing reversals of expectation: despite formal rank, his annotation surface is broadly negative across all three lenses.
 
 Why interesting:
 
-- He helps separate nominal social title from actual passage-level advantage and valuation.
-- His profile is a strong reminder that the corpus tracks enacted social force, not merely inherited station.
+- He demonstrates that aristocratic title alone does not guarantee positive aggregate treatment in the corpus.
+- His profile sharpens the distinction between formal status and actual advantage or belonging.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -592,9 +592,9 @@ Top chapters:
 
 Reading path:
 
-- Main concentration of aggregate decline: `/projects/islt/fr-original/v3-p2`
-- Earlier Guermantes-stage weakening: `/projects/islt/fr-original/v3-p1`
-- Late retrospective continuation: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes`
+- Primary Guermantes counterexample: `/projects/islt/fr-original/v3-p2`
+- Late decline reinforcement: `/projects/islt/fr-original/v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle`
+- Final negative return: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes`
 
 Notable units:
 
@@ -609,16 +609,16 @@ Notable units:
 - Annotation units: `44`
 - Rank spread: `28`
 - Max score span: `+6.239`
-- Pattern: `advantage_prestige_positive_inclusion_mixed`
+- Pattern: `advantage_positive_prestige_positive_inclusion_negative`
 
-A strongly prestige-positive figure whose advantage remains high while inclusion stays much more mixed and contingent.
+A compact but telling figure whose strength in prestige and immediate advantage does not translate into equal belonging.
 
 Gilberte is a compact but revealing cross-lens figure: she scores very well in prestige and immediate advantage, yet her inclusion profile remains markedly less secure.
 
 Why interesting:
 
-- She is one of the best smaller-footprint examples of how social elevation and emotional incorporation can diverge.
-- Her strongest shaping chapters are distributed across early Mme Swann material and later retrospective zones rather than one single dominant block.
+- She is a smaller but especially clear example of lens divergence.
+- Her chapter locations make her useful for app-facing spotlighting without requiring a massive corpus footprint.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -638,9 +638,9 @@ Top chapters:
 
 Reading path:
 
-- Primary prestige and advantage concentration: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
-- Later inclusion strain and uneven return: `/projects/islt/fr-original/v6-p2`
-- Retrospective late counterweight: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes`
+- Early positive concentration: `/projects/islt/fr-original/v1-p3-noms-de-pays-le-nom`
+- Mme Swann-world extension: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Late instability in belonging: `/projects/islt/fr-original/v6-p2`
 
 Notable units:
 
@@ -655,16 +655,16 @@ Notable units:
 - Annotation units: `44`
 - Rank spread: `3`
 - Max score span: `+5.98`
-- Pattern: `moderately_negative_with_recoveries`
+- Pattern: `swann_world_negative`
 
-A recurrent social presence whose aggregate treatment stays modestly negative, with occasional prestige or advantage recoveries that never fully stabilize.
+A mid-tier negative figure shaped by a strong Swann-world concentration and then smaller, uneven later reversals.
 
 docteur Cottard is a mid-tier negative figure whose profile is shaped by one strong Swann-world concentration, then complicated by smaller later recoveries and uneven prestige moments.
 
 Why interesting:
 
-- He is useful as a moderate case: neither overwhelmingly central nor trivial, but persistent enough to show how local reversals can coexist with an overall downward pattern.
-- His profile also distinguishes prestige blips from broader social and inclusion weakness.
+- He is a useful moderate case rather than an extreme corpus outlier.
+- His chapter pattern helps show how one major concentration can dominate an otherwise mixed profile.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -685,8 +685,8 @@ Top chapters:
 Reading path:
 
 - Primary negative concentration: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
-- Later mixed prestige recovery: `/projects/islt/fr-original/v4-p2`
-- Smaller positive countercurrent: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Brief positive counterweight: `/projects/islt/fr-original/v1-p3-noms-de-pays-le-nom`
+- Later positive echo: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
 
 Notable units:
 
@@ -701,16 +701,16 @@ Notable units:
 - Annotation units: `34`
 - Rank spread: `6`
 - Max score span: `+4.167`
-- Pattern: `quietly_ascendant`
+- Pattern: `familial_positive`
 
-A strongly positive figure whose gains are grounded less in public rank than in steady rhetorical and relational authority.
+A quiet but high-performing recurring figure, especially strong in advantage and inclusion.
 
 la mère du narrateur is a quietly high-performing figure across all three lenses, with especially strong advantage and inclusion values driven by stable interpretive and familial force.
 
 Why interesting:
 
-- She offers a model of positive social power that does not depend on aristocratic prestige or theatrical display.
-- Her chapter distribution includes one notable Mme Swann-era counterweight, which makes the overall positivity more informative.
+- She offers a positive familial counterpoint to the more socially competitive figures.
+- Her profile shows how recurring emotional authority can register positively without requiring prestige spectacle.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -730,9 +730,9 @@ Top chapters:
 
 Reading path:
 
-- Strongest concentrated positive treatment: `/projects/islt/fr-original/v6-p3`
-- Main negative counterweight: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
-- Early domestic base of authority: `/projects/islt/fr-original/v1-p1-combray`
+- Main positive family-world concentration: `/projects/islt/fr-original/v6-p3`
+- Earlier positive presence: `/projects/islt/fr-original/v1-p3-noms-de-pays-le-nom`
+- Foundational domestic context: `/projects/islt/fr-original/v1-p1-combray`
 
 Notable units:
 
@@ -747,16 +747,16 @@ Notable units:
 - Annotation units: `33`
 - Rank spread: `4`
 - Max score span: `+6.256`
-- Pattern: `symbolically_ascendant`
+- Pattern: `rehabilitated_positive`
 
-A highly positive literary figure whose advantage and prestige remain near the top of the corpus, with inclusion somewhat softer but still strong.
+A symbolic positive figure whose literary authority carries strongly across advantage and prestige.
 
 Bergotte is one of the corpus's clearest positive symbolic figures, with his literary authority translating into very high advantage and prestige across several distinct narrative zones.
 
 Why interesting:
 
-- He provides a clean case of aesthetic or intellectual distinction remaining socially effective across lenses.
-- His profile is also useful because one large chapter block softens his inclusion without undoing the larger positive pattern.
+- He is strongly positive without being primarily a belonging-driven figure.
+- His profile is sharply chapter-shaped, which makes him useful for showing how aggregate positivity can arise from uneven terrain.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -776,9 +776,9 @@ Top chapters:
 
 Reading path:
 
-- Strong Guermantes-era literary authority: `/projects/islt/fr-original/v3-p1`
-- Early concentration of esteem: `/projects/islt/fr-original/v1-p1-combray`
-- Longer mixed field with softened inclusion: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Main late positive recovery: `/projects/islt/fr-original/v5`
+- Early negative counterweight: `/projects/islt/fr-original/v1-p1-combray`
+- Intermediate positive reinforcement: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
 
 Notable units:
 
@@ -793,16 +793,16 @@ Notable units:
 - Annotation units: `23`
 - Rank spread: `8`
 - Max score span: `+6.018`
-- Pattern: `self_undermining_negative`
+- Pattern: `awkward_negative`
 
-A character of recurrent social and rhetorical diminishment, with especially weak advantage and prestige despite occasional brief reversals.
+A broadly negative recurring figure marked by repeated self-positioning failures and social discredit.
 
 Legrandin is a broadly negative figure whose profile is shaped by repeated discredit and awkward self-positioning, even though a few isolated units briefly interrupt the downward pattern.
 
 Why interesting:
 
-- He is a good example of how rhetorical self-fashioning can fail across more than one lens at once.
-- His profile connects early Combray material to later Guermantes treatment without turning into a single monotone block.
+- He is a clear recurring loser without depending on a single chapter block.
+- His profile sharpens the category of embarrassment-driven negative treatment.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -822,9 +822,9 @@ Top chapters:
 
 Reading path:
 
-- Strongest later concentration of diminishment: `/projects/islt/fr-original/v3-p1`
-- Early formation of the negative pattern: `/projects/islt/fr-original/v1-p1-combray`
-- Brief late reversal against the broader trend: `/projects/islt/fr-original/v6-p4`
+- Primary negative concentration: `/projects/islt/fr-original/v1-p1-combray`
+- Late positive interruption: `/projects/islt/fr-original/v6-p4`
+- Final return in diminished society: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes`
 
 Notable units:
 
@@ -839,16 +839,16 @@ Notable units:
 - Annotation units: `21`
 - Rank spread: `1`
 - Max score span: `+5.938`
-- Pattern: `compact_consistent_negative`
+- Pattern: `compact_negative`
 
-A lower-frequency but consistently negative figure whose aggregate treatment remains weak across all three lenses.
+A compact but stable negative case: limited in footprint, but strongly downward where it appears.
 
 Mme de Cambremer is a compact but stable negative case: she does not dominate the corpus by volume, but what is there reads overwhelmingly downward in advantage, prestige, and inclusion.
 
 Why interesting:
 
-- She helps test whether the analysis stays coherent on mid-sized characters whose signal is distributed across a few compact chapter zones.
-- Her profile also shows how a small positive Balbec pocket can exist without changing the overall direction.
+- She is useful as a smaller-scale confirmation that consistent multi-lens negativity is not limited to the biggest characters.
+- Her appearances are sparse enough to stay legible but numerous enough to matter.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -867,9 +867,9 @@ Top chapters:
 
 Reading path:
 
-- Strongest later concentration of loss: `/projects/islt/fr-original/v4-p2`
-- Earlier Guermantes pressure: `/projects/islt/fr-original/v3-p1`
-- Limited Balbec counterweight: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
+- Primary negative concentration: `/projects/islt/fr-original/v3-p1`
+- Supporting negative evidence: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
+- Prestige-world reinforcement: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
 
 Notable units:
 
@@ -886,13 +886,13 @@ Notable units:
 - Max score span: `+6.21`
 - Pattern: `rehabilitated_positive`
 
-A relatively small-footprint but strongly positive figure, especially in inclusion, whose profile mixes early negativity with later recovery and elevation.
+A surprising aggregate positive whose late recoveries outweigh strongly negative early material.
 
 M. Vinteuil is one of the more surprising positive figures in the corpus: despite some strongly negative early material, his aggregate treatment ends up decisively positive, especially in inclusion.
 
 Why interesting:
 
-- He is a good example of how the corpus can register rehabilitation or retrospective elevation rather than just cumulative damage.
+- He is a genuine reversal case rather than a merely stable positive.
 - His profile is sharply chapter-shaped, which makes him useful for showing how aggregate positivity can arise from uneven terrain.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |

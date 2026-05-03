@@ -134,7 +134,7 @@ Each page should contain these required fields.
     }
   },
   "editorial": {
-    "dek": "Prestige-positive but inclusion-negative, with the split concentrated in Swann- and Guermantes-adjacent chapters.",
+    "subheading": "Prestige-positive but inclusion-negative, with the split concentrated in Swann- and Guermantes-adjacent chapters.",
     "summary": "Odette is one of the sharpest cross-lens split figures in the corpus: she rises strongly in prestige while remaining much more unstable in belonging and immediate advantage.",
     "why_interesting": [
       "Her prestige and inclusion readings diverge far more than her raw frequency alone would predict.",
@@ -253,7 +253,7 @@ This is the human-readable interpretation layer.
 
 Required subfields for `v1`:
 
-- `dek`
+- `subheading`
 - `summary`
 - `why_interesting`
 - `primary_pattern`

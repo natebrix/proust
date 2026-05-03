@@ -3,6 +3,7 @@ from pathlib import Path
 from urllib import request as urllib_request
 
 import proust as pn
+import proust.app_exports as pa
 import proust.editorial as pe
 import proust.runner as pr
 import pytest
@@ -1277,9 +1278,9 @@ def test_build_chapter_summary_export_requires_complete_editorial(tmp_path, monk
     pn.prepare_annotation_run(run_dir)
     pn.write_annotation_result(run_dir, "v1-p1-combray#p-17", _minimal_annotation("v1-p1-combray#p-17"))
 
-    broken_editorial = dict(pr.CHAPTER_SUMMARY_EDITORIAL)
+    broken_editorial = dict(pe.CHAPTER_SUMMARY_EDITORIAL)
     broken_editorial.pop("v1-p1-combray")
-    monkeypatch.setattr(pr, "CHAPTER_SUMMARY_EDITORIAL", broken_editorial)
+    monkeypatch.setattr(pa, "CHAPTER_SUMMARY_EDITORIAL", broken_editorial)
 
     with pytest.raises(ValueError, match="Chapter summary editorial coverage does not match canonical chapters"):
         pr.build_chapter_summary_export([run_dir], character_name_map=pr.REVIEWED_CHARACTER_NORMALIZATION_MAP)

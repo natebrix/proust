@@ -24,21 +24,22 @@ from .annotation import (
     load_prompt_template,
     render_prompt_input,
 )
-from .editorial import (
-    CHARACTER_PAGE_PILOT_EDITORIAL,
-    CHARACTER_PORTRAIT_SLUGS,
-    CHAPTER_SUMMARY_EDITORIAL,
+from .character_data import (
+    REVIEWED_CHARACTER_NORMALIZATION_MAP,
+    clean_character_name,
+    normalize_character_name,
+    normalize_character_name_map,
 )
 from .export import CANONICAL_CHAPTER_SPECS
 from .paths import ALIASES_CSV
-
-ISLT_PORTRAITS_DIR = Path("/Users/nathan_brixius/dev/brixius-web/public/projects/islt/portraits")
-ISLT_READER_BASE_PATH = "/projects/islt/fr-original"
-PORTRAIT_STYLES = (
-    "vermeer-proustian",
-    "tarot-marseille-belle-epoque",
-    "elstir",
+from .reporting_utils import (
+    character_ranks,
+    character_totals_by_name,
+    format_ordinal,
+    format_signed_number,
+    markdown_table,
 )
+from .scoring import SCORING_LENS_CONFIGS, SCORING_LENS_ORDER
 
 ANNOTATION_TOP_LEVEL_KEYS = {
     "unit_id",
@@ -142,106 +143,6 @@ PREFERRED_STATUS_DIMENSION_ORDER = {
     "rhetorical_position": 3,
     "emotional_position": 4,
 }
-ADVANTAGE_OUTCOME_EVENT_WEIGHTS = {
-    "narrated_elevation": 1.0,
-    "prestige_association": 1.0,
-    "admiration": 0.9,
-    "snub": 1.1,
-    "discredit_association": 1.0,
-    "narrated_diminishment": 1.0,
-    "blame": 0.9,
-    "other": 0.6,
-}
-ADVANTAGE_OUTCOME_STATUS_WEIGHTS = {
-    "social_status": 1.3,
-    "inclusion_exclusion": 1.2,
-    "general_appraisal": 1.0,
-    "rhetorical_position": 0.8,
-    "emotional_position": 0.6,
-}
-ADVANTAGE_OUTCOME_STANCE_MULTIPLIERS = {
-    "endorsed": 1.0,
-    "neutral_report": 0.9,
-    "ironized": 0.7,
-    "uncertain": 0.5,
-}
-ADVANTAGE_OUTCOME_LABEL_THRESHOLDS = {
-    "win": 0.75,
-    "loss": -0.75,
-}
-ADVANTAGE_OUTCOME_AMBIGUITY_PENALTY = 0.4
-PRESTIGE_OUTCOME_EVENT_WEIGHTS = {
-    "narrated_elevation": 0.9,
-    "prestige_association": 1.4,
-    "admiration": 0.7,
-    "snub": 0.6,
-    "discredit_association": 1.2,
-    "narrated_diminishment": 0.8,
-    "blame": 0.7,
-    "other": 0.5,
-}
-PRESTIGE_OUTCOME_STATUS_WEIGHTS = {
-    "social_status": 1.6,
-    "inclusion_exclusion": 0.6,
-    "general_appraisal": 0.8,
-    "rhetorical_position": 0.5,
-    "emotional_position": 0.4,
-}
-INCLUSION_OUTCOME_EVENT_WEIGHTS = {
-    "narrated_elevation": 0.7,
-    "prestige_association": 0.6,
-    "admiration": 0.6,
-    "snub": 1.5,
-    "discredit_association": 0.8,
-    "narrated_diminishment": 0.9,
-    "blame": 0.7,
-    "other": 0.5,
-}
-INCLUSION_OUTCOME_STATUS_WEIGHTS = {
-    "social_status": 0.7,
-    "inclusion_exclusion": 1.7,
-    "general_appraisal": 0.8,
-    "rhetorical_position": 0.6,
-    "emotional_position": 0.5,
-}
-SCORING_LENS_CONFIGS = {
-    "advantage": {
-        "scoring_version": "advantage_outcome_v1",
-        "event_weights": ADVANTAGE_OUTCOME_EVENT_WEIGHTS,
-        "status_weights": ADVANTAGE_OUTCOME_STATUS_WEIGHTS,
-        "stance_multipliers": ADVANTAGE_OUTCOME_STANCE_MULTIPLIERS,
-        "label_thresholds": ADVANTAGE_OUTCOME_LABEL_THRESHOLDS,
-        "ambiguity_penalty": ADVANTAGE_OUTCOME_AMBIGUITY_PENALTY,
-    },
-    "prestige": {
-        "scoring_version": "prestige_outcome_v1",
-        "event_weights": PRESTIGE_OUTCOME_EVENT_WEIGHTS,
-        "status_weights": PRESTIGE_OUTCOME_STATUS_WEIGHTS,
-        "stance_multipliers": ADVANTAGE_OUTCOME_STANCE_MULTIPLIERS,
-        "label_thresholds": ADVANTAGE_OUTCOME_LABEL_THRESHOLDS,
-        "ambiguity_penalty": ADVANTAGE_OUTCOME_AMBIGUITY_PENALTY,
-    },
-    "inclusion": {
-        "scoring_version": "inclusion_outcome_v1",
-        "event_weights": INCLUSION_OUTCOME_EVENT_WEIGHTS,
-        "status_weights": INCLUSION_OUTCOME_STATUS_WEIGHTS,
-        "stance_multipliers": ADVANTAGE_OUTCOME_STANCE_MULTIPLIERS,
-        "label_thresholds": ADVANTAGE_OUTCOME_LABEL_THRESHOLDS,
-        "ambiguity_penalty": ADVANTAGE_OUTCOME_AMBIGUITY_PENALTY,
-    },
-}
-SCORING_LENS_ORDER = ("advantage", "prestige", "inclusion")
-
-REVIEWED_CHARACTER_NORMALIZATION_MAP = {
-    "Saint-Loup": "Robert de Saint-Loup",
-    "princesse des Laumes": "duchesse de Guermantes",
-    "Charlus": "baron de Charlus",
-    "Mme Swann": "Odette",
-    "la grand-mère du narrateur": "la grand-mère",
-    "Vinteuil": "M. Vinteuil",
-    "Mme de Saint-Euverte": "marquise de Saint-Euverte",
-}
-
 
 class RunManifestNotFoundError(FileNotFoundError):
     pass
@@ -1437,23 +1338,11 @@ def _dominant_status_dimension(status_dimensions):
 
 
 def _normalize_character_name(character, character_name_map=None):
-    if not character_name_map:
-        return character
-    return character_name_map.get(character, character)
+    return normalize_character_name(character, character_name_map=character_name_map)
 
 
 def _normalize_character_name_map(character_name_map):
-    if not character_name_map:
-        return {}
-
-    normalized_map = {}
-    for source, target in character_name_map.items():
-        clean_source = _clean_character_name(source)
-        clean_target = _clean_character_name(target)
-        if not clean_source or not clean_target or clean_source == clean_target:
-            continue
-        normalized_map[clean_source] = clean_target
-    return normalized_map
+    return normalize_character_name_map(character_name_map)
 
 
 def _merge_unit_character_scores(score_maps, lens_config):
@@ -1939,43 +1828,23 @@ def discover_annotation_run_dirs(outputs_dir="outputs"):
 
 
 def _markdown_table(headers, rows):
-    lines = [
-        "| " + " | ".join(headers) + " |",
-        "| " + " | ".join("---" for _ in headers) + " |",
-    ]
-    for row in rows:
-        lines.append("| " + " | ".join(str(value) for value in row) + " |")
-    return "\n".join(lines)
+    return markdown_table(headers, rows)
 
 
 def _format_signed_number(value):
-    if isinstance(value, float):
-        value = round(value, 3)
-    if isinstance(value, (int, float)) and value > 0:
-        return f"+{value}"
-    return str(value)
+    return format_signed_number(value)
 
 
 def _format_ordinal(value):
-    if value is None:
-        return ""
-    if 10 <= value % 100 <= 20:
-        suffix = "th"
-    else:
-        suffix = {1: "st", 2: "nd", 3: "rd"}.get(value % 10, "th")
-    return f"{value}{suffix}"
+    return format_ordinal(value)
 
 
 def _character_ranks(character_totals, reverse=True):
-    ordered = sorted(
-        character_totals,
-        key=lambda item: ((-item["net_score"]) if reverse else item["net_score"], item["character"]),
-    )
-    return {row["character"]: index + 1 for index, row in enumerate(ordered)}
+    return character_ranks(character_totals, reverse=reverse)
 
 
 def _character_totals_by_name(character_totals):
-    return {row["character"]: row for row in character_totals}
+    return character_totals_by_name(character_totals)
 
 
 def build_character_cross_lens_analysis(review):
@@ -2376,10 +2245,6 @@ def write_corpus_review_artifacts(review, json_output=None, markdown_output=None
         markdown_path.write_text(render_corpus_review_markdown(review))
 
 
-def _clean_character_name(value):
-    return value.strip() if isinstance(value, str) else ""
-
-
 def _read_alias_csv_pairs(path=ALIASES_CSV):
     alias_path = Path(path)
     if not alias_path.exists():
@@ -2390,15 +2255,15 @@ def _read_alias_csv_pairs(path=ALIASES_CSV):
         for row in csv.reader(handle):
             if len(row) < 2:
                 continue
-            alias = _clean_character_name(row[0])
-            canonical = _clean_character_name(row[1])
+            alias = clean_character_name(row[0])
+            canonical = clean_character_name(row[1])
             if alias and canonical and alias != canonical:
                 pairs.append({"alias": alias, "canonical": canonical})
     return pairs
 
 
 def _record_character_usage(usage, name, role, path, unit_id):
-    clean_name = _clean_character_name(name)
+    clean_name = clean_character_name(name)
     if not clean_name:
         return
     entry = usage.setdefault(
@@ -2456,12 +2321,12 @@ def _collect_run_alias_evidence(outputs_dir):
     for manifest_path in sorted(Path(outputs_dir).glob("run-*/run.json")):
         manifest = _read_json(manifest_path)
         for canonical, entry in (manifest.get("alias_map") or {}).items():
-            clean_canonical = _clean_character_name(canonical)
+            clean_canonical = clean_character_name(canonical)
             if not clean_canonical:
                 continue
             canonical_counts[clean_canonical] += 1
             for alias in entry.get("aliases", []):
-                clean_alias = _clean_character_name(alias)
+                clean_alias = clean_character_name(alias)
                 if not clean_alias or clean_alias == clean_canonical:
                     continue
                 key = (clean_alias, clean_canonical)

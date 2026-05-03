@@ -1,9 +1,9 @@
 import argparse
 import json
 from dataclasses import dataclass
-from pathlib import Path
 
 from .corpus import get_canonical_chapter, get_canonical_structure
+from .paths import ISLT_EDITIONS_DIR
 
 
 @dataclass(frozen=True)
@@ -29,7 +29,7 @@ class ReaderEditionSpec:
 
 
 def _load_canonical_chapter_specs():
-    structure_path = Path(__file__).with_name("canonical_structure.json")
+    structure_path = ISLT_EDITIONS_DIR / "fr-original" / "reader-structure.json"
     entries = json.loads(structure_path.read_text())
     return tuple(
         ReaderChapterSpec(

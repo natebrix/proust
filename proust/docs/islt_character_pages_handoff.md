@@ -80,7 +80,7 @@ A first pilot page should probably render:
 
 - portrait
 - character name
-- short `dek`
+- short `subheading`
 - longer summary paragraph
 - lens score table or compact lens stat block
 - top driving chapters

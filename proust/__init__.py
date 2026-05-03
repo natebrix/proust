@@ -66,6 +66,7 @@ from .coordinates import (
     reader_url,
     reader_urls,
 )
+from .character_data import REVIEWED_CHARACTER_NORMALIZATION_MAP
 from .export import (
     CANONICAL_CHAPTER_SPECS,
     READER_EDITIONS,
@@ -128,7 +129,6 @@ from .export_artifacts import (
 )
 from .runner import (
     AnnotationRunManifest,
-    REVIEWED_CHARACTER_NORMALIZATION_MAP,
     build_character_alias_audit,
     build_corpus_sanity_review,
     build_outcome_report,

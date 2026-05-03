@@ -6,8 +6,13 @@ import re
 from statistics import median
 import unicodedata
 
-from . import runner as legacy
+from . import runner
+from .app_config import ISLT_PORTRAITS_DIR, ISLT_READER_BASE_PATH, PORTRAIT_STYLES
+from .character_data import normalize_character_name_map
+from .editorial import CHAPTER_SUMMARY_EDITORIAL, CHARACTER_PAGE_PILOT_EDITORIAL, CHARACTER_PORTRAIT_SLUGS
 from .paths import ISLT_EDITIONS_DIR
+from .reporting_utils import character_ranks, character_totals_by_name
+from .scoring import SCORING_LENS_CONFIGS, SCORING_LENS_ORDER
 
 
 def _character_volatility_by_name(character_volatility):
@@ -23,17 +28,17 @@ def _rank_to_percentile(rank, population_size):
 
 
 def build_character_cross_lens_analysis(review):
-    lenses = sorted(legacy.SCORING_LENS_CONFIGS)
+    lenses = sorted(SCORING_LENS_CONFIGS)
     missing_lenses = [lens for lens in lenses if lens not in review["lens_reviews"]]
     if missing_lenses:
         raise ValueError(f"Review is missing lens reviews for: {', '.join(missing_lenses)}")
 
     rank_maps = {
-        lens: legacy._character_ranks(review["lens_reviews"][lens]["character_totals"], reverse=True)
+        lens: character_ranks(review["lens_reviews"][lens]["character_totals"], reverse=True)
         for lens in lenses
     }
     totals_by_lens = {
-        lens: legacy._character_totals_by_name(review["lens_reviews"][lens]["character_totals"])
+        lens: character_totals_by_name(review["lens_reviews"][lens]["character_totals"])
         for lens in lenses
     }
     volatility_by_lens = {
@@ -193,14 +198,14 @@ def _overlay_dimension_phrase(dimension):
 
 
 def _overlay_lens_group_phrase(lenses):
-    if set(lenses) == set(sorted(legacy.SCORING_LENS_CONFIGS)):
+    if set(lenses) == set(sorted(SCORING_LENS_CONFIGS)):
         return "across all three lenses"
     return f"in {_natural_join(lenses)}"
 
 
 def _build_overlay_character_summary(character_row):
     dimension_phrase = _overlay_dimension_phrase(character_row.get("dominantStatusDimension"))
-    labels_by_lens = {lens: character_row[lens]["label"] for lens in sorted(legacy.SCORING_LENS_CONFIGS)}
+    labels_by_lens = {lens: character_row[lens]["label"] for lens in sorted(SCORING_LENS_CONFIGS)}
     grouped_lenses = defaultdict(list)
     for lens, label in labels_by_lens.items():
         grouped_lenses[label].append(lens)
@@ -241,7 +246,7 @@ def _build_overlay_unit_summary(character_rows):
     active_rows = [
         row
         for row in character_rows
-        if any(row[lens]["label"] != "neutral" for lens in sorted(legacy.SCORING_LENS_CONFIGS))
+        if any(row[lens]["label"] != "neutral" for lens in sorted(SCORING_LENS_CONFIGS))
     ]
     source_rows = active_rows[:2] if active_rows else character_rows[:1]
     return " ".join(_build_overlay_character_summary(row) for row in source_rows)
@@ -264,13 +269,13 @@ def _build_overlay_chapter_summary(units):
     dominant_character_counts = defaultdict(int)
     lens_label_counts = {
         lens: {"win": 0, "loss": 0, "mixed": 0, "neutral": 0}
-        for lens in sorted(legacy.SCORING_LENS_CONFIGS)
+        for lens in sorted(SCORING_LENS_CONFIGS)
     }
     for unit in units:
         if unit["dominantCharacter"]:
             dominant_character_counts[unit["dominantCharacter"]] += 1
         for character_row in unit["characters"]:
-            for lens in sorted(legacy.SCORING_LENS_CONFIGS):
+            for lens in sorted(SCORING_LENS_CONFIGS):
                 lens_label_counts[lens][character_row[lens]["label"]] += 1
 
     top_characters = [
@@ -287,7 +292,7 @@ def _build_overlay_chapter_summary(units):
     )
     lens_modes = [
         f"{lens} {_chapter_lens_mode(lens_label_counts[lens])}"
-        for lens in sorted(legacy.SCORING_LENS_CONFIGS)
+        for lens in sorted(SCORING_LENS_CONFIGS)
     ]
     return (
         f"This chapter contains {len(units)} annotated units, {chapter_focus}. "
@@ -305,7 +310,7 @@ def _chapter_density_direction(value):
 
 def _chapter_character_signature(row):
     parts = []
-    for lens in legacy.SCORING_LENS_ORDER:
+    for lens in SCORING_LENS_ORDER:
         direction = _chapter_density_direction(row[lens]["net_score"])
         if direction == "balanced":
             parts.append(f"{lens} mixed")
@@ -315,7 +320,7 @@ def _chapter_character_signature(row):
 
 
 def _chapter_tonal_archetype_label(intensity_flags):
-    key = "".join("1" if intensity_flags[lens] else "0" for lens in legacy.SCORING_LENS_ORDER)
+    key = "".join("1" if intensity_flags[lens] else "0" for lens in SCORING_LENS_ORDER)
     return {
         "000": "Diffuse",
         "001": "Intimate",
@@ -330,7 +335,7 @@ def _chapter_tonal_archetype_label(intensity_flags):
 
 def _chapter_impact_mass(row):
     return round(
-        sum(abs(row[lens]["net_score"]) for lens in legacy.SCORING_LENS_ORDER),
+        sum(abs(row[lens]["net_score"]) for lens in SCORING_LENS_ORDER),
         3,
     )
 
@@ -340,7 +345,7 @@ def _unit_impact_mass(unit):
         sum(
             abs(character_row[lens]["netScore"])
             for character_row in unit["characters"]
-            for lens in legacy.SCORING_LENS_ORDER
+            for lens in SCORING_LENS_ORDER
         ),
         3,
     )
@@ -354,7 +359,7 @@ def _build_chapter_distinguishing_passages(chapter_overlay_row, limit=5):
                 sum(character_row[lens]["netScore"] for character_row in unit["characters"]),
                 3,
             )
-            for lens in legacy.SCORING_LENS_ORDER
+            for lens in SCORING_LENS_ORDER
         }
         passages.append(
             {
@@ -394,19 +399,19 @@ def _slugify_text(value):
 
 
 def _reader_chapter_link(chapter_id, paragraph_start=None):
-    link = f"{legacy.ISLT_READER_BASE_PATH}/{chapter_id}"
+    link = f"{ISLT_READER_BASE_PATH}/{chapter_id}"
     if paragraph_start is not None:
         link += f"#p-{paragraph_start}"
     return link
 
 
 def _chapter_title_map():
-    return {chapter.id: chapter.title for chapter in legacy.CANONICAL_CHAPTER_SPECS}
+    return {chapter.id: chapter.title for chapter in runner.CANONICAL_CHAPTER_SPECS}
 
 
 def _validate_chapter_summary_editorial():
-    canonical_ids = {chapter.id for chapter in legacy.CANONICAL_CHAPTER_SPECS}
-    editorial_ids = set(legacy.CHAPTER_SUMMARY_EDITORIAL)
+    canonical_ids = {chapter.id for chapter in runner.CANONICAL_CHAPTER_SPECS}
+    editorial_ids = set(CHAPTER_SUMMARY_EDITORIAL)
     missing = sorted(canonical_ids - editorial_ids)
     extra = sorted(editorial_ids - canonical_ids)
     if missing or extra:
@@ -419,12 +424,12 @@ def _validate_chapter_summary_editorial():
 
 
 def _discover_character_portraits(character):
-    portrait_slug = legacy.CHARACTER_PORTRAIT_SLUGS.get(character, _slugify_text(character))
-    if not legacy.ISLT_PORTRAITS_DIR.exists():
+    portrait_slug = CHARACTER_PORTRAIT_SLUGS.get(character, _slugify_text(character))
+    if not ISLT_PORTRAITS_DIR.exists():
         return {"default": None, "variants": []}
 
     variants = []
-    for path in sorted(legacy.ISLT_PORTRAITS_DIR.glob(f"{portrait_slug}-*.png")):
+    for path in sorted(ISLT_PORTRAITS_DIR.glob(f"{portrait_slug}-*.png")):
         stem = path.stem
         prefix = f"{portrait_slug}-"
         if not stem.startswith(prefix):
@@ -436,7 +441,7 @@ def _discover_character_portraits(character):
         descriptor = match.group(1)
         variant = "default"
         style = None
-        for candidate in legacy.PORTRAIT_STYLES:
+        for candidate in PORTRAIT_STYLES:
             suffix = f"-{candidate}"
             if descriptor == candidate:
                 style = candidate
@@ -508,8 +513,8 @@ def _build_character_page_notable_units(character, overlay_dataset, limit=3):
 
 
 def build_character_pages(run_dirs, character_name_map=None, target_characters=None, top_chapter_limit=5):
-    selected_characters = list(target_characters or legacy.CHARACTER_PAGE_PILOT_EDITORIAL.keys())
-    review = legacy.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
+    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
     profile_cards = build_character_profile_cards(
         run_dirs,
         character_name_map=character_name_map,
@@ -530,7 +535,7 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
     for character in selected_characters:
         if character not in cards_by_character:
             raise ValueError(f"Character page target not found in derived profile data: {character}")
-        if character not in legacy.CHARACTER_PAGE_PILOT_EDITORIAL:
+        if character not in CHARACTER_PAGE_PILOT_EDITORIAL:
             raise ValueError(f"Character page editorial data is missing for: {character}")
 
         card = cards_by_character[character]
@@ -544,7 +549,7 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
             ),
             reverse=True,
         )[:top_chapter_limit]
-        editorial = legacy.CHARACTER_PAGE_PILOT_EDITORIAL[character]
+        editorial = CHARACTER_PAGE_PILOT_EDITORIAL[character]
 
         pages.append(
             {
@@ -559,7 +564,7 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
                     "lens_scores": card["lens_scores"],
                 },
                 "editorial": {
-                    "dek": editorial["dek"],
+                    "subheading": editorial["subheading"],
                     "summary": editorial["summary"],
                     "why_interesting": editorial["why_interesting"],
                     "primary_pattern": editorial["primary_pattern"],
@@ -605,7 +610,7 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
 
 def build_chapter_summary_export(run_dirs, character_name_map=None, top_character_limit=8, top_passage_limit=5):
     _validate_chapter_summary_editorial()
-    review = legacy.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
     cross_lens = build_character_cross_lens_analysis(review)
     chapter_analysis = build_character_chapter_analysis(
         run_dirs,
@@ -639,10 +644,10 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
 
     chapter_payloads = []
     chapters = []
-    for chapter in legacy.CANONICAL_CHAPTER_SPECS:
+    for chapter in runner.CANONICAL_CHAPTER_SPECS:
         rows = chapter_character_rows.get(chapter.id, [])
         if rows:
-            for lens in legacy.SCORING_LENS_ORDER:
+            for lens in SCORING_LENS_ORDER:
                 ordered = sorted(rows, key=lambda item: (-item[lens]["net_score"], item["character"]))
                 for rank, row in enumerate(ordered, start=1):
                     row.setdefault("chapter_ranks", {})
@@ -662,7 +667,7 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
                 "unit_count": row["unit_count"],
                 "impact_mass": _chapter_impact_mass(row),
                 "dominant_lens": max(
-                    legacy.SCORING_LENS_ORDER,
+                    SCORING_LENS_ORDER,
                     key=lambda lens: (abs(row[lens]["net_score"]), lens),
                 ),
                 "lens_signature": _chapter_character_signature(row),
@@ -703,11 +708,11 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
         unit_count = chapter_manifest_rows.get(chapter.id, {}).get("unitCount", 0)
         lens_totals = {
             lens: round(sum(row[lens]["net_score"] for row in rows), 3)
-            for lens in legacy.SCORING_LENS_ORDER
+            for lens in SCORING_LENS_ORDER
         }
         intensity_totals = {
             lens: round(sum(abs(row[lens]["net_score"]) for row in rows), 3)
-            for lens in legacy.SCORING_LENS_ORDER
+            for lens in SCORING_LENS_ORDER
         }
         lens_profile = {
             lens: {
@@ -716,7 +721,7 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
                 "intensity_density": round(intensity_totals[lens] / unit_count, 3) if unit_count else 0.0,
                 "direction": _chapter_density_direction(lens_totals[lens]),
             }
-            for lens in legacy.SCORING_LENS_ORDER
+            for lens in SCORING_LENS_ORDER
         }
         distinguishing_passages = _build_chapter_distinguishing_passages(
             overlay_rows.get(chapter.id, {}),
@@ -746,7 +751,7 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
         )
         if chapter_payloads
         else 0.0
-        for lens in legacy.SCORING_LENS_ORDER
+        for lens in SCORING_LENS_ORDER
     }
     signed_density_ranks = {
         lens: {
@@ -761,12 +766,12 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
                 )
             )
         }
-        for lens in legacy.SCORING_LENS_ORDER
+        for lens in SCORING_LENS_ORDER
     }
 
     for chapter in chapter_payloads:
         intensity_flags = {}
-        for lens in legacy.SCORING_LENS_ORDER:
+        for lens in SCORING_LENS_ORDER:
             lens_row = chapter["lens_profile"][lens]
             lens_row["chapter_rank"] = signed_density_ranks[lens][chapter["chapter_id"]]
             lens_row["chapter_percentile"] = _rank_to_percentile(
@@ -779,11 +784,11 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
         chapter["tonal_archetype"] = {
             "label": _chapter_tonal_archetype_label(intensity_flags),
             "intense_lenses": [
-                lens for lens in legacy.SCORING_LENS_ORDER if intensity_flags[lens]
+                lens for lens in SCORING_LENS_ORDER if intensity_flags[lens]
             ],
             "intensity_signature": intensity_flags,
         }
-        chapter["summary"] = legacy.CHAPTER_SUMMARY_EDITORIAL[chapter["chapter_id"]]
+        chapter["summary"] = CHAPTER_SUMMARY_EDITORIAL[chapter["chapter_id"]]
         chapters.append(chapter)
 
     return {
@@ -800,12 +805,12 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
     if not run_dirs:
         raise ValueError("At least one run directory is required for chapter overlay export.")
 
-    character_name_map = legacy._normalize_character_name_map(character_name_map)
-    timeline_by_lens = {lens: [] for lens in sorted(legacy.SCORING_LENS_CONFIGS)}
+    character_name_map = normalize_character_name_map(character_name_map)
+    timeline_by_lens = {lens: [] for lens in sorted(SCORING_LENS_CONFIGS)}
     preferred_run_by_unit = {}
 
     for run_dir in run_dirs:
-        status = legacy.get_run_status(run_dir)
+        status = runner.get_run_status(run_dir)
         run_id = status["manifest"]["run_id"]
         for unit in status["units"]:
             unit_id = unit["unit_id"]
@@ -816,10 +821,10 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
                 preferred_run_by_unit[unit_id] = run_id
 
     for run_dir in run_dirs:
-        status = legacy.get_run_status(run_dir)
+        status = runner.get_run_status(run_dir)
         run_id = status["manifest"]["run_id"]
-        for lens in sorted(legacy.SCORING_LENS_CONFIGS):
-            report = legacy.build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map)
+        for lens in sorted(SCORING_LENS_CONFIGS):
+            report = runner.build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map)
             timeline_by_lens[lens].extend(
                 entry for entry in report["timeline"] if preferred_run_by_unit.get(entry["unit_id"]) == run_id
             )
@@ -850,7 +855,7 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
 
     chapters = []
     manifest_rows = []
-    for chapter in legacy.CANONICAL_CHAPTER_SPECS:
+    for chapter in runner.CANONICAL_CHAPTER_SPECS:
         chapter_unit_map = unit_rows.get(chapter.id, {})
         unit_meta = chapter_unit_map.get("unit_meta", {})
         units = []
@@ -868,7 +873,7 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
                     "character": character["character"],
                     "dominantStatusDimension": character["dominantStatusDimension"],
                 }
-                for lens in sorted(legacy.SCORING_LENS_CONFIGS):
+                for lens in sorted(SCORING_LENS_CONFIGS):
                     character_row[lens] = character.get(lens, {"netScore": 0.0, "label": "neutral"})
                 character_rows.append(character_row)
 
@@ -940,7 +945,7 @@ def build_character_chapter_analysis(
     top_rank_spread_limit=10,
     top_volatile_limit=10,
 ):
-    review = legacy.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
     cross_lens = build_character_cross_lens_analysis(review)
 
     if target_characters:
@@ -962,11 +967,11 @@ def build_character_chapter_analysis(
     if not selected_characters:
         raise ValueError("At least one target character is required for chapter analysis.")
 
-    chapter_order = [chapter.id for chapter in legacy.CANONICAL_CHAPTER_SPECS]
+    chapter_order = [chapter.id for chapter in runner.CANONICAL_CHAPTER_SPECS]
     chapter_positions = {chapter_id: index for index, chapter_id in enumerate(chapter_order)}
     preferred_run_by_unit = {}
     for run_dir in run_dirs:
-        status = legacy.get_run_status(run_dir)
+        status = runner.get_run_status(run_dir)
         run_id = status["manifest"]["run_id"]
         for unit in status["units"]:
             if unit["review_state"] != "reviewed":
@@ -975,15 +980,15 @@ def build_character_chapter_analysis(
             existing_run_id = preferred_run_by_unit.get(unit_id)
             if existing_run_id is None or _run_id_sort_key(run_id) > _run_id_sort_key(existing_run_id):
                 preferred_run_by_unit[unit_id] = run_id
-    lens_reports = {lens: [] for lens in sorted(legacy.SCORING_LENS_CONFIGS)}
+    lens_reports = {lens: [] for lens in sorted(SCORING_LENS_CONFIGS)}
     for run_dir in run_dirs:
-        status = legacy.get_run_status(run_dir)
+        status = runner.get_run_status(run_dir)
         run_id = status["manifest"]["run_id"]
-        for lens in sorted(legacy.SCORING_LENS_CONFIGS):
+        for lens in sorted(SCORING_LENS_CONFIGS):
             lens_reports[lens].append(
                 (
                     run_id,
-                    legacy.build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map),
+                    runner.build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map),
                 )
             )
 
@@ -1109,7 +1114,7 @@ def _load_canonical_chapter_json_silent(chapter_id, edition="fr-original"):
 
 
 def _build_corpus_position_index(units_by_chapter):
-    chapter_order = [chapter.id for chapter in legacy.CANONICAL_CHAPTER_SPECS]
+    chapter_order = [chapter.id for chapter in runner.CANONICAL_CHAPTER_SPECS]
     chapter_titles = _chapter_title_map()
     chapter_index = {}
     cumulative_unit_index = 0
@@ -1119,7 +1124,7 @@ def _build_corpus_position_index(units_by_chapter):
     for chapter_number, chapter_id in enumerate(chapter_order, start=1):
         chapter_json = _load_canonical_chapter_json_silent(chapter_id)
         paragraphs = chapter_json["paragraphs"]
-        chapter_spec = next(chapter for chapter in legacy.CANONICAL_CHAPTER_SPECS if chapter.id == chapter_id)
+        chapter_spec = next(chapter for chapter in runner.CANONICAL_CHAPTER_SPECS if chapter.id == chapter_id)
         paragraph_word_counts = [_word_count(paragraph["text"]) for paragraph in paragraphs]
         cumulative_words_by_paragraph_end = []
         cumulative_words_by_paragraph_start = []
@@ -1169,7 +1174,7 @@ def build_character_elo(
     if not run_dirs:
         raise ValueError("At least one run directory is required for character ELO.")
 
-    review = legacy.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
     overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
 
     ratings = {}
@@ -1335,9 +1340,9 @@ def build_character_elo_timeline(
     if not run_dirs:
         raise ValueError("At least one run directory is required for character ELO timeline export.")
 
-    selected_characters = list(target_characters or legacy.CHARACTER_PAGE_PILOT_EDITORIAL.keys())
+    selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
     selected_set = set(selected_characters)
-    review = legacy.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
     overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
 
     units_by_chapter = {chapter["chapterId"]: chapter["units"] for chapter in overlay_dataset["chapters"]}
@@ -1420,7 +1425,7 @@ def build_character_elo_timeline(
 
 
 def build_character_profile_cards(run_dirs, character_name_map=None, top_chapter_limit=5):
-    review = legacy.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
     cross_lens = build_character_cross_lens_analysis(review)
     chapter_analysis = build_character_chapter_analysis(
         run_dirs,
@@ -1477,15 +1482,15 @@ def build_corpus_review_normalization_diff(before_review, after_review):
 
     normalized_targets = sorted(set(after_map.values()))
     lens_diffs = {}
-    for lens in sorted(legacy.SCORING_LENS_CONFIGS):
+    for lens in sorted(SCORING_LENS_CONFIGS):
         before_lens = before_review["lens_reviews"][lens]
         after_lens = after_review["lens_reviews"][lens]
-        before_totals = legacy._character_totals_by_name(before_lens["character_totals"])
-        after_totals = legacy._character_totals_by_name(after_lens["character_totals"])
-        positive_ranks_before = legacy._character_ranks(before_lens["character_totals"], reverse=True)
-        positive_ranks_after = legacy._character_ranks(after_lens["character_totals"], reverse=True)
-        negative_ranks_before = legacy._character_ranks(before_lens["character_totals"], reverse=False)
-        negative_ranks_after = legacy._character_ranks(after_lens["character_totals"], reverse=False)
+        before_totals = character_totals_by_name(before_lens["character_totals"])
+        after_totals = character_totals_by_name(after_lens["character_totals"])
+        positive_ranks_before = character_ranks(before_lens["character_totals"], reverse=True)
+        positive_ranks_after = character_ranks(after_lens["character_totals"], reverse=True)
+        negative_ranks_before = character_ranks(before_lens["character_totals"], reverse=False)
+        negative_ranks_after = character_ranks(after_lens["character_totals"], reverse=False)
 
         normalized_character_rows = []
         for target in normalized_targets:
