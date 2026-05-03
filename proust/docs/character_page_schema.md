@@ -60,12 +60,6 @@ Recommended top-level JSON shape:
 {
   "character_pages_version": "character_pages_v1",
   "source_review_version": "corpus_sanity_review_v1",
-  "character_normalization": {
-    "applied": true,
-    "map": {
-      "Charlus": "baron de Charlus"
-    }
-  },
   "character_count": 5,
   "pages": [
     {

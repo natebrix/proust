@@ -100,9 +100,6 @@ This is an intensity classification, not a polarity classification. Direction re
 ```json
 {
   "chapter_summary_export_version": "chapter_summary_export_v2",
-  "character_normalization": {
-    "applied": true
-  },
   "intensity_medians": {
     "advantage": 3.22,
     "prestige": 2.88,

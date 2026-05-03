@@ -66,7 +66,6 @@ from .coordinates import (
     reader_url,
     reader_urls,
 )
-from .character_data import REVIEWED_CHARACTER_NORMALIZATION_MAP
 from .export import (
     CANONICAL_CHAPTER_SPECS,
     READER_EDITIONS,
@@ -104,7 +103,6 @@ from .app_exports import (
     build_character_chapter_analysis,
     build_character_cross_lens_analysis,
     build_character_profile_cards,
-    build_corpus_review_normalization_diff,
 )
 from .export_artifacts import (
     render_character_annotation_counts_markdown,
@@ -115,7 +113,6 @@ from .export_artifacts import (
     render_character_pages_markdown,
     render_character_profile_cards_markdown,
     render_chapter_summary_export_markdown,
-    render_corpus_review_normalization_diff_markdown,
     write_character_annotation_counts_artifacts,
     write_character_elo_artifacts,
     write_character_elo_timeline_artifacts,
@@ -125,7 +122,6 @@ from .export_artifacts import (
     write_character_profile_cards_artifacts,
     write_chapter_overlay_artifacts,
     write_chapter_summary_export_artifacts,
-    write_corpus_review_normalization_diff_artifacts,
 )
 from .runner import (
     AnnotationRunManifest,
@@ -144,8 +140,6 @@ from .runner import (
     render_character_alias_audit_markdown,
     render_corpus_review_markdown,
     reprocess_raw_annotations,
-    rewrite_corpus_character_identities,
-    rewrite_run_character_identities,
     run_openai_annotation,
     score_run_inclusion_outcomes,
     score_run_advantage_outcomes,
@@ -178,7 +172,6 @@ __all__ = [
     "build_character_cross_lens_analysis",
     "build_character_profile_cards",
     "build_corpus_sanity_review",
-    "build_corpus_review_normalization_diff",
     "build_outcome_report",
     "prepare_annotation_run",
     "build_starter_units",
@@ -243,7 +236,6 @@ __all__ = [
     "plot_character_elo_comparison",
     "prepare_annotation_run_from_existing",
     "READER_EDITIONS",
-    "REVIEWED_CHARACTER_NORMALIZATION_MAP",
     "read_aliases",
     "reader_url",
     "reader_urls",
@@ -260,10 +252,7 @@ __all__ = [
     "render_character_profile_cards_markdown",
     "render_chapter_summary_export_markdown",
     "render_corpus_review_markdown",
-    "render_corpus_review_normalization_diff_markdown",
     "reprocess_raw_annotations",
-    "rewrite_corpus_character_identities",
-    "rewrite_run_character_identities",
     "reset_aliases",
     "reset_nlp",
     "render_prompt_input",
@@ -301,7 +290,6 @@ __all__ = [
     "write_chapter_overlay_artifacts",
     "write_chapter_summary_export_artifacts",
     "write_corpus_review_artifacts",
-    "write_corpus_review_normalization_diff_artifacts",
     "write_proust_pages",
     "ReaderChapterSpec",
 ]

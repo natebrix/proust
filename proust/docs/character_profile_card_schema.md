@@ -45,12 +45,6 @@ Recommended top-level JSON shape:
 {
   "character_profile_cards_version": "character_profile_cards_v1",
   "source_review_version": "corpus_sanity_review_v1",
-  "character_normalization": {
-    "applied": true,
-    "map": {
-      "Charlus": "baron de Charlus"
-    }
-  },
   "character_count": 62,
   "cards": [
     {

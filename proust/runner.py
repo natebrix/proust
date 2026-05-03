@@ -1,7 +1,6 @@
 import argparse
 import csv
 from collections import defaultdict
-from copy import deepcopy
 import json
 import os
 import re
@@ -25,12 +24,7 @@ from .annotation import (
     load_prompt_template,
     render_prompt_input,
 )
-from .character_data import (
-    REVIEWED_CHARACTER_NORMALIZATION_MAP,
-    clean_character_name,
-    normalize_character_name,
-    normalize_character_name_map,
-)
+from .character_data import clean_character_name
 from .export import CANONICAL_CHAPTER_SPECS
 from .paths import ALIASES_CSV
 from .reporting_utils import (
@@ -1338,47 +1332,6 @@ def _dominant_status_dimension(status_dimensions):
     return _sorted_status_dimensions(status_dimensions)[0][0]
 
 
-def _normalize_character_name(character, character_name_map=None):
-    return normalize_character_name(character, character_name_map=character_name_map)
-
-
-def _normalize_character_name_map(character_name_map):
-    return normalize_character_name_map(character_name_map)
-
-
-def _merge_unit_character_scores(score_maps, lens_config):
-    merged = {
-        "event_score": 0.0,
-        "status_score": 0.0,
-        "ambiguity_penalty": 0.0,
-        "status_dimensions": {},
-        "event_types": {},
-        "positive_event_count": 0,
-        "negative_event_count": 0,
-    }
-
-    for scores in score_maps:
-        merged["event_score"] += scores["event_score"]
-        merged["status_score"] += scores["status_score"]
-        merged["ambiguity_penalty"] = max(merged["ambiguity_penalty"], scores["ambiguity_penalty"])
-        merged["positive_event_count"] += scores["positive_event_count"]
-        merged["negative_event_count"] += scores["negative_event_count"]
-        for dimension, delta_total in scores["status_dimensions"].items():
-            merged["status_dimensions"][dimension] = merged["status_dimensions"].get(dimension, 0) + delta_total
-        for event_type, count in scores["event_types"].items():
-            merged["event_types"][event_type] = merged["event_types"].get(event_type, 0) + count
-
-    merged["event_score"] = round(merged["event_score"], 3)
-    merged["status_score"] = round(merged["status_score"], 3)
-    merged["ambiguity_penalty"] = round(merged["ambiguity_penalty"], 3)
-    merged["net_score"] = round(
-        merged["event_score"] + merged["status_score"] - merged["ambiguity_penalty"],
-        3,
-    )
-    merged["label"] = _outcome_label(merged["net_score"], lens_config)
-    return merged
-
-
 def _build_unit_outcome_entry(unit_id, character, scores):
     dominant_dimension = _dominant_status_dimension(scores["status_dimensions"])
     return {
@@ -1397,26 +1350,14 @@ def _build_unit_outcome_entry(unit_id, character, scores):
     }
 
 
-def build_outcome_report(run_dir, lens="advantage", character_name_map=None):
+def build_outcome_report(run_dir, lens="advantage"):
     score_summary = _score_run_outcomes(run_dir, lens=lens)
-    lens_config = SCORING_LENS_CONFIGS[lens]
-    character_name_map = _normalize_character_name_map(character_name_map)
     units = []
     character_summaries = {}
 
     for unit in score_summary["units"]:
         unit_id = unit["unit_id"]
-        normalized_unit_scores = defaultdict(list)
         for character, scores in unit["characters"].items():
-            normalized_character = _normalize_character_name(character, character_name_map)
-            normalized_unit_scores[normalized_character].append(scores)
-
-        for character, score_maps in normalized_unit_scores.items():
-            scores = (
-                score_maps[0]
-                if len(score_maps) == 1
-                else _merge_unit_character_scores(score_maps, lens_config)
-            )
             entry = _build_unit_outcome_entry(unit_id, character, scores)
             units.append(entry)
 
@@ -1476,10 +1417,6 @@ def build_outcome_report(run_dir, lens="advantage", character_name_map=None):
         "report_version": "outcome_report_v1",
         "scoring_version": score_summary["scoring_version"],
         "lens": lens,
-        "character_normalization": {
-            "applied": bool(character_name_map),
-            "map": dict(sorted(character_name_map.items())),
-        },
         "scored_unit_count": score_summary["scored_unit_count"],
         "character_count": len(sorted_character_summaries),
         "character_summaries": sorted_character_summaries,
@@ -1498,11 +1435,10 @@ def _label_direction(label):
     return "non_directional"
 
 
-def build_corpus_sanity_review(run_dirs, character_name_map=None):
+def build_corpus_sanity_review(run_dirs):
     if not run_dirs:
         raise ValueError("At least one run directory is required for a corpus sanity review.")
 
-    character_name_map = _normalize_character_name_map(character_name_map)
     run_statuses = []
     run_reports = {}
 
@@ -1512,7 +1448,7 @@ def build_corpus_sanity_review(run_dirs, character_name_map=None):
         run_id = manifest["run_id"]
         run_statuses.append(status)
         run_reports[run_id] = {
-            lens: build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map)
+            lens: build_outcome_report(run_dir, lens=lens)
             for lens in sorted(SCORING_LENS_CONFIGS)
         }
 
@@ -1769,10 +1705,6 @@ def build_corpus_sanity_review(run_dirs, character_name_map=None):
 
     return {
         "corpus_review_version": "corpus_sanity_review_v1",
-        "character_normalization": {
-            "applied": bool(character_name_map),
-            "map": dict(sorted(character_name_map.items())),
-        },
         "run_count": len(run_statuses),
         "run_ids": run_ids,
         "declared_unit_count": total_declared_unit_count,
@@ -1854,37 +1786,34 @@ def build_character_cross_lens_analysis(review):
     return impl(review)
 
 
-def build_character_pages(run_dirs, character_name_map=None, target_characters=None, top_chapter_limit=5):
+def build_character_pages(run_dirs, target_characters=None, top_chapter_limit=5):
     from .app_exports import build_character_pages as impl
 
     return impl(
         run_dirs,
-        character_name_map=character_name_map,
         target_characters=target_characters,
         top_chapter_limit=top_chapter_limit,
     )
 
 
-def build_chapter_summary_export(run_dirs, character_name_map=None, top_character_limit=8, top_passage_limit=5):
+def build_chapter_summary_export(run_dirs, top_character_limit=8, top_passage_limit=5):
     from .app_exports import build_chapter_summary_export as impl
 
     return impl(
         run_dirs,
-        character_name_map=character_name_map,
         top_character_limit=top_character_limit,
         top_passage_limit=top_passage_limit,
     )
 
 
-def build_chapter_overlay_data(run_dirs, character_name_map=None):
+def build_chapter_overlay_data(run_dirs):
     from .app_exports import build_chapter_overlay_data as impl
 
-    return impl(run_dirs, character_name_map=character_name_map)
+    return impl(run_dirs)
 
 
 def build_character_chapter_analysis(
     run_dirs,
-    character_name_map=None,
     target_characters=None,
     top_rank_spread_limit=10,
     top_volatile_limit=10,
@@ -1893,7 +1822,6 @@ def build_character_chapter_analysis(
 
     return impl(
         run_dirs,
-        character_name_map=character_name_map,
         target_characters=target_characters,
         top_rank_spread_limit=top_rank_spread_limit,
         top_volatile_limit=top_volatile_limit,
@@ -1908,7 +1836,6 @@ def build_character_annotation_counts(review):
 
 def build_character_elo(
     run_dirs,
-    character_name_map=None,
     lens="advantage",
     initial_rating=1500.0,
     k_factor=24.0,
@@ -1918,7 +1845,6 @@ def build_character_elo(
 
     return impl(
         run_dirs,
-        character_name_map=character_name_map,
         lens=lens,
         initial_rating=initial_rating,
         k_factor=k_factor,
@@ -1928,7 +1854,6 @@ def build_character_elo(
 
 def build_character_elo_timeline(
     run_dirs,
-    character_name_map=None,
     lens="advantage",
     target_characters=None,
     initial_rating=1500.0,
@@ -1939,7 +1864,6 @@ def build_character_elo_timeline(
 
     return impl(
         run_dirs,
-        character_name_map=character_name_map,
         lens=lens,
         target_characters=target_characters,
         initial_rating=initial_rating,
@@ -1948,32 +1872,13 @@ def build_character_elo_timeline(
     )
 
 
-def build_character_profile_cards(run_dirs, character_name_map=None, top_chapter_limit=5):
+def build_character_profile_cards(run_dirs, top_chapter_limit=5):
     from .app_exports import build_character_profile_cards as impl
 
     return impl(
         run_dirs,
-        character_name_map=character_name_map,
         top_chapter_limit=top_chapter_limit,
     )
-
-
-def build_corpus_review_normalization_diff(before_review, after_review):
-    from .app_exports import build_corpus_review_normalization_diff as impl
-
-    return impl(before_review, after_review)
-
-
-def render_corpus_review_normalization_diff_markdown(diff):
-    from .export_artifacts import render_corpus_review_normalization_diff_markdown as impl
-
-    return impl(diff)
-
-
-def write_corpus_review_normalization_diff_artifacts(diff, markdown_output=None):
-    from .export_artifacts import write_corpus_review_normalization_diff_artifacts as impl
-
-    return impl(diff, markdown_output=markdown_output)
 
 
 def render_character_cross_lens_analysis_markdown(analysis):
@@ -2088,7 +1993,6 @@ def render_corpus_review_markdown(review):
         f"- Run count: `{review['run_count']}`",
         f"- Declared unit count: `{review['declared_unit_count']}`",
         f"- Valid annotation count: `{review['valid_annotation_count']}`",
-        f"- Character normalization applied: `{review['character_normalization']['applied']}`",
         "",
         "## Aggregate Annotation Summary",
         "",
@@ -2986,186 +2890,6 @@ def write_annotation_result(run_dir, unit_id, annotation):
     annotation_path.parent.mkdir(parents=True, exist_ok=True)
     annotation_path.write_text(json.dumps(annotation, ensure_ascii=False, indent=2) + "\n")
     return annotation_path
-
-
-def _rewrite_annotation_character_fields(annotation, character_name_map):
-    normalized_map = normalize_character_name_map(character_name_map)
-    rewritten = deepcopy(annotation)
-    field_change_counts = {
-        "characters_present.canonical_name": 0,
-        "appraisal_events.source": 0,
-        "appraisal_events.target": 0,
-        "status_effects.character": 0,
-    }
-
-    for row in rewritten.get("characters_present", []):
-        original = row.get("canonical_name")
-        updated = normalize_character_name(original, normalized_map)
-        if updated != original:
-            row["canonical_name"] = updated
-            field_change_counts["characters_present.canonical_name"] += 1
-
-    for event in rewritten.get("appraisal_events", []):
-        for field, counter_key in (
-            ("source", "appraisal_events.source"),
-            ("target", "appraisal_events.target"),
-        ):
-            original = event.get(field)
-            updated = normalize_character_name(original, normalized_map)
-            if updated != original:
-                event[field] = updated
-                field_change_counts[counter_key] += 1
-
-    for row in rewritten.get("status_effects", []):
-        original = row.get("character")
-        updated = normalize_character_name(original, normalized_map)
-        if updated != original:
-            row["character"] = updated
-            field_change_counts["status_effects.character"] += 1
-
-    return rewritten, field_change_counts
-
-
-def _merge_alias_lists(*alias_lists):
-    merged = []
-    seen = set()
-    for aliases in alias_lists:
-        for alias in aliases or []:
-            if alias not in seen:
-                seen.add(alias)
-                merged.append(alias)
-    return merged
-
-
-def _rewrite_run_alias_map(alias_map, character_name_map):
-    normalized_map = normalize_character_name_map(character_name_map)
-    rewritten = {}
-    merged_key_count = 0
-
-    for canonical_name, meta in (alias_map or {}).items():
-        target_name = normalize_character_name(canonical_name, normalized_map)
-        existing = rewritten.get(target_name)
-        aliases = list((meta or {}).get("aliases") or [])
-        if canonical_name != target_name and canonical_name not in aliases:
-            aliases.append(canonical_name)
-
-        if existing is None:
-            rewritten[target_name] = {
-                **{k: v for k, v in (meta or {}).items() if k not in {"aliases", "notes"}},
-                "aliases": _merge_alias_lists(aliases),
-                "notes": (meta or {}).get("notes", ""),
-            }
-            if canonical_name != target_name:
-                merged_key_count += 1
-            continue
-
-        rewritten[target_name] = {
-            **existing,
-            **{k: v for k, v in (meta or {}).items() if k not in {"aliases", "notes"} and k not in existing},
-            "aliases": _merge_alias_lists(existing.get("aliases"), aliases),
-            "notes": existing.get("notes") or (meta or {}).get("notes", ""),
-        }
-        if canonical_name != target_name:
-            merged_key_count += 1
-
-    return rewritten, merged_key_count
-
-
-def rewrite_run_character_identities(run_dir, character_name_map, update_alias_map=True, dry_run=False):
-    run_path = Path(run_dir)
-    manifest = _read_run_manifest(run_path)
-    normalized_map = normalize_character_name_map(character_name_map)
-    if not normalized_map:
-        raise ValueError("A non-empty character_name_map is required for source canonicalization.")
-
-    annotation_dir = Path(manifest["directories"]["annotations"])
-    changed_annotation_files = 0
-    total_field_changes = {
-        "characters_present.canonical_name": 0,
-        "appraisal_events.source": 0,
-        "appraisal_events.target": 0,
-        "status_effects.character": 0,
-    }
-
-    for unit_id in manifest["unit_ids"]:
-        annotation_path = annotation_dir / _annotation_filename(unit_id)
-        if not annotation_path.exists():
-            continue
-
-        annotation = _read_json(annotation_path)
-        rewritten, field_change_counts = _rewrite_annotation_character_fields(annotation, normalized_map)
-        if rewritten == annotation:
-            continue
-
-        errors = validate_annotation_result(rewritten, expected_unit_id=unit_id)
-        if errors:
-            raise ValueError(f"Rewritten annotation for {unit_id} is invalid: {'; '.join(errors)}")
-
-        changed_annotation_files += 1
-        for key, count in field_change_counts.items():
-            total_field_changes[key] += count
-
-        if not dry_run:
-            write_annotation_result(run_path, unit_id, rewritten)
-
-    alias_map_merged_key_count = 0
-    if update_alias_map:
-        rewritten_alias_map, alias_map_merged_key_count = _rewrite_run_alias_map(
-            manifest.get("alias_map") or {},
-            normalized_map,
-        )
-        if rewritten_alias_map != (manifest.get("alias_map") or {}):
-            manifest["alias_map"] = rewritten_alias_map
-            if not dry_run:
-                _write_run_manifest(run_path, manifest)
-
-    return {
-        "run_id": manifest["run_id"],
-        "annotation_files_rewritten": changed_annotation_files,
-        "field_change_counts": total_field_changes,
-        "alias_map_merged_key_count": alias_map_merged_key_count,
-        "dry_run": dry_run,
-        "updated_alias_map": update_alias_map,
-    }
-
-
-def rewrite_corpus_character_identities(run_dirs, character_name_map, update_alias_map=True, dry_run=False):
-    if not run_dirs:
-        raise ValueError("At least one run directory is required for source canonicalization.")
-
-    run_summaries = []
-    total_field_changes = {
-        "characters_present.canonical_name": 0,
-        "appraisal_events.source": 0,
-        "appraisal_events.target": 0,
-        "status_effects.character": 0,
-    }
-    total_annotation_files_rewritten = 0
-    total_alias_map_merges = 0
-
-    for run_dir in run_dirs:
-        summary = rewrite_run_character_identities(
-            run_dir,
-            character_name_map=character_name_map,
-            update_alias_map=update_alias_map,
-            dry_run=dry_run,
-        )
-        run_summaries.append(summary)
-        total_annotation_files_rewritten += summary["annotation_files_rewritten"]
-        total_alias_map_merges += summary["alias_map_merged_key_count"]
-        for key, count in summary["field_change_counts"].items():
-            total_field_changes[key] += count
-
-    return {
-        "source_canonicalization_version": "source_canonicalization_v1",
-        "run_count": len(run_summaries),
-        "annotation_files_rewritten": total_annotation_files_rewritten,
-        "alias_map_merged_key_count": total_alias_map_merges,
-        "field_change_counts": total_field_changes,
-        "dry_run": dry_run,
-        "updated_alias_map": update_alias_map,
-        "runs": run_summaries,
-    }
 
 
 def main(argv=None):

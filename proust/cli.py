@@ -1,39 +1,22 @@
 import argparse
 import json
 import sys
-from pathlib import Path
 
 from . import runner as core
 
 
-def _load_accepted_run_ids(review_path):
-    payload = json.loads(Path(review_path).read_text())
-    run_ids = payload.get("run_ids")
-    if not isinstance(run_ids, list) or not all(isinstance(run_id, str) for run_id in run_ids):
-        raise ValueError(f"Accepted review surface at {review_path} is missing a valid run_ids list.")
-    return set(run_ids)
-
-
-def _collect_runs(args, accepted_review_path=None):
+def _collect_runs(args):
     runs = list(args.runs or [])
     if getattr(args, "discover_runs", None):
-        discovered = core.discover_annotation_run_dirs(args.discover_runs)
-        if accepted_review_path is not None:
-            accepted_run_ids = _load_accepted_run_ids(accepted_review_path)
-            discovered = [run for run in discovered if Path(run).name in accepted_run_ids]
-        runs.extend(discovered)
+        runs.extend(core.discover_annotation_run_dirs(args.discover_runs))
     deduped = []
     seen = set()
     for run in runs:
-        key = str(Path(run))
+        key = str(run)
         if key not in seen:
             seen.add(key)
             deduped.append(run)
     return deduped
-
-
-def _character_name_map(args):
-    return core.REVIEWED_CHARACTER_NORMALIZATION_MAP if args.reviewed_character_normalization else None
 
 
 def build_parser():
@@ -79,11 +62,6 @@ def build_parser():
     )
     report_parser.add_argument("--run", required=True, help="Run directory to report on.")
     report_parser.add_argument("--lens", default="advantage", choices=sorted(core.SCORING_LENS_CONFIGS), help="Scoring lens.")
-    report_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
-    )
 
     corpus_review_parser = subparsers.add_parser(
         "corpus-review",
@@ -96,50 +74,8 @@ def build_parser():
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
     )
-    corpus_review_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
-    )
     corpus_review_parser.add_argument("--output", help="Optional JSON output path.")
     corpus_review_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
-    corpus_review_parser.add_argument(
-        "--normalization-diff-output",
-        help="Optional Markdown output path for a diff between unnormalized and normalized corpus reviews.",
-    )
-
-    source_canonicalization_parser = subparsers.add_parser(
-        "source-canonicalize",
-        help="Rewrite accepted annotation identities upstream using the reviewed same-person canonicalization map.",
-    )
-    source_canonicalization_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
-    source_canonicalization_parser.add_argument(
-        "--discover-runs",
-        nargs="?",
-        const="outputs",
-        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
-    )
-    source_canonicalization_parser.add_argument(
-        "--accepted-review",
-        default="outputs/corpus-review-current.json",
-        help="Corpus review JSON whose run_ids define the accepted runs eligible for source canonicalization.",
-    )
-    source_canonicalization_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        required=True,
-        help="Use the reviewed explicit same-person canonicalization map.",
-    )
-    source_canonicalization_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Report the rewrite surface without modifying files.",
-    )
-    source_canonicalization_parser.add_argument(
-        "--skip-alias-map-update",
-        action="store_true",
-        help="Rewrite accepted annotations only and leave run.json alias_map blocks unchanged.",
-    )
 
     character_analysis_parser = subparsers.add_parser(
         "character-analysis",
@@ -151,11 +87,6 @@ def build_parser():
         nargs="?",
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
-    )
-    character_analysis_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_analysis_parser.add_argument("--output", help="Optional JSON output path.")
     character_analysis_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
@@ -170,11 +101,6 @@ def build_parser():
         nargs="?",
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
-    )
-    character_chapter_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_chapter_parser.add_argument(
         "--character",
@@ -196,11 +122,6 @@ def build_parser():
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
     )
-    character_counts_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
-    )
     character_counts_parser.add_argument("--output", help="Optional JSON output path.")
     character_counts_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
@@ -215,11 +136,6 @@ def build_parser():
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
     )
-    character_elo_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
-    )
     character_elo_parser.add_argument("--output", help="Optional JSON output path.")
     character_elo_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
@@ -233,11 +149,6 @@ def build_parser():
         nargs="?",
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
-    )
-    character_elo_timeline_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_elo_timeline_parser.add_argument(
         "--character",
@@ -259,11 +170,6 @@ def build_parser():
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
     )
-    character_cards_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
-    )
     character_cards_parser.add_argument("--output", help="Optional JSON output path.")
     character_cards_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
@@ -277,11 +183,6 @@ def build_parser():
         nargs="?",
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
-    )
-    character_pages_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
     )
     character_pages_parser.add_argument(
         "--character",
@@ -303,11 +204,6 @@ def build_parser():
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
     )
-    chapter_summaries_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
-    )
     chapter_summaries_parser.add_argument("--output", help="Optional JSON output path.")
     chapter_summaries_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
@@ -321,11 +217,6 @@ def build_parser():
         nargs="?",
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
-    )
-    chapter_overlay_parser.add_argument(
-        "--reviewed-character-normalization",
-        action="store_true",
-        help="Apply the reviewed explicit same-person character mapping.",
     )
     chapter_overlay_parser.add_argument(
         "--output-dir",
@@ -428,29 +319,19 @@ def main(argv=None):
 
     if args.command == "report":
         try:
-            report = core.build_outcome_report(args.run, lens=args.lens, character_name_map=_character_name_map(args))
+            report = core.build_outcome_report(args.run, lens=args.lens)
         except core.RunManifestNotFoundError as exc:
             parser.error(str(exc))
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "corpus-review":
-        if args.normalization_diff_output and not args.reviewed_character_normalization:
-            parser.error("--normalization-diff-output requires --reviewed-character-normalization")
         try:
             runs = _collect_runs(args)
-            baseline_review = None
-            if args.normalization_diff_output:
-                baseline_review = core.build_corpus_sanity_review(runs)
-            review = core.build_corpus_sanity_review(runs, character_name_map=_character_name_map(args))
+            review = core.build_corpus_sanity_review(runs)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         core.write_corpus_review_artifacts(review, json_output=args.output, markdown_output=args.markdown_output)
-        if args.normalization_diff_output:
-            if baseline_review is None:
-                baseline_review = core.build_corpus_sanity_review(runs)
-            diff = core.build_corpus_review_normalization_diff(baseline_review, review)
-            core.write_corpus_review_normalization_diff_artifacts(diff, markdown_output=args.normalization_diff_output)
         if args.output or args.markdown_output:
             print(json.dumps({
                 "run_count": review["run_count"],
@@ -458,23 +339,9 @@ def main(argv=None):
                 "valid_annotation_count": review["valid_annotation_count"],
                 "json_output": args.output,
                 "markdown_output": args.markdown_output,
-                "normalization_diff_output": args.normalization_diff_output,
             }, ensure_ascii=False, indent=2))
         else:
             print(json.dumps(review, ensure_ascii=False, indent=2))
-        return 0
-
-    if args.command == "source-canonicalize":
-        try:
-            summary = core.rewrite_corpus_character_identities(
-                _collect_runs(args, accepted_review_path=args.accepted_review),
-                character_name_map=_character_name_map(args),
-                update_alias_map=not args.skip_alias_map_update,
-                dry_run=args.dry_run,
-            )
-        except (core.RunManifestNotFoundError, ValueError, OSError, json.JSONDecodeError) as exc:
-            parser.error(str(exc))
-        print(json.dumps(summary, ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "character-alias-audit":
@@ -496,7 +363,7 @@ def main(argv=None):
 
     if args.command == "character-analysis":
         try:
-            review = core.build_corpus_sanity_review(_collect_runs(args), character_name_map=_character_name_map(args))
+            review = core.build_corpus_sanity_review(_collect_runs(args))
             analysis = core.build_character_cross_lens_analysis(review)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
@@ -515,7 +382,6 @@ def main(argv=None):
         try:
             analysis = core.build_character_chapter_analysis(
                 _collect_runs(args),
-                character_name_map=_character_name_map(args),
                 target_characters=args.characters,
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
@@ -533,7 +399,7 @@ def main(argv=None):
 
     if args.command == "character-annotation-counts":
         try:
-            review = core.build_corpus_sanity_review(_collect_runs(args), character_name_map=_character_name_map(args))
+            review = core.build_corpus_sanity_review(_collect_runs(args))
             analysis = core.build_character_annotation_counts(review)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
@@ -550,10 +416,7 @@ def main(argv=None):
 
     if args.command == "character-elo":
         try:
-            analysis = core.build_character_elo(
-                _collect_runs(args),
-                character_name_map=_character_name_map(args),
-            )
+            analysis = core.build_character_elo(_collect_runs(args))
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         core.write_character_elo_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
@@ -572,7 +435,6 @@ def main(argv=None):
         try:
             analysis = core.build_character_elo_timeline(
                 _collect_runs(args),
-                character_name_map=_character_name_map(args),
                 target_characters=args.characters,
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
@@ -591,7 +453,7 @@ def main(argv=None):
 
     if args.command == "character-profile-cards":
         try:
-            analysis = core.build_character_profile_cards(_collect_runs(args), character_name_map=_character_name_map(args))
+            analysis = core.build_character_profile_cards(_collect_runs(args))
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         core.write_character_profile_cards_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
@@ -607,14 +469,13 @@ def main(argv=None):
 
     if args.command == "chapter-overlays":
         try:
-            dataset = core.build_chapter_overlay_data(_collect_runs(args), character_name_map=_character_name_map(args))
+            dataset = core.build_chapter_overlay_data(_collect_runs(args))
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         core.write_chapter_overlay_artifacts(dataset, args.output_dir)
         print(json.dumps({
             "chapter_count": dataset["chapter_count"],
             "output_dir": args.output_dir,
-            "character_normalization_applied": dataset["character_normalization"]["applied"],
         }, ensure_ascii=False, indent=2))
         return 0
 
@@ -622,7 +483,6 @@ def main(argv=None):
         try:
             analysis = core.build_character_pages(
                 _collect_runs(args),
-                character_name_map=_character_name_map(args),
                 target_characters=args.characters,
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
@@ -640,7 +500,7 @@ def main(argv=None):
 
     if args.command == "chapter-summaries":
         try:
-            analysis = core.build_chapter_summary_export(_collect_runs(args), character_name_map=_character_name_map(args))
+            analysis = core.build_chapter_summary_export(_collect_runs(args))
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         core.write_chapter_summary_export_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)

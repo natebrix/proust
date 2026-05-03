@@ -8,7 +8,6 @@ import unicodedata
 
 from . import runner
 from .app_config import ISLT_PORTRAITS_DIR, ISLT_READER_BASE_PATH, PORTRAIT_STYLES
-from .character_data import normalize_character_name_map
 from .editorial import CHAPTER_SUMMARY_EDITORIAL, CHARACTER_PAGE_PILOT_EDITORIAL, CHARACTER_PORTRAIT_SLUGS
 from .paths import ISLT_EDITIONS_DIR
 from .reporting_utils import character_ranks, character_totals_by_name
@@ -106,7 +105,6 @@ def build_character_cross_lens_analysis(review):
     return {
         "character_cross_lens_analysis_version": "character_cross_lens_analysis_v1",
         "source_review_version": review["corpus_review_version"],
-        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
         "character_count": len(character_rows),
         "characters": sorted(
             character_rows,
@@ -512,20 +510,18 @@ def _build_character_page_notable_units(character, overlay_dataset, limit=3):
     ]
 
 
-def build_character_pages(run_dirs, character_name_map=None, target_characters=None, top_chapter_limit=5):
+def build_character_pages(run_dirs, target_characters=None, top_chapter_limit=5):
     selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
-    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs)
     profile_cards = build_character_profile_cards(
         run_dirs,
-        character_name_map=character_name_map,
         top_chapter_limit=top_chapter_limit,
     )
     chapter_analysis = build_character_chapter_analysis(
         run_dirs,
-        character_name_map=character_name_map,
         target_characters=selected_characters,
     )
-    overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
+    overlay_dataset = build_chapter_overlay_data(run_dirs)
     chapter_titles = _chapter_title_map()
 
     cards_by_character = {row["character"]: row for row in profile_cards["cards"]}
@@ -602,22 +598,20 @@ def build_character_pages(run_dirs, character_name_map=None, target_characters=N
     return {
         "character_pages_version": "character_pages_v1",
         "source_review_version": review["corpus_review_version"],
-        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
         "character_count": len(pages),
         "pages": pages,
     }
 
 
-def build_chapter_summary_export(run_dirs, character_name_map=None, top_character_limit=8, top_passage_limit=5):
+def build_chapter_summary_export(run_dirs, top_character_limit=8, top_passage_limit=5):
     _validate_chapter_summary_editorial()
-    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs)
     cross_lens = build_character_cross_lens_analysis(review)
     chapter_analysis = build_character_chapter_analysis(
         run_dirs,
-        character_name_map=character_name_map,
         target_characters=[row["character"] for row in cross_lens["characters"]],
     )
-    overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
+    overlay_dataset = build_chapter_overlay_data(run_dirs)
     chapter_titles = _chapter_title_map()
     chapter_manifest_rows = {row["chapterId"]: row for row in overlay_dataset["manifest"]["chapters"]}
     overlay_rows = {row["chapterId"]: row for row in overlay_dataset["chapters"]}
@@ -794,18 +788,16 @@ def build_chapter_summary_export(run_dirs, character_name_map=None, top_characte
     return {
         "chapter_summary_export_version": "chapter_summary_export_v2",
         "source_review_version": review["corpus_review_version"],
-        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
         "intensity_medians": intensity_medians,
         "chapter_count": len(chapters),
         "chapters": chapters,
     }
 
 
-def build_chapter_overlay_data(run_dirs, character_name_map=None):
+def build_chapter_overlay_data(run_dirs):
     if not run_dirs:
         raise ValueError("At least one run directory is required for chapter overlay export.")
 
-    character_name_map = normalize_character_name_map(character_name_map)
     timeline_by_lens = {lens: [] for lens in sorted(SCORING_LENS_CONFIGS)}
     preferred_run_by_unit = {}
 
@@ -824,7 +816,7 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
         status = runner.get_run_status(run_dir)
         run_id = status["manifest"]["run_id"]
         for lens in sorted(SCORING_LENS_CONFIGS):
-            report = runner.build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map)
+            report = runner.build_outcome_report(run_dir, lens=lens)
             timeline_by_lens[lens].extend(
                 entry for entry in report["timeline"] if preferred_run_by_unit.get(entry["unit_id"]) == run_id
             )
@@ -899,7 +891,6 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
             "partNumber": chapter.part_number,
             "partTitle": chapter.part_title,
             "sectionTitle": chapter.section_title,
-            "characterNormalizationApplied": bool(character_name_map),
             "summary": _build_overlay_chapter_summary(units),
             "units": units,
         }
@@ -917,20 +908,12 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
     return {
         "chapter_overlay_version": "chapter_overlay_v2",
         "source_review_version": "corpus_sanity_review_v1",
-        "character_normalization": {
-            "applied": bool(character_name_map),
-            "map": dict(sorted(character_name_map.items())),
-        },
         "chapter_count": len(chapters),
         "duplicate_resolution": "latest_reviewed_run_wins",
         "chapters": chapters,
         "manifest": {
             "chapter_overlay_version": "chapter_overlay_v2",
             "source_review_version": "corpus_sanity_review_v1",
-            "character_normalization": {
-                "applied": bool(character_name_map),
-                "map": dict(sorted(character_name_map.items())),
-            },
             "chapter_count": len(chapters),
             "duplicate_resolution": "latest_reviewed_run_wins",
             "chapters": manifest_rows,
@@ -940,12 +923,11 @@ def build_chapter_overlay_data(run_dirs, character_name_map=None):
 
 def build_character_chapter_analysis(
     run_dirs,
-    character_name_map=None,
     target_characters=None,
     top_rank_spread_limit=10,
     top_volatile_limit=10,
 ):
-    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs)
     cross_lens = build_character_cross_lens_analysis(review)
 
     if target_characters:
@@ -988,7 +970,7 @@ def build_character_chapter_analysis(
             lens_reports[lens].append(
                 (
                     run_id,
-                    runner.build_outcome_report(run_dir, lens=lens, character_name_map=character_name_map),
+                    runner.build_outcome_report(run_dir, lens=lens),
                 )
             )
 
@@ -1051,7 +1033,6 @@ def build_character_chapter_analysis(
 
     return {
         "character_chapter_analysis_version": "character_chapter_analysis_v1",
-        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
         "source_review_version": review["corpus_review_version"],
         "selected_character_count": len(characters),
         "selected_characters": selected_characters,
@@ -1085,7 +1066,6 @@ def build_character_annotation_counts(review):
     return {
         "character_annotation_counts_version": "character_annotation_counts_v1",
         "source_review_version": review["corpus_review_version"],
-        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
         "character_count": len(rows),
         "characters": rows,
     }
@@ -1163,7 +1143,6 @@ def _build_corpus_position_index(units_by_chapter):
 
 def build_character_elo(
     run_dirs,
-    character_name_map=None,
     lens="advantage",
     initial_rating=1500.0,
     k_factor=24.0,
@@ -1174,8 +1153,8 @@ def build_character_elo(
     if not run_dirs:
         raise ValueError("At least one run directory is required for character ELO.")
 
-    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
-    overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs)
+    overlay_dataset = build_chapter_overlay_data(run_dirs)
 
     ratings = {}
     diagnostics = {}
@@ -1303,7 +1282,6 @@ def build_character_elo(
         "character_elo_version": "character_elo_advantage_v1",
         "lens": lens,
         "source_review_version": review["corpus_review_version"],
-        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
         "duplicate_resolution": overlay_dataset["duplicate_resolution"],
         "initial_rating": initial_rating,
         "k_factor": k_factor,
@@ -1328,7 +1306,6 @@ def build_character_elo(
 
 def build_character_elo_timeline(
     run_dirs,
-    character_name_map=None,
     lens="advantage",
     target_characters=None,
     initial_rating=1500.0,
@@ -1342,8 +1319,8 @@ def build_character_elo_timeline(
 
     selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
     selected_set = set(selected_characters)
-    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
-    overlay_dataset = build_chapter_overlay_data(run_dirs, character_name_map=character_name_map)
+    review = runner.build_corpus_sanity_review(run_dirs)
+    overlay_dataset = build_chapter_overlay_data(run_dirs)
 
     units_by_chapter = {chapter["chapterId"]: chapter["units"] for chapter in overlay_dataset["chapters"]}
     corpus_positions = _build_corpus_position_index(units_by_chapter)
@@ -1410,7 +1387,6 @@ def build_character_elo_timeline(
         "character_elo_timeline_version": "character_elo_timeline_v1",
         "lens": lens,
         "source_review_version": review["corpus_review_version"],
-        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
         "duplicate_resolution": overlay_dataset["duplicate_resolution"],
         "initial_rating": initial_rating,
         "k_factor": k_factor,
@@ -1424,12 +1400,11 @@ def build_character_elo_timeline(
     }
 
 
-def build_character_profile_cards(run_dirs, character_name_map=None, top_chapter_limit=5):
-    review = runner.build_corpus_sanity_review(run_dirs, character_name_map=character_name_map)
+def build_character_profile_cards(run_dirs, top_chapter_limit=5):
+    review = runner.build_corpus_sanity_review(run_dirs)
     cross_lens = build_character_cross_lens_analysis(review)
     chapter_analysis = build_character_chapter_analysis(
         run_dirs,
-        character_name_map=character_name_map,
         target_characters=[row["character"] for row in cross_lens["characters"]],
     )
     annotation_counts = build_character_annotation_counts(review)
@@ -1469,82 +1444,6 @@ def build_character_profile_cards(run_dirs, character_name_map=None, top_chapter
     return {
         "character_profile_cards_version": "character_profile_cards_v1",
         "source_review_version": review["corpus_review_version"],
-        "character_normalization": review.get("character_normalization", {"applied": False, "map": {}}),
         "character_count": len(cards),
         "cards": cards,
-    }
-
-
-def build_corpus_review_normalization_diff(before_review, after_review):
-    after_map = after_review.get("character_normalization", {}).get("map", {})
-    if not after_map:
-        raise ValueError("A normalized corpus review is required to build a normalization diff.")
-
-    normalized_targets = sorted(set(after_map.values()))
-    lens_diffs = {}
-    for lens in sorted(SCORING_LENS_CONFIGS):
-        before_lens = before_review["lens_reviews"][lens]
-        after_lens = after_review["lens_reviews"][lens]
-        before_totals = character_totals_by_name(before_lens["character_totals"])
-        after_totals = character_totals_by_name(after_lens["character_totals"])
-        positive_ranks_before = character_ranks(before_lens["character_totals"], reverse=True)
-        positive_ranks_after = character_ranks(after_lens["character_totals"], reverse=True)
-        negative_ranks_before = character_ranks(before_lens["character_totals"], reverse=False)
-        negative_ranks_after = character_ranks(after_lens["character_totals"], reverse=False)
-
-        normalized_character_rows = []
-        for target in normalized_targets:
-            sources = sorted(source for source, normalized in after_map.items() if normalized == target)
-            before_net_score = round(
-                sum(before_totals.get(name, {}).get("net_score", 0.0) for name in [target, *sources]),
-                3,
-            )
-            before_unit_count = sum(before_totals.get(name, {}).get("unit_count", 0) for name in [target, *sources])
-            after_row = after_totals.get(target)
-            if not after_row and before_unit_count == 0:
-                continue
-
-            normalized_character_rows.append(
-                {
-                    "character": target,
-                    "merged_from": sources,
-                    "net_score_before": before_net_score,
-                    "net_score_after": after_row["net_score"] if after_row else 0.0,
-                    "unit_count_before": before_unit_count,
-                    "unit_count_after": after_row["unit_count"] if after_row else 0,
-                    "positive_rank_before": positive_ranks_before.get(target),
-                    "positive_rank_after": positive_ranks_after.get(target),
-                    "negative_rank_before": negative_ranks_before.get(target),
-                    "negative_rank_after": negative_ranks_after.get(target),
-                }
-            )
-
-        lens_diffs[lens] = {
-            "character_count_before": before_lens["character_count"],
-            "character_count_after": after_lens["character_count"],
-            "top_positive_before": before_lens["top_positive_characters"],
-            "top_positive_after": after_lens["top_positive_characters"],
-            "top_negative_before": before_lens["top_negative_characters"],
-            "top_negative_after": after_lens["top_negative_characters"],
-            "normalized_characters": normalized_character_rows,
-        }
-
-    before_cross_lens = before_review["cross_lens_summary"]
-    after_cross_lens = after_review["cross_lens_summary"]
-    return {
-        "normalization_diff_version": "corpus_review_normalization_diff_v1",
-        "character_normalization_map": dict(sorted(after_map.items())),
-        "lens_diffs": lens_diffs,
-        "cross_lens_summary_diff": {
-            "comparable_entry_count_before": before_cross_lens["comparable_entry_count"],
-            "comparable_entry_count_after": after_cross_lens["comparable_entry_count"],
-            "label_disagreement_count_before": before_cross_lens["label_disagreement_count"],
-            "label_disagreement_count_after": after_cross_lens["label_disagreement_count"],
-            "direction_disagreement_count_before": before_cross_lens["direction_disagreement_count"],
-            "direction_disagreement_count_after": after_cross_lens["direction_disagreement_count"],
-            "sign_flip_count_before": len(before_cross_lens["sign_flip_examples"]),
-            "sign_flip_count_after": len(after_cross_lens["sign_flip_examples"]),
-        },
-        "before_review_version": before_review["corpus_review_version"],
-        "after_review_version": after_review["corpus_review_version"],
     }

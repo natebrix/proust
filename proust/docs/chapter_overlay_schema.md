@@ -55,12 +55,6 @@ Recommended manifest shape:
 {
   "chapter_overlay_version": "chapter_overlay_v2",
   "source_review_version": "corpus_sanity_review_v1",
-  "character_normalization": {
-    "applied": true,
-    "map": {
-      "Charlus": "baron de Charlus"
-    }
-  },
   "chapter_count": 75,
   "duplicate_resolution": "latest_reviewed_run_wins",
   "chapters": [
@@ -98,7 +92,6 @@ Recommended chapter file shape:
   "partNumber": 2,
   "partTitle": "Un amour de Swann",
   "sectionTitle": null,
-  "characterNormalizationApplied": true,
   "summary": "This chapter contains 235 annotated units, centered on Swann, Odette, and Mme Verdurin. Overall it is inclusion loss-heavy, advantage loss-heavy, and prestige loss-heavy.",
   "units": [
     {

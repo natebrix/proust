@@ -4,7 +4,6 @@
 - Run count: `271`
 - Declared unit count: `1684`
 - Valid annotation count: `1684`
-- Character normalization applied: `False`
 
 ## Aggregate Annotation Summary
 

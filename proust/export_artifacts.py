@@ -9,123 +9,6 @@ from .reporting_utils import (
 from .scoring import SCORING_LENS_CONFIGS, SCORING_LENS_ORDER
 
 
-def render_corpus_review_normalization_diff_markdown(diff):
-    lines = [
-        "# Corpus Review Normalization Diff",
-        "",
-        f"- Diff version: `{diff['normalization_diff_version']}`",
-        f"- Reviewed merges: `{len(diff['character_normalization_map'])}`",
-        "",
-        "## Character Map",
-        "",
-        markdown_table(
-            ["Source Name", "Normalized Name"],
-            diff["character_normalization_map"].items(),
-        ),
-        "",
-        "## Lens Diffs",
-        "",
-    ]
-
-    for lens, lens_diff in diff["lens_diffs"].items():
-        lines.extend(
-            [
-                f"### {lens}",
-                "",
-                f"- Character count: `{lens_diff['character_count_before']}` -> `{lens_diff['character_count_after']}`",
-                "",
-                "Normalized character movement:",
-                "",
-                markdown_table(
-                    [
-                        "Character",
-                        "Merged From",
-                        "Net Before",
-                        "Net After",
-                        "Units Before",
-                        "Units After",
-                        "Positive Rank",
-                        "Negative Rank",
-                    ],
-                    [
-                        (
-                            row["character"],
-                            ", ".join(row["merged_from"]),
-                            format_signed_number(row["net_score_before"]),
-                            format_signed_number(row["net_score_after"]),
-                            row["unit_count_before"],
-                            row["unit_count_after"],
-                            f"{row['positive_rank_before']} -> {row['positive_rank_after']}",
-                            f"{row['negative_rank_before']} -> {row['negative_rank_after']}",
-                        )
-                        for row in lens_diff["normalized_characters"]
-                    ],
-                ),
-                "",
-                "Top positive characters:",
-                "",
-                markdown_table(
-                    ["Before", "After"],
-                    [
-                        (
-                            row_before["character"] if index < len(lens_diff["top_positive_before"]) else "",
-                            row_after["character"] if index < len(lens_diff["top_positive_after"]) else "",
-                        )
-                        for index, (row_before, row_after) in enumerate(
-                            zip(
-                                lens_diff["top_positive_before"] + [{}] * 10,
-                                lens_diff["top_positive_after"] + [{}] * 10,
-                            )
-                        )
-                        if index < 10
-                    ],
-                ),
-                "",
-                "Top negative characters:",
-                "",
-                markdown_table(
-                    ["Before", "After"],
-                    [
-                        (
-                            row_before["character"] if index < len(lens_diff["top_negative_before"]) else "",
-                            row_after["character"] if index < len(lens_diff["top_negative_after"]) else "",
-                        )
-                        for index, (row_before, row_after) in enumerate(
-                            zip(
-                                lens_diff["top_negative_before"] + [{}] * 10,
-                                lens_diff["top_negative_after"] + [{}] * 10,
-                            )
-                        )
-                        if index < 10
-                    ],
-                ),
-                "",
-            ]
-        )
-
-    cross_lens_diff = diff["cross_lens_summary_diff"]
-    lines.extend(
-        [
-            "## Cross-Lens Summary Diff",
-            "",
-            f"- Comparable entries: `{cross_lens_diff['comparable_entry_count_before']}` -> `{cross_lens_diff['comparable_entry_count_after']}`",
-            f"- Label disagreements: `{cross_lens_diff['label_disagreement_count_before']}` -> `{cross_lens_diff['label_disagreement_count_after']}`",
-            f"- Direction disagreements: `{cross_lens_diff['direction_disagreement_count_before']}` -> `{cross_lens_diff['direction_disagreement_count_after']}`",
-            f"- Sign-flip examples: `{cross_lens_diff['sign_flip_count_before']}` -> `{cross_lens_diff['sign_flip_count_after']}`",
-            "",
-        ]
-    )
-
-    return "\n".join(lines).rstrip() + "\n"
-
-
-def write_corpus_review_normalization_diff_artifacts(diff, markdown_output=None):
-    if markdown_output:
-        markdown_path = Path(markdown_output)
-        markdown_path.parent.mkdir(parents=True, exist_ok=True)
-        markdown_path.write_text(render_corpus_review_normalization_diff_markdown(diff))
-
-
 def render_character_cross_lens_analysis_markdown(analysis):
     lines = [
         "# Character Cross-Lens Analysis",
@@ -133,7 +16,6 @@ def render_character_cross_lens_analysis_markdown(analysis):
         f"- Analysis version: `{analysis['character_cross_lens_analysis_version']}`",
         f"- Source review version: `{analysis['source_review_version']}`",
         f"- Character count: `{analysis['character_count']}`",
-        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
         "",
         "## Top Positive By Lens",
         "",
@@ -284,7 +166,6 @@ def render_character_chapter_analysis_markdown(analysis):
         f"- Analysis version: `{analysis['character_chapter_analysis_version']}`",
         f"- Source review version: `{analysis['source_review_version']}`",
         f"- Selected character count: `{analysis['selected_character_count']}`",
-        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
         "",
     ]
 
@@ -348,7 +229,6 @@ def render_character_annotation_counts_markdown(analysis):
         f"- Analysis version: `{analysis['character_annotation_counts_version']}`",
         f"- Source review version: `{analysis['source_review_version']}`",
         f"- Character count: `{analysis['character_count']}`",
-        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
         "",
         markdown_table(
             ["Character", "Annotation Units", "Advantage", "Prestige", "Inclusion"],
@@ -392,7 +272,6 @@ def render_character_elo_markdown(analysis):
         f"- Initial rating: `{analysis['initial_rating']}`",
         f"- K factor: `{analysis['k_factor']}`",
         f"- Epsilon: `{analysis['epsilon']}`",
-        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
         "",
         "## Top Rated Characters",
         "",
@@ -583,7 +462,6 @@ def render_character_profile_cards_markdown(analysis):
         f"- Analysis version: `{analysis['character_profile_cards_version']}`",
         f"- Source review version: `{analysis['source_review_version']}`",
         f"- Character count: `{analysis['character_count']}`",
-        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
         "",
     ]
 
@@ -673,7 +551,6 @@ def render_character_pages_markdown(analysis):
         f"- Analysis version: `{analysis['character_pages_version']}`",
         f"- Source review version: `{analysis['source_review_version']}`",
         f"- Character count: `{analysis['character_count']}`",
-        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
         "",
     ]
 
@@ -772,7 +649,6 @@ def render_chapter_summary_export_markdown(analysis):
         f"- Analysis version: `{analysis['chapter_summary_export_version']}`",
         f"- Source review version: `{analysis['source_review_version']}`",
         f"- Chapter count: `{analysis['chapter_count']}`",
-        f"- Character normalization applied: `{analysis['character_normalization']['applied']}`",
         f"- Intensity medians: `advantage={analysis['intensity_medians']['advantage']}`, `prestige={analysis['intensity_medians']['prestige']}`, `inclusion={analysis['intensity_medians']['inclusion']}`",
         "",
     ]

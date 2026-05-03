@@ -3,7 +3,6 @@
 - Analysis version: `character_cross_lens_analysis_v1`
 - Source review version: `corpus_sanity_review_v1`
 - Character count: `62`
-- Character normalization applied: `False`
 
 ## Top Positive By Lens
 

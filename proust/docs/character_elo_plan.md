@@ -243,7 +243,6 @@ Minimum global diagnostics:
 - `initial_rating`
 - `ordering_rule`
 - `duplicate_resolution`
-- `character_normalization`
 
 ## Recommended Output Shape
 
@@ -259,10 +258,6 @@ Suggested top-level fields:
   "character_elo_version": "character_elo_advantage_v1",
   "lens": "advantage",
   "source_review_version": "corpus_sanity_review_v1",
-  "character_normalization": {
-    "applied": true,
-    "map": {}
-  },
   "duplicate_resolution": "latest_reviewed_run_wins",
   "initial_rating": 1500,
   "k_factor": 24,
