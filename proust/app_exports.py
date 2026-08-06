@@ -1245,6 +1245,25 @@ def _build_corpus_position_index(units_by_chapter):
     return chapter_index
 
 
+def _character_elo_version(lens):
+    if lens == "advantage":
+        return "character_elo_advantage_v1"
+    return f"character_elo_{lens}_v1"
+
+
+def _character_elo_timeline_version(lens):
+    if lens == "advantage":
+        return "character_elo_timeline_v1"
+    return f"character_elo_timeline_{lens}_v1"
+
+
+def _require_known_scoring_lens(lens):
+    if lens not in SCORING_LENS_ORDER:
+        raise ValueError(
+            f'Unknown scoring lens "{lens}". Expected one of: {", ".join(SCORING_LENS_ORDER)}.'
+        )
+
+
 def build_character_elo(
     run_dirs,
     lens="advantage",
@@ -1254,8 +1273,7 @@ def build_character_elo(
     supplement_run_dirs=None,
     min_match_count=10,
 ):
-    if lens != "advantage":
-        raise ValueError("character_elo_v1 currently supports only the advantage lens.")
+    _require_known_scoring_lens(lens)
     if not run_dirs:
         raise ValueError("At least one run directory is required for character ELO.")
 
@@ -1340,29 +1358,33 @@ def build_character_elo(
     for character, row in diagnostics.items():
         top_positive_unit = row["top_positive_unit"]
         top_negative_unit = row["top_negative_unit"]
-        characters.append(
-            {
-                "character": character,
-                "elo": round(ratings[character], 3),
-                "match_count": row["match_count"],
-                "win_count": row["win_count"],
-                "loss_count": row["loss_count"],
-                "draw_count": row["draw_count"],
-                "unit_count": row["unit_count"],
-                "mean_advantage_net_score": round(sum(row["net_scores"]) / len(row["net_scores"]), 3)
-                if row["net_scores"]
-                else 0.0,
-                "top_positive_unit": top_positive_unit,
-                "top_negative_unit": top_negative_unit,
-            }
+        mean_net_score = (
+            round(sum(row["net_scores"]) / len(row["net_scores"]), 3) if row["net_scores"] else 0.0
         )
+        character_row = {
+            "character": character,
+            "elo": round(ratings[character], 3),
+            "match_count": row["match_count"],
+            "win_count": row["win_count"],
+            "loss_count": row["loss_count"],
+            "draw_count": row["draw_count"],
+            "unit_count": row["unit_count"],
+            "mean_net_score": mean_net_score,
+            "top_positive_unit": top_positive_unit,
+            "top_negative_unit": top_negative_unit,
+        }
+        if lens == "advantage":
+            # Deprecated alias kept so the committed advantage artifacts'
+            # schema remains a strict subset of the lens-generic schema.
+            character_row["mean_advantage_net_score"] = mean_net_score
+        characters.append(character_row)
 
     score_rank = {
         row["character"]: rank
         for rank, row in enumerate(
             sorted(
                 characters,
-                key=lambda item: (-item["mean_advantage_net_score"], item["character"]),
+                key=lambda item: (-item["mean_net_score"], item["character"]),
             ),
             start=1,
         )
@@ -1394,7 +1416,7 @@ def build_character_elo(
     eligible_characters = [row for row in characters if row["match_count"] >= min_match_count]
 
     result = {
-        "character_elo_version": "character_elo_advantage_v1",
+        "character_elo_version": _character_elo_version(lens),
         "lens": lens,
         "source_review_version": review["corpus_review_version"],
         "duplicate_resolution": overlay_dataset["duplicate_resolution"],
@@ -1435,8 +1457,7 @@ def build_character_elo_timeline(
     epsilon=0.25,
     supplement_run_dirs=None,
 ):
-    if lens != "advantage":
-        raise ValueError("character_elo_timeline_v1 currently supports only the advantage lens.")
+    _require_known_scoring_lens(lens)
     if not run_dirs:
         raise ValueError("At least one run directory is required for character ELO timeline export.")
 
@@ -1475,16 +1496,23 @@ def build_character_elo_timeline(
                 if character not in selected_set:
                     continue
                 ratings.setdefault(character, float(initial_rating))
-                points.append(
-                    {
-                        "character": character,
-                        "elo": round(ratings[character], 3),
-                        "advantage_net_score": character_row[lens]["netScore"],
-                        "advantage_label": character_row[lens]["label"],
-                        "unit_character_count": len(ordered_rows),
-                        "corpus_position": dict(position),
-                    }
-                )
+                net_score = character_row[lens]["netScore"]
+                label = character_row[lens]["label"]
+                point = {
+                    "character": character,
+                    "elo": round(ratings[character], 3),
+                }
+                if lens == "advantage":
+                    # Deprecated aliases kept so the committed advantage
+                    # timeline artifact's schema remains a strict subset of
+                    # the lens-generic schema.
+                    point["advantage_net_score"] = net_score
+                    point["advantage_label"] = label
+                point["unit_character_count"] = len(ordered_rows)
+                point["corpus_position"] = dict(position)
+                point["net_score"] = net_score
+                point["label"] = label
+                points.append(point)
 
     point_counts = defaultdict(int)
     latest_points = {}
@@ -1507,7 +1535,7 @@ def build_character_elo_timeline(
 
     characters.sort(key=lambda item: (-item["point_count"], -item["final_elo"], item["character"]))
     result = {
-        "character_elo_timeline_version": "character_elo_timeline_v1",
+        "character_elo_timeline_version": _character_elo_timeline_version(lens),
         "lens": lens,
         "source_review_version": review["corpus_review_version"],
         "duplicate_resolution": overlay_dataset["duplicate_resolution"],

@@ -282,3 +282,178 @@ def test_build_character_elo_supplement_diff_reports_before_after(tmp_path):
     assert movers_by_character["Swann"]["elo_before"] == baseline_swann_elo
 
     assert pr.render_character_elo_supplement_diff_markdown(diff).startswith("# Character ELO Supplement Diff\n")
+
+
+def _make_two_unit_run(tmp_path):
+    run_dir = tmp_path / "run-001"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        _annotation(
+            "v1-p1-combray#p-17",
+            [{"character": "Swann", "delta": 1}, {"character": "Odette", "delta": -1}],
+        ),
+    )
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-274-p-275",
+        _annotation(
+            "v1-p1-combray#p-274-p-275",
+            [{"character": "Swann", "delta": 1}, {"character": "Albertine", "delta": -1}],
+        ),
+    )
+    return run_dir
+
+
+def test_build_character_elo_prestige_lens_builds_from_synthetic_fixtures(tmp_path):
+    run_dir = _make_two_unit_run(tmp_path)
+
+    analysis = pr.build_character_elo([run_dir], lens="prestige")
+
+    assert analysis["character_elo_version"] == "character_elo_prestige_v1"
+    assert analysis["lens"] == "prestige"
+    assert analysis["match_count"] == 2
+    rows = {row["character"]: row for row in analysis["characters"]}
+    # Prestige weights are nonzero and same-signed as advantage for the
+    # admiration/narrated_diminishment events used by the fixture, so Swann
+    # (positive delta in both units) still comes out ahead.
+    assert rows["Swann"]["elo"] > rows["Odette"]["elo"]
+    assert rows["Swann"]["elo"] > rows["Albertine"]["elo"]
+    # Every row carries the lens-generic field; the advantage-only alias must
+    # not leak into a non-advantage lens.
+    for row in analysis["characters"]:
+        assert "mean_net_score" in row
+        assert "mean_advantage_net_score" not in row
+
+    timeline = pr.build_character_elo_timeline(
+        [run_dir],
+        lens="prestige",
+        target_characters=["Swann", "Odette"],
+    )
+    assert timeline["character_elo_timeline_version"] == "character_elo_timeline_prestige_v1"
+    assert timeline["lens"] == "prestige"
+    for point in timeline["points"]:
+        assert "net_score" in point
+        assert "label" in point
+        assert "advantage_net_score" not in point
+        assert "advantage_label" not in point
+
+    assert pr.render_character_elo_markdown(analysis).startswith("# Character ELO\n")
+    assert "Mean Prestige" in pr.render_character_elo_markdown(analysis)
+    assert pr.render_character_elo_timeline_markdown(timeline).startswith("# Character ELO Timeline\n")
+
+
+def test_build_character_elo_advantage_version_strings_and_alias_unchanged(tmp_path):
+    run_dir = _make_two_unit_run(tmp_path)
+
+    analysis = pr.build_character_elo([run_dir])
+    timeline = pr.build_character_elo_timeline([run_dir], target_characters=["Swann", "Odette"])
+
+    assert analysis["character_elo_version"] == "character_elo_advantage_v1"
+    assert timeline["character_elo_timeline_version"] == "character_elo_timeline_v1"
+
+    for row in analysis["characters"]:
+        assert row["mean_advantage_net_score"] == row["mean_net_score"]
+    for point in timeline["points"]:
+        assert point["advantage_net_score"] == point["net_score"]
+        assert point["advantage_label"] == point["label"]
+
+    markdown = pr.render_character_elo_markdown(analysis)
+    assert "Mean Advantage" in markdown
+    assert "Mean Prestige" not in markdown
+    timeline_markdown = pr.render_character_elo_timeline_markdown(timeline)
+    assert "| Character | ELO | Advantage | Label |" in timeline_markdown.replace("  ", " ")
+
+
+def test_build_character_elo_rejects_unknown_lens(tmp_path):
+    run_dir = _make_two_unit_run(tmp_path)
+
+    try:
+        pr.build_character_elo([run_dir], lens="notalens")
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "notalens" in str(exc)
+
+    try:
+        pr.build_character_elo_timeline([run_dir], lens="notalens")
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "notalens" in str(exc)
+
+
+def test_main_character_elo_lens_aware_default_paths(tmp_path, capsys, monkeypatch):
+    outputs_dir = tmp_path / "outputs"
+    run_a = outputs_dir / "run-001"
+    pn.prepare_annotation_run(run_a)
+    pn.write_annotation_result(
+        run_a,
+        "v1-p1-combray#p-17",
+        _annotation(
+            "v1-p1-combray#p-17",
+            [{"character": "Swann", "delta": 1}, {"character": "Odette", "delta": -1}],
+        ),
+    )
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = pr.main(
+        [
+            "character-elo",
+            "--discover-runs",
+            str(outputs_dir),
+            "--lens",
+            "prestige",
+        ]
+    )
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert exit_code == 0
+    assert payload["json_output"] == "outputs/character-elo-prestige-current.json"
+    assert payload["markdown_output"] == "outputs/character-elo-prestige-current.md"
+    assert (tmp_path / "outputs" / "character-elo-prestige-current.json").exists()
+
+    # Advantage default paths are unaffected by the new lens-aware logic.
+    exit_code_advantage = pr.main(
+        [
+            "character-elo",
+            "--discover-runs",
+            str(outputs_dir),
+        ]
+    )
+    payload_advantage = json.loads(capsys.readouterr().out)
+    assert exit_code_advantage == 0
+    assert payload_advantage["json_output"] == "outputs/character-elo-advantage-current.json"
+
+
+def test_main_elo_supplement_diff_lens_aware_default_paths(tmp_path, capsys, monkeypatch):
+    accepted_run, supplement_run = _make_accepted_and_supplement_runs(tmp_path / "outputs")
+    pn.write_annotation_result(
+        accepted_run,
+        "v1-p1-combray#p-17",
+        _annotation("v1-p1-combray#p-17", [{"character": "Swann", "delta": 1}]),
+    )
+    pn.write_annotation_result(
+        supplement_run,
+        "v1-p1-combray#p-17",
+        _annotation("v1-p1-combray#p-17", [{"character": "le narrateur", "delta": -1}]),
+    )
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = pr.main(
+        [
+            "elo-supplement-diff",
+            "--discover-runs",
+            str(tmp_path / "outputs"),
+            "--supplement-outputs-dir",
+            str(tmp_path / "outputs"),
+            "--lens",
+            "prestige",
+        ]
+    )
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert exit_code == 0
+    assert payload["elo_output"] == "outputs/character-elo-prestige-supplemented-current.json"
+    assert payload["elo_timeline_output"] == "outputs/character-elo-prestige-timeline-supplemented-current.json"
+    assert payload["diff_output"] == "outputs/character-elo-prestige-supplement-diff-current.json"
+    assert (tmp_path / "outputs" / "character-elo-prestige-supplement-diff-current.json").exists()

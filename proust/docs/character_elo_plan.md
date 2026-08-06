@@ -404,3 +404,51 @@ If work proceeds on this plan, the next concrete task should be:
    - `character-cross-lens-current`
    - `character-annotation-counts-current`
 4. decide whether the method is strong enough to extend to `prestige` and `inclusion`
+
+## Prestige Extension (2026-08-06)
+
+`build_character_elo` and `build_character_elo_timeline` now accept any lens in
+`scoring.SCORING_LENS_ORDER`, and the machinery has been extended to `prestige`.
+
+The match rule is unchanged. Within a unit, every pair of scored characters is still
+compared by `net_score` under the chosen lens, with the same `epsilon = 0.25` draw
+band and the same Elo update. Nothing about match construction, ordering, or the
+rating algorithm is lens-specific.
+
+What changes is interpretation, not mechanics. `advantage` is a scene-level tactical
+read: who came out ahead in the immediate exchange. `prestige` is field-level and
+reputational: it tracks visible social standing rather than momentary tactical
+position. A prestige "win" in a unit means this character's visible standing moved up
+relative to the co-present character in that passage -- closer to a move in the
+Faubourg's ongoing reputational tournament (who is received where, whose name carries
+weight, whose judgment is deferred to) than to a skirmish outcome. Two characters can
+both "lose" a scene tactically (`advantage`) while one of them still gains standing
+from simply being seen in the room (`prestige`) -- that divergence is expected and is
+part of why the two lenses are tracked separately rather than combined.
+
+Schema-wise, the extension is additive. Every per-character ELO row now carries a
+lens-generic `mean_net_score` field; for `advantage` specifically, the row also keeps
+the original `mean_advantage_net_score` key as a deprecated alias with the same value,
+so the committed advantage artifacts remain a strict subset of the new schema. The
+same pattern applies to the timeline's per-point `net_score` / `label` fields versus
+the original `advantage_net_score` / `advantage_label` keys. Version strings follow
+the lens: `character_elo_{lens}_v1` and `character_elo_timeline_{lens}_v1`, except
+that the `advantage` lens keeps its original strings
+(`character_elo_advantage_v1`, `character_elo_timeline_v1`) exactly, so nothing about
+the already-committed advantage artifacts changes.
+
+`advantage` remains the default lens everywhere -- the CLI's `--lens` flag on
+`character-elo`, `character-elo-timeline`, and `elo-supplement-diff` defaults to
+`advantage`, and default output filenames for `advantage` are unchanged
+(`character-elo-advantage-current.*`, `character-elo-advantage-supplemented-current.*`,
+`character-elo-advantage-timeline-supplemented-current.*`,
+`character-elo-supplement-diff-current.*`). Other lenses get parallel filenames with
+the lens name in place of `advantage` (e.g. `character-elo-prestige-current.*`), except
+that the diff artifact for `advantage` has no lens component in its name at all
+(`character-elo-supplement-diff-current.*`) while other lenses get one
+(`character-elo-prestige-supplement-diff-current.*`) -- an asymmetry inherited
+directly from the pre-existing advantage filenames, which were never renamed.
+
+`inclusion` is not generated as a production artifact yet, but the same code path
+supports it without further changes, since the guard now accepts any lens in
+`SCORING_LENS_ORDER` rather than only `advantage`.

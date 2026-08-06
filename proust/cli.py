@@ -9,6 +9,26 @@ from . import supplement
 from .export_artifacts import write_coverage_audit_artifacts
 
 
+def _character_elo_default_paths(lens, include_supplements):
+    suffix = "-supplemented" if include_supplements else ""
+    base = f"outputs/character-elo-{lens}{suffix}-current"
+    return f"{base}.json", f"{base}.md"
+
+
+def _character_elo_timeline_default_paths(lens, include_supplements):
+    suffix = "-supplemented" if include_supplements else ""
+    base = f"outputs/character-elo-{lens}-timeline{suffix}-current"
+    return f"{base}.json", f"{base}.md"
+
+
+def _character_elo_supplement_diff_default_paths(lens):
+    if lens == "advantage":
+        base = "outputs/character-elo-supplement-diff-current"
+    else:
+        base = f"outputs/character-elo-{lens}-supplement-diff-current"
+    return f"{base}.json", f"{base}.md"
+
+
 def _collect_runs(args):
     runs = list(args.runs or [])
     if getattr(args, "discover_runs", None):
@@ -169,7 +189,7 @@ def build_parser():
 
     character_elo_parser = subparsers.add_parser(
         "character-elo",
-        help="Build an advantage-lens ELO ranking from pairwise within-unit character comparisons.",
+        help="Build a lens ELO ranking from pairwise within-unit character comparisons.",
     )
     character_elo_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
     character_elo_parser.add_argument(
@@ -177,6 +197,12 @@ def build_parser():
         nargs="?",
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_elo_parser.add_argument(
+        "--lens",
+        default="advantage",
+        choices=list(core.SCORING_LENS_ORDER),
+        help="Scoring lens the ELO ranking is computed over. Defaults to advantage.",
     )
     character_elo_parser.add_argument(
         "--include-supplements",
@@ -194,8 +220,8 @@ def build_parser():
         default=10,
         help="Minimum pairwise match count required for a character to appear in the top/lowest/mismatch summary tables.",
     )
-    character_elo_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-current.json (or the -supplemented- variant with --include-supplements).")
-    character_elo_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-current.md (or the -supplemented- variant with --include-supplements).")
+    character_elo_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-current.json for the advantage lens (outputs/character-elo-<lens>-current.json for other lenses), or the -supplemented- variant with --include-supplements.")
+    character_elo_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-current.md for the advantage lens (outputs/character-elo-<lens>-current.md for other lenses), or the -supplemented- variant with --include-supplements.")
 
     character_elo_timeline_parser = subparsers.add_parser(
         "character-elo-timeline",
@@ -207,6 +233,12 @@ def build_parser():
         nargs="?",
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_elo_timeline_parser.add_argument(
+        "--lens",
+        default="advantage",
+        choices=list(core.SCORING_LENS_ORDER),
+        help="Scoring lens the ELO timeline is computed over. Defaults to advantage.",
     )
     character_elo_timeline_parser.add_argument(
         "--character",
@@ -224,8 +256,8 @@ def build_parser():
         default="outputs",
         help="Outputs directory to discover supplement-run-* directories from when --include-supplements is set. Defaults to outputs.",
     )
-    character_elo_timeline_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-timeline-current.json (or the -supplemented- variant with --include-supplements).")
-    character_elo_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-timeline-current.md (or the -supplemented- variant with --include-supplements).")
+    character_elo_timeline_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-timeline-current.json for the advantage lens (outputs/character-elo-<lens>-timeline-current.json for other lenses), or the -supplemented- variant with --include-supplements.")
+    character_elo_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-timeline-current.md for the advantage lens (outputs/character-elo-<lens>-timeline-current.md for other lenses), or the -supplemented- variant with --include-supplements.")
 
     elo_supplement_diff_parser = subparsers.add_parser(
         "elo-supplement-diff",
@@ -242,6 +274,12 @@ def build_parser():
         "--supplement-outputs-dir",
         default="outputs",
         help="Outputs directory to discover supplement-run-* directories from. Defaults to outputs.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--lens",
+        default="advantage",
+        choices=list(core.SCORING_LENS_ORDER),
+        help="Scoring lens the ELO diff is computed over. Defaults to advantage.",
     )
     elo_supplement_diff_parser.add_argument(
         "--character",
@@ -263,33 +301,27 @@ def build_parser():
     )
     elo_supplement_diff_parser.add_argument(
         "--elo-output",
-        default="outputs/character-elo-advantage-supplemented-current.json",
-        help="JSON output path for the supplemented character-elo artifact.",
+        help="JSON output path for the supplemented character-elo artifact. Defaults to outputs/character-elo-advantage-supplemented-current.json for the advantage lens (outputs/character-elo-<lens>-supplemented-current.json for other lenses).",
     )
     elo_supplement_diff_parser.add_argument(
         "--elo-markdown-output",
-        default="outputs/character-elo-advantage-supplemented-current.md",
-        help="Markdown output path for the supplemented character-elo artifact.",
+        help="Markdown output path for the supplemented character-elo artifact. Defaults to outputs/character-elo-advantage-supplemented-current.md for the advantage lens (outputs/character-elo-<lens>-supplemented-current.md for other lenses).",
     )
     elo_supplement_diff_parser.add_argument(
         "--elo-timeline-output",
-        default="outputs/character-elo-advantage-timeline-supplemented-current.json",
-        help="JSON output path for the supplemented character-elo-timeline artifact.",
+        help="JSON output path for the supplemented character-elo-timeline artifact. Defaults to outputs/character-elo-advantage-timeline-supplemented-current.json for the advantage lens (outputs/character-elo-<lens>-timeline-supplemented-current.json for other lenses).",
     )
     elo_supplement_diff_parser.add_argument(
         "--elo-timeline-markdown-output",
-        default="outputs/character-elo-advantage-timeline-supplemented-current.md",
-        help="Markdown output path for the supplemented character-elo-timeline artifact.",
+        help="Markdown output path for the supplemented character-elo-timeline artifact. Defaults to outputs/character-elo-advantage-timeline-supplemented-current.md for the advantage lens (outputs/character-elo-<lens>-timeline-supplemented-current.md for other lenses).",
     )
     elo_supplement_diff_parser.add_argument(
         "--diff-output",
-        default="outputs/character-elo-supplement-diff-current.json",
-        help="JSON output path for the before/after diff artifact.",
+        help="JSON output path for the before/after diff artifact. Defaults to outputs/character-elo-supplement-diff-current.json for the advantage lens (outputs/character-elo-<lens>-supplement-diff-current.json for other lenses).",
     )
     elo_supplement_diff_parser.add_argument(
         "--diff-markdown-output",
-        default="outputs/character-elo-supplement-diff-current.md",
-        help="Markdown output path for the before/after diff artifact.",
+        help="Markdown output path for the before/after diff artifact. Defaults to outputs/character-elo-supplement-diff-current.md for the advantage lens (outputs/character-elo-<lens>-supplement-diff-current.md for other lenses).",
     )
 
     character_cards_parser = subparsers.add_parser(
@@ -593,17 +625,13 @@ def main(argv=None):
             )
             analysis = core.build_character_elo(
                 runs,
+                lens=args.lens,
                 supplement_run_dirs=supplement_run_dirs,
                 min_match_count=args.min_match_count,
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        if args.include_supplements:
-            default_json_output = "outputs/character-elo-advantage-supplemented-current.json"
-            default_markdown_output = "outputs/character-elo-advantage-supplemented-current.md"
-        else:
-            default_json_output = "outputs/character-elo-advantage-current.json"
-            default_markdown_output = "outputs/character-elo-advantage-current.md"
+        default_json_output, default_markdown_output = _character_elo_default_paths(args.lens, args.include_supplements)
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
         core.write_character_elo_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
@@ -623,17 +651,13 @@ def main(argv=None):
             )
             analysis = core.build_character_elo_timeline(
                 runs,
+                lens=args.lens,
                 target_characters=args.characters,
                 supplement_run_dirs=supplement_run_dirs,
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        if args.include_supplements:
-            default_json_output = "outputs/character-elo-advantage-timeline-supplemented-current.json"
-            default_markdown_output = "outputs/character-elo-advantage-timeline-supplemented-current.md"
-        else:
-            default_json_output = "outputs/character-elo-advantage-timeline-current.json"
-            default_markdown_output = "outputs/character-elo-advantage-timeline-current.md"
+        default_json_output, default_markdown_output = _character_elo_timeline_default_paths(args.lens, args.include_supplements)
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
         core.write_character_elo_timeline_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
@@ -649,14 +673,16 @@ def main(argv=None):
         try:
             runs = _collect_runs(args)
             supplement_run_dirs = core.discover_supplement_run_dirs(args.supplement_outputs_dir)
-            baseline = core.build_character_elo(runs, min_match_count=args.min_match_count)
+            baseline = core.build_character_elo(runs, lens=args.lens, min_match_count=args.min_match_count)
             supplemented = core.build_character_elo(
                 runs,
+                lens=args.lens,
                 supplement_run_dirs=supplement_run_dirs,
                 min_match_count=args.min_match_count,
             )
             supplemented_timeline = core.build_character_elo_timeline(
                 runs,
+                lens=args.lens,
                 target_characters=args.characters,
                 supplement_run_dirs=supplement_run_dirs,
             )
@@ -667,23 +693,32 @@ def main(argv=None):
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_character_elo_artifacts(supplemented, json_output=args.elo_output, markdown_output=args.elo_markdown_output)
+        default_elo_json, default_elo_markdown = _character_elo_default_paths(args.lens, True)
+        default_timeline_json, default_timeline_markdown = _character_elo_timeline_default_paths(args.lens, True)
+        default_diff_json, default_diff_markdown = _character_elo_supplement_diff_default_paths(args.lens)
+        elo_output = args.elo_output or default_elo_json
+        elo_markdown_output = args.elo_markdown_output or default_elo_markdown
+        elo_timeline_output = args.elo_timeline_output or default_timeline_json
+        elo_timeline_markdown_output = args.elo_timeline_markdown_output or default_timeline_markdown
+        diff_output = args.diff_output or default_diff_json
+        diff_markdown_output = args.diff_markdown_output or default_diff_markdown
+        core.write_character_elo_artifacts(supplemented, json_output=elo_output, markdown_output=elo_markdown_output)
         core.write_character_elo_timeline_artifacts(
             supplemented_timeline,
-            json_output=args.elo_timeline_output,
-            markdown_output=args.elo_timeline_markdown_output,
+            json_output=elo_timeline_output,
+            markdown_output=elo_timeline_markdown_output,
         )
-        core.write_character_elo_supplement_diff_artifacts(diff, json_output=args.diff_output, markdown_output=args.diff_markdown_output)
+        core.write_character_elo_supplement_diff_artifacts(diff, json_output=diff_output, markdown_output=diff_markdown_output)
         print(json.dumps({
             "match_count_before": diff["match_count"]["before"],
             "match_count_after": diff["match_count"]["after"],
             "newly_clearing_threshold_count": diff["newly_clearing_threshold_count"],
-            "elo_output": args.elo_output,
-            "elo_markdown_output": args.elo_markdown_output,
-            "elo_timeline_output": args.elo_timeline_output,
-            "elo_timeline_markdown_output": args.elo_timeline_markdown_output,
-            "diff_output": args.diff_output,
-            "diff_markdown_output": args.diff_markdown_output,
+            "elo_output": elo_output,
+            "elo_markdown_output": elo_markdown_output,
+            "elo_timeline_output": elo_timeline_output,
+            "elo_timeline_markdown_output": elo_timeline_markdown_output,
+            "diff_output": diff_output,
+            "diff_markdown_output": diff_markdown_output,
         }, ensure_ascii=False, indent=2))
         return 0
 

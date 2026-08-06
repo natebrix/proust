@@ -261,6 +261,7 @@ def write_character_annotation_counts_artifacts(analysis, json_output=None, mark
 
 
 def render_character_elo_markdown(analysis):
+    mean_column_label = f"Mean {analysis['lens'].capitalize()}"
     lines = [
         "# Character ELO",
         "",
@@ -283,7 +284,7 @@ def render_character_elo_markdown(analysis):
             "## Top Rated Characters",
         "",
         markdown_table(
-            ["Character", "ELO", "Matches", "W-L-D", "Units", "Mean Advantage"],
+            ["Character", "ELO", "Matches", "W-L-D", "Units", mean_column_label],
             [
                 (
                     row["character"],
@@ -291,7 +292,7 @@ def render_character_elo_markdown(analysis):
                     row["match_count"],
                     f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
                     row["unit_count"],
-                    format_signed_number(row["mean_advantage_net_score"]),
+                    format_signed_number(row["mean_net_score"]),
                 )
                 for row in analysis["top_rated_characters"]
             ],
@@ -300,7 +301,7 @@ def render_character_elo_markdown(analysis):
         "## Lowest Rated Characters",
         "",
         markdown_table(
-            ["Character", "ELO", "Matches", "W-L-D", "Units", "Mean Advantage"],
+            ["Character", "ELO", "Matches", "W-L-D", "Units", mean_column_label],
             [
                 (
                     row["character"],
@@ -308,7 +309,7 @@ def render_character_elo_markdown(analysis):
                     row["match_count"],
                     f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
                     row["unit_count"],
-                    format_signed_number(row["mean_advantage_net_score"]),
+                    format_signed_number(row["mean_net_score"]),
                 )
                 for row in analysis["lowest_rated_characters"]
             ],
@@ -317,7 +318,7 @@ def render_character_elo_markdown(analysis):
         "## Largest Rank Mismatches",
         "",
         markdown_table(
-            ["Character", "ELO Rank", "Mean Score Rank", "Delta", "ELO", "Mean Advantage"],
+            ["Character", "ELO Rank", "Mean Score Rank", "Delta", "ELO", mean_column_label],
             [
                 (
                     row["character"],
@@ -325,7 +326,7 @@ def render_character_elo_markdown(analysis):
                     row["mean_score_rank"],
                     row["elo_rank_minus_mean_score_rank"],
                     row["elo"],
-                    format_signed_number(row["mean_advantage_net_score"]),
+                    format_signed_number(row["mean_net_score"]),
                 )
                 for row in analysis["largest_rank_mismatches"]
             ],
@@ -341,7 +342,7 @@ def render_character_elo_markdown(analysis):
                 "Matches",
                 "W-L-D",
                 "Units",
-                "Mean Advantage",
+                mean_column_label,
                 "Top Positive Unit",
                 "Top Negative Unit",
             ],
@@ -353,7 +354,7 @@ def render_character_elo_markdown(analysis):
                     row["match_count"],
                     f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
                     row["unit_count"],
-                    format_signed_number(row["mean_advantage_net_score"]),
+                    format_signed_number(row["mean_net_score"]),
                     (
                         f"{row['top_positive_unit']['unit_id']} ({format_signed_number(row['top_positive_unit']['net_score'])})"
                         if row["top_positive_unit"]
@@ -424,7 +425,7 @@ def render_character_elo_timeline_markdown(analysis):
             [
                 "Character",
                 "ELO",
-                "Advantage",
+                analysis["lens"].capitalize(),
                 "Label",
                 "Chapter",
                 "Unit",
@@ -435,8 +436,8 @@ def render_character_elo_timeline_markdown(analysis):
                 (
                     row["character"],
                     row["elo"],
-                    format_signed_number(row["advantage_net_score"]),
-                    row["advantage_label"],
+                    format_signed_number(row["net_score"]),
+                    row["label"],
                     row["corpus_position"]["chapter_id"],
                     row["corpus_position"]["unit_id"],
                     row["corpus_position"]["cumulative_unit_index"],
