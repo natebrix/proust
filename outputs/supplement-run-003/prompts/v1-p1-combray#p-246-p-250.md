@@ -1,0 +1,634 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": [
+        "M. Vinteuil",
+        "Vinteuil"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "Swann",
+      "surface_forms": [
+        "Swann"
+      ],
+      "presence_type": "implicit",
+      "presence_confidence": 0.8
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "M. Vinteuil",
+      "target": "Swann",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "ironized",
+      "confidence": 0.82,
+      "evidence": "D'une pudibonderie excessive, il cessa de venir pour ne pas rencontrer Swann qui avait fait ce qu'il appelait « un mariage déplacé, dans le goût du jour ».",
+      "explanation": "Vinteuil withholds social contact to avoid Swann, stigmatizing him for his marriage; the narrator signals distance by calling Vinteuil's prudery excessive."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.78,
+      "explanation": "Locally, Swann is socially stigmatized and indirectly excluded due to his 'misplaced' marriage as judged by Vinteuil."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v1-p1-combray#p-246-p-250"
+}
+
+### Candidate characters
+
+[
+  "Françoise",
+  "Robert de Saint-Loup",
+  "la grand-mère",
+  "la mère du narrateur",
+  "le narrateur",
+  "le père du narrateur"
+]
+
+### Prior local context (optional)
+
+Ainsi passait la vie pour ma tante Léonie, toujours identique, dans la douce uniformité de ce qu'elle appelait avec un dédain affecté et une tendresse profonde, son « petit traintrain ». Préservé par tout le monde, non seulement à la maison, où chacun ayant éprouvé l'inutilité de lui conseiller une meilleure hygiène, s'était peu à peu résigné à le respecter, mais même dans le village où, à trois rues de nous, l'emballeur, avant de clouer ses caisses, faisait demander à Françoise si ma tante ne « reposait pas » – ce traintrain fut pourtant troublé une fois cette année-là. Comme un fruit caché qui serait parvenu à maturité sans qu'on s'en aperçût et se détacherait spontanément, survint une nuit la délivrance de la fille de cuisine. Mais ses douleurs étaient intolérables, et comme il n'y avait pas de sage-femme à Combray, Françoise dut partir avant le jour en chercher une à Thiberzy. Ma tante, à cause des cris de la fille de cuisine, ne put reposer, et Françoise, malgré la courte distance, n'étant revenue que très tard, lui manqua beaucoup. Aussi, la mère du narrateur me dit-elle dans la matinée : « Monte donc voir si ta tante n'a besoin de rien. » J'entrai dans la première pièce et, par la porte ouverte, vis ma tante, couchée sur le côté, qui dormait ; je l'entendis ronfler légèrement. J'allais m'en aller doucement, mais sans doute le bruit que j'avais fait était intervenu dans son sommeil et en avait « changé la vitesse », comme on dit pour les automobiles, car la musique du ronflement s'interrompit une seconde et reprit un ton plus bas, puis elle s'éveilla et tourna à demi son visage que je pus voir alors ; il exprimait une sorte de terreur ; elle venait évidemment d'avoir un rêve affreux ; elle ne pouvait me voir de la façon dont elle était placée, et je restais là ne sachant si je devais m'avancer ou me retirer ; mais déjà elle semblait revenue au sentiment de la réalité et avait reconnu le mensonge des visions qui l'avaient effrayée ; un sourire de joie, de pieuse reconnaissance envers Dieu qui permet que la vie soit moins cruelle que les rêves, éclaira faiblement son visage, et avec cette habitude qu'elle avait prise de se parler à mi-voix à elle-même quand elle se croyait seule, elle murmura : « Dieu soit loué ! nous n'avons comme tracas que la fille de cuisine qui accouche. Voilà-t-il pas que je rêvais que mon pauvre Octave était ressuscité et qu'il voulait me faire faire une promenade tous les jours ! » Sa main se tendit vers son chapelet qui était sur la petite table, mais le sommeil recommençant ne lui laissa pas la force de l'atteindre : elle se rendormit, tranquillisée, et je sortis à pas de loup de la chambre sans qu'elle ni personne eût jamais appris ce que j'avais entendu.
+
+### Passage
+
+Quand je dis qu'en dehors d'événements très rares, comme cet accouchement, le traintrain de ma tante ne subissait jamais aucune variation, je ne parle pas de celles qui, se répétant toujours identiques à des intervalles réguliers, n'introduisaient au sein de l'uniformité qu'une sorte d'uniformité secondaire. C'est ainsi que tous les samedis, comme Françoise allait dans l'après-midi au marché de Roussainville-le-Pin, le déjeuner était, pour tout le monde, une heure plus tôt. Et ma tante avait si bien pris l'habitude de cette dérogation hebdomadaire à ses habitudes, qu'elle tenait à cette habitude-là autant qu'aux autres. Elle y était si bien « routinée », comme disait Françoise, que s'il lui avait fallu un samedi, attendre pour déjeuner l'heure habituelle, cela l'eût autant « dérangée » que si elle avait dû, un autre jour, avancer son déjeuner à l'heure du samedi. Cette avance du déjeuner donnait d'ailleurs au samedi, pour nous tous, une figure particulière, indulgente, et assez sympathique. Au moment où d'habitude on a encore une heure à vivre avant la détente du repas, on savait que, dans quelques secondes, on allait voir arriver des endives précoces, une omelette de faveur, un bifteck immérité. Le retour de ce samedi asymétrique était un de ces petits événements intérieurs, locaux, presque civiques qui, dans les vies tranquilles et les sociétés fermées, créent une sorte de lien national et deviennent le thème favori des conversations, des plaisanteries, des récits exagérés à plaisir : il eût été le noyau tout prêt pour un cycle légendaire si l'un de nous avait eu la tête épique. Dès le matin, avant d'être habillés, sans raison, pour le plaisir d'éprouver la force de la solidarité, on se disait les uns aux autres avec bonne humeur, avec cordialité, avec patriotisme : « Il n'y a pas de temps à perdre, n'oublions pas que c'est samedi ! » cependant que ma tante, conférant avec Françoise et songeant que la journée serait plus longue que d'habitude, disait : « Si vous leur faisiez un beau morceau de veau, comme c'est samedi. » Si à dix heures et demie un distrait tirait sa montre en disant : « Allons, encore une heure et demie avant le déjeuner », chacun était enchanté d'avoir à lui dire : « Mais voyons, à quoi pensez-vous, vous oubliez que c'est samedi ! » ; on en riait encore un quart d'heure après et on se promettait de monter raconter cet oubli à ma tante pour l'amuser. Le visage du ciel même semblait changé. Après le déjeuner, le soleil, conscient que c'était samedi, flânait une heure de plus au haut du ciel, et quand quelqu'un, pensant qu'on était en retard pour la promenade, disait : « Comment, seulement deux heures ? » en voyant passer les deux coups du clocher de Saint-Hilaire (qui ont l'habitude de ne rencontrer encore personne dans les chemins désertés à cause du repas de midi ou de la sieste, le long de la rivière vive et blanche que le pêcheur même a abandonnée, et passent solitaires dans le ciel vacant où ne restent que quelques nuages paresseux), tout le monde en choeur lui répondait : « Mais ce qui vous trompe, c'est qu'on a déjeuné une heure plus tôt, vous savez bien que c'est samedi ! » La surprise d'un barbare (nous appelions ainsi tous les gens qui ne savaient pas ce qu'avait de particulier le samedi) qui, étant venu à onze heures pour parler à mon père, nous avait trouvés à table, était une des choses qui, dans sa vie, avaient le plus égayé Françoise. Mais si elle trouvait amusant que le visiteur interloqué ne sût pas que nous déjeunions plus tôt le samedi, elle trouvait plus comique encore (tout en sympathisant du fond du coeur avec ce chauvinisme étroit) que mon père, lui, n'eût pas eu l'idée que ce barbare pouvait l'ignorer et eût répondu sans autre explication à son étonnement de nous voir déjà dans la salle à manger : « Mais voyons, c'est samedi ! » Parvenue à ce point de son récit, elle essuyait des larmes d'hilarité et pour accroître le plaisir qu'elle éprouvait, elle prolongeait le dialogue, inventait ce qu'avait répondu le visiteur à qui ce « samedi » n'expliquait rien. Et bien loin de nous plaindre de ses additions, elles ne nous suffisaient pas encore et nous disions : « Mais il me semblait qu'il avait dit aussi autre chose. C'était plus long la première fois quand vous l'avez raconté. » Ma grand'tante elle-même laissait son ouvrage, levait la tête et regardait par-dessus son lorgnon.
+
+Le samedi avait encore ceci de particulier que ce jour-là, pendant le mois de mai, nous sortions après le dîner pour aller au « mois de Marie ».
+
+Comme nous y rencontrions parfois Vinteuil, très sévère pour « le genre déplorable des jeunes gens négligés, dans les idées de l'époque actuelle », ma mère prenait garde que rien ne clochât dans ma tenue, puis on partait pour l'église. C'est au mois de Marie que je me souviens d'avoir commencé à aimer les aubépines. N'étant pas seulement dans l'église, si sainte, mais où nous avions le droit d'entrer, posées sur l'autel même, inséparables des mystères à la célébration desquels elles prenaient part, elles faisaient courir au milieu des flambeaux et des vases sacrés leurs branches attachées horizontalement les unes aux autres en un apprêt de fête, et qu'enjolivaient encore les festons de leur feuillage sur lequel étaient semés à profusion, comme sur une traîne de mariée, de petits bouquets de boutons d'une blancheur éclatante. Mais, sans oser les regarder qu'à la dérobée, je sentais que ces apprêts pompeux étaient vivants et que c'était la nature elle-même qui, en creusant ces découpures dans les feuilles, en ajoutant l'ornement suprême de ces blancs boutons, avait rendu cette décoration digne de ce qui était à la fois une réjouissance populaire et une solennité mystique. Plus haut s'ouvraient leurs corolles çà et là avec une grâce insouciante, retenant si négligemment comme un dernier et vaporeux atour le bouquet d'étamines, fines comme des fils de la Vierge, qui les embrumait tout entières, qu'en suivant, qu'en essayant de mimer au fond de moi le geste de leur efflorescence, je l'imaginais comme si ç'avait été le mouvement de tête étourdi et rapide, au regard coquet, aux pupilles diminuées, d'une blanche jeune fille, distraite et vive. Vinteuil était venu avec sa fille se placer à côté de nous. D'une bonne famille, il avait été le professeur de piano des soeurs de ma grand'mère et quand, après la mort de sa femme et un héritage qu'il avait fait, il s'était retiré auprès de Combray, on le recevait souvent à la maison. Mais d'une pudibonderie excessive, il cessa de venir pour ne pas rencontrer Swann qui avait fait ce qu'il appelait « un mariage déplacé, dans le goût du jour ». Ma mère, ayant appris qu'il composait, lui avait dit par amabilité que, quand elle irait le voir, il faudrait qu'il lui fît entendre quelque chose de lui. Vinteuil en aurait eu beaucoup de joie, mais il poussait la politesse et la bonté jusqu'à de tels scrupules que, se mettant toujours à la place des autres, il craignait de les ennuyer et de leur paraître égoïste s'il suivait ou seulement laissait deviner son désir. Le jour où mes parents étaient allés chez lui en visite, je les avais accompagnés, mais ils m'avaient permis de rester dehors et, comme la maison de Vinteuil, Montjouvain, était en contre-bas d'un monticule buissonneux, où je m'étais caché, je m'étais trouvé de plain-pied avec le salon du second étage, à cinquante centimètres de la fenêtre. Quand on était venu lui annoncer mes parents, j'avais vu Vinteuil se hâter de mettre en évidence sur le piano un morceau de musique. Mais une fois mes parents entrés, il l'avait retiré et mis dans un coin. Sans doute avait-il craint de leur laisser supposer qu'il n'était heureux de les voir que pour leur jouer de ses compositions. Et chaque fois que ma mère était revenue à la charge au cours de la visite, il avait répété plusieurs fois : « Mais je ne sais qui a mis cela sur le piano, ce n'est pas sa place », et avait détourné la conversation sur d'autres sujets, justement parce que ceux-là l'intéressaient moins. Sa seule passion était pour sa fille et celle-ci, qui avait l'air d'un garçon, paraissait si robuste qu'on ne pouvait s'empêcher de sourire en voyant les précautions que son père prenait pour elle, ayant toujours des châles supplémentaires à lui jeter sur les épaules. Ma grand'mère faisait remarquer quelle expression douce, délicate, presque timide passait souvent dans les regards de cette enfant si rude, dont le visage était semé de taches de son. Quand elle venait de prononcer une parole, elle l'entendait avec l'esprit de ceux à qui elle l'avait dite, s'alarmait des malentendus possibles et on voyait s'éclairer, se découper comme par transparence, sous la figure hommasse du « bon diable », les traits plus fins d'une jeune fille éplorée.
+
+Quand, au moment de quitter l'église, je m'agenouillai devant l'autel, je sentis tout d'un coup, en me relevant, s'échapper des aubépines une odeur amère et douce d'amandes, et je remarquai alors sur les fleurs de petites places plus blondes, sous lesquelles je me figurai que devait être cachée cette odeur comme sous les parties gratinées le goût d'une frangipane, ou sous leurs taches de rousseur celui des joues de Mlle Vinteuil. Malgré la silencieuse immobilité des aubépines, cette intermittente ardeur était comme le murmure de leur vie intense dont l'autel vibrait ainsi qu'une haie agreste visitée par de vivantes antennes, auxquelles on pensait en voyant certaines étamines presque rousses qui semblaient avoir gardé la virulence printanière, le pouvoir irritant, d'insectes aujourd'hui métamorphosés en fleurs.
+
+Nous causions un moment avec Vinteuil devant le porche en sortant de l'église. Il intervenait entre les gamins qui se chamaillaient sur la place, prenait la défense des petits, faisait des sermons aux grands. Si sa fille nous disait de sa grosse voix combien elle avait été contente de nous voir, aussitôt il semblait qu'en elle-même une soeur plus sensible rougissait de ce propos de bon garçon étourdi qui avait pu nous faire croire qu'elle sollicitait d'être invitée chez nous. Son père lui jetait un manteau sur les épaules, ils montaient dans un petit buggy qu'elle conduisait elle-même et tous deux retournaient à Montjouvain. Quant à nous, comme c'était le lendemain dimanche et qu'on ne se lèverait que pour la grand'messe, s'il faisait clair de lune et que l'air fût chaud, au lieu de nous faire rentrer directement, mon père, par amour de la gloire, nous faisait faire par le calvaire une longue promenade, que le peu d'aptitude de ma mère à s'orienter et à se reconnaître dans son chemin, lui faisait considérer comme la prouesse d'un génie stratégique. Parfois nous allions jusqu'au viaduc, dont les enjambées de pierre commençaient à la gare et me représentaient l'exil et la détresse hors du monde civilisé, parce que chaque année en venant de Paris, on nous recommandait de faire bien attention, quand ce serait Combray, de ne pas laisser passer la station, d'être prêts d'avance, car le train repartait au bout de deux minutes et s'engageait sur le viaduc au delà des pays chrétiens dont Combray marquait pour moi l'extrême limite. Nous revenions par le boulevard de la gare, où étaient les plus agréables villas de la commune. Dans chaque jardin le clair de lune, comme Hubert Saint-Loup, semait ses degrés rompus de marbre blanc, ses jets d'eau, ses grilles entr'ouvertes. Sa lumière avait détruit le bureau du télégraphe. Il n'en subsistait plus qu'une colonne à demi brisée, mais qui gardait la beauté d'une ruine immortelle. Je traînais la jambe, je tombais de sommeil, l'odeur des tilleuls qui embaumait m'apparaissait comme une récompense qu'on ne pouvait obtenir qu'au prix des plus grandes fatigues et qui n'en valait pas la peine. De grilles fort éloignées les unes des autres, des chiens réveillés par nos pas solitaires faisaient alterner des aboiements comme il m'arrive encore quelquefois d'en entendre le soir, et entre lesquels dut venir (quand sur son emplacement on créa le jardin public de Combray) se réfugier le boulevard de la gare, car, où que je me trouve, dès qu'ils commencent à retentir et à se répondre, je l'aperçois, avec ses tilleuls et son trottoir éclairé par la lune.

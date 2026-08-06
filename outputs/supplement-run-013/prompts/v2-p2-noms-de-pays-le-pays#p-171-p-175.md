@@ -1,0 +1,639 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": [
+        "Robert de Saint-Loup",
+        "Saint-Loup",
+        "M. de Saint-Loup"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Robert de Saint-Loup",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "« il me fit passer sa carte » … « envie extrême de me voir plusieurs heures chaque jour » … « le plus aimable, le plus prévenant jeune homme » … « n'avait d'estime… que pour les choses de l'esprit » … « rempli du plus profond mépris pour sa caste » … « étudier Nietzsche et Proudhon »",
+      "explanation": "The narrator rectifies and elevates Saint-Loup: he reveals himself to be warm, attentive, and of high intellectual curiosity, independent of his caste's codes."
+    },
+    {
+      "event_id": "E2",
+      "source": "narrator",
+      "target": "Robert de Saint-Loup",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "ironized",
+      "confidence": 0.8,
+      "evidence": "« il ne nous saluait pas » … « dehors révélateurs d'une nature orgueilleuse et méchante » … « ses yeux… impassible, aussi implacable » … « me tendit la main, à distance »",
+      "explanation": "The narrator reads Saint-Loup's lack of greeting and ceremonious coldness as insolence and harshness. This interpretation will later be contradicted by the explanation of familial social habits."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Robert de Saint-Loup",
+      "dimension": "general_appraisal",
+      "delta": 2,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.88,
+      "explanation": "Locally, Saint-Loup is enhanced as amiable and intellectually serious, which nullifies the initial impression of arrogance."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v2-p2-noms-de-pays-le-pays#p-171-p-175"
+}
+
+### Candidate characters
+
+[
+  "M. de Marsantes",
+  "Mme de Villeparisis",
+  "Norpois",
+  "Remi",
+  "la grand-mère",
+  "le directeur",
+  "le narrateur"
+]
+
+### Prior local context (optional)
+
+Mme de Villeparisis nous prévint que bientôt elle ne pourrait nous voir aussi souvent. Un jeune neveu qui préparait Saumur, actuellement en garnison dans le voisinage, à Doncières, devait venir passer auprès d'elle un congé de quelques semaines et elle lui donnerait beaucoup de son temps. Au cours de nos promenades, elle nous avait vanté sa grande intelligence, surtout son bon coeur ; déjà je me figurais qu'il allait se prendre de sympathie pour moi, que je serais son ami préféré et quand, avant son arrivée, sa tante laissa entendre à la grand-mère qu'il était malheureusement tombé dans les griffes d'une mauvaise femme dont il était fou et qui ne le lâcherait pas, comme j'étais persuadé que ce genre d'amour finissait fatalement par l'aliénation mentale, le crime et le suicide, pensant au temps si court qui était réservé à notre amitié, déjà si grande dans mon coeur sans que je l'eusse encore vu, je pleurai sur elle et sur les malheurs qui l'attendaient comme sur un être cher dont on vient de nous apprendre qu'il est gravement atteint et que ses jours sont comptés.
+
+### Passage
+
+Une après-midi de grande chaleur j'étais dans la salle à manger de l'hôtel qu'on avait laissée à demi dans l'obscurité pour la protéger du soleil en tirant des rideaux qu'il jaunissait et qui par leurs interstices laissaient clignoter le bleu de la mer, quand, dans la travée centrale qui allait de la plage à la route, je vis, grand, mince, le cou dégagé, la tête haute et fièrement portée, passer un jeune homme aux yeux pénétrants et dont la peau était aussi blonde et les cheveux aussi dorés que s'ils avaient absorbé tous les rayons du soleil. Vêtu d'une étoffe souple et blanchâtre comme je n'aurais jamais cru qu'un homme eût osé en porter, et dont la minceur n'évoquait pas moins que le frais de la salle à manger la chaleur et le beau temps du dehors, il marchait vite. Ses yeux, de l'un desquels tombait à tout moment un monocle, étaient de la couleur de la mer. Chacun le regarda curieusement passer, on savait que ce jeune marquis de Saint-Loup-en-Bray était célèbre pour son élégance. Tous les journaux avaient décrit le costume dans lequel il avait récemment servi de témoin au jeune duc d'Uzès, dans un duel. Il semblait que la qualité si particulière de ses cheveux, de ses yeux, de sa peau, de sa tournure, qui l'eussent distingué au milieu d'une foule comme un filon précieux d'opale azurée et lumineuse, engainé dans une matière grossière, devait correspondre à une vie différente de celle des autres hommes. Et en conséquence, quand avant la liaison dont Mme de Villeparisis se plaignait, les plus jolies femmes du grand monde se l'étaient disputé, sa présence, dans une plage par exemple, à côté de la beauté en renom à laquelle il faisait la cour ne la mettait pas seulement tout à fait en vedette, mais attirait les regards autant sur lui que sur elle. À cause de son « chic », de son impertinence de jeune « lion », à cause de son extraordinaire beauté surtout, certains lui trouvaient même un air efféminé, mais sans le lui reprocher, car on savait combien il était viril et qu'il aimait passionnément les femmes. C'était ce neveu de Mme de Villeparisis duquel elle nous avait parlé. Je fus ravi de penser que j'allais le connaître pendant quelques semaines et sûr qu'il me donnerait toute son affection. Il traversa rapidement l'hôtel dans toute sa largeur, semblant poursuivre son monocle qui voltigeait devant lui comme un papillon. Il venait de la plage, et la mer qui remplissait jusqu'à mi-hauteur le vitrage du hall lui faisait un fond sur lequel il se détachait en pied, comme dans certains portraits où des peintres prétendent sans tricher en rien sur l'observation la plus exacte de la vie actuelle, mais en choisissant pour leur modèle un cadre approprié, pelouse de polo, de golf, champ de courses, pont de yacht, donner un équivalent moderne de ces toiles où les primitifs faisaient apparaître la figure humaine au premier plan d'un paysage. Une voiture à deux chevaux l'attendait devant la porte ; et tandis que son monocle reprenait ses ébats sur la route ensoleillée, avec l'élégance et la maîtrise qu'un grand pianiste trouve le moyen de montrer dans le trait le plus simple, où il ne semblait pas possible qu'il sût se montrer supérieur à un exécutant de deuxième ordre, le neveu de Mme de Villeparisis, prenant les guides que lui passa le cocher, s'assit à côté de lui et tout en décachetant une lettre que le directeur de l'hôtel lui remit, fit partir les bêtes.
+
+Quelle déception j'éprouvai les jours suivants quand, chaque fois que je le rencontrai dehors ou dans l'hôtel – le col haut, équilibrant perpétuellement les mouvements de ses membres autour de son monocle fugitif et dansant qui semblait leur centre de gravité – je pus me rendre compte qu'il ne cherchait pas à se rapprocher de nous et vis qu'il ne nous saluait pas quoiqu'il ne pût ignorer que nous étions les amis de sa tante. Et me rappelant l'amabilité que m'avaient témoignée Mme de Villeparisis et avant elle Norpois, je pensais que peut-être ils n'étaient que des nobles pour rire et qu'un article secret des lois qui gouvernent l'aristocratie doit y permettre peut-être aux femmes et à certains diplomates de manquer dans leurs rapports avec les roturiers, et pour une raison qui m'échappait, à la morgue que devait au contraire pratiquer impitoyablement un jeune marquis. Mon intelligence aurait pu me dire le contraire. Mais la caractéristique de l'âge ridicule que je traversais – âge nullement ingrat, très fécond – est qu'on n'y consulte pas l'intelligence et que les moindres attributs des êtres semblent faire partie indivisible de leur personnalité. Tout entouré de monstres et de dieux, on ne connaît guère le calme. Il n'y a presque pas un des gestes qu'on a faits alors qu'on ne voudrait plus tard pouvoir abolir. Mais ce qu'on devrait regretter au contraire c'est de ne plus posséder la spontanéité qui nous les faisait accomplir. Plus tard on voit les choses d'une façon plus pratique, en pleine conformité avec le reste de la société, mais l'adolescence est le seul temps où l'on ait appris quelque chose.
+
+Cette insolence que je devinais chez M. de Saint-Loup, et tout ce qu'elle impliquait de dureté naturelle, se trouva vérifiée par son attitude chaque fois qu'il passait à côté de nous, le corps aussi inflexiblement élancé, la tête toujours aussi haute, le regard impassible, ce n'est pas assez dire, aussi implacable, dépouillé de ce vague respect qu'on a pour les droits d'autres créatures, même si elles ne connaissent pas votre tante, et qui faisait que je n'étais pas tout à fait le même devant une vieille dame que devant un bec de gaz. Ces manières glacées étaient aussi loin des lettres charmantes que je l'imaginais encore, il y a quelques jours, m'écrivant pour me dire sa sympathie, qu'est loin de l'enthousiasme de la Chambre et du peuple qu'il s'est représenté en train de soulever par un discours inoubliable, la situation médiocre, obscure, de l'imaginatif qui après avoir ainsi rêvassé tout seul, pour son compte, à haute voix, se retrouve, les acclamations imaginaires une fois apaisées, Gros-Jean comme devant. Quand Mme de Villeparisis, sans doute pour tâcher d'effacer la mauvaise impression que nous avaient causée ces dehors révélateurs d'une nature orgueilleuse et méchante, nous reparla de l'inépuisable bonté de son petit-neveu (il était le fils d'une de ses nièces et était un peu plus âgé que moi) j'admirai comme dans le monde, au mépris de toute vérité, on prête des qualités de coeur à ceux qui l'ont si sec, fussent-ils d'ailleurs aimables avec des gens brillants qui font partie de leur milieu. Mme de Villeparisis ajouta elle-même, quoique indirectement, une confirmation aux traits essentiels, déjà certains pour moi, de la nature de son neveu, un jour où je les rencontrai tous deux dans un chemin si étroit qu'elle ne put faire autrement que de me présenter à lui. Il sembla ne pas entendre qu'on lui nommait quelqu'un, aucun muscle de son visage ne bougea ; ses yeux, où ne brilla pas la plus faible lueur de sympathie humaine, montrèrent seulement dans l'insensibilité, dans l'inanité du regard, une exagération à défaut de laquelle rien ne les eût différenciés de miroirs sans vie. Puis fixant sur moi ces yeux durs comme s'il eût voulu se renseigner sur moi, avant de me rendre mon salut, par un brusque déclenchement qui sembla plutôt dû à un réflexe musculaire qu'à un acte de volonté, mettant entre lui et moi le plus grand intervalle possible, allongea le bras dans toute sa longueur, et me tendit la main, à distance. Je crus qu'il s'agissait au moins d'un duel, quand le lendemain il me fit passer sa carte. Mais il ne me parla que de littérature, déclara après une longue causerie qu'il avait une envie extrême de me voir plusieurs heures chaque jour. Il n'avait pas, durant cette visite, fait preuve seulement d'un goût très ardent pour les choses de l'esprit, il m'avait témoigné une sympathie qui allait fort peu avec le salut de la veille. Quand je le lui eu vu refaire chaque fois qu'on lui présentait quelqu'un, je compris que c'était une simple habitude mondaine particulière à une certaine partie de sa famille et à laquelle sa mère, qui tenait à ce qu'il fût admirablement bien élevé, avait plié son corps ; il faisait ces saluts-là sans y penser plus qu'à ses beaux vêtements, à ses beaux cheveux ; c'était une chose dénuée de la signification morale que je lui avais donnée d'abord, une chose purement apprise, comme cette autre habitude qu'il avait aussi de se faire présenter immédiatement aux parents de quelqu'un qu'il connaissait, et qui était devenue chez lui si instinctive que, me voyant le lendemain de notre rencontre, il fonça sur moi et, sans me dire bonjour, me demanda de le nommer à ma grand'mère qui était auprès de moi, avec la même rapidité fébrile que si cette requête eût été due à quelque instinct défensif, comme le geste de parer un coup ou de fermer les yeux devant un jet d'eau bouillante et sans le préservatif de laquelle il y eût péril à demeurer une seconde de plus.
+
+Les premiers rites d'exorcismes une fois accomplis, comme une fée hargneuse dépouille sa première apparence et se pare de grâces enchanteresses, je vis cet être dédaigneux devenir le plus aimable, le plus prévenant jeune homme que j'eusse jamais rencontré. « Bon, me dis-je, je me suis déjà trompé sur lui, j'avais été victime d'un mirage, mais je n'ai triomphé du premier que pour tomber dans un second car c'est un grand seigneur féru de noblesse et cherchant à le dissimuler. » Or, toute la charmante éducation, toute l'amabilité de Saint-Loup devait en effet, au bout de peu de temps, me laisser voir un autre être mais bien différent de celui que je soupçonnais.
+
+Ce jeune homme qui avait l'air d'un aristocrate et d'un sportsman dédaigneux n'avait d'estime et de curiosité que pour les choses de l'esprit, surtout pour ces manifestations modernistes de la littérature et de l'art qui semblaient si ridicules à sa tante ; il était imbu d'autre part de ce qu'elle appelait les déclamations socialistes, rempli du plus profond mépris pour sa caste et passait des heures à étudier Nietzsche et Proudhon. C'était un de ces « intellectuels » prompts à l'admiration, qui s'enferment dans un livre, soucieux seulement de haute pensée. Même, chez Saint-Loup, l'expression de cette tendance très abstraite et qui l'éloignait tant de mes préoccupations habituelles, tout en me paraissant touchante, m'ennuyait un peu. Je peux dire que, quand je sus bien qui avait été son père, les jours où je venais de lire des Mémoires tout nourris d'anecdotes sur ce fameux comte de Marsantes en qui se résume l'élégance si spéciale d'une époque déjà lointaine, l'esprit empli de rêveries, désireux d'avoir des précisions sur la vie qu'avait menée M. de Marsantes, j'enrageais que Saint-Loup de Saint-Loup au lieu de se contenter d'être le fils de son père, au lieu d'être capable de me guider dans le roman démodé qu'avait été l'existence de celui-ci, se fût élevé jusqu'à l'amour de Nietsche et de Proudhon. Son père n'eût pas partagé mes regrets. Il était lui-même un homme intelligent, excédant les bornes de sa vie d'homme du monde. Il n'avait guère eu le temps de connaître son fils, mais avait souhaité qu'il valût mieux que lui. Et je crois bien que contrairement au reste de la famille, il l'eût admiré, se fût réjoui qu'il délaissât ce qui avait fait ses minces divertissements pour d'austères méditations, et, sans en rien dire, dans sa modestie de grand seigneur spirituel, eût lu en cachette les auteurs favoris de son fils pour apprécier de combien Saint-Loup lui était supérieur.

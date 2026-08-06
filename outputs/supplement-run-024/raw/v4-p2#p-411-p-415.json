@@ -1,0 +1,93 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": ["je", "me", "ma"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "docteur Cottard",
+      "surface_forms": ["le docteur Cottard", "le docteur", "mon petit docteur"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Mme Cottard",
+      "surface_forms": ["Mme Cottard", "ma femme"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Morel",
+      "surface_forms": ["Morel", "le violoniste", "le jeune virtuose"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "S1",
+      "source": "princesse Sherbatoff",
+      "target": "le narrateur",
+      "type": "snub",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.85,
+      "evidence": "Mme Sherbatoff répondit à peine du bout des lèvres à mes questions et finit par me dire que je lui donnais la migraine... un salut sec abaissa son menton, elle ne me tendit même pas la main et ne m'a jamais reparlé depuis.",
+      "explanation": "After the narrator is seen conversing with Mme de Villeparisis, princesse Sherbatoff coldly withdraws her favor and permanently cuts him off, staging him as a participant who is abruptly excluded from her goodwill."
+    },
+    {
+      "event_id": "S2",
+      "source": "docteur Cottard",
+      "target": "Mme Cottard",
+      "type": "blame",
+      "polarity": "negative",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.8,
+      "evidence": "« Naturellement, ma femme proteste, ce sont toutes des névrosées. » – « Mais, mon petit docteur, je ne suis pas névrosée », murmura Mme Cottard. – « Comment, elle n'est pas névrosée ? »",
+      "explanation": "Cottard publicly overrides and diagnoses his wife as neurotic despite her direct objection, diminishing her before the company."
+    },
+    {
+      "event_id": "S3",
+      "source": "unknown",
+      "target": "Morel",
+      "type": "prestige_association",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.72,
+      "evidence": "de toutes les facilités qu'il lui procura pour voir Morel dans les lieux officiels où les profanes n'entrent pas... de se faire connaître, en le désignant, de préférence à d'autres, à talent égal, pour des auditions qui devaient avoir un retentissement particulier.",
+      "explanation": "The academician, prompted through Charlus, grants Morel privileged professional access and public visibility, favoring him over equally talented peers."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "le narrateur",
+      "dimension": "inclusion_exclusion",
+      "delta": -1,
+      "based_on_events": ["S1"],
+      "confidence": 0.8,
+      "explanation": "He is abruptly and permanently excluded from princesse Sherbatoff's favor after a minor perceived slight."
+    },
+    {
+      "character": "Mme Cottard",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["S2"],
+      "confidence": 0.72,
+      "explanation": "Publicly contradicted and characterized as neurotic by her husband despite her own denial."
+    },
+    {
+      "character": "Morel",
+      "dimension": "social_status",
+      "delta": 1,
+      "based_on_events": ["S3"],
+      "confidence": 0.68,
+      "explanation": "Gains privileged professional access and public exposure through the academician's favor, elevating his standing as a performer."
+    }
+  ],
+  "ambiguities": [
+    "princesse Sherbatoff, central to the narrator's snub in this passage, is not on the candidate list, so only her role as source of an event targeting the candidate le narrateur is recorded; her own status is not scored here.",
+    "The mentions of 'duc de Guermantes' in Mme Verdurin's planning speech ('c'est peut-être un imbécile du Jockey') sit oddly against the preceding extended discussion of the prince de Guermantes' visit; it is unclear whether this is the duc himself or a textual variant referring to the prince, so no event was recorded for duc de Guermantes given this uncertainty and the joking, glancing nature of the remark."
+  ]
+}

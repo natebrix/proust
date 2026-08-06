@@ -1,0 +1,88 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": ["je", "j'", "me", "moi"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "Bloch",
+      "surface_forms": ["Bloch", "un jeune homme", "M. Moreul"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.85
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "S1",
+      "source": "Gilberte",
+      "target": "le narrateur",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.75,
+      "evidence": "ce paria que j'avais été et à qui Gilberte avançait maintenant gracieusement... un fauteuil délicieux; ... on me fit la faveur de m'y mêler; j'étais à mon tour regardé par eux comme un de ces êtres que j'avais enviés",
+      "explanation": "The narrator's in-scene self moves from being an excluded outsider (a \"paria\") to being graciously welcomed into the Swann household and recognized as an insider by Gilberte's circle of friends, a staged inclusion in valued social space."
+    },
+    {
+      "event_id": "S2",
+      "source": "narrator",
+      "target": "Odette",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.78,
+      "evidence": "elle nous présentait avec tant d'aisance, Gilberte et moi, gardait tant de liberté et de calme dans son amabilité, qu'il eût été difficile de dire de la femme de Swann ou de l'aristocratique passante laquelle des deux était la grande dame",
+      "explanation": "The narrator endorses Odette's poise as fully equal to that of an aristocratic lady encountered in the Bois, locally elevating her social bearing."
+    },
+    {
+      "event_id": "S3",
+      "source": "Odette",
+      "target": "Bloch",
+      "type": "discredit_association",
+      "polarity": "negative",
+      "narrative_stance": "uncertain",
+      "confidence": 0.5,
+      "evidence": "elle n'avait pas voulu citer le nom, trouvé peut-être par elle peu « chic », de Bloch – car elle dit qu'il s'appelait M. Moreul",
+      "explanation": "Odette appears to evade or disguise Bloch's real name, possibly finding it socially unfashionable, subtly distancing herself from him; the narrator hedges this reading with \"peut-être.\""
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "le narrateur",
+      "dimension": "inclusion_exclusion",
+      "delta": 2,
+      "based_on_events": ["S1"],
+      "confidence": 0.75,
+      "explanation": "He shifts from excluded outsider to welcomed, recognized insider within Gilberte's social circle in this scene."
+    },
+    {
+      "character": "Odette",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["S2"],
+      "confidence": 0.78,
+      "explanation": "Her comportment is narrator-endorsed as equal to that of an aristocratic lady, elevating her local social standing."
+    },
+    {
+      "character": "Bloch",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["S3"],
+      "confidence": 0.5,
+      "explanation": "Odette's evasive misnaming subtly diminishes his social visibility in this scene, though the narrator's own reading of her motive is hedged."
+    }
+  ],
+  "ambiguities": [
+    "The candidate 'duchesse de Guermantes' was flagged only because 'princesse' is a listed alias for her; the actual princess in this passage is princesse Mathilde (not in the alias map), so no duchesse de Guermantes event is present and she was omitted.",
+    "The accepted annotation's E1 evidence attributes a quote ('disait Monsieur à Swann, étant fort intime avec lui') to 'la princesse des Laumes', but in this passage that line belongs to princesse Mathilde; this looks like a mislabeling in the fixed accepted annotation, noted here per instructions rather than corrected.",
+    "Gilberte's role in the closing domestic dispute (being granted 'fais ce que tu voudras') is part of the same interaction already captured by the accepted annotation's E2 for Swann; it was not scored separately to avoid chaining one movement into micro-events, though a reading in which she gains local decisional leverage is plausible."
+  ]
+}

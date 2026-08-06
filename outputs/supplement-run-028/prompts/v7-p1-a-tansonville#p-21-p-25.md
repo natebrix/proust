@@ -1,0 +1,634 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": [
+        "Swann",
+        "Swann le collectionneur"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.68,
+      "evidence": "Swann fait admirer le collier de perles noires… « je connais le portrait de ces perles… dans la collection du duc de Guermantes » devant « les exclamations des convives un brin ébahis »; il proclame aussi l'exception de la collection.",
+      "explanation": "Swann displays the expertise of a connoisseur and a prestigious connection with the Duke of Guermantes, provoking astonishment and deference from the group, which elevates him locally."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "social_status",
+      "delta": 1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.66,
+      "explanation": "His authority as a connoisseur and his association with the house of Guermantes enhance his prestige in the eyes of the guests."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v7-p1-a-tansonville#p-21-p-25"
+}
+
+### Candidate characters
+
+[
+  "Albertine",
+  "Brichot",
+  "Elstir",
+  "Gilberte",
+  "M. Verdurin",
+  "Mme Cottard",
+  "Mme Verdurin",
+  "Mme de Villeparisis",
+  "docteur Cottard",
+  "duc de Guermantes",
+  "duchesse de Guermantes",
+  "la grand-mère",
+  "le narrateur",
+  "le peintre"
+]
+
+### Prior local context (optional)
+
+Quand, avant d'éteindre ma bougie, je lus le passage que je transcris plus bas, mon absence de disposition pour les lettres, pressentie jadis du côté de Guermantes, confirmée durant ce séjour dont c'était le dernier soir – ce soir des veilles de départ où, l'engourdissement des habitudes qui vont finir cessant, on essaie de se juger – me parut quelque chose de moins regrettable, comme si la littérature ne révélait pas de vérité profonde, et en même temps il me semblait triste que la littérature ne fût pas ce que j'avais cru. D'autre part, moins regrettable me semblait l'état maladif qui allait me confiner dans une maison de santé, si les belles choses dont parlent les livres n'étaient pas plus belles que ce que j'avais vu. Mais par une contradiction bizarre, maintenant que ce livre en parlait, j'avais envie de les voir. Voici les pages que je lus jusqu'à ce que la fatigue me fermât les yeux :
+
+### Passage
+
+« Avant-hier tombe ici, pour m'emmener dîner chez lui, Verdurin, l'ancien critique de la Revue, l'auteur de ce livre sur Whistler où vraiment le faire, le coloriage artiste de l'original Américain est souvent rendu avec une grande délicatesse par l'amoureux de tous les raffinements, de toutes les joliesses de la chose peinte qu'est Verdurin. Et tandis que je m'habille pour le suivre, c'est, de sa part, tout un récit où il y a, par moments, comme l'épellement apeuré d'une confession sur le renoncement à écrire aussitôt après son mariage avec la « Madeleine » de Fromentin, renoncement qui serait dû à l'habitude de la morphine et aurait eu cet effet, au dire de Verdurin, que la plupart des habitués du salon de sa femme, ne sachant même pas que le mari eût jamais écrit, lui parlaient de Swann Blanc, de Saint-Victor, de Sainte-Beuve, de Burty, comme d'individus auxquels ils le croyaient, lui, tout à fait inférieur. « Voyons, vous Goncourt, vous savez bien, et Gautier le savait aussi, que mes salons étaient autre chose que ces piteux Maîtres d'autrefois crus un chef-d'oeuvre dans la famille de ma femme. » Puis, par un crépuscule où il y a près des tours du Trocadéro comme le dernier allumement d'une lueur qui en fait des tours absolument pareilles aux tours enduites de gelée de groseille des anciens pâtissiers, la causerie continue dans la voiture qui doit nous conduire quai Conti où est leur hôtel, que son possesseur prétend être l'ancien hôtel des Ambassadeurs de Venise et où il y aurait un fumoir dont Verdurin me parle comme d'une salle transportée telle quelle, à la façon des Mille et une Nuits, d'un célèbre palazzo, dont j'oublie le nom, palazzo à la margelle du puits représentant un couronnement de la Vierge que Verdurin soutient être absolument du plus beau Sansovino et qui servirait, pour leurs invités, à jeter la cendre de leurs cigares. Et ma foi, quand nous arrivons, dans le glauque et le diffus d'un clair de lune vraiment semblable à ceux dont la peinture classique abrite Venise, et sur lequel la coupole silhouettée de l'Institut fait penser à la Salute dans les tableaux de Guardi, j'ai un peu l'illusion d'être au bord du Grand Canal. L'illusion est entretenue par la construction de l'hôtel où du premier étage on ne voit pas le quai et par le dire évocateur du maître de maison affirmant que le nom de la rue du Bac – du diable si j'y avais jamais pensé – viendrait du bac sur lequel des religieuses d'autrefois, les Miramiones, se rendaient aux offices de Notre-Dame. Tout un quartier où a flâné mon enfance quand ma tante de Courmont l'habitait, et que je me prends à « raimer » en retrouvant, presque contiguë à l'hôtel des Verdurin, l'enseigne du « Petit Dunkerque », une des rares boutiques survivant ailleurs que vignettées dans le crayonnage et les frottis de Gabriel de Saint-Aubin, où le XVIIIe siècle curieux venait asseoir ses moments d'oisiveté pour le marchandage des jolités françaises et étrangères et « tout ce que les arts produisent de plus nouveau », comme dit une facture de ce Petit Dunkerque, facture dont nous sommes seuls, je crois, Verdurin et moi, à posséder une épreuve et qui est bien un des volants chefs-d'oeuvre de papier ornementé sur lequel le règne de Louis XV faisait ses comptes, avec son en-tête représentant une mer toute vagueuse, chargée de vaisseaux, une mer aux vagues ayant l'air d'une illustration de l'Édition des Fermiers Généraux de l'Huître et des Plaideurs. La maîtresse de la maison, qui va me placer à côté d'elle, me dit aimablement avoir fleuri sa table rien qu'avec des chrysanthèmes japonais, mais des chrysanthèmes disposés en des vases qui seraient de rarissimes chefs-d'oeuvre, l'un entre autres, fait de bronze, sur lequel des pétales en cuivre rougeâtre sembleraient être la vivante effeuillaison de la fleur. Il y a là Cottard, le docteur et sa femme, le sculpteur polonais Viradobetski, Swann le collectionneur, une grande dame russe, une princesse au nom en or qui m'échappe, et Cottard me souffle à l'oreille que c'est elle qui aurait tiré à bout portant sur l'archiduc Rodolphe et d'après qui j'aurais en Galicie et dans tout le nord de la Pologne une situation absolument exceptionnelle, une jeune fille ne consentant jamais à promettre sa main sans savoir si son fiancé est un admirateur de la Faustin.
+
+« Vous ne pouvez pas comprendre cela, vous autres Occidentaux – jette en manière de conclusion la princesse, qui me fait l'effet, ma foi, d'une intelligence tout à fait supérieure – cette pénétration par un écrivain de l'intimité de la femme. » Un homme au menton et aux lèvres rasés, aux favoris de maître d'hôtel, débitant sur un ton de condescendance des plaisanteries de professeur de seconde qui fraye avec les premiers de sa classe pour la Saint-Charlemagne, et c'est Brichot, l'universitaire. À mon nom prononcé par Verdurin, il n'a pas une parole qui marque qu'il connaisse nos livres, et c'est en moi un découragement colère éveillé par cette conspiration qu'organise contre nous la Sorbonne, apportant, jusque dans l'aimable logis où je suis fêté, la contradiction, l'hostilité d'un silence voulu. Nous passons à table et c'est alors un extraordinaire défilé d'assiettes qui sont tout bonnement des chefs-d'oeuvre de l'art du porcelainier, celui dont, pendant un repas délicat, l'attention chatouillée d'un amateur écoute le plus complaisamment le bavardage artiste – des assiettes de Yung-Tsching à la couleur capucine de leurs rebords, au bleuâtre, à l'effeuillé turgide de leurs iris d'eau, à la traversée, vraiment décoratoire, par l'aurore d'un vol de martins-pêcheurs et de grues, aurore ayant tout à fait ces tons matutinaux qu'entre-regarde quotidiennement, boulevard Montmorency, mon réveil – des assiettes de Saxe plus mièvres dans le gracieux de leur faire, à l'endormement, à l'anémie de leurs roses tournées au violet, au déchiquetage lie-de-vin d'une tulipe, au rococo d'un oeillet ou d'un myosotis – des assiettes de Sèvres engrillagées par le fin guillochis de leurs cannelures blanches, verticillées d'or, ou que noue, sur l'à-plat crémeux de la pâte, le galant relief d'un ruban d'or – enfin toute une argenterie où courent ces myrtes de Luciennes que reconnaîtrait la Dubarry. Et ce qui est peut-être aussi rare, c'est la qualité vraiment tout à fait remarquable des choses qui sont servies là dedans, un manger finement mijoté, tout un fricoté comme les Parisiens, il faut le dire bien haut, n'en ont jamais dans les plus grands dîners, et qui me rappelle certains cordons bleus de Jean d'Heurs. Même le foie gras n'a aucun rapport avec la fade mousse qu'on sert habituellement sous ce nom, et je ne sais pas beaucoup d'endroits où la simple salade de pommes de terre est faite ainsi de pommes de terre ayant la fermeté de boutons d'ivoire japonais, le patiné de ces petites cuillers d'ivoire avec lesquelles les Chinoises versent l'eau sur le poisson qu'elles viennent de pêcher. Dans le verre de Venise que j'ai devant moi, une riche bijouterie de rouges est mise par un extraordinaire Léoville acheté à la vente de M. Montalivet et c'est un amusement pour l'imagination de l'oeil et aussi, je ne crains pas de le dire, pour l'imagination de ce qu'on appelait autrefois la gueule, de voir apporter une barbue qui n'a rien des barbues pas fraîches qu'on sert sur les tables les plus luxueuses et qui ont pris dans les retards du voyage le modelage sur leur dos de leurs arêtes ; une barbue qu'on sert non avec la colle à pâte que préparent, sous le nom de sauce blanche, tant de chefs de grande maison, mais avec de la véritable sauce blanche, faite avec du beurre à cinq francs la livre ; de voir apporter cette barbue dans un merveilleux plat Tching-Hon traversé par les pourpres rayages d'un coucher de soleil sur une mer où passe la navigation drolatique d'une bande de langoustes, au pointillis grumeleux si extraordinairement rendu qu'elles semblent avoir été moulées sur des carapaces vivantes, plat dont le marli est fait de la pêche à la ligne par un petit Chinois d'un poisson qui est un enchantement de nacreuse couleur par l'argentement azuré de son ventre. Comme je dis à Verdurin le délicat plaisir que ce doit être pour lui que cette raffinée mangeaille dans cette collection comme aucun prince n'en possède à l'heure actuelle derrière ses vitrines : « On voit bien que vous ne le connaissez pas », me jette mélancoliquement la maîtresse de maison, et elle me parle de son mari comme d'un original maniaque, indifférent à toutes ces jolités, « un maniaque, répète-t-elle, oui, absolument cela, un maniaque qui aurait plutôt l'appétit d'une bouteille de cidre, bue dans la fraîcheur un peu encanaillée d'une ferme normande ». Et la charmante femme à la parole vraiment amoureuse des colorations d'une contrée nous parle avec un enthousiasme débordant de cette Normandie qu'ils ont habitée, une Normandie qui serait un immense parc anglais, à la fragrance de ses hautes futaies à la Lawrence, au velours cryptomeria, dans leur bordure porcelainée d'hortensias roses, de ses pelouses naturelles, au chiffonnage de roses soufre dont la retombée sur une porte de paysans, où l'incrustation de deux poiriers enlacés simule une enseigne tout à fait ornementale, fait penser à la libre retombée d'une branche fleurie dans le bronze d'une applique de Gouthière, une Normandie qui serait absolument insoupçonnée des Parisiens en vacances et que protège la barrière de chacun de ses clos, barrières que les Verdurin me confessent ne pas s'être fait faute de lever toutes. À la fin du jour, dans un éteignement sommeilleux de toutes les couleurs où la lumière ne serait plus donnée que par une mer presque caillée ayant le bleuâtre du petit lait – mais non, rien de la mer que vous connaissez, proteste ma voisine frénétiquement, en réponse à mon dire que Flaubert nous avait menés, mon frère et moi, à Trouville, rien, absolument rien, il faudra venir avec moi, sans cela vous ne saurez jamais – ils rentraient, à travers les vraies forêts en fleurs de tulle rose que faisaient les rhododendrons, tout à fait grisés par l'odeur des jardineries qui donnaient au mari d'abominables crises d'asthme – oui, insista-t-elle, c'est cela, de vraies crises d'asthme. »
+
+« Là-dessus, l'été suivant, ils revenaient, logeant toute une colonie d'artistes dans une admirable habitation moyenâgeuse que leur faisait un cloître ancien loué par eux, pour rien. Et, ma foi, en entendant cette femme qui, en passant par tant de milieux vraiment distingués, a gardé pourtant dans sa parole un peu de la verdeur de la parole d'une femme du peuple, une parole qui vous montre les choses avec la couleur que votre imagination y voit, l'eau me vient à la bouche de la vie qu'elle me confesse avoir menée là-bas, chacun travaillant dans sa cellule, et où, dans le salon, si vaste qu'il possédait deux cheminées, tout le monde venait avant le déjeuner pour des causeries tout à fait supérieures, mêlées de petits jeux, me refaisant penser à celles qu'évoque ce chef-d'oeuvre de Diderot, les lettres à Mademoiselle Volland. Puis, après le déjeuner, tout le monde sortait, même les jours de grains dans le coup de soleil, le rayonnement d'une ondée lignant de son filtrage lumineux les nodosités d'un magnifique départ de hêtres centenaires qui mettaient devant la grille le beau végétal affectionné par le XVIIIe siècle, et d'arbustes ayant pour boutons fleurissants dans la suspension de leurs rameaux des gouttes de pluie. On s'arrêtait pour écouter le délicat barbotis, énamouré de fraîcheur, d'un bouvreuil se baignant dans la mignonne baignoire minuscule de nymphembourg qu'est la corolle d'une rose blanche. Et comme je parle à Mme Verdurin des paysages et des fleurs de là-bas délicatement pastellisés par Elstir : « Mais c'est moi qui lui ai fait connaître tout cela, jette-t-elle avec un redressement colère de la tête, tout vous entendez bien, tout, les coins curieux, tous les motifs, je le lui ai jeté à la face quand il nous a quittés, n'est-ce pas, Auguste ? tous les motifs qu'il a peints. Les objets, il les a toujours connus, cela il faut être juste, il faut le reconnaître. Mais les fleurs, il n'en avait jamais vu, il ne savait pas distinguer un althéa d'une passe-rose. C'est moi qui lui ai appris à reconnaître, vous n'allez pas me croire, à reconnaître le jasmin. » Et il faut avouer qu'il y a quelque chose de curieux à penser que le peintre des fleurs que les amateurs d'art nous citent aujourd'hui comme le premier, comme supérieur même à Fantin-Latour, n'aurait peut-être jamais, sans la femme qui est là, su peindre un jasmin. « Oui, ma parole, le jasmin ; toutes les roses qu'il a faites, c'est chez moi ou bien c'est moi qui les lui apportais. On ne l'appelait chez nous que Monsieur Tiche. Demandez à Cottard, à Brichot, à tous les autres, si on le traitait ici en grand homme. Lui-même en aurait ri. Je lui apprenais à disposer ses fleurs ; au commencement il ne pouvait pas en venir à bout. Il n'a jamais su faire un bouquet. Il n'avait pas de goût naturel pour choisir, il fallait que je lui dise : « Non, ne peignez pas cela, cela n'en vaut pas la peine, peignez ceci. » Ah ! s'il nous avait écoutés aussi pour l'arrangement de sa vie comme pour l'arrangement de ses fleurs et s'il n'avait pas fait ce sale mariage ! » Et brusquement, les yeux enfiévrés par l'absorption d'une rêverie tournée vers le passé, avec le nerveux taquinage, dans l'allongement maniaque de ses phalanges, du floche des manches de son corsage, c'est, dans le contournement de sa pose endolorie, comme un admirable tableau qui n'a, je crois, jamais été peint, et où se liraient toute la révolte contenue, toutes les susceptibilités rageuses d'une amie outragée dans les délicatesses, dans la pudeur de la femme. Là-dessus elle nous parle de l'admirable portrait qu'Elstir a fait pour elle, le portrait de la famille Collard, portrait donné par elle au Luxembourg au moment de sa brouille avec le peintre, confessant que c'est elle qui a donné au peintre l'idée de faire l'homme en habit pour obtenir tout ce beau bouillonnement du linge et qui a choisi la robe de velours de la femme, robe faisant un appui au milieu de tout le papillotage des nuances claires des tapis, des fleurs, des fruits, des robes de gaze des fillettes pareilles à des tutus de danseuses. Ce serait elle aussi qui aurait donné l'idée de ce coiffage, idée dont on a fait ensuite honneur à l'artiste, idée qui consistait, en somme, à peindre la femme, non pas en représentation mais surprise dans l'intime de sa vie de tous les jours. « Je lui disais : Mais dans la femme qui se coiffe, qui s'essuie la figure, qui se chauffe les pieds, quand elle ne croit pas être vue, il y a un tas de mouvements intéressants, des mouvements d'une grâce tout à fait léonardesque ! » Mais sur un signe de Verdurin indiquant le réveil de ces indignations comme malsain pour la grande nerveuse que serait au fond sa femme, Swann me fait admirer le collier de perles noires porté par la maîtresse de la maison et achetées par elle, toutes blanches, à la vente d'un descendant de Mme de La Fayette à qui elles auraient été données par Henriette d'Angleterre, perles devenues noires à la suite d'un incendie qui détruisit une partie de la maison que les Verdurin habitaient dans une rue dont je ne me rappelle plus le nom, incendie après lequel fut retrouvé le coffret où étaient ces perles, mais devenues entièrement noires. « Et je connais le portrait de ces perles, aux épaules mêmes de Mme de La Fayette, oui, parfaitement, leur portrait, insista Swann devant les exclamations des convives un brin ébahis, leur portrait authentique, dans la collection du duc de Guermantes. » Une collection qui n'a pas son égale au monde, proclame-t-il, et que je devrais aller voir, une collection héritée par le célèbre duc, qui était son neveu préféré, de Mme de Beausergent sa tante, de Mme de Beausergent depuis Mme d'Hayfeld, la soeur de la Mme de Villeparisis et de la princesse de Hanovre. Mon frère et moi nous l'avons tant aimé autrefois sous les traits du charmant bambin appelé duc de Guermantes, qui est bien en effet le prénom du duc. Là-dessus, le docteur Cottard, avec une finesse qui décèle chez lui l'homme tout à fait distingué, ressaute à l'histoire des perles et nous apprend que des catastrophes de ce genre produisent dans le cerveau des gens des altérations tout à fait pareilles à celles qu'on remarque dans la matière inanimée et cite d'une façon vraiment plus philosophique que ne feraient bien des médecins le propre valet de chambre de Mme Verdurin qui, dans l'épouvante de cet incendie où il avait failli périr, était devenu un autre homme, ayant une écriture tellement changée qu'à la première lettre que ses maîtres, alors en Normandie, reçurent de lui leur annonçant l'événement, ils crurent à la mystification d'un farceur. Et pas seulement une autre écriture, selon Cottard, qui prétend que de sobre cet homme était devenu si abominablement pochard que Mme Verdurin avait été obligée de le renvoyer. Et la suggestive dissertation passa, sur un signe gracieux de la maîtresse de maison, de la salle à manger au fumoir vénitien dans lequel Cottard me dit avoir assisté à de véritables dédoublements de la personnalité, nous citant le cas d'un de ses malades, qu'il s'offre aimablement à m'amener chez moi et à qui il suffisait qu'il touchât les tempes pour l'éveiller à une seconde vie, vie pendant laquelle il ne se rappelait rien de la première, si bien que, très honnête homme dans celle-là, il y aurait été plusieurs fois arrêté pour des vols commis dans l'autre où il serait tout simplement un abominable gredin. Sur quoi Mme Verdurin remarque finement que la médecine pourrait fournir des sujets plus vrais à un théâtre où la cocasserie de l'imbroglio reposerait sur des méprises pathologiques, ce qui, de fil en aiguille, amène Mme Cottard à narrer qu'une donnée toute semblable a été mise en oeuvre par un amateur qui est le favori des soirées de ses enfants, l'Écossais Stevenson, un nom qui met dans la bouche de Swann cette affirmation péremptoire : « Mais c'est tout à fait un grand écrivain, Stevenson, je vous assure, M. de Goncourt, un très grand, l'égal des plus grands. » Et comme, sur mon émerveillement des plafonds à caissons écussonnés provenant de l'ancien palazzo Barberini, de la salle où nous fumons, je laisse percer mon regret du noircissement progressif d'une certaine vasque par la cendre de nos « londrès », Swann, ayant raconté que des taches pareilles attestent sur les livres ayant appartenu à Napoléon Ier, livres possédés, malgré ses opinions antibonapartistes, par le duc de Guermantes, que l'empereur chiquait, Cottard, qui se révèle un curieux vraiment pénétrant en toutes choses, déclare que ces taches ne viennent pas du tout de cela – mais là, pas du tout, insiste-t-il avec autorité – mais de l'habitude qu'il avait d'avoir toujours dans la main, même sur les champs de bataille, des pastilles de réglisse, pour calmer ses douleurs de foie. « Car il avait une maladie de foie et c'est de cela qu'il est mort, conclut le docteur. »
+
+Je m'arrêtai là, car je partais le lendemain et, d'ailleurs, c'était l'heure où me réclamait l'autre maître au service de qui nous sommes chaque jour, pour une moitié de notre temps. La tâche à laquelle il nous astreint, nous l'accomplissons les yeux fermés. Tous les matins il nous rend à notre autre maître, sachant que sans cela nous nous livrerions mal à la sienne. Curieux, quand notre esprit a rouvert ses yeux, de savoir ce que nous avons bien pu faire chez le maître qui étend ses esclaves avant de les mettre à une besogne précipitée, les plus malins, à peine la tâche finie, tâchent de subrepticement regarder. Mais le sommeil lutte avec eux de vitesse pour faire disparaître les traces de ce qu'ils voudraient voir. Et depuis tant de siècles, nous ne savons pas grand'chose là-dessus. – Je fermai donc le journal des Goncourt. Prestige de la littérature ! J'aurais voulu revoir les Cottard, leur demander tant de détails sur Elstir, aller voir la boutique du Petit Dunkerque si elle existait encore, demander la permission de visiter cet hôtel des Verdurin où j'avais dîné. Mais j'éprouvais un vague trouble. Certes, je ne m'étais jamais dissimulé que je ne savais pas écouter ni, dès que je n'étais plus seul, regarder ; une vieille femme ne montrait à mes yeux aucune espèce de collier de perles et ce qu'on en disait n'entrait pas dans mes oreilles. Tout de même, ces êtres-là, je les avais connus dans la vie quotidienne, j'avais souvent dîné avec eux, c'étaient les Verdurin, c'était le duc de Guermantes, c'étaient les Cottard, chacun d'eux m'avait paru aussi commun qu'à ma grand'mère ce duc de Guermantes dont elle ne se doutait guère qu'il était le neveu chéri, le jeune héros délicieux, de Mme de Beausergent, chacun d'eux m'avait semblé insipide ; je me rappelais les vulgarités sans nombre dont chacun était composé... « Et que tout cela fît un astre dans la nuit ! ! ! »
+
+Je résolus de laisser provisoirement de côté les objections qu'avaient pu faire naître en moi contre la littérature ces pages des Goncourt. Même en mettant de côté l'indice individuel de naïveté qui est frappant chez le mémorialiste, je pouvais d'ailleurs me rassurer à divers points de vue. D'abord, en ce qui me concernait personnellement, mon incapacité de regarder et d'écouter, que le journal cité avait si péniblement illustrée pour moi, n'était pourtant pas totale. Il y avait en moi un personnage qui savait plus ou moins bien regarder, mais c'était un personnage intermittent, ne reprenant vie que quand se manifestait quelque essence générale, commune à plusieurs choses, qui faisait sa nourriture et sa joie. Alors le personnage regardait et écoutait, mais à une certaine profondeur seulement, de sorte que l'observation n'en profitait pas. Comme un géomètre qui, dépouillant les choses de leurs qualités sensibles, ne voit que leur substratum linéaire, ce que racontaient les gens m'échappait, car ce qui m'intéressait, c'était non ce qu'ils voulaient dire, mais la manière dont ils le disaient, en tant qu'elle était révélatrice de leur caractère ou de leurs ridicules ; ou plutôt c'était un objet qui avait toujours été plus particulièrement le but de ma recherche parce qu'il me donnait un plaisir spécifique, le point qui était commun à un être et à un autre. Ce n'était que quand je l'apercevais que mon esprit – jusque-là sommeillant, même derrière l'activité apparente de ma conversation, dont l'animation masquait pour les autres un total engourdissement spirituel – se mettait tout à coup joyeusement en chasse, mais ce qu'il poursuivait alors – par exemple l'identité du salon Verdurin dans divers lieux et divers temps – était situé à mi-profondeur, au delà de l'apparence elle-même, dans une zone un peu plus en retrait. Aussi le charme apparent, copiable, des êtres m'échappait parce que je n'avais plus la faculté de m'arrêter à lui, comme le chirurgien qui, sous le poli d'un ventre de femme, verrait le mal interne qui le ronge. J'avais beau dîner en ville, je ne voyais pas les convives, parce que quand je croyais les regarder je les radiographiais. Il en résultait qu'en réunissant toutes les remarques que j'avais pu faire dans un dîner sur les convives, le dessin des lignes tracées par moi figurait un ensemble de lois psychologiques où l'intérêt propre qu'avait eu dans ses discours le convive ne tenait presque aucune place. Mais cela enlevait-il tout mérite à mes portraits puisque je ne les donnais pas pour tels ? Si l'un de ces portraits, dans le domaine de la peinture, met en évidence certaines vérités relatives au volume, à la lumière, au mouvement, cela fait-il qu'il soit nécessairement inférieur à tel portrait ne lui ressemblant aucunement de la même personne, dans lequel mille détails qui sont omis dans le premier seront minutieusement relatés, deuxième portrait d'où l'on pourra conclure que le modèle était ravissant tandis qu'on l'eût cru laid dans le premier, ce qui peut avoir une importance documentaire et même historique, mais n'est pas nécessairement une vérité d'art. Puis ma frivolité, dès que je n'étais pas seul, me faisait désirer de plaire, plus désireux d'amuser en bavardant que de m'instruire en écoutant, à moins que je ne fusse allé dans le monde pour interroger sur quelque point d'art, ou quelque soupçon jaloux qui m'avait occupé l'esprit avant ! Mais j'étais incapable de voir ce dont le désir n'avait pas été éveillé en moi par quelque lecture, ce dont je n'avais pas d'avance désiré moi-même le croquis que je désirais ensuite confronter avec la réalité. Que de fois, je le savais bien, même si cette page de Goncourt ne me l'eût pas appris, je suis resté incapable d'accorder mon attention à des choses ou à des gens qu'ensuite, une fois que leur image m'avait été présentée dans la solitude par un artiste, j'aurais fait des lieues, risqué la mort pour retrouver. Alors mon imagination était partie, avait commencé à peindre. Et ce devant quoi j'avais bâillé l'année d'avant, je me disais avec angoisse, le contemplant d'avance, le désirant : « Sera-t-il vraiment impossible de le voir ? Que ne donnerais-je pas pour cela ! » Quand on lit des articles sur des gens, même simplement des gens du monde, qualifiés de « derniers représentants d'une société dont il n'existe plus aucun témoin », sans doute on peut s'écrier : « Dire que c'est d'un être si insignifiant qu'on parle avec tant d'abondance et d'éloges ! c'est cela que j'aurais déploré de ne pas avoir connu si je n'avais fait que lire les journaux et les revues, et si je n'avais pas vu « l'homme », mais j'étais plutôt tenté en lisant de telles pages dans les journaux de penser : « Quel malheur – alors que j'étais seulement préoccupé de retrouver Gilberte ou Albertine – que je n'aie pas fait plus attention à ce monsieur, je l'avais pris pour un raseur du monde, pour un simple figurant, c'était une figure ! »

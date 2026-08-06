@@ -1,0 +1,624 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "la grand-mère",
+      "surface_forms": [
+        "la grand-mère",
+        "grand-mère"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "la grand-mère",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.78,
+      "evidence": "j’aurais voulu me présenter à lui dans une compagnie plus prestigieuse que celle de la grand-mère qui allait certainement lui demander des rabais.",
+      "explanation": "The narrator frames the grandmother as a socially non-prestigious companion likely to bargain for discounts, diminishing her desirability as an associate before the hotel director."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "la grand-mère",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.75,
+      "explanation": "Locally, she is presented as lowering the narrator’s projected prestige, which slightly diminishes her social standing in this scene."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v2-p2-noms-de-pays-le-pays#p-26-p-30"
+}
+
+### Candidate characters
+
+[
+  "Françoise",
+  "Swann",
+  "le directeur",
+  "le narrateur"
+]
+
+### Prior local context (optional)
+
+Les levers de soleil sont un accompagnement des longs voyages en chemin de fer, comme les oeufs durs, les journaux illustrés, les jeux de cartes, les rivières où des barques s'évertuent sans avancer. À un moment où je dénombrais les pensées qui avaient rempli mon esprit pendant les minutes précédentes, pour me rendre compte si je venais ou non de dormir (et où l'incertitude même qui me faisait me poser la question était en train de me fournir une réponse affirmative), dans le carreau de la fenêtre, au-dessus d'un petit bois noir, je vis des nuages échancrés dont le doux duvet était d'un rose fixé, mort, qui ne changera plus, comme celui qui teint les plumes de l'aile qui l'a assimilé ou le pastel sur lequel l'a déposé la fantaisie du le peintre. Mais je sentais qu'au contraire cette couleur n'était ni inertie, ni caprice, mais nécessité et vie. Bientôt s'amoncelèrent derrière elle des réserves de lumière. Elle s'aviva, le ciel devint d'un incarnat que je tâchais, en collant mes yeux à la vitre, de mieux voir, car je le sentais en rapport avec l'existence profonde de la nature, mais la ligne du chemin de fer ayant changé de direction, le train tourna, la scène matinale fut remplacée dans le cadre de la fenêtre par un village nocturne aux toits bleus de clair de lune, avec un lavoir encrassé de la nacre opaline de la nuit, sous un ciel encore semé de toutes ses étoiles, et je me désolais d'avoir perdu ma bande de ciel rose quand je l'aperçus de nouveau, mais rouge cette fois, dans la fenêtre d'en face qu'elle abandonna à un deuxième coude de la voie ferrée ; si bien que je passais mon temps à courir d'une fenêtre à l'autre pour rapprocher, pour rentoiler les fragments intermittents et opposites de mon beau matin écarlate et versatile et en avoir une vue totale et un tableau continu.
+
+### Passage
+
+Le paysage devint accidenté, abrupt, le train s'arrêta à une petite gare entre deux montagnes. On ne voyait au fond de la gorge, au bord du torrent, qu'une maison de garde enfoncée dans l'eau qui coulait au ras des fenêtres. Si un être peut être le produit d'un sol dont on goûte en lui le charme particulier, plus encore que la paysanne que j'avais tant désiré voir apparaître quand j'errais seul du côté de Méséglise, dans les bois de Roussainville, ce devait être la grande fille que je vis sortir de cette maison et, sur le sentier qu'illuminait obliquement le soleil levant, venir vers la gare en portant une jarre de lait. Dans la vallée à qui ces hauteurs cachaient le reste du monde, elle ne devait jamais voir personne que dans ces trains qui ne s'arrêtaient qu'un instant. Elle longea les wagons, offrant du café au lait à quelques voyageurs réveillés. Empourpré des reflets du matin, son visage était plus rose que le ciel. Je ressentis devant elle ce désir de vivre qui renaît en nous chaque fois que nous prenons de nouveau conscience de la beauté et du bonheur. Nous oublions toujours qu'ils sont individuels et, leur substituant dans notre esprit un type de convention que nous formons en faisant une sorte de moyenne entre les différents visages qui nous ont plu, entre les plaisirs que nous avons connus, nous n'avons que des images abstraites qui sont languissantes et fades parce qu'il leur manque précisément ce caractère d'une chose nouvelle, différente de ce que nous avons connu, ce caractère qui est propre à la beauté et au bonheur. Et nous portons sur la vie un jugement pessimiste et que nous supposons juste, car nous avons cru y faire entrer en ligne de compte le bonheur et la beauté quand nous les avons omis et remplacés par des synthèses où d'eux il n'y a pas un seul atome. C'est ainsi que bâille d'avance d'ennui un lettré à qui on parle d'un nouveau « beau livre », parce qu'il imagine une sorte de composé de tous les beaux livres qu'il a lus, tandis qu'un beau livre est particulier, imprévisible, et n'est pas fait de la somme de tous les chefs-d'oeuvre précédents mais de quelque chose que s'être parfaitement assimilé cette somme ne suffit nullement à faire trouver, car c'est justement en dehors d'elle. Dès qu'il a eu connaissance de cette nouvelle oeuvre, le lettré, tout à l'heure blasé, se sent de l'intérêt pour la réalité qu'elle dépeint. Telle, étrangère aux modèles de beauté que dessinait ma pensée quand je me trouvais seul, la belle fille me donna aussitôt le goût d'un certain bonheur (seule forme, toujours particulière, sous laquelle nous puissions connaître le goût du bonheur), d'un bonheur qui se réaliserait en vivant auprès d'elle. Mais ici encore la cessation momentanée de l'Habitude agissait pour une grande part. Je faisais bénéficier la marchande de lait de ce que c'était mon être complet, apte à goûter de vives jouissances, qui était en face d'elle. C'est d'ordinaire avec notre être réduit au minimum que nous vivons, la plupart de nos facultés restent endormies parce qu'elles se reposent sur l'habitude qui sait ce qu'il y a à faire et n'a pas besoin d'elles. Mais par ce matin de voyage l'interruption de la routine de mon existence, le changement de lieu et d'heure avaient rendu leur présence indispensable. Mon habitude qui était sédentaire et n'était pas matinale faisait défaut, et toutes mes facultés étaient accourues pour la remplacer, rivalisant entre elles de zèle – s'élevant toutes, comme des vagues, à un même niveau inaccoutumé – de la plus basse à la plus noble, de la respiration, de l'appétit, et de la circulation sanguine à la sensibilité et à l'imagination. Je ne sais si, en me faisant croire que cette fille n'était pas pareille aux autres femmes, le charme sauvage de ces lieux ajoutait au sien, mais elle le leur rendait. La vie m'aurait paru délicieuse si seulement j'avais pu, heure par heure, la passer avec elle, l'accompagner jusqu'au torrent, jusqu'à la vache, jusqu'au train, être toujours à ses côtés, me sentir connu d'elle, ayant ma place dans sa pensée. Elle m'aurait initié aux charmes de la vie rustique et des premières heures du jour. Je lui fis signe qu'elle vînt me donner du café au lait. J'avais besoin d'être remarqué d'elle. Elle ne me vit pas, je l'appelai. Au-dessus de son corps très grand, le teint de sa figure était si doré et si rose qu'elle avait l'air d'être vue à travers un vitrail illuminé. Elle revint sur ses pas, je ne pouvais détacher mes yeux de son visage de plus en plus large, pareil à un soleil qu'on pourrait fixer et qui s'approcherait jusqu'à venir tout près de vous, se laissant regarder de près, vous éblouissant d'or et de rouge. Elle posa sur moi son regard perçant, mais comme les employés fermaient les portières, le train se mit en marche ; je la vis quitter la gare et reprendre le sentier, il faisait grand jour maintenant : je m'éloignais de l'aurore. Que mon exaltation eût été produite par cette fille, ou au contraire eût causé la plus grande partie du plaisir que j'avais eu à me trouver près d'elle, en tous cas elle était si mêlée à lui que mon désir de la revoir était avant tout le désir moral de ne pas laisser cet état d'excitation périr entièrement, de ne pas être séparé à jamais de l'être qui y avait, même à son insu, participé. Ce n'est pas seulement que cet état fût agréable. C'est surtout que (comme la tension plus grande d'une corde ou la vibration plus rapide d'un nerf produit une sonorité ou une couleur différente), il donnait une autre tonalité à ce que je voyais, il m'introduisait comme acteur dans un univers inconnu et infiniment plus intéressant ; cette belle fille que j'apercevais encore, tandis que le train accélérait sa marche, c'était comme une partie d'une vie autre que celle que je connaissais, séparée d'elle par un liséré, et où les sensations qu'éveillaient les objets n'étaient plus les mêmes ; et d'où sortir maintenant eût été comme mourir à moi-même. Pour avoir la douceur de me sentir du moins attaché à cette vie, il eût suffi que j'habitasse assez près de la petite station pour pouvoir venir tous les matins demander du café au lait à cette paysanne. Mais, hélas ! elle serait toujours absente de l'autre vie vers laquelle je m'en allais de plus en plus vite et que je ne me résignais à accepter qu'en combinant des plans qui me permettraient un jour de reprendre ce même train et de m'arrêter à cette même gare, projet qui avait aussi l'avantage de fournir un aliment à la disposition intéressée, active, pratique, machinale, paresseuse, centrifuge qui est celle de notre esprit car il se détourne volontiers de l'effort qu'il faut pour approfondir en soi-même, d'une façon générale et désintéressée, une impression agréable que nous avons eue. Et comme d'autre part nous voulons continuer à penser à elle, il préfère l'imaginer dans l'avenir, préparer habilement les circonstances qui pourront la faire renaître, ce qui ne nous apprend rien sur son essence, mais nous évite la fatigue de la recréer en nous-même et nous permet d'espérer la recevoir de nouveau du dehors.
+
+Certains noms de villes, Vézelay ou Chartres, Bourges ou Beauvais, servent à désigner, par abréviation, leur église principale. Cette acception partielle où nous le prenons si souvent finit – s'il s'agit de lieux que nous ne connaissons pas encore – par sculpter le nom tout entier qui dès lors quand nous voudrons y faire entrer l'idée de la ville – de la ville que nous n'avons jamais vue – lui imposera – comme un moule – les mêmes ciselures, et du même style, en fera une sorte de grande cathédrale. Ce fut pourtant à une station de chemin de fer, au-dessus d'un buffet, en lettres blanches sur un avertisseur bleu, que je lus le nom, presque de style persan, de Balbec. Je traversai vivement la gare et le boulevard qui y aboutissait, je demandai la grève pour ne voir que l'église et la mer ; on n'avait pas l'air de comprendre ce que je voulais dire. Balbec-le-vieux, Balbec-en-terre, où je me trouvais, n'était ni une plage ni un port. Certes, c'était bien dans la mer que les pêcheurs avaient trouvé, selon la légende, le Christ miraculeux dont un vitrail de cette église qui était à quelques mètres de moi racontait la découverte ; c'était bien de falaises battues par les flots qu'avait été tirée la pierre de la nef et des tours. Mais cette mer, qu'à cause de cela j'avais imaginée venant mourir au pied du vitrail, était à plus de cinq lieues de distance, à Balbec-plage, et, à côté de sa coupole, ce clocher que, parce que j'avais lu qu'il était lui-même une âpre falaise normande où s'amassaient les grains, où tournoyaient les oiseaux, je m'étais toujours représenté comme recevant à sa base la dernière écume des vagues soulevées, il se dressait sur une place où était l'embranchement de deux lignes de tramways, en face d'un Café qui portait, écrit en lettres d'or, le mot : « Billard » ; il se détachait sur un fond de maisons aux toits desquelles ne se mêlait aucun mât. Et l'église – entrant dans mon attention avec le Café, avec le passant à qui il avait fallu demander mon chemin, avec la gare où j'allais retourner – faisait un avec tout le reste, semblait un accident, un produit de cette fin d'après-midi, dans laquelle la coupe moelleuse et gonflée sur le ciel était comme un fruit dont la même lumière qui baignait les cheminées des maisons, mûrissait la peau rose, dorée et fondante. Mais je ne voulus plus penser qu'à la signification éternelle des sculptures, quand je reconnus les Apôtres dont j'avais vu les statues moulées au musée du Trocadéro et qui des deux côtés de la Vierge, devant la baie profonde du porche, m'attendaient comme pour me faire honneur. La figure bienveillante, camuse et douce, le dos voûté, ils semblaient s'avancer d'un air de bienvenue en chantant l'Alleluia d'un beau jour. Mais on s'apercevait que leur expression était immuable comme celle d'un mort et ne se modifiait que si on tournait autour d'eux. Je me disais : c'est ici, c'est l'église de Balbec. Cette place qui a l'air de savoir sa gloire est le seul lieu du monde qui possède l'église de Balbec.
+
+Ce que j'ai vu jusqu'ici c'était des photographies de cette église, et, de ces Apôtres, de cette Vierge du porche si célèbres, les moulages seulement. Maintenant c'est l'église elle-même, c'est la statue elle-même, ce sont elles ; elles, les uniques : c'est bien plus.
+
+C'était moins aussi peut-être. Comme un jeune homme, un jour d'examen ou de duel, trouve le fait sur lequel on l'a interrogé, la balle qu'il a tirée, bien peu de chose quand il pense aux réserves de science et de courage qu'il possède et dont il aurait voulu faire preuve, de même mon esprit qui avait dressé la Vierge du Porche hors des reproductions que j'en avais eues sous les yeux, inaccessible aux vicissitudes qui pouvaient menacer celles-ci, intacte si on les détruisait, idéale, ayant une valeur universelle, s'étonnait de voir la statue qu'il avait mille fois sculptée réduite maintenant à sa propre apparence de pierre, occupant par rapport à la portée de mon bras une place où elle avait pour rivales une affiche électorale et la pointe de ma canne, enchaînée à la Place, inséparable du débouché de la grand'rue, ne pouvant fuir les regards du café et du bureau d'omnibus, recevant sur son visage la moitié du rayon de soleil couchant – et bientôt, dans quelques heures, de la clarté du réverbère – dont le bureau du Comptoir d'Escompte recevait l'autre moitié, gagnée, en même temps que cette succursale d'un établissement de crédit, par le relent des cuisines du pâtissier, soumise à la tyrannie du Particulier au point que, si j'avais voulu tracer ma signature sur cette pierre, c'est elle, la Vierge illustre que jusque-là j'avais douée d'une existence générale et d'une intangible beauté, la Vierge de Balbec, l'unique (ce qui, hélas ! voulait dire la seule), qui, sur son corps encrassé de la même suie que les maisons voisines, aurait, sans pouvoir s'en défaire, montré à tous les admirateurs venus là pour la contempler la trace de mon morceau de craie et les lettres de mon nom, et c'était elle enfin, l'oeuvre d'art immortelle et si longtemps désirée, que je trouvais, métamorphosée ainsi que l'église elle-même, en une petite vieille de pierre dont je pouvais mesurer la hauteur et compter les rides. L'heure passait, il fallait retourner à la gare où je devais attendre ma grand'mère et Françoise pour gagner ensemble Balbec-Plage. Je me rappelais ce que j'avais lu sur Balbec, les paroles de Swann : « C'est délicieux, c'est aussi beau que Sienne. » Et n'accusant de ma déception que des contingences, la mauvaise disposition où j'étais, ma fatigue, mon incapacité de savoir regarder, j'essayais de me consoler en pensant qu'il restait d'autres villes encore intactes pour moi, que je pourrais prochainement peut-être pénétrer, comme au milieu d'une pluie de perles, dans le frais gazouillis des égouttements de Quimperlé, traverser le reflet verdissant et rose qui baignait Pont-Aven ; mais pour Balbec, dès que j'y étais entré, ç'avait été comme si j'avais entr'ouvert un nom qu'il eût fallu tenir hermétiquement clos et où, profitant de l'issue que je leur avais imprudemment offerte en chassant toutes les images qui y vivaient jusque-là, un tramway, un café, les gens qui passaient sur la place, la succursale du Comptoir d'Escompte, irrésistiblement poussés par une pression externe et une force pneumatique, s'étaient engouffrés à l'intérieur des syllabes qui, refermées sur eux, les laissaient maintenant encadrer le porche de l'église persane et ne cesseraient plus de les contenir.
+
+Dans le petit chemin de fer d'intérêt local qui devait nous conduire à Balbec-Plage, je retrouvai ma grand'mère mais l'y retrouvai seule – car elle avait imaginé de faire partir avant elle, pour que tout fût préparé d'avance (mais lui ayant donné un renseignement faux n'avait réussi qu'à faire partir dans une mauvaise direction), Françoise qui en ce moment sans s'en douter filait à toute vitesse sur Nantes et se réveillerait peut-être à Bordeaux. À peine fus-je assis dans le wagon rempli par la lumière fugitive du couchant et par la chaleur persistante de l'après-midi (la première, hélas ! me permettant de voir en plein sur le visage de ma grand'mère combien la seconde l'avait fatiguée), elle me demanda : « Eh bien, Balbec ? » avec un sourire si ardemment éclairé par l'espérance du grand plaisir qu'elle pensait que j'avais éprouvé, que je n'osai pas lui avouer tout d'un coup ma déception. D'ailleurs, l'impression que mon esprit avait recherchée m'occupait moins au fur et à mesure que se rapprochait le lieu auquel mon corps aurait à s'accoutumer. Au terme, encore éloigné de plus d'une heure, de ce trajet, je cherchais à imaginer le directeur de l'hôtel de Balbec pour qui j'étais, en ce moment, inexistant, et j'aurais voulu me présenter à lui dans une compagnie plus prestigieuse que celle de ma grand'mère qui allait certainement lui demander des rabais. Il m'apparaissait empreint d'une morgue certaine, mais très vague de contours.

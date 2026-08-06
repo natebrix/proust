@@ -1,0 +1,624 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "la mère du narrateur",
+      "surface_forms": [
+        "la mère du narrateur",
+        "ma mère"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "la mère du narrateur",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "« Comme j'aurais donné tout cela pour pouvoir pleurer toute la nuit dans les bras de la mère du narrateur ! » … « aucune maîtresse n'a pu me donner [cette paix]… je recevais dans un baiser celui de la mère du narrateur, tout entier… c'est que ce fût elle… même un défaut… que j'aimais. »",
+      "explanation": "The narrator elevates the narrator's mother by affirming her unique and irreplaceable character, superior to any mistress and a source of incomparable peace."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "la mère du narrateur",
+      "dimension": "general_appraisal",
+      "delta": 2,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.9,
+      "explanation": "The narrator's mother receives an exceptional and intimate valorization, presented as the only presence capable of bringing total peace."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v1-p1-combray#p-366-p-370"
+}
+
+### Candidate characters
+
+[
+  "Remi",
+  "Swann",
+  "duchesse de Guermantes",
+  "le narrateur"
+]
+
+### Prior local context (optional)
+
+Les clochers paraissaient si éloignés et nous avions l'air de si peu nous rapprocher d'eux, que je fus étonné quand, quelques instants après, nous nous arrêtâmes devant l'église de Martinville. Je ne savais pas la raison du plaisir que j'avais eu à les apercevoir à l'horizon et l'obligation de chercher à découvrir cette raison me semblait bien pénible ; j'avais envie de garder en réserve dans ma tête ces lignes remuantes au soleil et de n'y plus penser maintenant. Et il est probable que si je l'avais fait, les deux clochers seraient allés à jamais rejoindre tant d'arbres, de toits, de parfums, de sons, que j'avais distingués des autres à cause de ce plaisir obscur qu'ils m'avaient procuré et que je n'ai jamais approfondi. Je descendis causer avec mes parents en attendant docteur Cottard. Puis nous repartîmes, je repris ma place sur le siège, je tournai la tête pour voir encore les clochers qu'un peu plus tard j'aperçus une dernière fois au tournant d'un chemin. Le cocher, qui ne semblait pas disposé à causer, ayant à peine répondu à mes propos, force me fut, faute d'autre compagnie, de me rabattre sur celle de moi-même et d'essayer de me rappeler mes clochers. Bientôt, leurs lignes et leurs surfaces ensoleillées, comme si elles avaient été une sorte d'écorce, se déchirèrent, un peu de ce qui m'était caché en elles m'apparut, j'eus une pensée qui n'existait pas pour moi l'instant avant, qui se formula en mots dans ma tête, et le plaisir que m'avait fait tout à l'heure éprouver leur vue s'en trouva tellement accru que, pris d'une sorte d'ivresse, je ne pus plus penser à autre chose. À ce moment et comme nous étions déjà loin de Martinville, en tournant la tête je les aperçus de nouveau, tout noirs cette fois, car le soleil était déjà couché. Par moments les tournants du chemin me les dérobaient, puis ils se montrèrent une dernière fois et enfin je ne les vis plus.
+
+### Passage
+
+Sans me dire que ce qui était caché derrière les clochers de Martinville devait être quelque chose d'analogue à une jolie phrase, puisque c'était sous la forme de mots qui me faisaient plaisir que cela m'était apparu, demandant un crayon et du papier au docteur, je composai malgré les cahots de la voiture, pour soulager ma conscience et obéir à mon enthousiasme, le petit morceau suivant que j'ai retrouvé depuis et auquel je n'ai eu à faire subir que peu de changements :
+
+« Seuls, s'élevant du niveau de la plaine et comme perdus en rase campagne, montaient vers le ciel les deux clochers de Martinville. Bientôt nous en vîmes trois : venant se placer en face d'eux par une volte hardie, un clocher retardataire, celui de Vieuxvicq, les avait rejoints. Les minutes passaient, nous allions vite et pourtant les trois clochers étaient toujours au loin devant nous, comme trois oiseaux posés sur la plaine, immobiles et qu'on distingue au soleil. Puis le clocher de Vieuxvicq s'écarta, prit ses distances, et les clochers de Martinville restèrent seuls, éclairés par la lumière du couchant que même à cette distance, sur leurs pentes, je voyais jouer et sourire. Nous avions été si longs à nous rapprocher d'eux, que je pensais au temps qu'il faudrait encore pour les atteindre quand, tout d'un coup, la voiture ayant tourné, elle nous déposa à leurs pieds ; et ils s'étaient jetés si rudement au-devant d'elle, qu'on n'eut que le temps d'arrêter pour ne pas se heurter au porche. Nous poursuivîmes notre route ; nous avions déjà quitté Martinville depuis un peu de temps et le village après nous avoir accompagnés quelques secondes avait disparu, que restés seuls à l'horizon à nous regarder fuir, ces clochers et celui de Vieuxvicq agitaient encore en signe d'adieu leurs cimes ensoleillées. Parfois l'un s'effaçait pour que les deux autres pussent nous apercevoir un instant encore ; mais la route changea de direction, ils virèrent dans la lumière comme trois pivots d'or et disparurent à mes yeux. Mais, un peu plus tard, comme nous étions déjà près de Combray, le soleil étant maintenant couché, je les aperçus une dernière fois de très loin, qui n'étaient plus que comme trois fleurs peintes sur le ciel au-dessus de la ligne basse des champs. Ils me faisaient penser aussi aux trois jeunes filles d'une légende, abandonnées dans une solitude où tombait déjà l'obscurité ; et tandis que nous nous éloignions au galop, je les vis timidement chercher leur chemin et après quelques gauches trébuchements de leurs nobles silhouettes, se serrer les uns contre les autres, glisser l'un derrière l'autre, ne plus faire sur le ciel encore rose qu'une seule forme noire, charmante et résignée, et s'effacer dans la nuit. « Je ne repensai jamais à cette page, mais à ce moment-là, quand, au coin du siège où le cocher du docteur plaçait habituellement dans un panier les volailles qu'il avait achetées au marché de Martinville, j'eus fini de l'écrire, je me trouvai si heureux, je sentais qu'elle m'avait si parfaitement débarrassé de ces clochers et de ce qu'ils cachaient derrière eux, que comme si j'avais été moi-même une poule et si je venais de pondre un oeuf, je me mis à chanter à tue-tête.
+
+Pendant toute la journée, dans ces promenades, j'avais pu rêver au plaisir que ce serait d'être l'ami de la Mme de Guermantes, de pêcher la truite, de me promener en barque sur la Vivonne, et, avide de bonheur, ne demander en ces moments-là rien d'autre à la vie que de se composer toujours d'une suite d'heureux après-midi. Mais quand sur le chemin du retour j'avais aperçu sur la gauche une ferme, assez distante de deux autres qui étaient au contraire très rapprochées, et à partir de laquelle pour entrer dans Combray il n'y avait plus qu'à prendre une allée de chênes bordée d'un côté de prés appartenant chacun à un petit clos et plantés à intervalles égaux de pommiers qui y portaient, quand ils étaient éclairés par le soleil couchant, le dessin japonais de leurs ombres, brusquement mon coeur se mettait à battre, je savais qu'avant une demi-heure nous serions rentrés, et que, comme c'était de règle les jours où nous étions allés du côté de Guermantes et où le dîner était servi plus tard, on m'enverrait me coucher sitôt ma soupe prise, de sorte que ma mère, retenue à table comme s'il y avait du monde à dîner, ne monterait pas me dire bonsoir dans mon lit. La zone de tristesse où je venais d'entrer était aussi distincte de la zone où je m'élançais avec joie il y avait un moment encore que dans certains ciels une bande rose est séparée comme par une ligne d'une bande verte ou d'une bande noire. On voit un oiseau voler dans le rose, il va en atteindre la fin, il touche presque au noir, puis il y est entré. Les désirs qui tout à l'heure m'entouraient, d'aller à Guermantes, de voyager, d'être heureux, j'étais maintenant tellement en dehors d'eux que leur accomplissement ne m'eût fait aucun plaisir. Comme j'aurais donné tout cela pour pouvoir pleurer toute la nuit dans les bras de maman ! Je frissonnais, je ne détachais pas mes yeux angoissés du visage de ma mère, qui n'apparaîtrait pas ce soir dans la chambre où je me voyais déjà par la pensée, j'aurais voulu mourir. Et cet état durerait jusqu'au lendemain, quand les rayons du matin, appuyant, comme le jardinier, leurs barreaux au mur revêtu de capucines qui grimpaient jusqu'à ma fenêtre, je sauterais à bas du lit pour descendre vite au jardin, sans plus me rappeler que le soir ramènerait jamais l'heure de quitter ma mère. Et de la sorte c'est du côté de Guermantes que j'ai appris à distinguer ces états qui se succèdent en moi, pendant certaines périodes, et vont jusqu'à se partager chaque journée, l'un revenant chasser l'autre, avec la ponctualité de la fièvre ; contigus, mais si extérieurs l'un à l'autre, si dépourvus de moyens de communication entre eux, que je ne puis plus comprendre, plus même me représenter, dans l'un, ce que j'ai désiré, ou redouté, ou accompli dans l'autre.
+
+Aussi le côté de Méséglise et le côté de Guermantes restent-ils pour moi liés à bien des petits événements de celle de toutes les diverses vies que nous menons parallèlement, qui est la plus pleine de péripéties, la plus riche en épisodes, je veux dire la vie intellectuelle. Sans doute elle progresse en nous insensiblement et les vérités qui en ont changé pour nous le sens et l'aspect, qui nous ont ouvert de nouveaux chemins, nous en préparions depuis longtemps la découverte ; mais c'était sans le savoir ; et elles ne datent pour nous que du jour, de la minute où elles nous sont devenues visibles. Les fleurs qui jouaient alors sur l'herbe, l'eau qui passait au soleil, tout le paysage qui environna leur apparition continue à accompagner leur souvenir de son visage inconscient ou distrait ; et certes quand ils étaient longuement contemplés par cet humble passant, par cet enfant qui rêvait – comme l'est un roi, par un mémorialiste perdu dans la foule – ce coin de nature, ce bout de jardin n'eussent pu penser que ce serait grâce à lui qu'ils seraient appelés à survivre en leurs particularités les plus éphémères ; et pourtant ce parfum d'aubépine qui butine le long de la haie où les églantiers le remplaceront bientôt, un bruit de pas sans écho sur le gravier d'une allée, une bulle formée contre une plante aquatique par l'eau de la rivière et qui crève aussitôt, mon exaltation les a portés et a réussi à leur faire traverser tant d'années successives, tandis qu'alentour les chemins se sont effacés et que sont morts ceux qui les foulèrent et le souvenir de ceux qui les foulèrent. Parfois ce morceau de paysage amené ainsi jusqu'à aujourd'hui se détache si isolé de tout, qu'il flotte incertain dans ma pensée comme une Délos fleurie, sans que je puisse dire de quel pays, de quel temps – peut-être tout simplement de quel rêve – il vient. Mais c'est surtout comme à des gisements profonds de mon sol mental, comme aux terrains résistants sur lesquels je m'appuie encore, que je dois penser au côté de Méséglise et au côté de Guermantes. C'est parce que je croyais aux choses, aux êtres, tandis que je les parcourais, que les choses, les êtres qu'ils m'ont fait connaître sont les seuls que je prenne encore au sérieux et qui me donnent encore de la joie. Soit que la foi qui crée soit tarie en moi, soit que la réalité ne se forme que dans la mémoire, les fleurs qu'on me montre aujourd'hui pour la première fois ne me semblent pas de vraies fleurs. Le côté de Méséglise avec ses lilas, ses aubépines, ses bluets, ses coquelicots, ses pommiers, le côté de Guermantes avec sa rivière à têtards, ses nymphéas et ses boutons d'or, ont constitué à tout jamais pour moi la figure des pays où j'aimerais vivre, où j'exige avant tout qu'on puisse aller à la pêche, se promener en canot, voir des ruines de fortifications gothiques et trouver au milieu des blés, ainsi qu'était Saint-André-des-Champs, une église monumentale, rustique et dorée comme une meule ; et les bluets, les aubépines, les pommiers qu'il m'arrive quand je voyage de rencontrer encore dans les champs, parce qu'ils sont situés à la même profondeur, au niveau de mon passé, sont immédiatement en communication avec mon coeur. Et pourtant, parce qu'il y a quelque chose d'individuel dans les lieux, quand me saisit le désir de revoir le côté de Guermantes, on ne le satisferait pas en me menant au bord d'une rivière où il y aurait d'aussi beaux, de plus beaux nymphéas que dans la Vivonne, pas plus que le soir en rentrant – à l'heure où s'éveillait en moi cette angoisse qui plus tard émigre dans l'amour, et peut devenir à jamais inséparable de lui – je n'aurais souhaité que vînt me dire bonsoir une mère plus belle et plus intelligente que la mienne. Non ; de même que ce qu'il me fallait pour que je pusse m'endormir heureux, avec cette paix sans trouble qu'aucune maîtresse n'a pu me donner depuis, puisqu'on doute d'elles encore au moment où on croit en elles et qu'on ne possède jamais leur coeur comme je recevais dans un baiser celui de ma mère, tout entier, sans la réserve d'une arrière-pensée, sans le reliquat d'une intention qui ne fût pas pour moi – c'est que ce fût elle, c'est qu'elle inclinât vers moi ce visage où il y avait au-dessous de l'oeil quelque chose qui était, paraît-il, un défaut, et que j'aimais à l'égal du reste ; de même ce que je veux revoir, c'est le côté de Guermantes que j'ai connu, avec la ferme qui est peu éloignée des deux suivantes serrées l'une contre l'autre, à l'entrée de l'allée des chênes ; ce sont ces prairies où, quand le soleil les rend réfléchissantes comme une mare, se dessinent les feuilles des pommiers, c'est ce paysage dont parfois, la nuit dans mes rêves, l'individualité m'étreint avec une puissance presque fantastique et que je ne peux plus retrouver au réveil. Sans doute pour avoir à jamais indissolublement uni en moi des impressions différentes, rien que parce qu'ils me les avaient fait éprouver en même temps, le côté de Méséglise ou le côté de Guermantes m'ont exposé, pour l'avenir, à bien des déceptions et même à bien des fautes. Car souvent j'ai voulu revoir une personne sans discerner que c'était simplement parce qu'elle me rappelait une haie d'aubépines, et j'ai été induit à croire, à faire croire à un regain d'affection, par un simple désir de voyage. Mais par là même aussi, et en restant présents en celles de mes impressions d'aujourd'hui auxquelles ils peuvent se relier, ils leur donnent des assises, de la profondeur, une dimension de plus qu'aux autres. Ils leur ajoutent aussi un charme, une signification qui n'est que pour moi. Quand par les soirs d'été le ciel harmonieux gronde comme une bête fauve et que chacun boude l'orage, c'est au côté de Méséglise que je dois de rester seul en extase à respirer, à travers le bruit de la pluie qui tombe, l'odeur d'invisibles et persistants lilas.
+
+C'est ainsi que je restais souvent jusqu'au matin à songer au temps de Combray, à mes tristes soirées sans sommeil, à tant de jours aussi dont l'image m'avait été plus récemment rendue par la saveur – ce qu'on aurait appelé à Combray le « parfum » – d'une tasse de thé, et par association de souvenirs à ce que, bien des années après avoir quitté cette petite ville, j'avais appris, au sujet d'un amour que Swann avait eu avant ma naissance, avec cette précision dans les détails plus facile à obtenir quelquefois pour la vie de personnes mortes il y a des siècles que pour celle de nos meilleurs amis, et qui semble impossible comme semblait impossible de causer d'une ville à une autre – tant qu'on ignore le biais par lequel cette impossibilité a été tournée. Tous ces souvenirs ajoutés les uns aux autres ne formaient plus qu'une masse, mais non sans qu'on ne pût distinguer entre eux – entre les plus anciens, et ceux plus récents, nés d'un parfum, puis ceux qui n'étaient que les souvenirs d'une autre personne de qui je les avais appris – sinon des fissures, des failles véritables, du moins ces veinures, ces bigarrures de coloration, qui, dans certaines roches, dans certains marbres, révèlent des différences d'origine, d'âge, de « formation ».

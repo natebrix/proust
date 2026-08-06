@@ -1,0 +1,624 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "Odette",
+      "surface_forms": [
+        "Odette",
+        "la châtelaine de Tansonville"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Odette",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.93,
+      "evidence": "Odette apparaissait… toute une suite l’environnait; … leur noire ou grise agglomération obéissante… la faisait surgir… comme l’apparition d’un être… d’une puissance presque guerrière… les hommes… reconnaissaient à leur amie… compétence et juridiction.",
+      "explanation": "The narrator raises Odette as a central and sovereign figure during her walk: she concentrates the gaze, leads a 'court' of deferential men, and possesses recognized aesthetic and social authority."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Odette",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.93,
+      "explanation": "The scene presents her as a great lady surrounded by a submitted escort, with recognized competence and jurisdiction over elegance."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v2-p1-autour-de-mme-swann#p-326-p-330"
+}
+
+### Candidate characters
+
+[
+  "Bergotte",
+  "Gilberte",
+  "Swann",
+  "le narrateur"
+]
+
+### Prior local context (optional)
+
+En attendant ces réalisations après coup d'un rêve auquel je ne tiendrais plus, à force d'inventer, comme au temps où je connaissais à peine Gilberte, des paroles, des lettres, où elle implorait mon pardon, avouait n'avoir jamais aimé que moi et demandait à m'épouser, une série de douces images incessamment recréées, finirent par prendre plus de place dans mon esprit que la vision de Gilberte et du jeune homme, laquelle n'était plus alimentée par rien. Je serais peut-être dès lors retourné chez Odette sans un rêve que je fis et où un de mes amis, lequel n'était pourtant pas de ceux que je me connaissais, agissait envers moi avec la plus grande fausseté et croyait à la mienne. Brusquement réveillé par la souffrance que venait de me causer ce rêve et voyant qu'elle persistait, je repensai à lui, cherchai à me rappeler quel était l'ami que j'avais vu en dormant et dont le nom espagnol n'était déjà plus distinct. À la fois Joseph et Pharaon, je me mis à interpréter mon rêve. Je savais que dans beaucoup d'entre eux il ne faut tenir compte ni de l'apparence des personnes, lesquelles peuvent être déguisées et avoir interchangé leurs visages, comme ces saints mutilés des cathédrales que des archéologues ignorants ont refaits, en mettant sur le corps de l'un la tête de l'autre, et en mêlant les attributs et les noms. Ceux que les êtres portent dans un rêve peuvent nous abuser. La personne que nous aimons doit y être reconnue seulement à la force de la douleur éprouvée. La mienne m'apprit que, devenue pendant mon sommeil un jeune homme, la personne dont la fausseté récente me faisait encore mal était Gilberte. Je me rappelai alors que la dernière fois que je l'avais vue, le jour où sa mère l'avait empêchée d'aller à une matinée de danse, elle avait soit sincèrement, soit en le feignant, refusé tout en riant d'une façon étrange, de croire à mes bonnes intentions pour elle.
+
+### Passage
+
+Par association, ce souvenir en ramena un autre dans ma mémoire. Longtemps auparavant, ç'avait été Swann qui n'avait pas voulu croire à ma sincérité, ni que je fusse un bon ami pour Gilberte. Inutilement je lui avais écrit, Gilberte m'avait rapporté ma lettre et me l'avait rendue avec le même rire incompréhensible. Elle ne me l'avait pas rendue tout de suite, je me rappelai toute la scène derrière le massif de lauriers. On devient moral dès qu'on est malheureux. L'antipathie actuelle de Gilberte pour moi me sembla comme un châtiment infligé par la vie à cause de la conduite que j'avais eue ce jour-là. Les châtiments, on croit les éviter, parce qu'on fait attention aux voitures en traversant, qu'on évite les dangers. Mais il en est d'internes. L'accident vient du côté auquel on ne songeait pas, du dedans, du coeur. Les mots de Gilberte : « Si vous voulez, continuons à lutter » me firent horreur. Je l'imaginai telle, chez elle peut-être, dans la lingerie, avec le jeune homme que j'avais vu l'accompagnant dans l'avenue des Champs-Élysées. Ainsi, autant que (il y avait quelque temps) de croire que j'étais tranquillement installé dans le bonheur, j'avais été insensé, maintenant que j'avais renoncé à être heureux, de tenir pour assuré que du moins j'étais devenu, je pourrais rester calme. Car tant que notre coeur enferme d'une façon permanente l'image d'un autre être, ce n'est pas seulement notre bonheur qui peut à tout moment être détruit ; quand ce bonheur est évanoui, quand nous avons souffert, puis que nous avons réussi à endormir notre souffrance, ce qui est aussi trompeur et précaire qu'avait été le bonheur même, c'est le calme. Le mien finit par revenir, car ce qui, modifiant notre état moral, nos désirs, est entré, à la faveur d'un rêve, dans notre esprit, cela aussi peu à peu se dissipe, la permanence et la durée ne sont promises à rien, pas même à la douleur. D'ailleurs, ceux qui souffrent par l'amour sont, comme on dit de certains malades, leur propre médecin. Comme il ne peut leur venir de consolation que de l'être qui cause leur douleur et que cette douleur est une émanation de lui, c'est en elle qu'ils finissent par trouver un remède. Elle le leur découvre elle-même à un moment donné, car au fur et à mesure qu'ils la retournent en eux, cette douleur leur montre un autre aspect de la personne regrettée, tantôt si haïssable qu'on n'a même plus le désir de la revoir parce qu'avant de se plaire avec elle il faudrait la faire souffrir, tantôt si douce que la douceur qu'on lui prête on lui en fait un mérite et on en tire une raison d'espérer. Mais la souffrance qui s'était renouvelée en moi eut beau finir par s'apaiser, je ne voulus plus retourner que rarement chez Odette. C'est d'abord que chez ceux qui aiment et sont abandonnés, le sentiment d'attente – même d'attente inavouée – dans lequel ils vivent se transforme de lui-même, et bien qu'en apparence identique, fait succéder à un premier état, un second exactement contraire. Le premier était la suite, le reflet des incidents douloureux qui nous avaient bouleversés. L'attente de ce qui pourrait se produire est mêlée d'effroi, d'autant plus que nous désirons à ce moment-là, si rien de nouveau ne nous vient du côté de celle que nous aimons, agir nous-même, et nous ne savons trop quel sera le succès d'une démarche après laquelle il ne sera peut-être plus possible d'en entamer d'autre. Mais bientôt, sans que nous nous en rendions compte, notre attente qui continue est déterminée, nous l'avons vu, non plus par le souvenir du passé que nous avons subi, mais par l'espérance d'un avenir imaginaire. Dès lors, elle est presque agréable. Puis la première, en durant un peu, nous a habitués à vivre dans l'expectative. La souffrance que nous avons éprouvée durant nos derniers rendez-vous survit encore en nous, mais déjà ensommeillée. Nous ne sommes pas trop pressés de la renouveler, d'autant plus que nous ne voyons pas bien ce que nous demanderions maintenant. La possession d'un peu plus de la femme que nous aimons ne ferait que nous rendre plus nécessaire ce que nous ne possédons pas, et qui resterait, malgré tout, nos besoins naissant de nos satisfactions, quelque chose d'irréductible.
+
+Enfin une dernière raison s'ajouta plus tard à celle-ci pour me faire cesser complètement mes visites à Odette. Cette raison, plus tardive, n'était pas que j'eusse encore oublié Gilberte, mais de tâcher de l'oublier plus vite. Sans doute, depuis que ma grande souffrance était finie, mes visites chez Odette étaient redevenues, pour ce qui me restait de tristesse, le calmant et la distraction qui m'avaient été si précieux au début. Mais la raison de l'efficacité du premier faisait l'inconvénient de la seconde, à savoir qu'à ces visites le souvenir de Gilberte était intimement mêlé. La distraction ne m'eût été utile que si elle eût mis en lutte avec un sentiment que la présence de Gilberte n'alimentait plus, des pensées, des intérêts, des passions où Gilberte ne fût entrée pour rien. Ces états de conscience auxquels l'être qu'on aime reste étranger occupent alors une place qui, si petite qu'elle soit d'abord, est autant de retranché à l'amour qui occupait l'âme tout entière. Il faut chercher à nourrir, à faire croître ces pensées, cependant que décline le sentiment qui n'est plus qu'un souvenir, de façon que les éléments nouveaux introduits dans l'esprit lui disputent, lui arrachent une part de plus en plus grande de l'âme, et finalement la lui dérobent toute. Je me rendais compte que c'était la seule manière de tuer un amour, et j'étais encore assez jeune, assez courageux pour entreprendre de le faire, pour assumer la plus cruelle des douleurs qui naît de la certitude que, quelque temps qu'on doive y mettre, on réussira. La raison que je donnais maintenant dans mes lettres à Gilberte, de mon refus de la voir, c'était une allusion à quelque mystérieux malentendu, parfaitement fictif, qu'il y aurait eu entre elle et moi et sur lequel j'avais espéré d'abord que Gilberte me demanderait des explications. Mais, en fait, même dans les relations les plus insignifiantes de la vie, un éclaircissement n'est sollicité par un correspondant qui sait qu'une phrase obscure, mensongère, incriminatrice, est mise à dessein pour qu'il proteste, et qui est trop heureux de sentir par là qu'il possède – et de garder – la maîtrise et l'initiative des opérations. À plus forte raison en est-il de même dans des relations plus tendres, où l'amour a tant d'éloquence, l'indifférence si peu de curiosité. Gilberte n'ayant pas mis en doute ni cherché à connaître ce malentendu, il devint pour moi quelque chose de réel auquel je me référais dans chaque lettre. Et il y a dans ces situations prises à faux, dans l'affectation de la froideur, un sortilège qui vous y fait persévérer. À force d'écrire : « Depuis que nos coeurs sont désunis » pour que Gilberte me répondît : « Mais ils ne le sont pas, expliquons-nous », j'avais fini par me persuader qu'ils l'étaient. En répétant toujours : « La vie a pu changer pour nous, elle n'effacera pas le sentiment que nous eûmes », par désir de m'entendre dire enfin : « Mais il n'y a rien de changé, ce sentiment est plus fort que jamais », je vivais avec l'idée que la vie avait changé en effet, que nous garderions le souvenir du sentiment qui n'était plus, comme certains nerveux pour avoir simulé une maladie finissent par rester toujours malades. Maintenant chaque fois que j'avais à écrire à Gilberte, je me reportais à ce changement imaginé et dont l'existence, désormais tacitement reconnue par le silence qu'elle gardait à ce sujet dans ses réponses, subsisterait entre nous. Puis Gilberte cessa de s'en tenir à la prétérition. Elle-même adopta mon point de vue ; et, comme dans les toasts officiels, où le chef d'État qui est reçu reprend peu à peu les mêmes expressions dont vient d'user le chef d'État qui le reçoit, chaque fois que j'écrivais à Gilberte : « La vie a pu nous séparer, le souvenir du temps où nous nous connûmes durera », elle ne manqua pas de répondre : « La vie a pu nous séparer, elle ne pourra nous faire oublier les bonnes heures qui nous seront toujours chères » (nous aurions été bien embarrassés de dire pourquoi « la vie » nous avait séparés, quel changement s'était produit). Je ne souffrais plus trop. Pourtant un jour où je lui disais dans une lettre que j'avais appris la mort de notre vieille marchande de sucre d'orge des Champs-Élysées, comme je venais d'écrire ces mots : « J'ai pensé que cela vous a fait de la peine, en moi cela a remué bien des souvenirs », je ne pus m'empêcher de fondre en larmes en voyant que je parlais au passé, et comme s'il s'agissait d'un mort déjà presque oublié, de cet amour auquel malgré moi je n'avais jamais cessé de penser comme étant vivant, pouvant du moins renaître. Rien de plus tendre que cette correspondance entre amis qui ne voulaient plus se voir. Les lettres de Gilberte avaient la délicatesse de celles que j'écrivais aux indifférents, et me donnaient les mêmes marques apparentes d'affection si douces pour moi à recevoir d'elle.
+
+D'ailleurs peu à peu chaque refus de la voir me fit moins de peine. Et comme elle me devenait moins chère, mes souvenirs douloureux n'avaient plus assez de force pour détruire dans leur retour incessant la formation du plaisir que j'avais à penser à Florence, à Venise. Je regrettais à ces moments-là d'avoir renoncé à entrer dans la diplomatie et de m'être fait une existence sédentaire pour ne pas m'éloigner d'une jeune fille que je ne verrais plus et que j'avais déjà presque oubliée. On construit sa vie pour une personne et, quand enfin on peut l'y recevoir, cette personne ne vient pas, puis meurt pour vous et on vit prisonnier dans ce qui n'était destiné qu'à elle. Si Venise semblait à mes parents bien lointain et bien fiévreux pour moi, il était du moins facile d'aller sans fatigue s'installer à Balbec. Mais pour cela il eût fallu quitter Paris, renoncer à ces visites, grâce auxquelles, si rares qu'elles fussent, j'entendais quelquefois Odette me parler de sa fille. Je commençais du reste à y trouver tel ou tel plaisir où Gilberte n'était pour rien.
+
+Quand le printemps approcha, ramenant le froid, au temps des Saints de glace et des giboulées de la Semaine Sainte, comme Odette trouvait qu'on gelait chez elle, il m'arrivait souvent de la voir recevant dans des fourrures, ses mains et ses épaules frileuses disparaissant sous le blanc et brillant tapis d'un immense manchon plat et d'un collet, tous deux d'hermine, qu'elle n'avait pas quittés en rentrant et qui avaient l'air des derniers carrés des neiges de l'hiver plus persistants que les autres, et que la chaleur du feu ni le progrès de la saison n'avaient réussi à fondre. Et la vérité totale de ces semaines glaciales mais déjà fleurissantes, était suggérée pour moi dans ce salon, où bientôt je n'irais plus, par d'autres blancheurs plus enivrantes, celles, par exemple, des « boules de neige » assemblant au sommet de leurs hautes tiges nues comme les arbustes linéaires des préraphaélites, leurs globes parcellés mais unis, blancs comme des anges annonciateurs et qu'entourait une odeur de citron. Car la châtelaine de Tansonville savait qu'avril, même glacé, n'est pas dépourvu de fleurs, que l'hiver, le printemps, l'été, ne sont pas séparés par des cloisons aussi hermétiques que tend à le croire le boulevardier qui jusqu'aux premières chaleurs s'imagine le monde comme renfermant seulement des maisons nues sous la pluie. Que Odette se contentât des envois que lui faisait son jardinier de Combray, et que par l'intermédiaire de sa fleuriste « attitrée » elle ne comblât pas les lacunes d'une insuffisante évocation à l'aide d'emprunts faits à la précocité méditerranéenne, je suis loin de le prétendre et je ne m'en souciais pas. Il me suffisait pour avoir la nostalgie de la campagne, qu'à côté des névés du manchon que tenait Odette, les boules de neige (qui n'avaient peut-être dans la pensée de la maîtresse de la maison d'autre but que de faire, sur les conseils de Bergotte, « symphonie en blanc majeur » avec son ameublement et sa toilette) me rappelassent que l'Enchantement du Vendredi Saint figure un miracle naturel auquel on pourrait assister tous les ans si l'on était plus sage, et aidées du parfum acide et capiteux de corolles d'autres espèces dont j'ignorais les noms et qui m'avait fait rester tant de fois en arrêt dans mes promenades de Combray, rendissent le salon de Odette aussi virginal, aussi candidement fleuri sans aucune feuille, aussi surchargé d'odeurs authentiques, que le petit raidillon de Tansonville.
+
+Mais c'était encore trop que celui-ci me fût rappelé. Son souvenir risquait d'entretenir le peu qui subsistait de mon amour pour Gilberte. Aussi, bien que je ne souffrisse plus du tout durant ces visites à Odette, je les espaçai encore et cherchai à la voir le moins possible. Tout au plus, comme je continuais à ne pas quitter Paris, me concédai-je certaines promenades avec elle. Les beaux jours étaient enfin revenus, et la chaleur. Comme je savais qu'avant le déjeuner Odette sortait pendant une heure et allait faire quelques pas avenue du Bois, près de l'Étoile, et de l'endroit qu'on appelait alors, à cause des gens qui venaient regarder les riches qu'ils ne connaissaient que de nom, « Club des Pannés », j'obtins de mes parents que le dimanche – car je n'étais pas libre en semaine à cette heure-là – je pourrais ne déjeuner que bien après eux, à une heure un quart, et aller faire un tour auparavant. Je n'y manquai jamais pendant ce mois de mai, Gilberte étant allée à la campagne chez des amies. J'arrivais à l'Arc-de-Triomphe vers midi. Je faisais le guet à l'entrée de l'avenue, ne perdant pas des yeux le coin de la petite rue par où Odette, qui n'avait que quelques mètres à franchir, venait de chez elle. Comme c'était déjà l'heure où beaucoup de promeneurs rentraient déjeuner, ceux qui restaient étaient peu nombreux et, pour la plus grande part, des gens élégants. Tout d'un coup, sur le sable de l'allée, tardive, alentie et luxuriante comme la plus belle fleur et qui ne s'ouvrirait qu'à midi, Odette apparaissait, épanouissant autour d'elle une toilette toujours différente mais que je me rappelle surtout mauve ; puis elle hissait et déployait sur un long pédoncule, au moment de sa plus complète irradiation, le pavillon de soie d'une large ombrelle de la même nuance que l'effeuillaison des pétales de sa robe. Toute une suite l'environnait ; Swann, quatre ou cinq hommes de club qui étaient venus la voir le matin chez elle ou qu'elle avait rencontrés : et leur noire ou grise agglomération obéissante, exécutant les mouvements presque mécaniques d'un cadre inerte autour d'Odette, donnait l'air à cette femme, qui seule avait de l'intensité dans les yeux, de regarder devant elle, d'entre tous ces hommes, comme d'une fenêtre dont elle se fût approchée, et la faisait surgir, frêle, sans crainte, dans la nudité de ses tendres couleurs, comme l'apparition d'un être d'une espèce différente, d'une race inconnue, et d'une puissance presque guerrière, grâce à quoi elle compensait à elle seule sa multiple escorte. Souriante, heureuse du beau temps, du soleil qui n'incommodait pas encore, ayant l'air d'assurance et de calme du créateur qui a accompli son oeuvre et ne se soucie plus du reste, certaine que sa toilette – dussent des passants vulgaires ne pas l'apprécier – était la plus élégante de toutes, elle la portait pour soi-même et pour ses amis, naturellement, sans attention exagérée, mais aussi sans détachement complet ; n'empêchant pas les petits noeuds de son corsage et de sa jupe de flotter légèrement devant elle comme des créatures dont elle n'ignorait pas la présence et à qui elle permettait avec indulgence de se livrer à leurs jeux, selon leur rythme propre, pourvu qu'ils suivissent sa marche, et même sur son ombrelle mauve que souvent elle tenait encore fermée quand elle arrivait, elle laissait tomber par moment, comme sur un bouquet de violettes de Parme, son regard heureux et si doux que quand il ne s'attachait plus à ses amis, mais à un objet inanimé, il avait l'air de sourire encore. Elle réservait ainsi, elle faisait occuper à sa toilette cet intervalle d'élégance dont les hommes à qui Odette parlait le plus en camarade respectaient l'espace et la nécessité, non sans une certaine déférence de profanes, un aveu de leur propre ignorance, et sur lequel ils reconnaissaient à leur amie comme à un malade sur les soins spéciaux qu'il doit prendre, ou comme à une mère sur l'éducation de ses enfants, compétence et juridiction. Non moins que par la cour qui l'entourait et ne semblait pas voir les passants, Odette, à cause de l'heure tardive de son apparition, évoquait cet appartement où elle avait passé une matinée si longue et où il faudrait qu'elle rentrât bientôt déjeuner ; elle semblait en indiquer la proximité par la tranquillité flâneuse de sa promenade, pareille à celle qu'on fait à petits pas dans son jardin ; de cet appartement on aurait dit qu'elle portait encore autour d'elle l'ombre intérieure et fraîche. Mais, par tout cela même, sa vue ne me donnait que davantage la sensation du plein air et de la chaleur. D'autant plus que déjà persuadé qu'en vertu de la liturgie et des rites dans lesquels Odette était profondément versée, sa toilette était unie à la saison et à l'heure par un lien nécessaire, unique, les fleurs de son inflexible chapeau de paille, les petits rubans de sa robe me semblaient naître du mois de mai plus naturellement encore que les fleurs des jardins et des bois ; et pour connaître le trouble nouveau de la saison, je ne levais pas les yeux plus haut que son ombrelle, ouverte et tendue comme un autre ciel plus proche, rond, clément, mobile et bleu. Car ces rites, s'ils étaient souverains, mettaient leur gloire, et par conséquent Odette mettait la sienne à obéir avec condescendance au matin, au printemps, au soleil, lesquels ne me semblaient pas assez flattés qu'une femme si élégante voulût bien ne pas les ignorer et eût choisi à cause d'eux une robe d'une étoffe plus claire, plus légère, faisant penser, par son évasement au col et aux manches, à la moiteur du cou et des poignets, fît enfin pour eux tous les frais d'une grande dame qui s'étant gaiement abaissée à aller voir à la campagne des gens communs et que tout le monde, même le vulgaire, connaît, n'en a pas moins tenu à revêtir spécialement pour ce jour-là une toilette champêtre.

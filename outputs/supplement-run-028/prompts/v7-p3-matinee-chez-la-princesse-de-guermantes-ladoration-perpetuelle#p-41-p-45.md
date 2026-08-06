@@ -1,0 +1,632 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "duc de Guermantes",
+      "surface_forms": [
+        "duc de Guermantes"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "duc de Guermantes",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "« J'avais vu les nobles devenir vulgaires quand leur esprit (comme celui du duc de Guermantes, par exemple) était vulgaire : “Vous n’êtes pas gêné”, disait-il, comme eût pu dire docteur Cottard. »",
+      "explanation": "The narrator explicitly labels the duke’s mind vulgar and illustrates it with a banal remark, lowering him despite his noble status."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "duc de Guermantes",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.9,
+      "explanation": "He is diminished by being called vulgar and compared to a lower-status figure’s commonplace speech."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-41-p-45"
+}
+
+### Candidate characters
+
+[
+  "Albertine",
+  "Bergotte",
+  "Dreyfus",
+  "Gilberte",
+  "Mme de Villeparisis",
+  "Odette",
+  "Robert de Saint-Loup",
+  "Swann",
+  "baron de Charlus",
+  "docteur Cottard",
+  "duchesse de Guermantes",
+  "la grand-mère",
+  "le narrateur"
+]
+
+### Prior local context (optional)
+
+Je m'étais rendu compte que seule la perception grossière et erronée place tout dans l'objet, quand tout est dans l'esprit ; j'avais perdu la grand-mère en réalité bien des mois après l'avoir perdue en fait, j'avais vu les personnes varier d'aspect selon l'idée que moi ou d'autres s'en faisaient, une seule être plusieurs selon les personnes qui la voyaient (tels les divers Swann du début de cet ouvrage, suivant ceux qui le rencontraient ; la princesse de Luxembourg, suivant qu'elle était vue par le premier président ou par moi), même pour une seule au cours des années (les variations du nom de Guermantes, et les divers Swann pour moi). J'avais vu l'amour placer dans une personne ce qui n'est que dans la personne qui aime. Je m'en étais d'autant mieux rendu compte que j'avais fait varier et s'étendre à l'extrême la distance entre la réalité objective et l'amour (Rachel pour Robert de Saint-Loup et pour moi, Albertine pour moi et Robert de Saint-Loup, Morel ou le conducteur d'omnibus pour baron de Charlus ou d'autres personnes). Enfin, dans une certaine mesure, la germanophilie de baron de Charlus, comme le regard de Robert de Saint-Loup sur la photographie d'Albertine, m'avait aidé à me dégager pour un instant, sinon de ma germanophobie, du moins de ma croyance en la pure objectivité de celle-ci et à me faire penser que peut-être en était-il de la haine comme de l'amour, et que, dans le jugement terrible que porte en ce moment même la France à l'égard de l'Allemagne, qu'elle juge hors de l'humanité, y avait-il surtout une objectivité de sentiments, comme ceux qui faisaient paraître Rachel et Albertine si précieuses, l'une à Robert de Saint-Loup, l'autre à moi. Ce qui rendait possible, en effet, que cette perversité ne fût pas entièrement intrinsèque à l'Allemagne est que, de même qu'individuellement j'avais eu des amours successives, après la fin desquelles l'objet de cet amour m'apparaissait sans valeur, j'avais déjà vu dans mon pays des haines successives qui avaient fait apparaître, par exemple, comme des traîtres – mille fois pires que les Allemands auxquels ils livraient la France – des dreyfusards comme Reinach avec lequel collaboreraient aujourd'hui les patriotes contre un pays dont chaque membre était forcément un menteur, une bête féroce, un imbécile, exception faite des Allemands qui avaient embrassé la cause française, comme le roi de Roumanie ou l'impératrice de Russie. Il est vrai que les antidreyfusards m'eussent répondu : « Ce n'est pas la même chose. » Mais, en effet, ce n'est jamais la même chose, pas plus que ce n'est la même personne, sans cela, devant le même phénomène, celui qui en est la dupe ne pourrait accuser que son état subjectif et ne pourrait croire que les qualités ou les défauts sont dans l'objet.
+
+### Passage
+
+L'intelligence n'a point de peine alors à baser sur cette différence une théorie (enseignement contre nature des congréganistes selon les radicaux, impossibilité de la race juive à se nationaliser, haine perpétuelle de la race allemande contre la race latine, la race jaune étant momentanément réhabilitée). Ce côté subjectif se marquait, d'ailleurs, dans les conversations des neutres, où les germanophiles, par exemple, avaient la faculté de cesser un instant de comprendre et même d'écouter quand on leur parlait des atrocités allemandes en Belgique. (Et pourtant, elles étaient réelles.) Ce que je remarquais de subjectif dans la haine comme dans la vue elle-même n'empêchait pas que l'objet pût posséder des qualités ou des défauts réels et ne faisait nullement s'évanouir la réalité en un pur « relativisme ». Et si, après tant d'années écoulées et de temps perdu, je sentais cette influence capitale du lac interne jusque dans les relations internationales, tout au commencement de ma vie ne m'en étais-je pas douté quand je lisais dans le jardin de Combray un de ces romans de Bergotte que même aujourd'hui, si j'en ai feuilleté quelques pages oubliées où je vois les ruses d'un méchant, je ne repose le livre qu'après m'être assuré, en passant cent pages, que vers la fin ce même méchant est dûment humilié et vit assez pour apprendre que ses ténébreux projets ont échoué. Car je ne me rappelais plus bien ce qui était arrivé à ces personnages, ce qui ne les différenciait d'ailleurs pas des personnes qui se trouvaient cet après-midi chez Mme de Guermantes et dont, pour plusieurs au moins, la vie passée était aussi vague pour moi que si je l'eusse lue dans un roman à demi oublié.
+
+Le prince d'Agrigente avait-il fini par épouser Mlle X ? Ou plutôt n'était-ce pas le frère de Mlle X qui avait dû épouser la soeur du prince d'Agrigente ? Ou bien faisais-je une confusion avec une ancienne lecture ou un rêve récent ? Le rêve était encore un de ces faits de ma vie qui m'avait toujours le plus frappé, qui avait dû le plus servir à me convaincre du caractère purement mental de la réalité, et dont je ne dédaignerais pas l'aide dans la composition de mon oeuvre. Quand je vivais, d'une façon un peu moins désintéressée, pour un amour, un rêve venait rapprocher singulièrement de moi, lui faisant parcourir de grandes distances de temps perdu, ma grand'mère, Albertine que j'avais recommencé à aimer parce qu'elle m'avait fourni, dans mon sommeil, une version, d'ailleurs atténuée, de l'histoire de la blanchisseuse. Je pensai qu'ils viendraient quelquefois rapprocher ainsi de moi des vérités, des impressions, que mon effort seul, ou même les rencontres de la nature ne me présentaient pas ; qu'ils réveilleraient en moi du désir, du regret de certaines choses inexistantes, ce qui est la condition pour travailler, pour s'abstraire de l'habitude, pour se détacher du concret. Je ne dédaignerais pas cette seconde muse, cette muse nocturne qui suppléerait parfois à l'autre.
+
+J'avais vu les nobles devenir vulgaires quand leur esprit (comme celui du duc de Guermantes, par exemple) était vulgaire : « Vous n'êtes pas gêné », disait-il, comme eût pu dire Cottard. J'avais vu dans la médecine, dans l'affaire Dreyfus, pendant la guerre, croire que la vérité c'est un certain fait, que les ministres, le médecin possèdent, un oui ou non qui n'a pas besoin d'interprétation, qui font qu'un cliché radiographique indiquerait sans interprétation ce qu'a le malade, que les gens au pouvoir savaient si Dreyfus était coupable, savaient (sans avoir besoin d'envoyer pour cela Roques enquêter sur place) si Sarrail avait ou non les moyens de marcher en même temps que les Russes. Il n'est pas une heure de ma vie qui n'eût ainsi servi à m'apprendre, comme je l'ai dit, que seule la perception grossière et erronée place tout dans l'objet quand tout, au contraire, est dans l'esprit. En somme, si j'y réfléchissais, la matière de mon expérience me venait de Swann, non pas seulement par tout ce qui le concernait lui-même et Gilberte. Mais c'était lui qui m'avait, dès Combray, donné le désir d'aller à Balbec, où, sans cela, mes parents n'eussent jamais eu l'idée de m'envoyer, et sans quoi je n'aurais pas connu Albertine. Certes, c'est à son visage, tel que je l'avais aperçu pour la première fois devant la mer, que je rattachais certaines choses que j'écrirais sans doute. En un sens j'avais raison de les lui rattacher, car si je n'étais pas allé sur la digue ce jour-là, si je ne l'avais pas connue, toutes ces idées ne se seraient pas développées (à moins qu'elles ne l'eussent été par une autre). J'avais tort aussi, car ce plaisir générateur que nous aimons à trouver rétrospectivement dans un beau visage de femme vient de nos sens : il était bien certain, en effet, que ces pages que j'écrirais, Albertine, surtout l'Albertine d'alors, ne les eût pas comprises. Mais c'est justement pour cela (et c'est une indication à ne pas vivre dans une atmosphère trop intellectuelle), parce qu'elle était si différente de moi, qu'elle m'avait fécondé par le chagrin et même d'abord par le simple effort pour imaginer ce qui diffère de soi. Ces pages, si elle avait été capable de les comprendre, par cela même elle ne les eût pas inspirées. Mais sans Swann je n'aurais pas connu même les Guermantes, puisque ma grand'mère n'eût pas retrouvé Mme de Villeparisis, moi fait la connaissance de Saint-Loup et de Charlus, ce qui m'avait fait connaître la Mme de Guermantes et par elle sa cousine, de sorte que ma présence même en ce moment chez le prince de Guermantes, où venait de me venir brusquement l'idée de mon oeuvre (ce qui faisait que je devrais à Swann non seulement la matière mais la décision), me venait aussi de Swann. Pédoncule un peu mince peut-être pour supporter ainsi l'étendue de toute ma vie. (Ce « côté de Guermantes » s'était trouvé, en ce sens, ainsi procéder du « côté de chez Swann ».) Mais bien souvent cet auteur des aspects de notre vie est quelqu'un de bien inférieur à Swann, est l'être le plus médiocre. N'eût-il pas suffi qu'un camarade quelconque m'indiquât quelque agréable fille à y posséder (que probablement je n'y aurais pas rencontrée) pour que je fusse allé à Balbec ? Souvent ainsi on rencontre plus tard un camarade déplaisant, on lui serre à peine la main, et pourtant, si jamais on y réfléchit, c'est d'une parole en l'air qu'il nous a dite, d'un « vous devriez venir à Balbec », que toute notre vie et notre oeuvre sont sorties. Nous ne lui en avons aucune reconnaissance, sans que cela soit faire preuve d'ingratitude. Car en disant ces mots, il n'a nullement pensé aux énormes conséquences qu'ils auraient pour nous. C'est notre sensibilité et notre intelligence qui ont exploité les circonstances, lesquelles, la première impulsion donnée, se sont engendrées les unes les autres sans qu'il eût pu prévoir la cohabitation avec Albertine plus que la soirée masquée chez les Guermantes. Sans doute son impulsion fut nécessaire, et par là la forme extérieure de notre vie, la matière même de notre oeuvre dépendent de lui. Sans Swann, mes parents n'eussent jamais eu l'idée de m'envoyer à Balbec. Il n'était pas, d'ailleurs, responsable des souffrances que lui-même avait indirectement causées. Elles tenaient à ma faiblesse. La sienne l'avait bien fait souffrir lui-même par Odette. Mais, en déterminant ainsi la vie que nous avons menée, il a par là même exclu toutes les vies que nous aurions pu mener à la place de celle-là. Si Swann ne m'avait pas parlé de Balbec, je n'aurais pas connu Albertine, la salle à manger de l'hôtel, les Guermantes. Mais je serais allé ailleurs, j'aurais connu des gens différents, ma mémoire comme mes livres serait remplie de tableaux tout autres, que je ne peux même pas imaginer et dont la nouveauté, inconnue de moi, me séduit et me fait regretter de n'être pas allé plutôt vers elle, et qu'Albertine et la plage de Balbec et de Rivebelle et les Guermantes ne me fussent pas toujours restés inconnus.
+
+La jalousie est un bon recruteur qui, quand il y a un creux dans notre tableau, va nous chercher dans la rue la belle fille qu'il fallait. Elle n'était plus belle, elle l'est redevenue, car nous sommes jaloux d'elle, elle remplira ce vide.
+
+Une fois que nous serons morts, nous n'aurons pas de joie que ce tableau ait été ainsi complété. Mais cette pensée n'est nullement décourageante. Car nous sentons que la vie est un peu plus compliquée qu'on ne dit, et même les circonstances. Et il y a une nécessité pressante à montrer cette complexité. La jalousie, si utile, ne naît pas forcément d'un regard, ou d'un récit, ou d'une rétroflexion. On peut la trouver, prête à nous piquer, entre les feuillets d'un annuaire – ce qu'on appelle « Tout-Paris » pour Paris, et pour la campagne « Annuaire des Châteaux » ; nous avions distraitement entendu dire par telle belle fille qui nous était devenue indifférente qu'il lui faudrait aller voir quelques jours sa soeur dans le Pas-de-Calais. Nous avions aussi distraitement pensé autrefois que peut-être bien la belle fille avait été courtisée par M. E. qu'elle ne voyait plus jamais, car plus jamais elle n'allait dans ce bar où elle le voyait jadis. Que pouvait être sa soeur ? femme de chambre peut-être ? Par discrétion nous ne l'avions pas demandé. Et puis voici qu'en ouvrant au hasard l'Annuaire des Châteaux, nous trouvons que M. E. a son château dans le Pas-de-Calais, près de Dunkerque. Plus de doute, pour faire plaisir à la belle fille il a pris sa soeur comme femme de chambre, et si la belle fille ne le voit plus dans le bar, c'est qu'il la fait venir chez lui, habitant Paris presque toute l'année, mais ne pouvant se passer d'elle, même pendant qu'il est dans le Pas-de-Calais. Les pinceaux, ivres de fureur et d'amour, peignent, peignent. Et pourtant, si ce n'était pas cela ? Si vraiment M. E. ne voyait plus jamais la belle fille mais, par serviabilité, avait recommandé la soeur de celle-ci à un frère qu'il a, habitant, lui, toute l'année le Pas-de-Calais ? De sorte qu'elle va même peut-être par hasard voir sa soeur au moment où M. E. n'est pas là, car ils ne se soucient plus l'un de l'autre. Et à moins encore que la soeur ne soit pas femme de chambre dans le château ni ailleurs, mais ait des parents dans le Pas-de-Calais. Notre douleur du premier instant cède devant ces dernières suppositions qui calment toute jalousie. Mais qu'importe ? celle-ci, cachée dans les feuillets de l'Annuaire des Châteaux, est venue au bon moment, car maintenant le vide qu'il y avait dans la toile est comblé. Et tout se compose bien, grâce à la présence suscitée par la jalousie de la belle fille dont déjà nous ne sommes plus jaloux et que nous n'aimons plus.

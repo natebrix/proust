@@ -1,0 +1,625 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "Françoise",
+      "surface_forms": [
+        "Françoise"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Françoise",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "« nous ne pouvions plus avoir d'eau chaude parce que Françoise était devenue l'amie de celui qui la faisait chauffer »; elle « n'osait pas sonner » et concluait par « Le fait est... »",
+      "explanation": "The narrator presents Françoise as prioritizing her own hotel-staff relations over her duties, resulting in practical inconveniences for the household."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Françoise",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.88,
+      "explanation": "She is locally judged unfavorably for neglecting her masters' needs in favor of her own alliances with the hotel staff."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v2-p2-noms-de-pays-le-pays#p-86-p-90"
+}
+
+### Candidate characters
+
+[
+  "Aimé",
+  "Mme de Villeparisis",
+  "la grand-mère",
+  "la mère du narrateur",
+  "le directeur",
+  "le narrateur"
+]
+
+### Prior local context (optional)
+
+Si intimidants que fussent toujours pour moi les repas, dans ce vaste restaurant, habituellement comble, du Grand-Hôtel, ils le devenaient davantage encore quand arrivait pour quelques jours le propriétaire (ou le directeur général élu par une société de commanditaires, je ne sais) non seulement de ce palace mais de sept ou huit autres, situés aux quatre coins de la France, et dans chacun desquels, faisant entre eux la navette, il venait passer, de temps en temps, une semaine. Alors, presque au commencement du dîner, apparaissait chaque soir, à l'entrée de la salle à manger, cet homme petit, à cheveux blancs, à nez rouge, d'une impassibilité et d'une correction extraordinaires, et qui était connu, paraît-il, à Londres aussi bien qu'à Monte-Carlo, pour un des premiers hôteliers de l'Europe. Une fois que j'étais sorti un instant au commencement du dîner, comme en rentrant je passai devant lui, il me salua, mais avec une froideur dont je ne pus démêler si la cause était la réserve de quelqu'un qui n'oublie pas ce qu'il est, ou le dédain pour un client sans importance. Devant ceux qui en avaient au contraire une très grande, le Directeur général s'inclinait avec autant de froideur mais plus profondément, les paupières abaissées par une sorte de respect pudique, comme s'il eût eu devant lui, à un enterrement, le père de la défunte ou le Saint-Sacrement. Sauf pour ces saluts glacés et rares, il ne faisait pas un mouvement, comme pour montrer que ses yeux étincelants qui semblaient lui sortir de la figure, voyaient tout, réglaient tout, assuraient dans « le Dîner au Grand-Hôtel » aussi bien le fini des détails que l'harmonie de l'ensemble. Il se sentait évidemment plus que metteur en scène, que chef d'orchestre, véritable généralissime. Jugeant qu'une contemplation portée à son maximum d'intensité lui suffisait pour s'assurer que tout était prêt, qu'aucune faute commise ne pouvait entraîner la déroute, et pour prendre enfin ses responsabilités, il s'abstenait non seulement de tout geste, même de bouger ses yeux pétrifiés par l'attention qui embrassaient et dirigeaient la totalité des opérations. Je sentais que les mouvements de ma cuiller eux-mêmes ne lui échappaient pas, et s'éclipsât-il dès après le potage, pour tout le dîner, la revue qu'il venait de passer m'avait coupé l'appétit. Le sien était fort bon, comme on pouvait le voir au déjeuner qu'il prenait comme un simple particulier, à la même table que tout le monde, dans la salle à manger. Sa table n'avait qu'une particularité, c'est qu'à côté, pendant qu'il mangeait, l'autre le directeur, l'habituel, restait debout tout le temps à faire la conversation. Car étant le subordonné du Directeur général, il cherchait à le flatter et avait de lui une grande peur. La mienne était moindre pendant ces déjeuners, car perdu alors au milieu des clients, il mettait la discrétion d'un général assis dans un restaurant où se trouvent aussi des soldats à ne pas avoir l'air de s'occuper d'eux. Néanmoins quand le concierge, entouré de ses « chasseurs », m'annonçait : « Il repart demain matin pour Dinard. De là il va à Biarritz et après à Cannes », je respirais plus librement.
+
+### Passage
+
+Ma vie dans l'hôtel était rendue non seulement triste parce que je n'y avais pas de relations, mais incommode parce que Françoise en avait noué de nombreuses. Il peut sembler qu'elles auraient dû nous faciliter bien des choses. C'était tout le contraire. Les prolétaires, s'ils avaient quelque peine à être traités en personnes de connaissance par Françoise, et ils ne le pouvaient qu'à de certaines conditions de grande politesse envers elle, en revanche, une fois qu'ils y étaient arrivés, étaient les seules gens qui comptassent pour elle. Son vieux code lui enseignait qu'elle n'était tenue à rien envers les amis de ses maîtres, qu'elle pouvait si elle était pressée envoyer promener une dame venue pour voir ma grand'mère. Mais envers ses relations à elle, c'est-à-dire avec les rares gens du peuple admis à sa difficile amitié, le protocole le plus subtil et le plus absolu réglait ses actions. Ainsi Françoise ayant fait la connaissance du cafetier et d'une petite femme de chambre qui faisait des robes pour une dame belge, ne remontait plus préparer les affaires de ma grand'mère tout de suite après déjeuner, mais seulement une heure plus tard parce que le cafetier voulait lui faire du café ou une tisane à la caféterie, que la femme de chambre lui demandait de venir la regarder coudre et que leur refuser eût été impossible et de ces choses qui ne se font pas. D'ailleurs des égards particuliers étaient dus à la petite femme de chambre qui était orpheline et avait été élevée chez des étrangers auprès desquels elle allait passer parfois quelques jours. Cette situation excitait la pitié de Françoise et aussi son dédain bienveillant. Elle qui avait de la famille, une petite maison qui lui venait de ses parents et où son frère élevait quelques vaches, elle ne pouvait pas considérer comme son égale une déracinée. Et comme cette petite espérait pour le 15 août aller voir ses bienfaiteurs, Françoise ne pouvait se tenir de répéter : « Elle me fait rire. Elle dit : j'espère d'aller chez moi pour le 15 août. Chez moi, qu'elle dit ! C'est seulement pas son pays, c'est des gens qui l'ont recueillie, et ça dit chez moi comme si c'était vraiment chez elle. Pauvre petite ! quelle misère qu'elle peut bien avoir pour qu'elle ne connaisse pas ce que c'est que d'avoir un chez soi. » Mais si encore Françoise ne s'était liée qu'avec des femmes de chambre amenées par des clients, lesquelles dînaient avec elle aux « courriers » et devant son beau bonnet de dentelles et son fin profil, la prenaient pour quelque dame noble peut-être, réduite par les circonstances, ou poussée par l'attachement à servir de dame de compagnie à ma grand'mère, si en un mot Françoise n'eût connu que des gens qui n'étaient pas de l'hôtel, le mal n'eût pas été grand, parce qu'elle n'eût pu les empêcher de nous servir à quelque chose, pour la raison qu'en aucun cas, et même inconnus d'elle, ils n'auraient pu nous servir à rien. Mais elle s'était liée aussi avec un sommelier, avec un homme de la cuisine, avec une gouvernante d'étage. Et il en résultait en ce qui concernait notre vie de tous les jours que Françoise, qui le jour de son arrivée, quand elle ne connaissait encore personne, sonnait à tort et à travers pour la moindre chose, à des heures où ma grand'mère et moi nous n'aurions pas osé le faire, et, si nous lui en faisions une légère observation répondait : « Mais on paye assez cher pour ça », comme si elle avait payé elle-même ; maintenant depuis qu'elle était amie d'une personnalité de la cuisine, ce qui nous avait paru de bon augure pour notre commodité, si ma grand'mère ou moi nous avions froid aux pieds, Françoise, fût-il une heure tout à fait normale, n'osait pas sonner ; elle assurait que ce serait mal vu parce que cela obligerait à rallumer les fourneaux, ou gênerait le dîner des domestiques qui seraient mécontents. Et elle finissait par une locution qui, malgré la façon incertaine dont elle la prononçait, n'en était pas moins claire et nous donnait nettement tort : « Le fait est... » Nous n'insistions pas, de peur de nous en faire infliger une, bien plus grave : « C'est quelque chose !... » De sorte qu'en somme nous ne pouvions plus avoir d'eau chaude parce que Françoise était devenue l'amie de celui qui la faisait chauffer.
+
+À la fin nous aussi, nous fîmes une relation, malgré mais par ma grand'mère, car elle et Mme de Villeparisis tombèrent un matin l'une sur l'autre dans une porte et furent obligées de s'aborder non sans échanger au préalable des gestes de surprise, d'hésitation, exécuter des mouvements de recul, de doute et enfin des protestations de politesse et de joie comme dans certaines pièces de Molière où deux acteurs monologuant depuis longtemps chacun de son côté à quelques pas l'un de l'autre, sont censés ne pas s'être vus encore, et tout à coup s'aperçoivent, n'en peuvent croire leurs yeux, entrecoupent leurs propos, finalement parlent ensemble, le coeur ayant suivi le dialogue, et se jettent dans les bras l'un de l'autre. Mme de Villeparisis par discrétion voulut au bout d'un instant quitter ma grand'mère qui, au contraire, préféra la retenir jusqu'au déjeuner, désirant apprendre comment elle faisait pour avoir son courrier plus tôt que nous et de bonnes grillades (car Mme de Villeparisis, très gourmande, goûtait fort peu la cuisine de l'hôtel où l'on nous servait des repas que ma grand'mère, citant toujours Mme de Sévigné, prétendait être « d'une magnificence à mourir de faim »). Et la marquise prit l'habitude de venir tous les jours, en attendant qu'on la servît, s'asseoir un moment près de nous dans la salle à manger, sans permettre que nous nous levions, que nous nous dérangions en rien. Tout au plus nous attardions-nous souvent à causer avec elle, notre déjeuner fini, à ce moment sordide où les couteaux traînent sur la nappe à côté des serviettes défaites. Pour ma part, afin de garder, pour pouvoir aimer Balbec, l'idée que j'étais sur la pointe extrême de la terre, je m'efforçais de regarder plus loin, de ne voir que la mer, d'y chercher des effets décrits par Baudelaire et de ne laisser tomber mes regards sur notre table que les jours où y était servi quelque vaste poisson, monstre marin, qui, au contraire des couteaux et des fourchettes, était contemporain des époques primitives où la vie commençait à affluer dans l'Océan, au temps des Cimmériens, et duquel le corps aux innombrables vertèbres, aux nerfs bleus et roses, avait été construit par la nature, mais selon un plan architectural, comme une polychrome cathédrale de la mer.
+
+Comme un coiffeur voyant un officier qu'il sert avec une considération particulière, reconnaître un client qui vient d'entrer et entamer un bout de causette avec lui, se réjouit en comprenant qu'ils sont du même monde et ne peut s'empêcher de sourire en allant chercher le bol de savon, car il sait que dans son établissement, aux besognes vulgaires du simple salon de coiffure, s'ajoutent des plaisirs sociaux, voire aristocratiques, tel Aimé, voyant que Mme de Villeparisis avait retrouvé en nous d'anciennes relations, s'en allait chercher nos rince-bouches avec le même sourire orgueilleusement modeste et savamment discret de maîtresse de maison qui sait se retirer à propos. On eût dit aussi un père heureux et attendri qui veille sans le troubler sur le bonheur de fiançailles qui se sont nouées à sa table. Du reste, il suffisait qu'on prononçât le nom d'une personne titrée pour qu'Aimé parût heureux, au contraire de Françoise devant qui on ne pouvait dire « le comte Un tel » sans que son visage s'assombrît et que sa parole devînt sèche et brève, ce qui signifiait qu'elle chérissait la noblesse, non pas moins que ne faisait Aimé, mais davantage. Puis Françoise avait la qualité qu'elle trouvait chez les autres le plus grand des défauts, elle était fière. Elle n'était pas de la race agréable et pleine de bonhomie dont Aimé faisait partie. Ils éprouvent, ils manifestent un vif plaisir quand on leur raconte un fait plus ou moins piquant, mais inédit, qui n'est pas dans le journal. Françoise ne voulait pas avoir l'air étonné. On aurait dit devant elle que l'archiduc Rodolphe, dont elle n'avait jamais soupçonné l'existence, était non pas mort comme cela passait pour assuré, mais vivant, qu'elle eût répondu « Oui », comme si elle le savait depuis longtemps. Il est, d'ailleurs, à croire que pour que même de notre bouche à nous, qu'elle appelait si humblement ses maîtres et qui l'avions presque si entièrement domptée, elle ne pût entendre, sans avoir à réprimer un mouvement de colère, le nom d'un noble, il fallait que la famille dont elle était sortie occupât dans son village une situation aisée, indépendante, et qui ne devait être troublée dans la considération dont elle jouissait que par ces mêmes nobles chez lesquels au contraire, dès l'enfance, un Aimé a servi comme domestique, s'il n'y a pas été élevé par charité. Pour Françoise, Mme de Villeparisis avait donc à se faire pardonner d'être noble. Mais, en France du moins, c'est justement le talent, comme la seule occupation, des grands seigneurs et des grandes dames. Françoise, obéissant à la tendance des domestiques qui recueillent sans cesse sur les rapports de leurs maîtres avec les autres personnes des observations fragmentaires dont ils tirent parfois des inductions erronées – comme font les humains sur la vie des animaux – trouvait à tout moment qu'on nous avait « manqué », conclusion à laquelle l'amenait facilement, d'ailleurs, autant que son amour excessif pour nous, le plaisir qu'elle avait à nous être désagréable. Mais ayant constaté, sans erreur possible, les mille prévenances dont nous entourait et dont l'entourait elle-même Mme de Villeparisis, Françoise l'excusa d'être marquise et, comme elle n'avait jamais cessé de lui savoir gré de l'être, elle la préféra à toutes les personnes que nous connaissions. C'est qu'aussi aucune ne s'efforçait d'être aussi continuellement aimable. Chaque fois que ma grand'mère remarquait un livre que Mme de Villeparisis lisait ou disait avoir trouvé beaux des fruits que celle-ci avait reçus d'une amie, une heure après un valet de chambre montait nous remettre livre ou fruits. Et quand nous la voyions ensuite, pour répondre à nos remerciements elle se contentait de dire, ayant l'air de chercher une excuse à son présent dans quelque utilité spéciale : « Ce n'est pas un chef-d'oeuvre, mais les journaux arrivent si tard, il faut bien avoir quelque chose à lire » ou : « C'est toujours plus prudent d'avoir du fruit dont on est sûr au bord de la mer. » « Mais il me semble que vous ne mangez jamais d'huîtres, nous dit Mme de Villeparisis (augmentant l'impression de dégoût que j'avais à cette heure-là, car la chair vivante des huîtres me répugnait encore plus que la viscosité des méduses ne me ternissait la plage de Balbec) ; elles sont exquises sur cette côte ! Ah ! je dirai à ma femme de chambre d'aller prendre vos lettres en même temps que les miennes. Comment, votre fille vous écrit tous les jours ? Mais qu'est-ce que vous pouvez trouver à vous dire ! » Ma grand'mère se tut, mais on peut croire que ce fut par dédain, elle qui répétait pour maman les mots de Mme de Sévigné : « Dès que j'ai reçu une lettre, j'en voudrais tout à l'heure une autre, je ne respire que d'en recevoir. Peu de gens sont dignes de comprendre ce que je sens. » Et je craignais qu'elle n'appliquât à Mme de Villeparisis la conclusion : « Je cherche ceux qui sont de ce petit nombre et j'évite les autres. » Elle se rabattit sur l'éloge des fruits que Mme de Villeparisis nous avait fait apporter la veille. Et ils étaient en effet si beaux que le directeur, malgré la jalousie de ses compotiers dédaignés, m'avait dit : « Je suis comme vous, je suis plus frivole de fruit que de tout autre dessert. » Ma grand'mère dit à son amie qu'elle les avait d'autant plus appréciés que ceux qu'on servait à l'hôtel étaient généralement détestables. « Je ne peux pas, ajouta-t-elle, dire comme Mme de Sévigné que si nous voulions par fantaisie trouver un mauvais fruit, nous serions obligés de le faire venir de Paris. – Ah, oui, vous lisez Mme de Sévigné. Je vous vois depuis le premier jour avec ses lettres (elle oubliait qu'elle n'avait jamais aperçu ma grand'mère dans l'hôtel avant de la rencontrer dans cette porte). Est-ce que vous ne trouvez pas que c'est un peu exagéré ce souci constant de sa fille, elle en parle trop pour que ce soit bien sincère. Elle manque de naturel. » Ma grand'mère trouva la discussion inutile et pour éviter d'avoir à parler des choses qu'elle aimait devant quelqu'un qui ne pouvait les comprendre elle cacha, en posant son sac sur eux, les Mémoires de Mme de Beausergent.
+
+Quand Mme de Villeparisis rencontrait Françoise au moment (que celle-ci appelait « le midi ») où, coiffée d'un beau bonnet et entourée de la considération générale, elle descendait « manger aux courriers », Mme de Villeparisis l'arrêtait pour lui demander de nos nouvelles. Et Françoise, nous transmettant les commissions de la marquise : « Elle a dit : Vous leur donnerez bien le bonjour, contrefaisait la voix de Mme de Villeparisis de laquelle elle croyait citer textuellement les paroles, tout en ne les déformant pas moins que Platon celles de Socrate ou saint Jean celles de Jésus. Françoise était naturellement très touchée de ces attentions. Tout au plus ne croyait-elle pas ma grand'mère et pensait-elle que celle-ci mentait dans un intérêt de classe, les gens riches se soutenant les uns les autres, quand elle assurait que Mme de Villeparisis avait été autrefois ravissante. Il est vrai qu'il n'en subsistait que de bien faibles restes dont on n'eût pu, à moins d'être plus artiste que Françoise, restituer la beauté détruite. Car pour comprendre combien une vieille femme a pu être jolie, il ne faut pas seulement regarder, mais traduire chaque trait.
+
+– Il faudra que je pense une fois à lui demander si je me trompe et si elle n'a pas quelque parenté avec les Guermantes, me dit ma grand'mère qui excita par là mon indignation. Comment aurais-je pu croire à une communauté d'origine entre deux noms qui étaient entrés en moi l'un par la porte basse et honteuse de l'expérience, l'autre par la porte d'or de l'imagination ?

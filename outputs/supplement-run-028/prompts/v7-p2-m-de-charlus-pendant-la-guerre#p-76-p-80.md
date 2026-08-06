@@ -1,0 +1,632 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "M. de Marsantes",
+      "surface_forms": [
+        "M. de Marsantes",
+        "Marsantes"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "M. de Marsantes",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.93,
+      "evidence": "« tué le surlendemain de son retour au front, en protégeant la retraite de ses hommes »; « il avait évité devant l’ennemi […] ce qui aurait pu assurer sa vie »; « en allant attaquer une tranchée par générosité, par mise au service des autres de tout ce qu’il possédait »",
+      "explanation": "The narrator praises Marsantes, presenting his death as heroic and his conduct as generous and selfless, which clearly elevates him."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "M. de Marsantes",
+      "dimension": "general_appraisal",
+      "delta": 2,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.93,
+      "explanation": "His courage, self-effacement, and generosity are celebrated, producing a clear local elevation."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v7-p2-m-de-charlus-pendant-la-guerre#p-76-p-80"
+}
+
+### Candidate characters
+
+[
+  "Albertine",
+  "Françoise",
+  "Gilberte",
+  "Jupien",
+  "Mme Bontemps",
+  "Morel",
+  "Robert de Saint-Loup",
+  "baron de Charlus",
+  "duchesse de Guermantes",
+  "le narrateur",
+  "prince de Léon",
+  "princesse de Guermantes"
+]
+
+### Prior local context (optional)
+
+Enfin la berloque sonna comme j'arrivais à la maison. Le bruit des pompiers était commenté par un gamin. Je rencontrai Françoise remontant de la cave avec le maître d'hôtel. Elle me croyait mort. Elle me dit que Robert de Saint-Loup était passé en s'excusant pour voir s'il n'avait pas, dans la visite qu'il m'avait faite le matin, laissé tomber sa croix de guerre. Car il venait de s'apercevoir qu'il l'avait perdue et, devant rejoindre son corps le lendemain matin, avait voulu à tout hasard voir si ce n'était pas chez moi. Il avait cherché partout avec Françoise et n'avait rien trouvé. Françoise croyait qu'il avait dû la perdre avant de venir me voir, car, disait-elle, il lui semblait bien, elle aurait pu jurer qu'il ne l'avait pas quand elle l'avait vu. En quoi elle se trompait. Et voilà la valeur des témoignages et des souvenirs. D'ailleurs, je sentis tout de suite, à la façon peu enthousiaste dont ils parlèrent de lui, que Robert de Saint-Loup avait produit une médiocre impression sur Françoise et sur le maître d'hôtel. Sans doute tous les efforts que le fils du maître d'hôtel et le neveu de Françoise avaient faits pour s'embusquer, Robert de Saint-Loup les avait faits en sens inverse, et avec succès, pour être en plein danger. Mais cela, jugeant d'après eux-mêmes, Françoise et le maître d'hôtel ne pouvaient pas le croire. Ils étaient convaincus que les riches sont toujours mis à l'abri. Du reste, eussent-ils su la vérité relativement au courage héroïque de Robert de Saint-Loup, qu'elle ne les eût pas touchés. Il ne disait pas « Boches », il leur avait fait l'éloge de la bravoure des Allemands, il n'attribuait pas à la trahison que nous n'eussions pas été vainqueurs dès le premier jour. Or, c'est cela qu'ils eussent voulu entendre, c'est cela qui leur eût semblé le signe du courage. Aussi, bien qu'ils continuassent à chercher la croix de guerre, les trouvai-je froids au sujet de Robert de Saint-Loup, moi qui me doutais de l'endroit où cette croix avait été oubliée. Cependant Robert de Saint-Loup, s'il s'était distrait ce soir-là de cette manière, ce n'était qu'en attendant, car, repris du désir de revoir Morel, il avait usé de toutes ses relations pour savoir dans quel corps Morel se trouvait, croyant qu'il s'était engagé, afin de l'aller voir et n'avait reçu jusqu'ici que des centaines de réponses contradictoires. Je conseillai à Françoise et au maître d'hôtel d'aller se coucher. Mais celui-ci n'était jamais pressé de quitter Françoise depuis que, grâce à la guerre, il avait trouvé un moyen, plus efficace encore que l'expulsion des soeurs et l'affaire Dreyfus, de la torturer. Ce soir-là, et chaque fois que j'allais auprès d'eux pendant les quelques jours que je passai encore à Paris, j'entendis le maître d'hôtel dire à Françoise épouvantée : « Ils ne se pressent pas, c'est entendu, ils attendent que la poire soit mûre, mais ce jour-là ils prendront Paris et ce jour-là pas de pitié ! – Seigneur, Vierge Marie, s'écriait Françoise, ça ne leur suffit pas d'avoir conquéri la pauvre Belgique. Elle a assez souffert celle-là, au moment de son envahition. – La Belgique, Françoise, mais ce qu'ils ont fait en Belgique ne sera rien à côté ! » Et même, la guerre ayant jeté sur le marché de la conversation des gens du peuple une quantité de termes dont ils n'avaient fait la connaissance que par les yeux, par la lecture des journaux et dont, en conséquence, ils ignoraient la prononciation, le maître d'hôtel ajoutait : « Vous verrez ça, Françoise, ils préparent une nouvelle attaque d'une plus grande enverjure que toutes les autres. » M'étant insurgé, sinon au nom de la pitié pour Françoise et du bon sens stratégique, au moins de la grammaire, et ayant déclaré qu'il fallait prononcer « envergure », je n'y gagnai qu'à faire redire à Françoise la terrible phrase chaque fois que j'entrais à la cuisine, car le maître d'hôtel presque autant que d'effrayer sa camarade était heureux de montrer à son maître que, bien qu'ancien jardinier de Combray et simple maître d'hôtel, tout de même bon Français selon la règle de Saint-André-des-Champs, il tenait de la déclaration des droits de l'homme le droit de prononcer « enverjure » en toute indépendance, et de ne pas se laisser commander sur un point qui ne faisait pas partie de son service et où, par conséquent, depuis la Révolution, personne n'avait rien à lui dire puisqu'il était mon égal. J'eus donc le chagrin de l'entendre parler à Françoise d'une opération de grande « enverjure » avec une insistance qui était destinée à me prouver que cette prononciation était l'effet non de l'ignorance, mais d'une volonté mûrement réfléchie. Il confondait le gouvernement, les journaux, dans un même : « on » plein de méfiance, disant : « On nous parle des pertes des Boches, on ne nous parle pas des nôtres, il paraît qu'elles sont dix fois plus grandes. On nous dit qu'ils sont à bout de souffle, qu'ils n'ont plus rien à manger, moi je crois qu'ils en ont cent fois comme nous, à manger. Faut pas tout de même nous bourrer le crâne. S'ils n'avaient rien à manger ils ne se battraient pas comme l'autre jour où ils nous ont tué cent mille jeunes gens de moins de vingt ans. » Il exagérait ainsi à tout instant les triomphes des Allemands, comme il avait fait jadis pour ceux des radicaux ; il narrait en même temps leurs atrocités afin que ces triomphes fussent plus pénibles encore à Françoise, laquelle ne cessait plus de dire : « Ah ! Sainte Mère des Anges ! », « Ah ! Marie Mère de Dieu ! » Et parfois, pour lui être désagréable d'une autre manière, il disait : « Du reste, nous ne valons pas plus cher qu'eux, ce que nous faisons en Grèce n'est pas plus beau que ce qu'ils ont fait en Belgique. Vous allez voir que nous allons mettre tout le monde contre nous et que nous serons obligés de nous battre avec toutes les nations », alors que c'était exactement le contraire. Les jours où les nouvelles étaient bonnes, il prenait sa revanche en assurant à Françoise que la guerre durerait trente-cinq ans, et, en prévision d'une paix possible, assurait que celle-ci ne durerait pas plus de quelques mois et serait suivie de batailles auprès desquelles celles-ci ne seraient qu'un jeu d'enfant, et après lesquelles il ne resterait rien de la France. La victoire des alliés semblait, sinon rapprochée, du moins à peu près certaine, et il faut malheureusement avouer que le maître d'hôtel en était désolé. Car ayant réduit la guerre « mondiale », comme tout le reste, à celle qu'il menait sourdement contre Françoise (qu'il aimait, du reste, malgré cela comme on peut aimer la personne qu'on est content de faire rager tous les jours en la battant aux dominos), la Victoire se réalisait à ses yeux sous les espèces de la première conversation où il aurait la souffrance d'entendre Françoise lui dire : « Enfin c'est fini et il va falloir qu'ils nous donnent plus que nous ne leur avons donné en 70. » Il croyait, du reste, toujours que cette échéance fatale arrivait, car un patriotisme inconscient lui faisait croire, comme tous les Français victimes du même mirage que moi depuis que j'étais malade, que la victoire – comme ma guérison – était pour le lendemain. Il prenait les devants en annonçant à Françoise que cette victoire arriverait peut-être, mais que son coeur en saignerait, car la Révolution la suivrait aussitôt, puis l'invasion. « Oh ! cette bon sang de guerre, les Boches seront les seuls à s'en relever vite, Françoise, ils y ont déjà gagné des centaines de milliards. Mais qu'ils nous crachent un sou à nous, quelle farce ! On le mettra peut-être sur les journaux, ajoutait-il par prudence et pour parer à tout événement, pour calmer le peuple, comme on dit depuis trois ans que la guerre sera finie le lendemain. Je ne peux pas comprendre comment que le monde est assez fou pour le croire. » Françoise était d'autant plus troublée de ces paroles qu'en effet, après avoir cru les optimistes plutôt que le maître d'hôtel, elle voyait que la guerre, qu'elle avait cru devoir finir en quinze jours malgré « l'envahition de la pauvre Belgique », durait toujours, qu'on n'avançait pas, phénomène de fixation des fronts dont elle comprenait mal le sens, et qu'enfin un des innombrables « filleuls » à qui elle donnait tout ce qu'elle gagnait chez nous lui racontait qu'on avait caché telle chose, telle autre. « Tout cela retombera sur l'ouvrier, concluait le maître d'hôtel. On vous prendra votre champ, Françoise. – Ah ! Seigneur Dieu ! » Mais à ces malheurs lointains, il en préférait de plus proches et dévorait les journaux dans l'espoir d'annoncer une défaite à Françoise. Il attendait les mauvaises nouvelles comme des oeufs de Pâques, espérant que cela irait assez mal pour épouvanter Françoise, pas assez pour qu'il pût matériellement en souffrir. C'est ainsi qu'un raid de zeppelins l'eût enchanté pour voir Françoise se cacher dans les caves, et parce qu'il était persuadé que dans une ville aussi grande que Paris les bombes ne viendraient pas juste tomber sur notre maison. Du reste, Françoise commençait à être reprise par moment de son pacifisme de Combray. Elle avait presque des doutes sur les « atrocités allemandes ». « Au commencement de la guerre on nous disait que ces Allemands c'était des assassins, des brigands, de vrais bandits, des Bbboches... » (si elle mettait plusieurs b à Boches, c'est que l'accusation que les Allemands fussent des assassins lui semblait après tout plausible, mais celle qu'ils fussent des Boches, presque invraisemblable à cause de son énormité). Seulement il était assez difficile de comprendre quel sens mystérieusement effroyable Françoise donnait au mot de Boche puisqu'il s'agissait du début de la guerre, et aussi à cause de l'air de doute avec lequel elle prononçait ce mot. Car le doute que les Allemands fussent des criminels pouvait être mal fondé en fait, mais ne renfermait pas en soi, au point de vue logique, de contradiction. Mais comment douter qu'ils fussent des Boches, puisque ce mot, dans la langue populaire, veut dire précisément Allemand. Peut-être ne faisait-elle que répéter en style indirect les propos violents qu'elle avait entendus alors et dans lesquels une particulière énergie accentuait le mot « Boche ». « J'ai cru tout cela, disait-elle, mais je me demande tout à l'heure si nous ne sommes pas aussi fripons comme eux. » Cette pensée blasphématoire avait été sournoisement préparée chez Françoise par le maître d'hôtel, lequel, voyant que sa camarade avait un certain penchant pour le roi Constantin de Grèce, n'avait cessé de le lui représenter comme privé par nous de nourriture jusqu'au jour où il céderait. Aussi l'abdication du souverain avait-elle ému Françoise, qui allait jusqu'à déclarer : « Nous ne valons pas mieux qu'eux. Si nous étions en Allemagne, nous en ferions autant. » Je la vis peu, du reste, pendant ces quelques jours, car elle allait beaucoup chez ces cousins dont la mère du narrateur m'avait dit un jour : « Mais tu sais qu'ils sont plus riches que toi. » Or, on avait vu cette chose si belle, qui fut si fréquente à cette époque-là dans tout le pays et qui témoignerait, s'il y avait un historien pour en perpétuer le souvenir, de la grandeur de la France, de sa grandeur d'âme, de sa grandeur selon Saint-André-des-Champs, et que ne révélèrent pas moins tant de civils survivant à l'arrière que les soldats tombés à la Marne. Un neveu de Françoise avait été tué à Berry-au-Bac qui était aussi le neveu de ces cousins millionnaires de Françoise, anciens cafetiers retirés depuis longtemps après fortune faite. Il avait été tué, lui, tout petit cafetier sans fortune qui, à la mobilisation, âgé de vingt-cinq ans, avait laissé sa jeune femme seule pour tenir le petit bar qu'il croyait regagner quelques mois après. Il avait été tué. Et alors on avait vu ceci. Les cousins millionnaires de Françoise, et qui n'étaient rien à la jeune femme, veuve de leur neveu, avaient quitté la campagne où ils étaient retirés depuis dix ans et s'étaient remis cafetiers, sans vouloir toucher un sou ; tous les matins à six heures, la femme millionnaire, une vraie dame, était habillée ainsi que « sa demoiselle », prêtes à aider leur nièce et cousine par alliance. Et depuis plus de trois ans, elles rinçaient ainsi des verres et servaient des consommations depuis le matin jusqu'à neuf heures et demie du soir, sans un jour de repos.
+
+### Passage
+
+Dans ce livre, où il n'y a pas un seul fait qui ne soit fictif, où il n'y a pas un seul personnage « à clefs », où tout a été inventé par moi selon les besoins de ma démonstration, je dois dire, à la louange de mon pays, que seuls les parents millionnaires de Françoise ayant quitté leur retraite pour aider leur nièce sans appui, que seuls ceux-là sont des gens réels, qui existent. Et persuadé que leur modestie ne s'en offensera pas, pour la raison qu'ils ne liront jamais ce livre, c'est avec un enfantin plaisir et une profonde émotion que, ne pouvant citer les noms de tant d'autres qui durent agir de même et par qui la France a survécu, je transcris ici leur nom véritable : ils s'appellent, d'un nom si français, d'ailleurs, Larivière. S'il y a eu quelques vilains embusqués, comme l'impérieux jeune homme en smoking que j'avais vu chez Jupien et dont la seule préoccupation était de savoir s'il pourrait avoir Léon à 10 h. ½ « parce qu'il déjeunait en ville », ils sont rachetés par la foule innombrable de tous les Français de Saint-André-des-Champs, par tous les soldats sublimes auxquels j'égale les Larivière. Le maître d'hôtel, pour attiser les inquiétudes de Françoise, lui montrait de vieilles « Lectures pour tous » qu'il avait retrouvées et sur la couverture desquelles (ces numéros dataient d'avant la guerre) figurait la « famille impériale d'Allemagne ». « Voilà notre maître de demain », disait le maître d'hôtel à Françoise, en lui montrant « Guillaume ». Elle écarquillait les yeux, puis passait au personnage féminin placé à côté de lui et disait : « Voilà la Guillaumesse ! »
+
+Mon départ de Paris se trouva retardé par une nouvelle qui, par le chagrin qu'elle me causa, me rendit pour quelque temps incapable de me mettre en route. J'appris, en effet, la mort de Saint-Loup de Saint-Loup, tué le surlendemain de son retour au front, en protégeant la retraite de ses hommes. Jamais homme n'avait eu moins que lui la haine d'un peuple (et quant à l'empereur, pour des raisons particulières, et peut-être fausses, il pensait que Guillaume II avait plutôt cherché à empêcher la guerre qu'à la déchaîner). Pas de haine du Germanisme non plus ; les derniers mots que j'avais entendus sortir de sa bouche, il y avait six jours, c'étaient ceux qui commencent un lied de Schumann et que sur mon escalier il me fredonnait, en allemand, si bien qu'à cause des voisins je l'avais fait taire. Habitué par une bonne éducation suprême à émonder sa conduite de toute apologie, de toute invective, de toute phrase, il avait évité devant l'ennemi, comme au moment de la mobilisation, ce qui aurait pu assurer sa vie, par cet effacement de soi devant les actes que symbolisaient toutes ses manières, jusqu'à sa manière de fermer la portière de mon fiacre quand il me reconduisait, tête nue, chaque fois que je sortais de chez lui. Pendant plusieurs jours je restai enfermé dans ma chambre, pensant à lui. Je me rappelais son arrivée, la première fois, à Balbec, quand en lainages blanchâtres, avec ses yeux verdâtres et bougeants comme la mer, il avait traversé le hall attenant à la grande salle à manger dont les vitrages donnaient sur la mer. Je me rappelais l'être si spécial qu'il m'avait paru être alors, l'être dont ç'avait été un si grand souhait de ma part d'être l'ami. Ce souhait s'était réalisé au delà de ce que j'aurais jamais pu croire, sans me donner pourtant presque aucun plaisir alors, et ensuite je m'étais rendu compte de tous les grands mérites et d'autres choses encore que cachait cette apparence élégante. Tout cela, le bon comme le mauvais, il l'avait donné sans compter, tous les jours, et le dernier, en allant attaquer une tranchée par générosité, par mise au service des autres de tout ce qu'il possédait, comme il avait un soir couru sur les canapés du restaurant pour ne pas me déranger. Et l'avoir vu si peu, en somme, en des sites si variés, dans des circonstances si diverses et séparées par tant d'intervalles, dans ce hall de Balbec, au café de Rivebelle, au quartier de cavalerie et aux dîners militaires de Doncières, au théâtre où il avait giflé un journaliste, chez la princesse de Guermantes, ne faisait que me donner de sa vie des tableaux plus frappants, plus nets, de sa mort un chagrin plus lucide, que l'on en a souvent pour les personnes aimées davantage, mais fréquentées si continuellement que l'image que nous gardons d'elles n'est plus qu'une espèce de vague moyenne entre une infinité d'images insensiblement différentes, et aussi que notre affection, rassasiée, n'a pas, comme pour ceux que nous n'avons vus que pendant des moments limités, au cours de rencontres inachevées malgré eux et malgré nous, l'illusion de la possibilité d'une affection plus grande dont les circonstances seules nous auraient frustrés. Peu de jours après celui où je l'avais aperçu, courant après son monocle, et l'imaginant alors si hautain, dans ce hall de Balbec, il y avait une autre forme vivante que j'avais vue pour la première fois sur la plage de Balbec et qui maintenant n'existait non plus qu'à l'état de souvenir, c'était Albertine, foulant le sable, ce premier soir, indifférente à tous, et marine comme une mouette. Elle, je l'avais si vite aimée que pour pouvoir sortir avec elle tous les jours je n'étais jamais allé voir Saint-Loup, de Balbec. Et pourtant l'histoire de mes relations avec lui portait aussi le témoignage qu'un temps j'avais cessé d'aimer Albertine, puisque, si j'étais allé m'installer quelque temps auprès de Saint-Loup, à Doncières, c'était dans le chagrin de voir que ne m'était pas rendu le sentiment que j'avais pour Mme de Guermantes. Sa vie et celle d'Albertine, si tard connues de moi, toutes deux à Balbec, et si vite terminées, s'étaient croisées à peine ; c'était lui, me redisais-je en voyant que les navettes agiles des années tissent des fils entre ceux de nos souvenirs qui semblaient d'abord les plus indépendants, c'était lui que j'avais envoyé chez Mme Bontemps quand Albertine m'avait quitté. Et puis il se trouvait que leurs deux vies avaient chacune un secret parallèle et que je n'avais pas soupçonné. Celui de Saint-Loup me causait peut-être maintenant plus de tristesse que celui d'Albertine, dont la vie m'était devenue si étrangère. Mais je ne pouvais me consoler que la sienne comme celle de Saint-Loup eussent été si courtes. Elle et lui me disaient souvent, en prenant soin de moi : « Vous qui êtes malade ». Et c'était eux qui étaient morts, eux dont je pouvais, séparées par un intervalle en somme si bref, mettre en regard l'image ultime, devant la tranchée, après la chute, de l'image première qui, même pour Albertine, ne valait plus pour moi que par son association avec celle du soleil couchant sur la mer. Sa mort fut accueillie par Françoise avec plus de pitié que celle d'Albertine. Elle prit immédiatement son rôle de pleureuse et commenta la mémoire du mort de lamentations, de thrènes désespérés. Elle exhibait son chagrin et ne prenait un visage sec, en détournant la tête, que lorsque moi je laissais voir le mien, qu'elle voulait avoir l'air de ne pas avoir vu. Car comme beaucoup de personnes nerveuses, la nervosité des autres, trop semblable sans doute à la sienne, l'horripilait. Elle aimait maintenant à faire remarquer ses moindres torticolis, un étourdissement, qu'elle s'était cognée. Mais si je parlais d'un de mes maux, redevenue stoïque et grave, elle faisait semblant de ne pas avoir entendu. « Pauvre Marquis », disait-elle, bien qu'elle ne pût s'empêcher de penser qu'il eût fait l'impossible pour ne pas partir et, une fois mobilisé, pour fuir devant le danger. « Pauvre dame, disait-elle en pensant à Mme de Marsantes, qu'est-ce qu'elle a dû pleurer quand elle a appris la mort de son garçon ! Si encore elle avait pu le revoir, mais il vaut peut-être mieux qu'elle n'ait pas pu, parce qu'il avait le nez coupé en deux, il était tout dévisagé. » Et les yeux de Françoise se remplissaient de larmes mais à travers lesquelles perçait la curiosité cruelle de la paysanne. Sans doute Françoise plaignait la douleur de Mme de Marsantes de tout son coeur, mais elle regrettait de ne pas connaître la forme que cette douleur avait prise et de ne pouvoir s'en donner le spectacle de l'affliction. Et comme elle aurait bien aimé pleurer et que je la visse pleurer, elle dit pour s'entraîner : « Ça me fait quelque chose ! » Sur moi aussi elle épiait les traces du chagrin avec une avidité qui me fit simuler une certaine sécheresse en parlant de Saint-Loup. Et plutôt, sans doute, par esprit d'imitation et parce qu'elle avait entendu dire cela, car il y a des clichés dans les offices aussi bien que dans les cénacles, elle répétait, non sans y mettre pourtant la satisfaction d'un pauvre : « Toutes ses richesses ne l'ont pas empêché de mourir comme un autre, et elles ne lui servent plus à rien. » Le maître d'hôtel profita de l'occasion pour dire à Françoise que sans doute c'était triste, mais que cela ne comptait guère auprès des millions d'hommes qui tombaient tous les jours malgré tous les efforts que faisait le gouvernement pour le cacher. Mais, cette fois, le maître d'hôtel ne réussit pas à augmenter la douleur de Françoise comme il avait cru. Car celle-ci lui répondit : « C'est vrai qu'ils meurent aussi pour la France, mais c'est des inconnus ; c'est toujours plus intéressant quand c'est des gens qu'on connaît. » Et Françoise, qui trouvait du plaisir à pleurer, ajouta encore : « Il faudra bien prendre garde de m'avertir si on cause de la mort du Marquis sur le journal. »
+
+Saint-Loup m'avait souvent dit avec tristesse, bien avant la guerre : « Oh ! ma vie, n'en parlons pas, je suis un homme condamné d'avance. » Faisait-il allusion au vice qu'il avait réussi jusqu'alors à cacher à tout le monde, mais qu'il connaissait et dont il s'exagérait peut-être la gravité, comme les enfants qui font la première fois l'amour, ou même, avant cela, cherchent seuls le plaisir, s'imaginent pareils à la plante qui ne peut disséminer son pollen sans mourir tout de suite après. Peut-être cette exagération tenait-elle, pour Saint-Loup comme pour les enfants, ainsi qu'à l'idée du péché avec laquelle on ne s'est pas encore familiarisé, à ce qu'une sensation toute nouvelle a une force presque terrible qui ira ensuite en s'atténuant. Ou bien avait-il, le justifiant au besoin par la mort de son père enlevé assez jeune, le pressentiment de sa fin prématurée. Sans doute un tel pressentiment semble impossible. Pourtant la mort paraît assujettie à certaines lois. On dirait souvent, par exemple, que les êtres nés de parents qui sont morts très vieux ou très jeunes sont presque forcés de disparaître au même âge, les premiers traînant jusqu'à la centième année des chagrins et des maladies incurables, les autres, malgré une existence heureuse et hygiénique, emportés à la date inévitable et prématurée par un mal si opportun et si accidentel (quelques racines profondes qu'il puisse avoir dans le tempérament) qu'il semble la formalité nécessaire à la réalisation de la mort. Et ne serait-il pas possible que la mort accidentelle elle-même – comme celle de Saint-Loup, liée d'ailleurs à son caractère de plus de façons peut-être que je n'ai cru devoir le dire – fût, elle aussi, inscrite d'avance, connue seulement des dieux, invisible aux hommes, mais révélée par une tristesse particulière, à demi inconsciente, à demi consciente (et même, dans cette dernière mesure, exprimée aux autres avec cette sincérité complète qu'on met à annoncer des malheurs auxquels on croit dans son for intérieur échapper et qui pourtant arriveront), à celui qui la porte et l'aperçoit sans cesse en lui-même, comme une devise, une date fatale.
+
+Il avait dû être bien beau en ces dernières heures ; lui qui toujours dans cette vie avait semblé, même assis, même marchant dans un salon, contenir l'élan d'une charge, en dissimulant d'un sourire la volonté indomptable qu'il y avait dans sa tête triangulaire, enfin il avait chargé. Débarrassée de ses livres, la tourelle féodale était redevenue militaire. Et ce Guermantes était mort plus lui-même, ou plutôt plus de sa race, en laquelle il n'était plus qu'un Guermantes, comme ce fut symboliquement visible à son enterrement dans l'église Saint-Hilaire de Combray, toute tendue de tentures noires où se détachait en rouge, sous la couronne fermée, sans initiales de prénoms ni titres, le G du Guermantes que par la mort il était redevenu. Avant d'aller à cet enterrement, qui n'eut pas lieu tout de suite, j'écrivis à Gilberte. J'aurais peut-être dû écrire à la Mme de Guermantes, je me disais qu'elle accueillerait la mort de Saint-Loup avec la même indifférence que je lui avais vu manifester pour celle de tant d'autres qui avaient semblé tenir si étroitement à sa vie, et que peut-être même, avec son tour d'esprit Guermantes, elle chercherait à montrer qu'elle n'avait pas la superstition des liens du sang. J'étais trop souffrant pour écrire à tout le monde. J'avais cru autrefois qu'elle et Saint-Loup s'aimaient bien dans le sens où l'on dit cela dans le monde, c'est-à-dire que l'un auprès de l'autre ils se disaient des choses tendres qu'ils ressentaient à ce moment-là. Mais loin d'elle il n'hésitait pas à la déclarer idiote, et si elle éprouvait parfois à le voir un plaisir égoïste, je l'avais vue incapable de se donner la plus petite peine, d'user si légèrement que ce fût de son crédit pour lui rendre un service, même pour lui éviter un malheur. La méchanceté dont elle avait fait preuve à son égard en refusant de le recommander au général de Saint-Joseph, quand Saint-Loup allait repartir pour le Maroc, prouvait que le dévouement qu'elle lui avait montré à l'occasion de son mariage n'était qu'une sorte de compensation qui ne lui coûtait guère. Aussi fus-je bien étonné d'apprendre, comme elle était souffrante au moment où Saint-Loup fut tué, qu'on s'était cru obligé de lui cacher pendant plusieurs jours (sous les plus fallacieux prétextes) les journaux qui lui eussent appris cette mort, afin de lui éviter le choc qu'elle en ressentirait. Mais ma surprise augmenta quand j'appris qu'après qu'on eût été obligé enfin de lui dire la vérité, la duchesse pleura toute une journée, tomba malade, et mit longtemps – plus d'une semaine, c'était longtemps pour elle – à se consoler. Quand j'appris ce chagrin j'en fus touché. Il fait que tout le monde peut dire, et que je peux assurer qu'il existait entre eux une grande amitié. Mais en me rappelant combien de petites médisances, de mauvaise volonté à se rendre service celle-là avait enfermées, je pense au peu de chose que c'est qu'une grande amitié dans le monde. D'ailleurs, un peu plus tard, dans une circonstance plus importante historiquement si elle touchait moins mon coeur, Mme de Guermantes se montra, à mon avis, sous un jour encore plus favorable. Elle qui, jeune fille, avait fait preuve de tant d'impertinente audace, si l'on s'en souvient, à l'égard de la famille impériale de Russie et qui, mariée, leur avait toujours parlé avec une liberté qui la faisait parfois accuser de manque de tact, fut peut-être seule, après la Révolution russe, à faire preuve à l'égard des grandes-duchesses et des grands-ducs d'un dévouement sans bornes. Elle avait, l'année même qui avait précédé la guerre, considérablement agacé la grande-duchesse Wladimir en appelant toujours la comtesse de Hohenfelsen, femme morganatique du grand-duc Paul, « la Grande-Duchesse Paul ». Il n'empêche que la Révolution russe n'eut pas plutôt éclaté que notre ambassadeur à Pétersbourg, M. Paléologue (« Paléo » pour le monde diplomatique, qui a ses abréviations prétendues spirituelles comme l'autre), fut harcelé des dépêches de la Mme de Guermantes qui voulait avoir des nouvelles de la grande-duchesse Marie Pavlovna. Et pendant longtemps les seules marques de sympathie et de respect que reçut sans cesse cette princesse lui vinrent exclusivement de Mme de Guermantes.
+
+Saint-Loup causa, sinon par sa mort, du moins par ce qu'il avait fait dans les semaines qui l'avaient précédée, des chagrins plus grands que celui de la duchesse. En effet, le lendemain même du soir où j'avais vu Charlus, le jour même où le baron avait dit à Morel : « Je me vengerai », les démarches de Saint-Loup pour retrouver Morel avaient abouti – c'est-à-dire qu'elles avaient abouti à ce que le général sous les ordres de qui aurait dû être Morel, s'étant rendu compte qu'il était déserteur, l'avait fait rechercher et arrêter et, pour s'excuser auprès de Saint-Loup du châtiment qu'allait subir quelqu'un à qui il s'intéressait, avait écrit à Saint-Loup pour l'en avertir. Morel ne douta pas que son arrestation n'eût été provoquée par la rancune de Charlus. Il se rappela les paroles : « Je me vengerai », pensa que c'était là cette vengeance, et demanda à faire des révélations. « Sans doute, déclara-t-il, j'ai déserté. Mais si j'ai été conduit sur le mauvais chemin est-ce tout à fait ma faute ? » Il raconta sur Charlus et sur M. d'Argencourt, avec lequel il s'était brouillé aussi, des histoires ne le touchant pas à vrai dire directement, mais que ceux-ci, avec la double expansion des amants et des invertis, lui avaient racontées, ce qui fit arrêter à la fois Charlus et M. d'Argencourt. Cette arrestation causa peut-être moins de douleur à tous deux que d'apprendre à chacun, qui l'ignorait, que l'autre était son rival, et l'instruction révéla qu'ils en avaient énormément d'obscurs, de quotidiens, ramassés dans la rue. Ils furent bientôt relâchés, d'ailleurs. Morel le fut aussi parce que la lettre écrite à Saint-Loup par le général lui fut renvoyée avec cette mention : « Décédé, mort au champ d'honneur. » Le général voulut faire pour le défunt que Morel fût simplement envoyé sur le front ; il s'y conduisit bravement, échappa à tous les dangers et revint, la guerre finie, avec la croix que Charlus avait jadis vainement sollicitée pour lui et que lui valut indirectement la mort de Saint-Loup. J'ai souvent pensé depuis, en me rappelant cette croix de guerre égarée chez Jupien, que si Saint-Loup avait survécu il eût pu facilement se faire élire député dans les élections qui suivirent la guerre, grâce à l'écume de niaiserie et au rayonnement de gloire qu'elle laissa après elle, et où, si un doigt de moins, abolissant des siècles de préjugés, permettait d'entrer par un brillant mariage dans une famille aristocratique, la croix de guerre, eût-elle été gagnée dans les bureaux, tenait lieu de profession de foi pour entrer, dans une élection triomphale, à la Chambre des Députés, presque à l'Académie française. L'élection de Saint-Loup, à cause de sa « sainte » famille, eût fait verser à M. Arthur Meyer des flots de larmes et d'encre. Mais peut-être aimait-il trop sincèrement le peuple pour arriver à conquérir les suffrages du peuple, lequel pourtant lui aurait sans doute, en faveur de ses quartiers de noblesse, pardonné ses idées démocratiques. Saint-Loup les eût exposées sans doute avec succès devant une chambre d'aviateurs. Certes, ces héros l'auraient compris, ainsi que quelques très rares hauts esprits. Mais, grâce à l'apaisement du Bloc national, on avait aussi repêché les vieilles canailles de la politique, qui sont toujours réélues. Celles qui ne purent entrer dans une chambre d'aviateurs quémandèrent, au moins pour entrer à l'Académie française, les suffrages des maréchaux, d'un président de la République, d'un président de la Chambre, etc. Elles n'eussent pas été favorables à Saint-Loup, mais l'étaient à un autre habitué de Jupien, ce député de l'Action Libérale qui fut réélu sans concurrent. Il ne quittait pas l'uniforme d'officier de territoriale bien que la guerre fût finie depuis longtemps. Son élection fut saluée avec joie par tous les journaux qui avaient fait l'« union » sur son nom, par les dames nobles et riches, qui ne portaient plus que des guenilles par un sentiment de convenances et la peur des impôts, tandis que les hommes de la Bourse achetaient sans arrêter des diamants, non pour leurs femmes mais parce que, ayant perdu toute confiance dans le crédit d'aucun peuple, ils se réfugiaient vers cette richesse palpable, et faisaient ainsi monter la de Beers de mille francs. Tant de niaiserie agaçait un peu, mais on en voulut moins au Bloc national quand on vit tout d'un coup les victimes du bolchevisme, des grandes-duchesses en haillons, dont on avait assassiné les maris dans des brouettes, et les fils en jetant des pierres dessus après les avoir laissés sans manger, fait travailler au milieu des huées, et enfin jetés dans des puits où on les lapidait parce qu'on croyait qu'ils avaient la peste et pouvaient la communiquer. Ceux qui étaient arrivés à s'enfuir reparurent tout à coup, ajoutant encore à ce tableau d'horreur de nouveaux détails terrifiants.

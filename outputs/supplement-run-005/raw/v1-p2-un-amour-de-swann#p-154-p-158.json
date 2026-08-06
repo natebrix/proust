@@ -1,0 +1,73 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "Mme Verdurin",
+      "surface_forms": ["Mme Verdurin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["Odette", "elle"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.96
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "S1",
+      "source": "Mme Verdurin",
+      "target": "Odette",
+      "type": "praise",
+      "polarity": "positive",
+      "narrative_stance": "ironized",
+      "confidence": 0.68,
+      "evidence": "Voyons, ne dites pas du mal d'Odette, dit Mme Verdurin en faisant l'enfant. Elle est charmante.",
+      "explanation": "Mme Verdurin defends Odette as charming, but the narrator's aside 'en faisant l'enfant' frames her protest as a childish performance rather than a fully sincere defense."
+    },
+    {
+      "event_id": "S2",
+      "source": "M. Verdurin",
+      "target": "Odette",
+      "type": "blame",
+      "polarity": "mixed",
+      "narrative_stance": "ironized",
+      "confidence": 0.72,
+      "evidence": "nous disons que ce n'est pas une vertu ni une intelligence... Elle serait peut-être beaucoup moins charmante, qui sait ?",
+      "explanation": "M. Verdurin concedes Odette's charm while explicitly denying her any virtue or intelligence, a backhanded and ironic diminishment delivered under cover of correcting his wife."
+    },
+    {
+      "event_id": "S3",
+      "source": "narrator",
+      "target": "Mme Verdurin",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "ironized",
+      "confidence": 0.55,
+      "evidence": "Mme Verdurin s'immobilisa, prit une expression inerte comme si elle était devenue une statue, fiction qui lui permit d'être censée ne pas avoir entendu ce mot insupportable de poseur",
+      "explanation": "The narrator ironizes Mme Verdurin's theatrical pretense of not having heard the word 'poseur', exposing her performed composure as a fragile defense of the clan's status."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Odette",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["S1", "S2"],
+      "confidence": 0.6,
+      "explanation": "Odette is called charming but explicitly denied virtue or intelligence, so the surface compliment is outweighed by the backhanded denial, yielding a mild net negative local appraisal."
+    },
+    {
+      "character": "Mme Verdurin",
+      "dimension": "rhetorical_position",
+      "delta": -1,
+      "based_on_events": ["S3"],
+      "confidence": 0.5,
+      "explanation": "Her exaggerated, statue-like pretense of not having heard the insult is narrated with irony, mildly puncturing her poise as hostess."
+    }
+  ],
+  "ambiguities": [
+    "Odette's status effect could plausibly be read as neutral/mixed (delta 0) rather than net negative, since M. Verdurin's denial of her virtue and intelligence is delivered ironically and partly as banter rather than settled judgment.",
+    "Mme Verdurin's statue-like freeze may reflect the narrator's generalized psychology of the whole 'petit clan' (anxious about anyone 'posing' above them) rather than a diminishment specific to her as an individual; scored conservatively as a personal narrated beat."
+  ]
+}

@@ -1,0 +1,655 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "Bloch",
+      "surface_forms": [
+        "Bloch"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Bloch père",
+      "surface_forms": [
+        "Bloch père"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Bloch",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "Bloch calomnie chacun auprès de l'autre, jure « par le Kronion Zeus » et « par la Ker », essuie une larme; le narrateur ajoute: « Je ne le croyais pas… le culte hellénique étant chez Bloch purement littéraire… il disait: “Je te le jure”, plus encore pour la volupté hystérique de mentir. »",
+      "explanation": "The narrator exposes the duplicity, literary theatricality, and lies of Bloch, which lowers him locally."
+    },
+    {
+      "event_id": "E2",
+      "source": "Bloch père",
+      "target": "Bloch",
+      "type": "prestige_association",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.86,
+      "evidence": "À l’annonce: « Le Robert de Saint-Loup », Bloch père s’écrie: « Ah! bougre! » et jette sur son fils « un regard admiratif » signifiant: « Ce prodige est-il mon enfant ? »",
+      "explanation": "The deference of Bloch's father for the name of Robert de Saint-Loup enhances his son by association and earns him unusual paternal approval."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Bloch",
+      "dimension": "social_status",
+      "delta": 1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.86,
+      "explanation": "He gains credit in his father's eyes thanks to his relationship with Robert de Saint-Loup."
+    },
+    {
+      "character": "Bloch",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.88,
+      "explanation": "The narration reveals his slanders and fake oaths, which weakens his local moral estimation."
+    }
+  ],
+  "ambiguities": [],
+  "unit_id": "v2-p2-noms-de-pays-le-pays#p-191-p-195"
+}
+
+### Candidate characters
+
+[
+  "Legrandin",
+  "Mme de Villeparisis",
+  "Robert de Saint-Loup",
+  "baron de Charlus",
+  "la grand-mère",
+  "la mère du narrateur",
+  "le narrateur"
+]
+
+### Prior local context (optional)
+
+Ce qui m'étonnait plus chez Bloch que ses mauvaises manières, c'était combien la qualité de sa conversation était inégale. Ce garçon si difficile, qui des écrivains les plus en vogue disait : « C'est un sombre idiot, c'est tout à fait un imbécile », par moments racontait avec une grande gaieté des anecdotes qui n'avaient rien de drôle et citait comme « quelqu'un de vraiment curieux » tel homme entièrement médiocre. Cette double balance pour juger de l'esprit, de la valeur, de l'intérêt des êtres, ne laissa pas de m'étonner jusqu'au jour où je connus Bloch père.
+
+### Passage
+
+Je n'avais pas cru que nous serions jamais admis à le connaître, car Bloch fils avait mal parlé de moi à Saint-Loup et de Saint-Loup à moi. Il avait notamment dit à Saint-Loup que j'étais (toujours) affreusement snob. « Si, si, il est enchanté de connaître M. LLLLegrandin », dit-il. Cette manière de détacher un mot était chez Bloch le signe à la fois de l'ironie et de la littérature. Saint-Loup qui n'avait jamais entendu le nom de Legrandin s'étonna : « Mais qui est-ce ? – Oh ! c'est quelqu'un de très bien », répondit Bloch en riant et en mettant frileusement ses mains dans les poches de son veston, persuadé qu'il était en ce moment en train de contempler le pittoresque aspect d'un extraordinaire gentilhomme provincial auprès de quoi ceux de Barbey d'Aurevilly n'étaient rien. Il se consolait de ne pas savoir peindre Legrandin en lui donnant plusieurs L et en savourant ce nom comme un vin de derrière les fagots. Mais ces jouissances subjectives restaient inconnues aux autres. S'il dit à Saint-Loup du mal de moi, d'autre part il ne m'en dit pas moins de Saint-Loup. Nous avions connu le détail de ces médisances chacun dès le lendemain, non que nous nous les fussions répétées l'un à l'autre, ce qui nous eût semblé très coupable, mais paraissait si naturel et presque si inévitable à Bloch que dans son inquiétude, et tenant pour certain qu'il ne ferait qu'apprendre à l'un ou à l'autre ce qu'ils allaient savoir, il préféra prendre les devants, et emmenant Saint-Loup à part lui avoua qu'il avait dit du mal de lui, exprès, pour que cela lui fût redit, lui jura « par le Kronion Zeus, gardien des serments », qu'il l'aimait, qu'il donnerait sa vie pour lui et essuya une larme. Le même jour, il s'arrangea pour me voir seul, me fit sa confession, déclara qu'il avait agi dans mon intérêt parce qu'il croyait qu'un certain genre de relations mondaines m'était néfaste et que je « valais mieux que cela ». Puis, me prenant la main avec un attendrissement d'ivrogne, bien que son ivresse fût purement nerveuse : « Crois-moi, dit-il, et que la noire Ker me saisisse à l'instant et me fasse franchir les portes d'Hadès, odieux aux hommes, si hier en pensant à toi, à Combray, à ma tendresse infinie pour toi, à telles après-midi en classe que tu ne te rappelles même pas, je n'ai pas sangloté toute la nuit. Oui, toute la nuit, je te le jure, et hélas, je le sais, car je connais les âmes, tu ne me croiras pas. » Je ne le croyais pas, en effet, et à ces paroles que je sentais inventées à l'instant même et au fur et à mesure qu'il parlait, son serment « par la Ker » n'ajoutait pas un grand poids, le culte hellénique étant chez Bloch purement littéraire. D'ailleurs dès qu'il commençait à s'attendrir et désirait qu'on s'attendrît sur un fait faux, il disait : « Je te le jure », plus encore pour la volupté hystérique de mentir que dans l'intérêt de faire croire qu'il disait la vérité. Je ne croyais pas ce qu'il me disait, mais je ne lui en voulais pas, car je tenais de ma mère et de ma grand'mère d'être incapable de rancune, même contre de bien plus grands coupables, et de ne jamais condamner personne.
+
+Ce n'était du reste pas absolument un mauvais garçon que Bloch, il pouvait avoir de grandes gentillesses. Et depuis que la race de Combray, la race d'où sortaient des êtres absolument intacts comme ma grand'mère et ma mère, semble presque éteinte, comme je n'ai plus guère le choix qu'entre d'honnêtes brutes, insensibles et loyales et chez qui le simple son de la voix montre bien vite qu'ils ne se soucient en rien de votre vie – et une autre espèce d'hommes qui tant qu'ils sont auprès de vous vous comprennent, vous chérissent, s'attendrissent jusqu'à pleurer, prennent leur revanche quelques heures plus tard en faisant une cruelle plaisanterie sur vous, mais vous reviennent, toujours aussi compréhensifs, aussi charmants, aussi momentanément assimilés à vous-même, je crois que c'est cette dernière sorte d'hommes dont je préfère, sinon la valeur morale, du moins la société.
+
+– Tu ne peux t'imaginer ma douleur quand je pense à toi, reprit Bloch. Au fond, c'est un côté assez juif chez moi, ajouta-t-il ironiquement en rétrécissant sa prunelle comme s'il s'agissait de doser au microscope une quantité infinitésimale de « sang juif » et comme aurait pu le dire – mais ne l'eût pas dit – un grand seigneur français qui parmi ses ancêtres tous chrétiens eût pourtant compté Samuel Bernard ou plus anciennement encore la Sainte Vierge de qui prétendent descendre, dit-on, les Lévy – qui reparaît : « J'aime assez, ajouta-t-il, faire ainsi dans mes sentiments la part, assez mince d'ailleurs, qui peut tenir à mes origines juives. » Il prononça cette phrase parce que cela lui paraissait à la fois spirituel et brave de dire la vérité sur sa race, vérité que par la même occasion il s'arrangeait à atténuer singulièrement, comme les avares qui se décident à acquitter leurs dettes mais n'ont le courage d'en payer que la moitié. Ce genre de fraudes qui consiste à avoir l'audace de proclamer la vérité, mais en y mêlant, pour une bonne part, des mensonges qui la falsifient, est plus répandu qu'on ne pense et même, chez ceux qui ne le pratiquent pas habituellement, certaines crises dans la vie, notamment celles où une liaison amoureuse est en jeu, leur donnent l'occasion de s'y livrer.
+
+Toutes ces diatribes confidentielles de Bloch à Saint-Loup contre moi, à moi contre Saint-Loup finirent par une invitation à dîner. Je ne suis pas bien sûr qu'il ne fit pas d'abord une tentative pour avoir Saint-Loup seul. La vraisemblance rend cette tentative probable, le succès ne la couronna pas, car ce fut à moi et à Saint-Loup que Bloch dit un jour : « Cher maître, et vous, cavalier aimé d'Arès, de Saint-Loup-en-Bray, dompteur de chevaux, puisque je vous ai rencontrés sur le rivage d'Amphitrite résonnant d'écume, près des tentes des Ménier aux nefs rapides, voulez-vous tous deux venir dîner un jour de la semaine chez mon illustre père au coeur irréprochable ? » Il nous adressait cette invitation parce qu'il avait le désir de se lier plus étroitement avec Saint-Loup qui le ferait, espérait-il, pénétrer dans les milieux aristocratiques. Formé par moi, pour moi, ce souhait eût paru à Bloch la marque du plus hideux snobisme, bien conforme à l'opinion qu'il avait de tout un côté de ma nature qu'il ne jugeait pas, jusqu'ici du moins, le principal ; mais le même souhait, de sa part, lui semblait la preuve d'une belle curiosité de son intelligence désireuse de certains dépaysements sociaux où il pouvait peut-être trouver quelque utilité littéraire. Bloch père, quand son fils lui avait dit qu'il amènerait à dîner un de ses amis, dont il avait décliné sur un ton de satisfaction sarcastique le titre et le nom : « Le marquis de Saint-Loup-en-Bray » avait éprouvé une commotion violente. « Le marquis de Saint-Loup-en-Bray ! Ah ! bougre ! » s'était-il écrié, usant du juron qui était chez lui la marque la plus forte de la déférence sociale. Et il avait jeté sur son fils, capable de s'être fait de telles relations, un regard admiratif qui signifiait : « Il est vraiment étonnant. Ce prodige est-il mon enfant ? » et qui causa autant de plaisir à mon camarade que si cinquante francs avaient été ajoutés à sa pension mensuelle. Car Bloch était mal à l'aise chez lui et sentait que son père le traitait de dévoyé parce qu'il vivait dans l'admiration de Leconte de Lisle, Heredia et autres « bohèmes ». Mais des relations avec Saint-Loup-en-Bray dont le père avait été président du Canal de Suez ! (ah ! bougre !) c'était un résultat « indiscutable ». On regretta d'autant plus d'avoir laissé à Paris, par crainte de l'abîmer, le stéréoscope. Seul, Bloch, le père, avait l'art ou du moins le droit de s'en servir. Il ne le faisait du reste que rarement, à bon escient, les jours où il y avait gala et domestiques mâles en extra. De sorte que de ces séances de stéréoscope émanaient pour ceux qui y assistaient comme une distinction, une faveur de privilégiés, et pour le maître de maison qui les donnait un prestige analogue à celui que le talent confère et qui n'aurait pas pu être plus grand, si les vues avaient été prises par Bloch lui-même et l'appareil de son invention. « Vous n'étiez pas invité hier chez Salomon ? » disait-on dans la famille. – Non, je n'étais pas des élus ! – Qu'est-ce qu'il y avait ? – Un grand tralala, le stéréoscope, toute la boutique. – Ah ! s'il y avait le stéréoscope, je regrette, car il paraît que Salomon est extraordinaire quand il le montre. – Que veux-tu, dit Bloch à son fils, il ne faut pas lui donner tout à la fois, comme cela il lui restera quelque chose à désirer. » Il avait bien pensé dans sa tendresse paternelle et pour émouvoir son fils à faire venir l'instrument. Mais le « temps matériel » manquait, ou plutôt on avait cru qu'il manquerait ; mais nous dûmes faire le dîner parce que Saint-Loup ne put se déplacer, attendant un oncle qui allait venir passer quarante-huit heures auprès de Mme de Villeparisis. Comme, très adonné aux exercices physiques, surtout aux longues marches, c'était en grande partie à pied, en couchant la nuit dans les fermes, que cet oncle devait faire la route depuis le château où il était en villégiature, le moment où il arriverait à Balbec était assez incertain. Et Saint-Loup n'osant bouger me chargea même d'aller porter à Incauville, où était le bureau télégraphique, la dépêche que mon ami envoyait quotidiennement à sa maîtresse. L'oncle qu'on attendait s'appelait Charlus, d'un prénom qu'il avait hérité des princes de Sicile ses ancêtres. Et plus tard quand je retrouvai dans mes lectures historiques, appartenant à tel podestat ou tel prince de l'Église, ce prénom même, belle médaille de la Renaissance – d'aucuns disaient un véritable antique – toujours restée dans la famille, ayant glissé de descendant en descendant depuis le cabinet du Vatican jusqu'à l'oncle de mon ami, j'éprouvais le plaisir réservé à ceux qui ne pouvant faute d'argent constituer un médaillier, une pinacothèque, recherchent les vieux noms (noms de localités, documentaires et pittoresques comme une carte ancienne, une vue cavalière, une enseigne ou un coutumier, noms de baptême où résonne et s'entend, dans les belles finales françaises, le défaut de langue, l'intonation d'une vulgarité ethnique, la prononciation vicieuse selon lesquels nos ancêtres faisaient subir aux mots latins et saxons des mutilations durables devenues plus tard les augustes législatrices des grammaires) et en somme, grâce à ces collections de sonorités anciennes, se donnent à eux-mêmes des concerts à la façon de ceux qui acquièrent des violes de gambe et des violes d'amour pour jouer de la musique d'autrefois sur des instruments anciens. Saint-Loup me dit que même dans la société aristocratique la plus fermée son oncle Charlus se distinguait encore comme particulièrement difficile d'accès, dédaigneux, entiché de sa noblesse, formant avec la femme de son frère et quelques autres personnes choisies ce qu'on appelait le cercle des Phénix. Là même il était si redouté pour ses insolences qu'autrefois il était arrivé que des gens du monde qui désiraient le connaître et s'étaient adressés à son propre frère avaient essuyé un refus. « Non, ne me demandez pas de vous présenter à mon frère Charlus. Ma femme, nous tous, nous nous y attellerions que nous ne pourrions pas. Ou bien vous risqueriez qu'il ne soit pas aimable et je ne le voudrais pas. » Au Jockey, il avait avec quelques amis désigné deux cents membres qu'ils ne se laisseraient jamais présenter. Et chez le comte de Paris il était connu sous le sobriquet du « Prince » à cause de son élégance et de sa fierté.
+
+Saint-Loup me parla de la jeunesse, depuis longtemps passée, de son oncle. Il amenait tous les jours des femmes dans une garçonnière qu'il avait en commun avec deux de ses amis, beaux comme lui, ce qui faisait qu'on les appelait « les trois Grâces ».

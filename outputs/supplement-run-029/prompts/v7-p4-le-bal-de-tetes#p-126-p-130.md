@@ -1,0 +1,599 @@
+You are annotating a French passage from Marcel Proust's *À la recherche du temps perdu* for **local appraisal events** and **character status effects**.
+
+This is a **supplemental coverage pass**. The passage has already been annotated once. That accepted annotation captured the dominant local movement and its focal characters, and it is **fixed** — you must not re-score, revise, or contradict it.
+
+Your job is narrower: judge whether any of the **additional candidate characters** listed below are **materially involved** in the local social or evaluative dynamics of the passage, and score **only those characters**.
+
+## Inputs
+
+You will be given:
+
+1. A French passage.
+2. An alias map for named characters.
+3. The **accepted annotation** for this passage (characters already scored, with their events and status effects). This is fixed context, not a draft to improve.
+4. A **candidate list** of additional characters detected in the passage text but not scored in the accepted annotation. The candidate list may include `le narrateur`.
+5. Optionally, brief prior context from the immediately preceding window.
+
+## Scope rules
+
+* Score **only** characters from the candidate list. Never emit events or status effects whose target is an already-scored character.
+* An already-scored character **may** appear as the `source` of an event targeting a candidate character.
+* The candidate list is a mechanical screen, not a quota. Most candidates are peripheral mentions and should be **omitted**.
+* Include a candidate only if omitting them would misrepresent how the passage locally positions its participants.
+* Resolve references to the **canonical character name** using the alias map.
+* Work primarily from the passage itself. Use prior context only for local disambiguation.
+* Do not invent motives, unstated events, or long-run arc interpretations.
+* Prefer the **smallest sufficient reading** of the passage.
+* An **empty result** (`appraisal_events: []`, `status_effects: []`, and only trivially-present `characters_present`) is a valid, common, and expected outcome. Do not manufacture weak events to justify a candidate.
+
+## The narrator as participant
+
+`le narrateur` may appear in the candidate list. Distinguish carefully between two roles:
+
+* **The narrating voice** — the retrospective "I" who tells, evaluates, and ironizes. This voice remains an evaluation `source` (use `"source": "narrator"` as in the accepted annotation). The voice is **never** a scored character.
+* **The in-scene self** — the protagonist as a participant in the staged scene: he is received or snubbed, favored or dismissed, gains or loses composure, standing, or emotional leverage relative to the people in the room. This in-scene self is scored as the character `le narrateur`.
+
+Score `le narrateur` only when the passage **stages** him as a social participant:
+
+* he is included in or excluded from valued company
+* another character defers to, favors, dismisses, or dominates him
+* he gains or loses emotional leverage in a staged interaction (e.g., with Albertine or Gilberte)
+* the scene's social outcome lands on him as a participant, not merely through him as a lens
+
+Do **not** score `le narrateur` when:
+
+* he is only the perceiving or remembering consciousness
+* the passage is essayistic reflection, description, or generalization
+* his "loss" or "gain" exists only at the level of retrospective commentary
+
+In third-person stretches (notably *Un amour de Swann*), `le narrateur` should almost never be scored.
+
+## What to detect
+
+For candidate characters, track the same local shifts as the first pass:
+
+* praise, blame, admiration, snub
+* prestige or discredit by association
+* narrated elevation or diminishment
+* inclusion in or exclusion from valued social space
+* signs that another character depends on, yields to, or dismisses them
+
+## Interpretive principles
+
+All interpretive rules of the first pass apply unchanged:
+
+* judge only the local evaluative and social dynamics of the supplied passage
+* do not judge morality, factual correctness, long-term importance, or desert
+* distinguish who evaluates, who is targeted, and whether the passage endorses, neutrally reports, ironizes, or leaves uncertain that evaluation
+* respect quoted speech, free indirect style, irony, and narrator distance
+* do not force zero-sum logic — a candidate can gain or lose independently of the already-scored characters
+* the consummation-and-renewal rule from the first pass applies: do not collapse attained intimacy or narrator-endorsed renewal into diminishment merely because the path was hesitant or dependent
+
+## Relation to the accepted annotation
+
+* The accepted annotation defines the dominant local movement. Do not restate it.
+* Your events should cover the **remaining** participants' positioning, which is often quieter: a hostess's successful reception, a rival's eclipse, a servant's competence acknowledged, the narrator's admission or exclusion.
+* If a candidate's only involvement is as part of the movement already captured (e.g., a collective source of an existing snub), and the passage gives them no distinct local outcome of their own, omit them.
+* Never emit an event that reverses the direction of an accepted event for the same interaction. If you believe the accepted annotation is wrong, record that in `ambiguities` — do not correct it through scoring.
+
+## Task
+
+1. From the candidate list, identify which characters (if any) are materially involved in the local movement.
+2. Extract only the **significant** appraisal or status-relevant events involving them.
+3. Record only the dominant local status effects for those characters.
+4. Note ambiguity only when it materially changes the reading.
+5. Prefer fewer, high-quality events. Default to **0 or 1** events. Never more than **3** events total, and only reach 3 when distinct candidates have genuinely distinct movements.
+6. Never more than **2 status effects** for a single character.
+
+## Output
+
+Return valid JSON only, in exactly the first-pass schema:
+
+{
+"characters_present": [
+{
+"canonical_name": "string",
+"surface_forms": ["string"],
+"presence_type": "explicit | implicit",
+"presence_confidence": 0.0
+}
+],
+"appraisal_events": [
+{
+"event_id": "S1",
+"source": "canonical character name | narrator | collective_social_voice | unknown",
+"target": "canonical character name",
+"type": "praise | blame | admiration | snub | prestige_association | discredit_association | narrated_elevation | narrated_diminishment | other",
+"polarity": "positive | negative | mixed",
+"narrative_stance": "endorsed | neutral_report | ironized | uncertain",
+"confidence": 0.0,
+"evidence": "brief quotation or paraphrase from the passage",
+"explanation": "1-2 sentence explanation in English"
+}
+],
+"status_effects": [
+{
+"character": "canonical character name",
+"dimension": "general_appraisal | social_status | rhetorical_position | emotional_position | inclusion_exclusion",
+"delta": -2,
+"based_on_events": ["S1"],
+"confidence": 0.0,
+"explanation": "brief explanation in English"
+}
+],
+"ambiguities": [
+"string"
+]
+}
+
+Schema guidance:
+
+* `characters_present` lists only the candidate characters you actually scored (or judged explicitly implicit-but-material). Do not relist already-scored characters.
+* Event ids use the `S` prefix (`S1`, `S2`, ...) so supplement events are distinguishable from first-pass events (`E1`, ...).
+* `status_effects` targets must be candidate characters only.
+* Delta scale, dimensions, stance values, and confidence conventions are identical to the first pass:
+  * delta: -2 clearly diminished ... +2 clearly elevated
+  * be conservative when irony, layered narration, or reference resolution makes interpretation unstable
+* `explanation` fields must be written in English.
+* `ambiguities` defaults to an empty list.
+
+## Important rules
+
+* Candidate characters only. Canonical names only.
+* The accepted annotation is fixed; never re-score its characters.
+* An empty supplement is a good supplement when the candidates are peripheral.
+* Do not add a winner/loser verdict, a summary object, or fields beyond the schema.
+* Do not turn one movement into a chain of micro-events.
+* Do not add balancing effects unless both directions are central for that candidate.
+
+## Inputs begin below
+
+### Alias map
+
+{
+  "Swann": {
+    "aliases": [
+      "Swann",
+      "M. Swann",
+      "Charles Swann"
+    ]
+  },
+  "Legrandin": {
+    "aliases": [
+      "Legrandin",
+      "M. Legrandin"
+    ]
+  },
+  "Mme de Villeparisis": {
+    "aliases": [
+      "Mme de Villeparisis",
+      "Madame de Villeparisis"
+    ]
+  },
+  "Mme de Cambremer": {
+    "aliases": [
+      "Mme de Cambremer",
+      "Madame de Cambremer"
+    ]
+  },
+  "M. Vinteuil": {
+    "aliases": [
+      "M. Vinteuil",
+      "Vinteuil"
+    ]
+  },
+  "la mère du narrateur": {
+    "aliases": [
+      "maman",
+      "ma mère"
+    ]
+  },
+  "Odette": {
+    "aliases": [
+      "Odette",
+      "Odette de Crécy",
+      "Odette de Crecy",
+      "Mme de Crécy",
+      "Mme de Crecy"
+    ]
+  },
+  "Mme Verdurin": {
+    "aliases": [
+      "Mme Verdurin",
+      "Madame Verdurin"
+    ]
+  },
+  "M. Verdurin": {
+    "aliases": [
+      "M. Verdurin",
+      "Monsieur Verdurin",
+      "Verdurin"
+    ]
+  },
+  "comte de Forcheville": {
+    "aliases": [
+      "Forcheville",
+      "comte de Forcheville",
+      "M. de Forcheville"
+    ]
+  },
+  "Brichot": {
+    "aliases": [
+      "Brichot",
+      "M. Brichot"
+    ]
+  },
+  "docteur Cottard": {
+    "aliases": [
+      "Cottard",
+      "docteur Cottard",
+      "le docteur"
+    ]
+  },
+  "Mme Cottard": {
+    "aliases": [
+      "Mme Cottard",
+      "Madame Cottard"
+    ]
+  },
+  "Saniette": {
+    "aliases": [
+      "Saniette"
+    ]
+  },
+  "le peintre": {
+    "aliases": [
+      "le peintre",
+      "peintre"
+    ]
+  },
+  "marquis de Forestelle": {
+    "aliases": [
+      "marquis de Forestelle",
+      "M. de Forestelle",
+      "Forestelle"
+    ]
+  },
+  "baron de Charlus": {
+    "aliases": [
+      "baron de Charlus",
+      "Charlus"
+    ]
+  },
+  "oncle Adolphe": {
+    "aliases": [
+      "mon oncle Adolphe",
+      "oncle Adolphe",
+      "Adolphe"
+    ]
+  },
+  "marquise de Saint-Euverte": {
+    "aliases": [
+      "marquise de Saint-Euverte",
+      "Mme de Saint-Euverte",
+      "Saint-Euverte"
+    ]
+  },
+  "général de Froberville": {
+    "aliases": [
+      "général de Froberville",
+      "general de Froberville",
+      "Froberville"
+    ]
+  },
+  "marquis de Bréauté": {
+    "aliases": [
+      "marquis de Bréauté",
+      "marquis de Breaute",
+      "Bréauté",
+      "Breaute"
+    ]
+  },
+  "marquise de Gallardon": {
+    "aliases": [
+      "marquise de Gallardon",
+      "Mme de Gallardon",
+      "Gallardon"
+    ]
+  },
+  "duc de Guermantes": {
+    "aliases": [
+      "duc de Guermantes"
+    ]
+  },
+  "princesse de Parme": {
+    "aliases": [
+      "princesse de Parme"
+    ]
+  },
+  "M. d'Orsan": {
+    "aliases": [
+      "M. d'Orsan",
+      "d'Orsan",
+      "Orsan"
+    ]
+  },
+  "Rémi": {
+    "aliases": [
+      "Rémi",
+      "Remi"
+    ]
+  },
+  "comtesse de Monteriender": {
+    "aliases": [
+      "comtesse de Monteriender",
+      "Mme de Monteriender",
+      "Monteriender"
+    ]
+  },
+  "Napoléon III": {
+    "aliases": [
+      "Napoléon III",
+      "Napoleon III"
+    ]
+  },
+  "Gilberte": {
+    "aliases": [
+      "Gilberte"
+    ]
+  },
+  "Françoise": {
+    "aliases": [
+      "Françoise",
+      "Francoise"
+    ]
+  },
+  "la Berma": {
+    "aliases": [
+      "la Berma",
+      "Berma"
+    ]
+  },
+  "Bergotte": {
+    "aliases": [
+      "Bergotte"
+    ]
+  },
+  "Norpois": {
+    "aliases": [
+      "Norpois",
+      "M. de Norpois",
+      "le marquis de Norpois"
+    ]
+  },
+  "la grand-mère": {
+    "aliases": [
+      "ma grand-mère",
+      "grand-mère",
+      "ma grand'mère",
+      "grand'mère",
+      "la grand-mère"
+    ]
+  },
+  "M. de Stermaria": {
+    "aliases": [
+      "M. de Stermaria",
+      "de Stermaria",
+      "Stermaria"
+    ]
+  },
+  "Aimé": {
+    "aliases": [
+      "Aimé",
+      "Aime"
+    ]
+  },
+  "Mlle de Stermaria": {
+    "aliases": [
+      "Mlle de Stermaria"
+    ]
+  },
+  "marquis de Cambremer": {
+    "aliases": [
+      "marquis de Cambremer",
+      "M. de Cambremer"
+    ]
+  },
+  "princesse de Luxembourg": {
+    "aliases": [
+      "princesse de Luxembourg",
+      "La princesse de Luxembourg"
+    ]
+  },
+  "le père du narrateur": {
+    "aliases": [
+      "mon père",
+      "votre père"
+    ]
+  },
+  "Mme Blandais": {
+    "aliases": [
+      "Mme Blandais",
+      "Madame Blandais"
+    ]
+  },
+  "Mme Poncin": {
+    "aliases": [
+      "Mme Poncin",
+      "Madame Poncin"
+    ]
+  },
+  "Robert de Saint-Loup": {
+    "aliases": [
+      "Saint-Loup",
+      "Robert de Saint-Loup",
+      "marquis de Saint-Loup-en-Bray",
+      "le neveu de Mme de Villeparisis"
+    ]
+  },
+  "M. de Marsantes": {
+    "aliases": [
+      "M. de Marsantes",
+      "Marsantes",
+      "Saint-Loup de Saint-Loup"
+    ]
+  },
+  "Bloch": {
+    "aliases": [
+      "Bloch",
+      "Bloch fils"
+    ]
+  },
+  "prince des Laumes": {
+    "aliases": [
+      "prince des Laumes"
+    ]
+  },
+  "Bloch père": {
+    "aliases": [
+      "Bloch père"
+    ]
+  },
+  "le directeur": {
+    "aliases": [
+      "le directeur",
+      "directeur"
+    ]
+  },
+  "Dreyfus": {
+    "aliases": [
+      "Dreyfus"
+    ]
+  },
+  "jeune blonde de Rivebelle": {
+    "aliases": [
+      "jeune blonde",
+      "jeune blonde à l'air triste"
+    ]
+  },
+  "duchesse de Guermantes": {
+    "aliases": [
+      "duchesse de Guermantes",
+      "Mme de Guermantes",
+      "Madame de Guermantes",
+      "la duchesse"
+    ]
+  },
+  "Jupien": {
+    "aliases": [
+      "Jupien"
+    ]
+  },
+  "princesse de Guermantes": {
+    "aliases": [
+      "princesse de Guermantes",
+      "princesse de Guermantes-Bavière",
+      "Mme de Guermantes-Bavière"
+    ]
+  },
+  "duc de Châtellerault": {
+    "aliases": [
+      "duc de Châtellerault",
+      "M. de Châtellerault",
+      "Châtellerault"
+    ]
+  },
+  "M. de Vaugoubert": {
+    "aliases": [
+      "M. de Vaugoubert",
+      "Vaugoubert"
+    ]
+  },
+  "Mme de Vaugoubert": {
+    "aliases": [
+      "Mme de Vaugoubert",
+      "Madame de Vaugoubert"
+    ]
+  },
+  "Albertine": {
+    "aliases": [
+      "Albertine"
+    ]
+  },
+  "Andrée": {
+    "aliases": [
+      "Andrée",
+      "Andree"
+    ]
+  },
+  "Mme Bontemps": {
+    "aliases": [
+      "Mme Bontemps",
+      "Madame Bontemps"
+    ]
+  },
+  "Morel": {
+    "aliases": [
+      "Morel"
+    ]
+  },
+  "Elstir": {
+    "aliases": [
+      "Elstir"
+    ]
+  },
+  "prince de Léon": {
+    "aliases": [
+      "prince de Léon",
+      "prince de Leon",
+      "Léon",
+      "Leon"
+    ]
+  },
+  "marquis du Lau": {
+    "aliases": [
+      "marquis du Lau",
+      "du Lau"
+    ]
+  },
+  "Mme de Chaussepierre": {
+    "aliases": [
+      "Mme de Chaussepierre",
+      "Madame de Chaussepierre",
+      "Chaussepierre"
+    ]
+  }
+}
+
+### Accepted annotation (fixed context)
+
+{
+  "characters_present": [
+    {
+      "canonical_name": "la grand-mère",
+      "surface_forms": [
+        "la grand-mère"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    }
+  ],
+  "appraisal_events": [],
+  "status_effects": [],
+  "ambiguities": [],
+  "unit_id": "v7-p4-le-bal-de-tetes#p-126-p-130"
+}
+
+### Candidate characters
+
+[
+  "Bergotte",
+  "Elstir",
+  "le narrateur"
+]
+
+### Prior local context (optional)
+
+Si l'idée de la mort, dans ce temps-là, m'avait ainsi assombri l'amour, depuis longtemps déjà le souvenir de l'amour m'aidait à ne pas craindre la mort. Car je comprenais que mourir n'était pas quelque chose de nouveau, mais qu'au contraire depuis mon enfance j'étais déjà mort bien des fois. Pour prendre la période la moins ancienne, n'avais-je pas tenu à Albertine plus qu'à ma vie ? Pouvais-je alors concevoir ma personne sans qu'y continuât mon amour pour elle ? Or je ne l'aimais plus, j'étais, non plus l'être qui l'aimait, mais un être différent qui ne l'aimait pas, j'avais cessé de l'aimer quand j'étais devenu un autre. Or je ne souffrais pas d'être devenu cet autre, de ne plus aimer Albertine ; et certes, ne plus avoir un jour mon corps ne pouvait me paraître, en aucune façon, quelque chose d'aussi triste que m'avait paru jadis de ne plus aimer un jour Albertine. Et pourtant, combien cela m'était égal maintenant de ne plus l'aimer ! Ces morts successives, si redoutées du moi qu'elles devaient anéantir, si indifférentes, si douces une fois accomplies, et quand celui qui les craignait n'était plus là pour les sentir, m'avaient fait, depuis quelque temps, comprendre combien il serait peu sage de m'effrayer de la mort. Or c'était maintenant qu'elle m'était devenue depuis peu indifférente que je recommençais de nouveau à la craindre, sous une autre forme il est vrai, non pas pour moi, mais pour mon livre, à l'éclosion duquel était, au moins pendant quelque temps, indispensable cette vie que tant de dangers menaçaient. Victor Hugo dit : « Il faut que l'herbe pousse et que les enfants meurent. » Moi je dis que la loi cruelle de l'art est que les êtres meurent et que nous-mêmes mourions en épuisant toutes les souffrances pour que pousse l'herbe non de l'oubli mais de la vie éternelle, l'herbe drue des oeuvres fécondes, sur laquelle les générations viendront faire gaiement, sans souci de ceux qui dorment en dessous, leur « déjeuner sur l'herbe ». J'ai dit des dangers extérieurs ; des dangers intérieurs aussi. Si j'étais préservé d'un accident venu du dehors, qui sait si je ne serais pas empêché de profiter de cette grâce par un accident survenu au-dedans de moi, par quelque catastrophe interne, quelque accident cérébral, avant que fussent écoulés les mois nécessaires pour écrire ce livre.
+
+### Passage
+
+L'accident cérébral n'était même pas nécessaire. Des symptômes, sensibles pour moi par un certain vide dans la tête, et par un oubli de toutes choses que je ne retrouvais plus que par hasard, comme quand, en rangeant des affaires, on en trouve une qu'on avait oubliée, qu'on n'avait même pas pensé à chercher, faisaient de moi un thésauriseur dont le coffre-fort crevé eût laissé fuir au fur et à mesure ses richesses.
+
+Quand, tout à l'heure, je reviendrais chez moi par les Champs-Élysées, qui me disait que je ne serais pas frappé par le même mal que ma grand'mère, un après-midi où elle était venue y faire avec moi une promenade qui devait être pour elle la dernière, sans qu'elle s'en doutât, dans cette ignorance, qui est la nôtre, que l'aiguille est arrivée sur le point précis où le ressort déclenché de l'horlogerie va sonner l'heure. Peut-être la crainte d'avoir déjà parcouru presque tout entière la minute qui précède le premier coup de l'heure, quand déjà celui-ci se prépare, peut-être cette crainte du coup qui serait en train de s'ébranler dans mon cerveau était-elle comme une obscure connaissance de ce qui allait être, comme un reflet dans la conscience de l'état précaire du cerveau dont les artères vont céder, ce qui n'est pas plus impossible que cette soudaine acceptation de la mort qu'ont des blessés, qui, quoiqu'ils aient gardé leur lucidité, que le médecin et le désir de vivre cherchent à les tromper, disent, voyant ce qui va être : « Je vais mourir, je suis prêt » et écrivent leurs adieux à leur femme.
+
+Cette obscure connaissance de ce qui devait être me fut donnée par la chose singulière qui arriva avant que j'eusse commencé mon livre, et qui m'arriva sous une forme dont je ne me serais jamais douté. On me trouva, un soir où je sortis, meilleure mine qu'autrefois, on s'étonna que j'eusse gardé tous mes cheveux noirs. Mais je manquai trois fois de tomber en descendant l'escalier. Ce n'avait été qu'une sortie de deux heures, mais quand je fus rentré je sentis que je n'avais plus ni mémoire, ni pensée, ni force, ni aucune existence. On serait venu pour me voir, pour me nommer roi, pour me saisir, pour m'arrêter, que je me serais laissé faire sans dire un mot, sans rouvrir les yeux, comme ces gens atteints au plus haut degré du mal de mer et qui, traversant sur un bateau la mer Caspienne, n'esquissent pas même une résistance si on leur dit qu'on va les jeter à la mer. Je n'avais, à proprement parler, aucune maladie, mais je sentais que je n'étais plus capable de rien, comme il arrive à des vieillards alertes la veille et qui, s'étant fracturé la cuisse, ou ayant eu une indigestion, peuvent mener encore quelque temps, dans leur lit, une existence qui n'est plus qu'une préparation plus ou moins longue à une mort désormais inéluctable. Un des moi, celui qui jadis allait dans un de ces festins de barbares qu'on appelle dîners en ville et où, pour les hommes en blanc, pour les femmes à demi nues et emplumées, les valeurs sont si renversées que quelqu'un qui ne vient pas dîner après avoir accepté, ou seulement n'arrive qu'au rôti, commet un acte plus coupable que les actions immorales dont on parle légèrement pendant ce dîner ainsi que des morts récentes, et où la mort ou une grave maladie sont les seules excuses à ne pas venir, à condition qu'on ait fait prévenir à temps, pour l'invitation du quatorzième, qu'on était mourant, ce moi-là en moi avait gardé ses scrupules et perdu sa mémoire. L'autre moi, celui qui avait conçu son oeuvre, en revanche se souvenait. J'avais reçu une invitation de Mme Molé et appris que le fils de Mme Sazerat était mort. J'étais résolu à employer une de ces heures après lesquelles je ne pourrais plus prononcer un mot, la langue liée comme ma grand'mère pendant son agonie, ou avaler du lait, à adresser mes excuses à Mme Molé et mes condoléances à Mme Sazerat. Mais, au bout de quelques instants, j'avais oublié que j'avais à le faire. Heureux oubli, car la mémoire de mon oeuvre veillait et allait employer à poser mes premières fondations l'heure de survivance qui m'était dévolue. Malheureusement, en prenant un cahier pour écrire, la carte d'invitation de Mme Molé glissait près de moi. Aussitôt le moi oublieux, mais qui avait la prééminence sur l'autre, comme il arrive chez tous les barbares scrupuleux qui ont dîné en ville, repoussait le cahier, écrivait à Mme Molé (laquelle d'ailleurs m'eût sans doute fort estimé, si elle l'eût appris, d'avoir fait passer ma réponse à son invitation avant mes travaux d'architecte). Brusquement, un mot de ma réponse me rappelait que Mme Sazerat avait perdu son fils, je lui écrivais aussi, puis ayant ainsi sacrifié un devoir réel à l'obligation factice de me montrer poli et sensible, je tombais sans forces, je fermais les yeux, ne devant plus que végéter pour huit jours. Pourtant, si tous mes devoirs inutiles, auxquels j'étais prêt à sacrifier le vrai, sortaient au bout de quelques minutes de ma tête, l'idée de ma construction ne me quittait pas un instant. Je ne savais pas si ce serait une église où des fidèles sauraient peu à peu apprendre des vérités et découvrir des harmonies, le grand plan d'ensemble, ou si cela resterait comme un monument druidique au sommet d'une île, quelque chose d'infréquenté à jamais. Mais j'étais décidé à y consacrer mes forces qui s'en allaient comme à regret, et comme pour pouvoir me laisser le temps d'avoir, tout le pourtour terminé, fermé « la porte funéraire ». Bientôt je pus montrer quelques esquisses. Personne n'y comprit rien. Même ceux qui furent favorables à ma perception des vérités que je voulais ensuite graver dans le temple me félicitèrent de les avoir découvertes au « microscope » quand je m'étais, au contraire, servi d'un télescope pour apercevoir des choses, très petites, en effet, mais parce qu'elles étaient situées à une grande distance, et qui étaient chacune un monde. Là où je cherchais les grandes lois, on m'appelait fouilleur de détails. D'ailleurs, à quoi bon faisais-je cela ? j'avais eu de la facilité, jeune, et Bergotte avait trouvé mes pages de collégien « parfaites », mais au lieu de travailler, j'avais vécu dans la paresse, dans la dissipation des plaisirs, dans la maladie, les soins, les manies, et j'entreprenais mon ouvrage à la veille de mourir, sans rien savoir de mon métier. Je ne me sentais plus la force de faire face à mes obligations avec les êtres, ni à mes devoirs envers ma pensée et mon oeuvre, encore moins envers tous les deux. Pour les premiers, l'oubli des lettres à écrire simplifiait un peu ma tâche. La perte de la mémoire m'aidait un peu en faisant des coupes dans mes obligations, mon oeuvre les remplaçait. Mais tout d'un coup, au bout d'un mois, l'association des idées ramenait, avec mes remords, le souvenir et j'étais accablé du sentiment de mon impuissance. Je fus étonné d'être indifférent aux critiques qui m'étaient faites, mais c'est que, depuis le jour où mes jambes avaient tellement tremblé en descendant l'escalier, j'étais devenu indifférent à tout, je n'aspirais plus qu'au repos, en attendant le grand repos qui finirait par venir. Ce n'était pas parce que je reportais après ma mort l'admiration qu'on devait, me semblait-il, avoir pour mon oeuvre que j'étais indifférent aux suffrages de l'élite actuelle. Celle d'après ma mort pourrait penser ce qu'elle voudrait. Cela ne me souciait pas davantage. En réalité, si je pensais à mon oeuvre et point aux lettres auxquelles je devais répondre, ce n'était plus que je misse entre les deux choses, comme au temps de ma paresse, et ensuite au temps de mon travail, jusqu'au jour où j'avais dû me retenir à la rampe de l'escalier, une grande différence d'importance. L'organisation de ma mémoire, de mes préoccupations, était liée à mon oeuvre, peut-être parce que, tandis que les lettres reçues étaient oubliées l'instant d'après, l'idée de mon oeuvre était dans ma tête, toujours la même, en perpétuel devenir. Mais elle aussi m'était devenue importune. Elle était pour moi comme un fils dont la mère mourante doit encore s'imposer la fatigue de s'occuper sans cesse, entre les piqûres et les ventouses. Elle l'aime peut-être encore, mais ne le sait plus que par le devoir excédant qu'elle a de s'occuper de lui. Chez moi les forces de l'écrivain n'étaient plus à la hauteur des exigences égoïstes de l'oeuvre. Depuis le jour de l'escalier, rien du monde, aucun bonheur, qu'il vînt de l'amitié des gens, des progrès de mon oeuvre, de l'espérance de la gloire, ne parvenait plus à moi que comme un si pâle soleil qu'il n'avait plus la vertu de me réchauffer, de me faire vivre, de me donner un désir quelconque, et encore était-il trop brillant, si blême qu'il fût, pour mes yeux qui préféraient se fermer, et je me retournais du côté du mur. Il me semble, pour autant que je sentais le mouvement de mes lèvres, que je devais avoir un petit sourire infime d'un coin de la bouche quand une dame m'écrivait : « J'ai été surprise de ne pas avoir de réponse à ma lettre. » Néanmoins, cela me rappelait la lettre, et je lui répondais. Je voulais tâcher, pour qu'on ne pût me croire ingrat, de mettre ma gentillesse actuelle au niveau de la gentillesse que les gens avaient pu avoir pour moi. Et j'étais écrasé d'imposer à mon existence agonisante les fatigues surhumaines de la vie.
+
+Cette idée de la mort s'installa définitivement en moi comme fait un amour. Non que j'aimasse la mort, je la détestais. Mais, après y avoir songé sans doute de temps en temps, comme à une femme qu'on n'aime pas encore, maintenant sa pensée adhérait à la plus profonde couche de mon cerveau si complètement que je ne pouvais m'occuper d'une chose, sans que cette chose traversât d'abord l'idée de la mort et même, si je ne m'occupais de rien et restais dans un repos complet, l'idée de la mort me tenait compagnie aussi incessante que l'idée du moi. Je ne pense pas que, le jour où j'étais devenu un demi-mort, c'étaient les accidents qui avaient caractérisé cela, l'impossibilité de descendre un escalier, de me rappeler un nom, de me lever, qui avaient causé, par un raisonnement même inconscient, l'idée de la mort, que j'étais déjà à peu près mort, mais plutôt que c'était venu ensemble, qu'inévitablement ce grand miroir de l'esprit reflétait une réalité nouvelle. Pourtant je ne voyais pas comment des maux que j'avais on pouvait passer sans être averti à la mort complète. Mais alors je pensais aux autres, à tous ceux qui chaque jour meurent sans que l'hiatus entre leur maladie et leur mort nous semble extraordinaire. Je pensais même que c'était seulement parce que je les voyais de l'intérieur (plus encore que par les tromperies de l'espérance) que certains malaises ne me semblaient pas mortels, pris un à un, bien que je crusse à ma mort, de même que ceux qui sont le plus persuadés que leur terme est venu sont néanmoins persuadés aisément que, s'ils ne peuvent pas prononcer certains mots, cela n'a rien à voir avec une attaque, une crise d'aphasie, mais vient d'une fatigue de la langue, d'un état nerveux analogue au bégaiement, de l'épuisement qui a suivi une indigestion.
+
+Moi, c'était autre chose que les adieux d'un mourant à sa femme que j'avais à écrire, de plus long et à plus d'une personne. Long à écrire. Le jour, tout au plus pourrais-je essayer de dormir. Si je travaillais, ce ne serait que la nuit. Mais il me faudrait beaucoup de nuits, peut-être cent, peut-être mille. Et je vivrais dans l'anxiété de ne pas savoir si le Maître de ma destinée, moins indulgent que le sultan Sheriar, le matin, quand j'interromprais mon récit, voudrait bien surseoir à mon arrêt de mort et me permettrait de reprendre la suite le prochain soir. Non pas que je prétendisse refaire, en quoi que ce fût, les Mille et une Nuits, pas plus que les Mémoires de Saint-Simon, écrits eux aussi la nuit, pas plus qu'aucun des livres que j'avais tant aimés et desquels, dans ma naïveté d'enfant, superstitieusement attaché à eux comme à mes amours, je ne pouvais sans horreur imaginer une oeuvre qui serait différente. Mais, comme Elstir, comme Chardin, on ne peut refaire ce qu'on aime qu'en le renonçant. Sans doute mes livres, eux aussi, comme mon être de chair, finiraient un jour par mourir. Mais il faut se résigner à mourir. On accepte la pensée que dans dix ans soi-même, dans cent ans ses livres, ne seront plus. La durée éternelle n'est pas plus promise aux oeuvres qu'aux hommes.
