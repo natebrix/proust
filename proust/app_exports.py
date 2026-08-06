@@ -794,7 +794,82 @@ def build_chapter_summary_export(run_dirs, top_character_limit=8, top_passage_li
     }
 
 
-def build_chapter_overlay_data(run_dirs):
+def discover_supplement_run_dirs(outputs_dir="outputs"):
+    output_path = Path(outputs_dir)
+    if not output_path.exists():
+        return []
+    return sorted(
+        run_dir
+        for run_dir in output_path.glob("supplement-run-*")
+        if run_dir.is_dir() and (run_dir / "run.json").exists()
+    )
+
+
+def _supplement_preferred_run_by_unit(supplement_run_dirs):
+    # Mirrors the "latest_reviewed_run_wins" duplicate-unit resolution used
+    # for accepted run_dirs above, scoped to the supplement run family only:
+    # if the same unit is annotated by more than one supplement run, the
+    # highest-numbered run id wins.
+    preferred_run_by_unit = {}
+    for run_dir in supplement_run_dirs:
+        status = runner.get_run_status(run_dir)
+        run_id = status["manifest"]["run_id"]
+        for unit in status["units"]:
+            if unit["review_state"] != "reviewed":
+                continue
+            unit_id = unit["unit_id"]
+            existing_run_id = preferred_run_by_unit.get(unit_id)
+            if existing_run_id is None or _run_id_sort_key(run_id) > _run_id_sort_key(existing_run_id):
+                preferred_run_by_unit[unit_id] = run_id
+    return preferred_run_by_unit
+
+
+def _build_supplement_unit_character_rows(supplement_run_dirs):
+    # Scores each supplement run with the same per-lens outcome-report path
+    # used for accepted run_dirs, then buckets the winning (latest-run-wins)
+    # entries by unit_id -> character -> per-lens row, in the same shape as
+    # the accepted character buckets built in build_chapter_overlay_data.
+    if not supplement_run_dirs:
+        return {}, []
+
+    preferred_run_by_unit = _supplement_preferred_run_by_unit(supplement_run_dirs)
+    run_ids = []
+    seen_run_ids = set()
+    supplement_timeline_by_lens = {lens: [] for lens in sorted(SCORING_LENS_CONFIGS)}
+
+    for run_dir in supplement_run_dirs:
+        status = runner.get_run_status(run_dir)
+        run_id = status["manifest"]["run_id"]
+        if run_id not in seen_run_ids:
+            seen_run_ids.add(run_id)
+            run_ids.append(run_id)
+        for lens in sorted(SCORING_LENS_CONFIGS):
+            report = runner.build_outcome_report(run_dir, lens=lens)
+            supplement_timeline_by_lens[lens].extend(
+                entry for entry in report["timeline"] if preferred_run_by_unit.get(entry["unit_id"]) == run_id
+            )
+
+    supplement_unit_rows = defaultdict(dict)
+    for lens, entries in supplement_timeline_by_lens.items():
+        for entry in entries:
+            unit_id = entry["unit_id"]
+            character_bucket = supplement_unit_rows[unit_id].setdefault(
+                entry["character"],
+                {
+                    "character": entry["character"],
+                    "dominantStatusDimension": entry["dominant_status_dimension"],
+                },
+            )
+            character_bucket[lens] = {
+                "netScore": entry["net_score"],
+                "label": entry["label"],
+            }
+
+    run_ids.sort(key=_run_id_sort_key)
+    return supplement_unit_rows, run_ids
+
+
+def build_chapter_overlay_data(run_dirs, supplement_run_dirs=None):
     if not run_dirs:
         raise ValueError("At least one run directory is required for chapter overlay export.")
 
@@ -845,6 +920,10 @@ def build_chapter_overlay_data(run_dirs):
                 "paragraphEnd": paragraph_end,
             }
 
+    supplement_unit_rows, supplement_run_ids = _build_supplement_unit_character_rows(supplement_run_dirs)
+    supplement_collision_count = 0
+    supplemented_unit_ids = set()
+
     chapters = []
     manifest_rows = []
     for chapter in runner.CANONICAL_CHAPTER_SPECS:
@@ -860,6 +939,7 @@ def build_chapter_overlay_data(run_dirs):
             ),
         ):
             character_rows = []
+            accepted_character_names = set(characters.keys())
             for character in characters.values():
                 character_row = {
                     "character": character["character"],
@@ -868,6 +948,22 @@ def build_chapter_overlay_data(run_dirs):
                 for lens in sorted(SCORING_LENS_CONFIGS):
                     character_row[lens] = character.get(lens, {"netScore": 0.0, "label": "neutral"})
                 character_rows.append(character_row)
+
+            for character_name, supplement_character in supplement_unit_rows.get(unit_id, {}).items():
+                if character_name in accepted_character_names:
+                    # A supplement row must never overwrite an accepted
+                    # character row for the same unit; only count it.
+                    supplement_collision_count += 1
+                    continue
+                supplement_row = {
+                    "character": supplement_character["character"],
+                    "dominantStatusDimension": supplement_character["dominantStatusDimension"],
+                    "provenance": "supplement",
+                }
+                for lens in sorted(SCORING_LENS_CONFIGS):
+                    supplement_row[lens] = supplement_character.get(lens, {"netScore": 0.0, "label": "neutral"})
+                character_rows.append(supplement_row)
+                supplemented_unit_ids.add(unit_id)
 
             character_rows.sort(key=_overlay_character_sort_key)
             units.append(
@@ -905,7 +1001,7 @@ def build_chapter_overlay_data(run_dirs):
             }
         )
 
-    return {
+    dataset = {
         "chapter_overlay_version": "chapter_overlay_v2",
         "source_review_version": "corpus_sanity_review_v1",
         "chapter_count": len(chapters),
@@ -919,6 +1015,14 @@ def build_chapter_overlay_data(run_dirs):
             "chapters": manifest_rows,
         },
     }
+
+    if supplement_run_dirs:
+        dataset["supplement_run_count"] = len(supplement_run_ids)
+        dataset["supplement_runs"] = supplement_run_ids
+        dataset["supplemented_unit_count"] = len(supplemented_unit_ids)
+        dataset["supplement_collision_count"] = supplement_collision_count
+
+    return dataset
 
 
 def build_character_chapter_analysis(
@@ -1147,6 +1251,8 @@ def build_character_elo(
     initial_rating=1500.0,
     k_factor=24.0,
     epsilon=0.25,
+    supplement_run_dirs=None,
+    min_match_count=10,
 ):
     if lens != "advantage":
         raise ValueError("character_elo_v1 currently supports only the advantage lens.")
@@ -1154,7 +1260,7 @@ def build_character_elo(
         raise ValueError("At least one run directory is required for character ELO.")
 
     review = runner.build_corpus_sanity_review(run_dirs)
-    overlay_dataset = build_chapter_overlay_data(run_dirs)
+    overlay_dataset = build_chapter_overlay_data(run_dirs, supplement_run_dirs=supplement_run_dirs)
 
     ratings = {}
     diagnostics = {}
@@ -1278,7 +1384,16 @@ def build_character_elo(
         row["elo_rank_minus_mean_score_rank"] = row["elo_rank"] - row["mean_score_rank"]
 
     characters.sort(key=lambda item: (-item["elo"], item["character"]))
-    return {
+
+    # Presentation filter: characters with fewer than min_match_count pairwise
+    # matches (e.g. a character scored alone in every unit it appears in,
+    # which yields 0 matches) are excluded from the summary tables below,
+    # since a rank/rating built on effectively no comparisons is noise. The
+    # full "characters" table is never filtered -- every scored character
+    # keeps its row and full data there.
+    eligible_characters = [row for row in characters if row["match_count"] >= min_match_count]
+
+    result = {
         "character_elo_version": "character_elo_advantage_v1",
         "lens": lens,
         "source_review_version": review["corpus_review_version"],
@@ -1286,22 +1401,29 @@ def build_character_elo(
         "initial_rating": initial_rating,
         "k_factor": k_factor,
         "epsilon": epsilon,
+        "min_match_count": min_match_count,
         "ordering_rule": "canonical_chapter_then_paragraph_then_unit_then_pair",
         "character_count": len(characters),
         "match_count": match_count,
         "draw_rate": round(draw_count / match_count, 3) if match_count else 0.0,
-        "top_rated_characters": characters[:10],
-        "lowest_rated_characters": sorted(characters, key=lambda item: (item["elo"], item["character"]))[:10],
+        "top_rated_characters": eligible_characters[:10],
+        "lowest_rated_characters": sorted(eligible_characters, key=lambda item: (item["elo"], item["character"]))[:10],
         "highest_match_count_characters": sorted(
             characters,
             key=lambda item: (-item["match_count"], -item["unit_count"], item["character"]),
         )[:10],
         "largest_rank_mismatches": sorted(
-            characters,
+            eligible_characters,
             key=lambda item: (-abs(item["elo_rank_minus_mean_score_rank"]), item["character"]),
         )[:10],
         "characters": characters,
     }
+
+    if supplement_run_dirs:
+        result["supplemented"] = True
+        result["supplement_runs"] = overlay_dataset.get("supplement_runs", [])
+
+    return result
 
 
 def build_character_elo_timeline(
@@ -1311,6 +1433,7 @@ def build_character_elo_timeline(
     initial_rating=1500.0,
     k_factor=24.0,
     epsilon=0.25,
+    supplement_run_dirs=None,
 ):
     if lens != "advantage":
         raise ValueError("character_elo_timeline_v1 currently supports only the advantage lens.")
@@ -1320,7 +1443,7 @@ def build_character_elo_timeline(
     selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
     selected_set = set(selected_characters)
     review = runner.build_corpus_sanity_review(run_dirs)
-    overlay_dataset = build_chapter_overlay_data(run_dirs)
+    overlay_dataset = build_chapter_overlay_data(run_dirs, supplement_run_dirs=supplement_run_dirs)
 
     units_by_chapter = {chapter["chapterId"]: chapter["units"] for chapter in overlay_dataset["chapters"]}
     corpus_positions = _build_corpus_position_index(units_by_chapter)
@@ -1383,7 +1506,7 @@ def build_character_elo_timeline(
         )
 
     characters.sort(key=lambda item: (-item["point_count"], -item["final_elo"], item["character"]))
-    return {
+    result = {
         "character_elo_timeline_version": "character_elo_timeline_v1",
         "lens": lens,
         "source_review_version": review["corpus_review_version"],
@@ -1398,6 +1521,12 @@ def build_character_elo_timeline(
         "characters": characters,
         "points": points,
     }
+
+    if supplement_run_dirs:
+        result["supplemented"] = True
+        result["supplement_runs"] = overlay_dataset.get("supplement_runs", [])
+
+    return result
 
 
 def build_character_profile_cards(run_dirs, top_chapter_limit=5):
@@ -1446,4 +1575,80 @@ def build_character_profile_cards(run_dirs, top_chapter_limit=5):
         "source_review_version": review["corpus_review_version"],
         "character_count": len(cards),
         "cards": cards,
+    }
+
+
+def build_character_elo_supplement_diff(baseline_analysis, supplemented_analysis, clearing_threshold=30, top_mover_limit=15):
+    baseline_by_character = {row["character"]: row for row in baseline_analysis["characters"]}
+    supplemented_by_character = {row["character"]: row for row in supplemented_analysis["characters"]}
+    initial_rating = supplemented_analysis.get("initial_rating", baseline_analysis.get("initial_rating", 1500.0))
+
+    newly_clearing = []
+    mover_rows = []
+    for character in sorted(set(baseline_by_character) | set(supplemented_by_character)):
+        before_row = baseline_by_character.get(character)
+        after_row = supplemented_by_character.get(character)
+        match_count_before = before_row["match_count"] if before_row else 0
+        match_count_after = after_row["match_count"] if after_row else 0
+
+        if match_count_before < clearing_threshold <= match_count_after:
+            newly_clearing.append(
+                {
+                    "character": character,
+                    "match_count_before": match_count_before,
+                    "match_count_after": match_count_after,
+                }
+            )
+
+        if after_row is None:
+            # A character present in the baseline but absent from the
+            # supplemented surface would indicate a lost accepted character,
+            # which the additive merge contract forbids; nothing to report.
+            continue
+
+        elo_before = before_row["elo"] if before_row else None
+        elo_after = after_row["elo"]
+        delta = round(elo_after - elo_before, 3) if elo_before is not None else None
+        # New characters (no baseline elo) have no "delta" in the strict
+        # sense, but still moved from the shared initial rating to their
+        # supplemented elo; used only to rank movers, not reported as delta.
+        effective_delta = elo_after - (elo_before if elo_before is not None else initial_rating)
+        mover_rows.append(
+            {
+                "character": character,
+                "elo_before": elo_before,
+                "elo_after": elo_after,
+                "delta": delta,
+                "match_count_before": match_count_before,
+                "match_count_after": match_count_after,
+                "_effective_delta": effective_delta,
+            }
+        )
+
+    newly_clearing.sort(key=lambda row: (-row["match_count_after"], row["character"]))
+    mover_rows.sort(key=lambda row: (-abs(row["_effective_delta"]), row["character"]))
+    top_rating_movers = []
+    for row in mover_rows[:top_mover_limit]:
+        row = dict(row)
+        row.pop("_effective_delta")
+        top_rating_movers.append(row)
+
+    return {
+        "character_elo_supplement_diff_version": "character_elo_supplement_diff_v1",
+        "clearing_threshold": clearing_threshold,
+        "match_count": {
+            "before": baseline_analysis["match_count"],
+            "after": supplemented_analysis["match_count"],
+        },
+        "character_count": {
+            "before": baseline_analysis["character_count"],
+            "after": supplemented_analysis["character_count"],
+        },
+        "draw_rate": {
+            "before": baseline_analysis["draw_rate"],
+            "after": supplemented_analysis["draw_rate"],
+        },
+        "newly_clearing_threshold_count": len(newly_clearing),
+        "characters_newly_clearing_threshold": newly_clearing,
+        "top_rating_movers": top_rating_movers,
     }

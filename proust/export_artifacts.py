@@ -1,3 +1,4 @@
+from collections import defaultdict
 import json
 from pathlib import Path
 
@@ -272,8 +273,14 @@ def render_character_elo_markdown(analysis):
         f"- Initial rating: `{analysis['initial_rating']}`",
         f"- K factor: `{analysis['k_factor']}`",
         f"- Epsilon: `{analysis['epsilon']}`",
-        "",
-        "## Top Rated Characters",
+        f"- Min match count (summary tables): `{analysis.get('min_match_count', 0)}`",
+    ]
+    if analysis.get("supplemented"):
+        lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
+    lines.extend(
+        [
+            "",
+            "## Top Rated Characters",
         "",
         markdown_table(
             ["Character", "ELO", "Matches", "W-L-D", "Units", "Mean Advantage"],
@@ -362,7 +369,8 @@ def render_character_elo_markdown(analysis):
             ],
         ),
         "",
-    ]
+        ]
+    )
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -727,3 +735,152 @@ def write_chapter_summary_export_artifacts(analysis, json_output=None, markdown_
         markdown_path = Path(markdown_output)
         markdown_path.parent.mkdir(parents=True, exist_ok=True)
         markdown_path.write_text(render_chapter_summary_export_markdown(analysis))
+
+
+def render_coverage_audit_markdown(audit):
+    metadata = audit["metadata"]
+    corpus_totals = audit["summary"]["corpus_totals"]
+
+    narrator_distribution = defaultdict(int)
+    for unit in audit["units"]:
+        narrator_distribution[unit["narrator_first_person_count"]] += 1
+
+    lines = [
+        "# Coverage Audit",
+        "",
+        f"- Audit version: `{audit['coverage_audit_version']}`",
+        f"- Duplicate resolution: `{metadata['duplicate_resolution']}`",
+        f"- Unit count: `{metadata['unit_count']}`",
+        f"- Flagged unit count: `{metadata['flagged_unit_count']}`",
+        f"- Candidate addition count: `{metadata['candidate_addition_count']}`",
+        f"- Narrator candidate unit count: `{metadata['narrator_candidate_unit_count']}`",
+        f"- Narrator min first-person threshold: `{metadata['params']['narrator_min_first_person']}`",
+        f"- Projected new matches (without narrator): `{corpus_totals['projected_new_matches_without_narrator']}`",
+        f"- Projected new matches (with narrator): `{corpus_totals['projected_new_matches_with_narrator']}`",
+        "",
+        "## Top 20 Characters By Projected Match Gain",
+        "",
+        markdown_table(
+            ["Character", "Flagged Units", "Projected Gain (No Narrator)", "Projected Gain (With Narrator)"],
+            [
+                (
+                    row["character"],
+                    row["flagged_unit_count"],
+                    row["projected_new_matches_without_narrator"],
+                    row["projected_new_matches_with_narrator"],
+                )
+                for row in audit["summary"]["characters"][:20]
+            ],
+        ),
+        "",
+        "## Top 20 Flagged Units By Projected Match Gain",
+        "",
+        markdown_table(
+            ["Unit", "Chapter", "Scored", "Candidates", "Narrator Candidate", "Projected Gain (With Narrator)"],
+            [
+                (
+                    row["unit_id"],
+                    row["chapter_id"],
+                    len(row["scored_characters"]),
+                    ", ".join(candidate["character"] for candidate in row["candidate_additions"]),
+                    "yes" if row["narrator_candidate"] else "no",
+                    row["projected_new_matches_with_narrator"],
+                )
+                for row in sorted(
+                    audit["units"],
+                    key=lambda row: (-row["projected_new_matches_with_narrator"], row["unit_id"]),
+                )[:20]
+            ],
+        ),
+        "",
+        "## Narrator Summary",
+        "",
+        f"- Units flagged as narrator candidates: `{metadata['narrator_candidate_unit_count']}`",
+        "",
+        markdown_table(
+            ["First-Person Marker Count", "Unit Count"],
+            [(count, narrator_distribution[count]) for count in sorted(narrator_distribution)],
+        ),
+        "",
+        "## Counts By Chapter",
+        "",
+        markdown_table(
+            ["Chapter", "Units", "Flagged Units", "Narrator Candidate Units", "Candidate Additions"],
+            [
+                (
+                    row["chapter_id"],
+                    row["unit_count"],
+                    row["flagged_unit_count"],
+                    row["narrator_candidate_unit_count"],
+                    row["candidate_addition_count"],
+                )
+                for row in audit["summary"]["chapters"]
+            ],
+        ),
+        "",
+    ]
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_coverage_audit_artifacts(audit, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_coverage_audit_markdown(audit))
+
+
+def render_character_elo_supplement_diff_markdown(diff):
+    lines = [
+        "# Character ELO Supplement Diff",
+        "",
+        f"- Analysis version: `{diff['character_elo_supplement_diff_version']}`",
+        f"- Clearing threshold: `{diff['clearing_threshold']}`",
+        f"- Match count: `{diff['match_count']['before']}` -> `{diff['match_count']['after']}`",
+        f"- Character count: `{diff['character_count']['before']}` -> `{diff['character_count']['after']}`",
+        f"- Draw rate: `{diff['draw_rate']['before']}` -> `{diff['draw_rate']['after']}`",
+        f"- Characters newly clearing threshold: `{diff['newly_clearing_threshold_count']}`",
+        "",
+        "## Characters Newly Clearing Threshold",
+        "",
+        markdown_table(
+            ["Character", "Matches Before", "Matches After"],
+            [
+                (row["character"], row["match_count_before"], row["match_count_after"])
+                for row in diff["characters_newly_clearing_threshold"]
+            ],
+        ),
+        "",
+        "## Top Rating Movers",
+        "",
+        markdown_table(
+            ["Character", "ELO Before", "ELO After", "Delta", "Matches Before", "Matches After"],
+            [
+                (
+                    row["character"],
+                    row["elo_before"] if row["elo_before"] is not None else "new",
+                    row["elo_after"],
+                    format_signed_number(row["delta"]) if row["delta"] is not None else "new",
+                    row["match_count_before"],
+                    row["match_count_after"],
+                )
+                for row in diff["top_rating_movers"]
+            ],
+        ),
+        "",
+    ]
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_elo_supplement_diff_artifacts(diff, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(diff, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_elo_supplement_diff_markdown(diff))

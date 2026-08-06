@@ -1,8 +1,12 @@
 import argparse
 import json
 import sys
+from pathlib import Path
 
+from . import coverage
 from . import runner as core
+from . import supplement
+from .export_artifacts import write_coverage_audit_artifacts
 
 
 def _collect_runs(args):
@@ -77,6 +81,44 @@ def build_parser():
     corpus_review_parser.add_argument("--output", help="Optional JSON output path.")
     corpus_review_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
 
+    coverage_audit_parser = subparsers.add_parser(
+        "coverage-audit",
+        help="Find named characters present in accepted unit passages but not scored in the annotation, plus a narrator-presence heuristic.",
+    )
+    coverage_audit_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
+    coverage_audit_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    coverage_audit_parser.add_argument(
+        "--narrator-min-first-person",
+        type=int,
+        default=2,
+        help="Minimum first-person marker count for a unit to be flagged as a narrator candidate.",
+    )
+    coverage_audit_parser.add_argument("--output", default="outputs/coverage-audit-current.json", help="Optional JSON output path.")
+    coverage_audit_parser.add_argument("--markdown-output", default="outputs/coverage-audit-current.md", help="Optional Markdown output path.")
+
+    prepare_supplements_parser = subparsers.add_parser(
+        "prepare-supplements",
+        help="Prepare a supplement annotation run from coverage-audit-flagged candidate units.",
+    )
+    prepare_supplements_parser.add_argument(
+        "--audit",
+        default="outputs/coverage-audit-current.json",
+        help="Coverage audit JSON path.",
+    )
+    prepare_supplements_parser.add_argument("--output", required=True, help="Supplement run directory to create.")
+    prepare_supplements_units_group = prepare_supplements_parser.add_mutually_exclusive_group(required=True)
+    prepare_supplements_units_group.add_argument("--units", help="Comma-separated unit ids to include.")
+    prepare_supplements_units_group.add_argument(
+        "--units-file",
+        help="Path to a newline-delimited file of unit ids to include.",
+    )
+    prepare_supplements_parser.add_argument("--notes", default="", help="Optional note stored in run.json.")
+
     character_analysis_parser = subparsers.add_parser(
         "character-analysis",
         help="Build a per-character cross-lens downstream analysis from the corpus review surface.",
@@ -136,8 +178,24 @@ def build_parser():
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
     )
-    character_elo_parser.add_argument("--output", help="Optional JSON output path.")
-    character_elo_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    character_elo_parser.add_argument(
+        "--include-supplements",
+        action="store_true",
+        help="Merge outputs/supplement-run-* annotations into the overlay before computing ELO.",
+    )
+    character_elo_parser.add_argument(
+        "--supplement-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover supplement-run-* directories from when --include-supplements is set. Defaults to outputs.",
+    )
+    character_elo_parser.add_argument(
+        "--min-match-count",
+        type=int,
+        default=10,
+        help="Minimum pairwise match count required for a character to appear in the top/lowest/mismatch summary tables.",
+    )
+    character_elo_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-current.json (or the -supplemented- variant with --include-supplements).")
+    character_elo_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-current.md (or the -supplemented- variant with --include-supplements).")
 
     character_elo_timeline_parser = subparsers.add_parser(
         "character-elo-timeline",
@@ -156,8 +214,83 @@ def build_parser():
         action="append",
         help="Optional tracked character to include. Repeat for multiple characters.",
     )
-    character_elo_timeline_parser.add_argument("--output", help="Optional JSON output path.")
-    character_elo_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    character_elo_timeline_parser.add_argument(
+        "--include-supplements",
+        action="store_true",
+        help="Merge outputs/supplement-run-* annotations into the overlay before computing the ELO timeline.",
+    )
+    character_elo_timeline_parser.add_argument(
+        "--supplement-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover supplement-run-* directories from when --include-supplements is set. Defaults to outputs.",
+    )
+    character_elo_timeline_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-timeline-current.json (or the -supplemented- variant with --include-supplements).")
+    character_elo_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-timeline-current.md (or the -supplemented- variant with --include-supplements).")
+
+    elo_supplement_diff_parser = subparsers.add_parser(
+        "elo-supplement-diff",
+        help="Compute baseline-vs-supplemented character ELO in one invocation and write the supplemented ELO, supplemented ELO timeline, and before/after diff artifacts.",
+    )
+    elo_supplement_diff_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
+    elo_supplement_diff_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--supplement-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover supplement-run-* directories from. Defaults to outputs.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--character",
+        dest="characters",
+        action="append",
+        help="Optional tracked character to include in the supplemented ELO timeline artifact. Repeat for multiple characters.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--min-match-count",
+        type=int,
+        default=10,
+        help="Minimum pairwise match count required for a character to appear in the ELO summary tables (applied to both baseline and supplemented).",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--clearing-threshold",
+        type=int,
+        default=30,
+        help="Match-count threshold used for the diff's 'newly clearing' diagnostic.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--elo-output",
+        default="outputs/character-elo-advantage-supplemented-current.json",
+        help="JSON output path for the supplemented character-elo artifact.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--elo-markdown-output",
+        default="outputs/character-elo-advantage-supplemented-current.md",
+        help="Markdown output path for the supplemented character-elo artifact.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--elo-timeline-output",
+        default="outputs/character-elo-advantage-timeline-supplemented-current.json",
+        help="JSON output path for the supplemented character-elo-timeline artifact.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--elo-timeline-markdown-output",
+        default="outputs/character-elo-advantage-timeline-supplemented-current.md",
+        help="Markdown output path for the supplemented character-elo-timeline artifact.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--diff-output",
+        default="outputs/character-elo-supplement-diff-current.json",
+        help="JSON output path for the before/after diff artifact.",
+    )
+    elo_supplement_diff_parser.add_argument(
+        "--diff-markdown-output",
+        default="outputs/character-elo-supplement-diff-current.md",
+        help="Markdown output path for the before/after diff artifact.",
+    )
 
     character_cards_parser = subparsers.add_parser(
         "character-profile-cards",
@@ -344,6 +477,44 @@ def main(argv=None):
             print(json.dumps(review, ensure_ascii=False, indent=2))
         return 0
 
+    if args.command == "coverage-audit":
+        try:
+            runs = _collect_runs(args)
+            audit = coverage.build_coverage_audit(runs, narrator_min_first_person=args.narrator_min_first_person)
+        except (core.RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        write_coverage_audit_artifacts(audit, json_output=args.output, markdown_output=args.markdown_output)
+        print(json.dumps({
+            "unit_count": audit["metadata"]["unit_count"],
+            "flagged_unit_count": audit["metadata"]["flagged_unit_count"],
+            "candidate_addition_count": audit["metadata"]["candidate_addition_count"],
+            "narrator_candidate_unit_count": audit["metadata"]["narrator_candidate_unit_count"],
+            "json_output": args.output,
+            "markdown_output": args.markdown_output,
+        }, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "prepare-supplements":
+        if args.units:
+            unit_ids = [item.strip() for item in args.units.split(",") if item.strip()]
+        else:
+            unit_ids = [line.strip() for line in Path(args.units_file).read_text().splitlines() if line.strip()]
+        try:
+            manifest = supplement.prepare_supplement_run(
+                args.audit,
+                unit_ids,
+                args.output,
+                notes=args.notes,
+            )
+        except (ValueError, OSError) as exc:
+            parser.error(str(exc))
+        print(json.dumps({
+            "run_id": manifest["run_id"],
+            "unit_count": len(manifest["unit_ids"]),
+            "output": args.output,
+        }, ensure_ascii=False, indent=2))
+        return 0
+
     if args.command == "character-alias-audit":
         try:
             audit = core.build_character_alias_audit(outputs_dir=args.outputs_dir, aliases_csv=args.aliases_csv)
@@ -416,39 +587,104 @@ def main(argv=None):
 
     if args.command == "character-elo":
         try:
-            analysis = core.build_character_elo(_collect_runs(args))
+            runs = _collect_runs(args)
+            supplement_run_dirs = (
+                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
+            )
+            analysis = core.build_character_elo(
+                runs,
+                supplement_run_dirs=supplement_run_dirs,
+                min_match_count=args.min_match_count,
+            )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_character_elo_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
-        if args.output or args.markdown_output:
-            print(json.dumps({
-                "character_count": analysis["character_count"],
-                "match_count": analysis["match_count"],
-                "json_output": args.output,
-                "markdown_output": args.markdown_output,
-            }, ensure_ascii=False, indent=2))
+        if args.include_supplements:
+            default_json_output = "outputs/character-elo-advantage-supplemented-current.json"
+            default_markdown_output = "outputs/character-elo-advantage-supplemented-current.md"
         else:
-            print(json.dumps(analysis, ensure_ascii=False, indent=2))
+            default_json_output = "outputs/character-elo-advantage-current.json"
+            default_markdown_output = "outputs/character-elo-advantage-current.md"
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_elo_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        print(json.dumps({
+            "character_count": analysis["character_count"],
+            "match_count": analysis["match_count"],
+            "json_output": json_output,
+            "markdown_output": markdown_output,
+        }, ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "character-elo-timeline":
         try:
+            runs = _collect_runs(args)
+            supplement_run_dirs = (
+                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
+            )
             analysis = core.build_character_elo_timeline(
-                _collect_runs(args),
+                runs,
                 target_characters=args.characters,
+                supplement_run_dirs=supplement_run_dirs,
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_character_elo_timeline_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
-        if args.output or args.markdown_output:
-            print(json.dumps({
-                "tracked_character_count": analysis["tracked_character_count"],
-                "point_count": analysis["point_count"],
-                "json_output": args.output,
-                "markdown_output": args.markdown_output,
-            }, ensure_ascii=False, indent=2))
+        if args.include_supplements:
+            default_json_output = "outputs/character-elo-advantage-timeline-supplemented-current.json"
+            default_markdown_output = "outputs/character-elo-advantage-timeline-supplemented-current.md"
         else:
-            print(json.dumps(analysis, ensure_ascii=False, indent=2))
+            default_json_output = "outputs/character-elo-advantage-timeline-current.json"
+            default_markdown_output = "outputs/character-elo-advantage-timeline-current.md"
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_elo_timeline_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        print(json.dumps({
+            "tracked_character_count": analysis["tracked_character_count"],
+            "point_count": analysis["point_count"],
+            "json_output": json_output,
+            "markdown_output": markdown_output,
+        }, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "elo-supplement-diff":
+        try:
+            runs = _collect_runs(args)
+            supplement_run_dirs = core.discover_supplement_run_dirs(args.supplement_outputs_dir)
+            baseline = core.build_character_elo(runs, min_match_count=args.min_match_count)
+            supplemented = core.build_character_elo(
+                runs,
+                supplement_run_dirs=supplement_run_dirs,
+                min_match_count=args.min_match_count,
+            )
+            supplemented_timeline = core.build_character_elo_timeline(
+                runs,
+                target_characters=args.characters,
+                supplement_run_dirs=supplement_run_dirs,
+            )
+            diff = core.build_character_elo_supplement_diff(
+                baseline,
+                supplemented,
+                clearing_threshold=args.clearing_threshold,
+            )
+        except (core.RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        core.write_character_elo_artifacts(supplemented, json_output=args.elo_output, markdown_output=args.elo_markdown_output)
+        core.write_character_elo_timeline_artifacts(
+            supplemented_timeline,
+            json_output=args.elo_timeline_output,
+            markdown_output=args.elo_timeline_markdown_output,
+        )
+        core.write_character_elo_supplement_diff_artifacts(diff, json_output=args.diff_output, markdown_output=args.diff_markdown_output)
+        print(json.dumps({
+            "match_count_before": diff["match_count"]["before"],
+            "match_count_after": diff["match_count"]["after"],
+            "newly_clearing_threshold_count": diff["newly_clearing_threshold_count"],
+            "elo_output": args.elo_output,
+            "elo_markdown_output": args.elo_markdown_output,
+            "elo_timeline_output": args.elo_timeline_output,
+            "elo_timeline_markdown_output": args.elo_timeline_markdown_output,
+            "diff_output": args.diff_output,
+            "diff_markdown_output": args.diff_markdown_output,
+        }, ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "character-profile-cards":

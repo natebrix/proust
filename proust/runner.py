@@ -177,6 +177,30 @@ def _read_json(path):
     return json.loads(Path(path).read_text())
 
 
+# proust/prompts/ (the shared, package-relative prompt template directory) is
+# the fallback base for a dead-absolute manifest "prompt_path".
+_PROMPTS_DIR = Path(__file__).resolve().parent / "prompts"
+
+
+def _resolve_stale_manifest_path(stored_path, base_dir):
+    # run.json manifests historically baked in absolute paths from whatever
+    # machine/home-directory prepared the run (e.g. "/Users/nathan_brixius/...").
+    # Checked out on a different machine (or under a renamed home directory),
+    # those absolute paths point nowhere, breaking run discovery even though
+    # the actual files sit right next to the manifest. If the stored path is
+    # absolute and still exists, trust it unchanged (some manifests are
+    # correct on the current machine). Otherwise -- whether the stored path
+    # is a dead absolute path or one of the newer portable relative paths --
+    # fall back to resolving the path's basename underneath base_dir, since
+    # a manifest's "directories" are always direct children of the run_dir
+    # named units/prompts/raw/annotations, and prompt_path's basename always
+    # names a file directly under proust/prompts/.
+    path = Path(stored_path)
+    if path.is_absolute() and path.exists():
+        return path
+    return Path(base_dir) / path.name
+
+
 def _read_run_manifest(run_dir):
     run_path = Path(run_dir)
     manifest_path = run_path / "run.json"
@@ -184,7 +208,18 @@ def _read_run_manifest(run_dir):
         raise RunManifestNotFoundError(
             f'Run directory "{run_path}" does not contain a run.json manifest at "{manifest_path}".'
         )
-    return _read_json(manifest_path)
+    manifest = _read_json(manifest_path)
+
+    directories = manifest.get("directories") or {}
+    manifest["directories"] = {
+        name: str(_resolve_stale_manifest_path(path, run_path)) for name, path in directories.items()
+    }
+
+    prompt_path = manifest.get("prompt_path")
+    if prompt_path:
+        manifest["prompt_path"] = str(_resolve_stale_manifest_path(prompt_path, _PROMPTS_DIR))
+
+    return manifest
 
 
 def _ensure_run_directories(run_dir):
@@ -1806,10 +1841,16 @@ def build_chapter_summary_export(run_dirs, top_character_limit=8, top_passage_li
     )
 
 
-def build_chapter_overlay_data(run_dirs):
+def build_chapter_overlay_data(run_dirs, supplement_run_dirs=None):
     from .app_exports import build_chapter_overlay_data as impl
 
-    return impl(run_dirs)
+    return impl(run_dirs, supplement_run_dirs=supplement_run_dirs)
+
+
+def discover_supplement_run_dirs(outputs_dir="outputs"):
+    from .app_exports import discover_supplement_run_dirs as impl
+
+    return impl(outputs_dir)
 
 
 def build_character_chapter_analysis(
@@ -1840,6 +1881,8 @@ def build_character_elo(
     initial_rating=1500.0,
     k_factor=24.0,
     epsilon=0.25,
+    supplement_run_dirs=None,
+    min_match_count=10,
 ):
     from .app_exports import build_character_elo as impl
 
@@ -1849,6 +1892,8 @@ def build_character_elo(
         initial_rating=initial_rating,
         k_factor=k_factor,
         epsilon=epsilon,
+        supplement_run_dirs=supplement_run_dirs,
+        min_match_count=min_match_count,
     )
 
 
@@ -1859,6 +1904,7 @@ def build_character_elo_timeline(
     initial_rating=1500.0,
     k_factor=24.0,
     epsilon=0.25,
+    supplement_run_dirs=None,
 ):
     from .app_exports import build_character_elo_timeline as impl
 
@@ -1869,6 +1915,18 @@ def build_character_elo_timeline(
         initial_rating=initial_rating,
         k_factor=k_factor,
         epsilon=epsilon,
+        supplement_run_dirs=supplement_run_dirs,
+    )
+
+
+def build_character_elo_supplement_diff(baseline_analysis, supplemented_analysis, clearing_threshold=30, top_mover_limit=15):
+    from .app_exports import build_character_elo_supplement_diff as impl
+
+    return impl(
+        baseline_analysis,
+        supplemented_analysis,
+        clearing_threshold=clearing_threshold,
+        top_mover_limit=top_mover_limit,
     )
 
 
@@ -1939,6 +1997,18 @@ def write_character_elo_timeline_artifacts(analysis, json_output=None, markdown_
     from .export_artifacts import write_character_elo_timeline_artifacts as impl
 
     return impl(analysis, json_output=json_output, markdown_output=markdown_output)
+
+
+def render_character_elo_supplement_diff_markdown(diff):
+    from .export_artifacts import render_character_elo_supplement_diff_markdown as impl
+
+    return impl(diff)
+
+
+def write_character_elo_supplement_diff_artifacts(diff, json_output=None, markdown_output=None):
+    from .export_artifacts import write_character_elo_supplement_diff_artifacts as impl
+
+    return impl(diff, json_output=json_output, markdown_output=markdown_output)
 
 
 def render_character_profile_cards_markdown(analysis):
@@ -2494,7 +2564,7 @@ def prepare_annotation_run_from_existing(
         created_at=datetime.now(timezone.utc).isoformat(),
         prompt_path=source_manifest["prompt_path"],
         unit_ids=list(source_manifest["unit_ids"]),
-        directories={name: str(path.resolve()) for name, path in directories.items()},
+        directories={name: name for name in directories},
         alias_map=source_manifest["alias_map"],
         notes=notes or f'automated run derived from {source_manifest["run_id"]}',
         derived_from={
@@ -2870,7 +2940,7 @@ def prepare_annotation_run(
         created_at=datetime.now(timezone.utc).isoformat(),
         prompt_path=str(Path(prompt_template_path).resolve()),
         unit_ids=[unit["unit_id"] for unit in units],
-        directories={name: str(path.resolve()) for name, path in directories.items()},
+        directories={name: name for name in directories},
         alias_map=active_alias_map,
         notes=notes,
     )

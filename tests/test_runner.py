@@ -236,6 +236,56 @@ def test_get_run_status_summarizes_benchmark_readiness(tmp_path):
     assert all(unit["review_state"] == "reviewed" for unit in status["units"])
 
 
+def test_get_run_status_resolves_dead_absolute_manifest_paths(tmp_path):
+    # Regression test for manifest path portability: run.json manifests
+    # prepared on a different machine/home directory (historically
+    # "/Users/nathan_brixius/...", current home is "/Users/nathanbrixius")
+    # bake in absolute paths that no longer exist. Run discovery must still
+    # work by falling back to the actual run_dir/proust-prompts-dir, without
+    # any monkeypatching of the filesystem or environment.
+    run_dir = tmp_path / "run-004"
+    pn.prepare_annotation_run(run_dir)
+
+    manifest_path = run_dir / "run.json"
+    manifest = json.loads(manifest_path.read_text())
+    dead_root = "/Users/nathan_brixius/dev/proust/outputs/run-004"
+    manifest["directories"] = {
+        "units": f"{dead_root}/units",
+        "prompts": f"{dead_root}/prompts",
+        "raw": f"{dead_root}/raw",
+        "annotations": f"{dead_root}/annotations",
+    }
+    manifest["prompt_path"] = "/Users/nathan_brixius/dev/proust/proust/prompts/prompt.md"
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+
+    status = pn.get_run_status(run_dir)
+
+    assert status["summary"]["unit_count"] == 3
+    assert status["summary"]["unit_file_count"] == 3
+    assert status["summary"]["prompt_file_count"] == 3
+    assert status["manifest"]["directories"]["units"] == str(run_dir / "units")
+    assert status["manifest"]["directories"]["annotations"] == str(run_dir / "annotations")
+    assert status["manifest"]["prompt_path"] == str(pn.PROMPT_PATH)
+
+
+def test_prepare_annotation_run_writes_portable_directory_paths(tmp_path):
+    run_dir = tmp_path / "run-005"
+    pn.prepare_annotation_run(run_dir)
+
+    run_data = json.loads((run_dir / "run.json").read_text())
+    assert run_data["directories"] == {
+        "units": "units",
+        "prompts": "prompts",
+        "raw": "raw",
+        "annotations": "annotations",
+    }
+    assert not Path(run_data["directories"]["units"]).is_absolute()
+
+    # Still readable and correctly resolved relative to the run directory.
+    status = pn.get_run_status(run_dir)
+    assert status["summary"]["unit_count"] == 3
+
+
 def test_summarize_run_annotations_aggregates_events_and_status_effects(tmp_path):
     run_dir = tmp_path / "run-summary"
     pn.prepare_annotation_run(run_dir)
