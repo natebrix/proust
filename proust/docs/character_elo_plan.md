@@ -482,3 +482,44 @@ Cross-lens reading (characters with `>= 30` matches in all three lenses):
 - as with prestige, the pairwise-forcing caveat applies: co-presence is not
   competition; a large salon scene creates more inclusion pressure than an
   intimate one
+
+## Glicko-2 Extension (2026-08-07)
+
+A Glicko-2 rating surface now exists alongside the ELO artifacts
+(`proust/glicko2.py`, `character-glicko2-{lens}-supplemented-current.{json,md}`,
+`python -m proust character-glicko2 --lens ... --include-supplements`).
+
+Why Glicko-2 rather than TrueSkill: public-domain exact specification
+(implemented per Glickman's paper, with the paper's worked example as a
+regression test), a straightforward stdlib implementation, and an unchanged
+match definition — the same pairwise-with-epsilon-draws structure the ELO uses.
+Parameters: initial `1500/350/0.06`, `tau 0.5`, `epsilon 0.25`.
+
+Design choices:
+
+- **rating periods are canonical chapters**: all matches within a chapter use
+  opponents' pre-chapter state and update simultaneously, removing within-chapter
+  order dependence
+- **provisional means uncertain, not merely under-matched**: a character is
+  provisional when `RD > 100`; ranked listings sort by the conservative rating
+  (`rating - 2*RD`). This supersedes the presentation-level min-match cutoff
+  with a principled criterion; it is stricter (it also flags concentrated
+  low-match figures like Saniette) while legitimately admitting low-match,
+  low-variance figures like Aimé and Jupien to the ranked set
+
+Findings worth keeping:
+
+- Aimé and Jupien, excluded from ranked standings under the 30-match rule
+  despite topping raw ELO, are non-provisional under RD and lead the
+  conservative-rating standings
+- high-volume characters (Swann, Charlus, Albertine, Françoise) rank notably
+  better under Glicko-2 than under ELO: sequential fixed-K ELO accumulates
+  path-dependent drift from early matches against unstabilized opponents,
+  while Glicko-2's per-period batching and `g(phi)` down-weighting of
+  uncertain opponents suppress that drift. The directional story is unchanged
+  (Swann remains the lowest-rated major figure, at `1357 ± 83` on `328`
+  matches), but ELO's exact rank order in the mid-table should be treated as
+  the noisier of the two readings
+- the reader-facing standings consume the Glicko-2 surface; the per-passage
+  ELO timeline remains the dossier journey chart (chapter-period Glicko is too
+  coarse for the narrative arc view)
