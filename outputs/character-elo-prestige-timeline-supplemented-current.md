@@ -4,8 +4,8 @@
 - Lens: `prestige`
 - Source review version: `corpus_sanity_review_v1`
 - Timeline type: `sparse_by_character_participation`
-- Tracked character count: `20`
-- Point count: `1729`
+- Tracked character count: `21`
+- Point count: `1857`
 - Initial rating: `1500.0`
 - K factor: `24.0`
 - Epsilon: `0.25`
@@ -18,6 +18,7 @@
 | duchesse de Guermantes | 163 | 1553.737 | v7-p4-le-bal-de-tetes#p-111-p-115 |
 | Albertine | 137 | 1452.449 | v7-p4-le-bal-de-tetes#p-121-p-125 |
 | Robert de Saint-Loup | 134 | 1585.05 | v7-p4-le-bal-de-tetes#p-66-p-70 |
+| le narrateur | 128 | 1585.718 | v7-p4-le-bal-de-tetes#p-51-p-55 |
 | Odette | 123 | 1546.475 | v7-p4-le-bal-de-tetes#p-106-p-110 |
 | baron de Charlus | 108 | 1356.16 | v7-p4-le-bal-de-tetes#p-101-p-105 |
 | Françoise | 89 | 1463.644 | v7-p4-le-bal-de-tetes#p-116-p-120 |
@@ -54,6 +55,7 @@
 | Françoise | 1523.638 | +0.248 | neutral | v1-p1-combray | v1-p1-combray#p-26-p-30 | 9 | 7850 |
 | Swann | 1498.637 | -0.924 | loss | v1-p1-combray | v1-p1-combray#p-26-p-30 | 9 | 7850 |
 | la mère du narrateur | 1525.553 | +0.835 | win | v1-p1-combray | v1-p1-combray#p-26-p-30 | 9 | 7850 |
+| le narrateur | 1454.491 | -1.948 | loss | v1-p1-combray | v1-p1-combray#p-26-p-30 | 9 | 7850 |
 | la mère du narrateur | 1525.553 | +0.02 | neutral | v1-p1-combray | v1-p1-combray#p-36-p-40 | 11 | 14311 |
 | la mère du narrateur | 1525.553 | 0.0 | neutral | v1-p1-combray | v1-p1-combray#p-41-p-45 | 12 | 17105 |
 | Swann | 1498.637 | 0.0 | neutral | v1-p1-combray | v1-p1-combray#p-46-p-50 | 13 | 18019 |
@@ -65,6 +67,7 @@
 | Françoise | 1522.475 | -0.79 | loss | v1-p1-combray | v1-p1-combray#p-71-p-75 | 18 | 21689 |
 | Françoise | 1522.475 | +0.838 | win | v1-p1-combray | v1-p1-combray#p-76-p-80 | 19 | 21914 |
 | Françoise | 1520.157 | -0.77 | loss | v1-p1-combray | v1-p1-combray#p-81-p-85 | 20 | 22260 |
+| le narrateur | 1456.809 | -0.678 | mixed | v1-p1-combray | v1-p1-combray#p-81-p-85 | 20 | 22260 |
 | Françoise | 1520.157 | -0.751 | loss | v1-p1-combray | v1-p1-combray#p-86-p-90 | 21 | 22774 |
 | Françoise | 1520.157 | 0.0 | neutral | v1-p1-combray | v1-p1-combray#p-91-p-95 | 22 | 22936 |
 | Legrandin | 1511.161 | +0.416 | mixed | v1-p1-combray | v1-p1-combray#p-96-p-100 | 23 | 24788 |
@@ -72,12 +75,10 @@
 | Legrandin | 1497.559 | -1.201 | loss | v1-p1-combray | v1-p1-combray#p-101-p-105 | 24 | 26597 |
 | la grand-mère | 1478.111 | 0.0 | neutral | v1-p1-combray | v1-p1-combray#p-101-p-105 | 24 | 26597 |
 | Françoise | 1531.848 | +2.2 | win | v1-p1-combray | v1-p1-combray#p-106-p-110 | 25 | 26901 |
+| le narrateur | 1470.294 | +0.548 | mixed | v1-p1-combray | v1-p1-combray#p-116-p-120 | 27 | 29160 |
 | la mère du narrateur | 1524.557 | +0.961 | win | v1-p1-combray | v1-p1-combray#p-121-p-125 | 28 | 29971 |
 | Odette | 1500.0 | +1.496 | win | v1-p1-combray | v1-p1-combray#p-126-p-130 | 29 | 30171 |
+| le narrateur | 1471.858 | -0.66 | mixed | v1-p1-combray | v1-p1-combray#p-131-p-135 | 30 | 30889 |
 | Françoise | 1531.848 | +1.496 | win | v1-p1-combray | v1-p1-combray#p-136-p-140 | 31 | 31597 |
-| la grand-mère | 1478.111 | 0.0 | neutral | v1-p1-combray | v1-p1-combray#p-141-p-145 | 32 | 32968 |
-| Françoise | 1531.848 | -0.558 | mixed | v1-p1-combray | v1-p1-combray#p-146-p-150 | 33 | 34123 |
-| Françoise | 1531.848 | +0.917 | win | v1-p1-combray | v1-p1-combray#p-151-p-155 | 34 | 34994 |
-| Swann | 1498.637 | +0.996 | win | v1-p1-combray | v1-p1-combray#p-156-p-160 | 35 | 35278 |
 
-_Showing first 40 of 1729 timeline points._
+_Showing first 40 of 1857 timeline points._

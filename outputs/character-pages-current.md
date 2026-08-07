@@ -2,12 +2,12 @@
 
 - Analysis version: `character_pages_v1`
 - Source review version: `corpus_sanity_review_v1`
-- Character count: `20`
+- Character count: `21`
 
 ## Swann
 
 - Slug: `swann`
-- Portrait default: `/projects/islt/portraits/swann-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `263`
 - Rank spread: `0`
 - Max score span: `+8.609`
@@ -53,7 +53,7 @@ Notable units:
 ## Robert de Saint-Loup
 
 - Slug: `robert-de-saint-loup`
-- Portrait default: `/projects/islt/portraits/saint-loup-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `197`
 - Rank spread: `46`
 - Max score span: `+7.299`
@@ -99,7 +99,7 @@ Notable units:
 ## Albertine
 
 - Slug: `albertine`
-- Portrait default: `/projects/islt/portraits/albertine-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `177`
 - Rank spread: `0`
 - Max score span: `+8.061`
@@ -145,7 +145,7 @@ Notable units:
 ## duchesse de Guermantes
 
 - Slug: `duchesse-de-guermantes`
-- Portrait default: `/projects/islt/portraits/duchesse-de-guermantes-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `143`
 - Rank spread: `0`
 - Max score span: `+5.627`
@@ -191,7 +191,7 @@ Notable units:
 ## baron de Charlus
 
 - Slug: `baron-de-charlus`
-- Portrait default: `/projects/islt/portraits/charlus-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `124`
 - Rank spread: `0`
 - Max score span: `+7.0`
@@ -237,7 +237,7 @@ Notable units:
 ## Odette
 
 - Slug: `odette`
-- Portrait default: `/projects/islt/portraits/odette-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `88`
 - Rank spread: `48`
 - Max score span: `+7.422`
@@ -283,7 +283,7 @@ Notable units:
 ## Mme de Villeparisis
 
 - Slug: `mme-de-villeparisis`
-- Portrait default: `/projects/islt/portraits/mme-de-villeparisis-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `82`
 - Rank spread: `23`
 - Max score span: `+7.86`
@@ -329,7 +329,7 @@ Notable units:
 ## Françoise
 
 - Slug: `francoise`
-- Portrait default: `/projects/islt/portraits/francoise-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `70`
 - Rank spread: `10`
 - Max score span: `+5.58`
@@ -375,7 +375,7 @@ Notable units:
 ## Mme Verdurin
 
 - Slug: `mme-verdurin`
-- Portrait default: `/projects/islt/portraits/mme-verdurin-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `68`
 - Rank spread: `6`
 - Max score span: `+6.53`
@@ -421,7 +421,7 @@ Notable units:
 ## Norpois
 
 - Slug: `norpois`
-- Portrait default: `/projects/islt/portraits/norpois-default-vermeer-proustian-20260425-1432.png`
+- Portrait default: `none`
 - Annotation units: `67`
 - Rank spread: `6`
 - Max score span: `+5.15`
@@ -466,7 +466,7 @@ Notable units:
 ## la grand-mère
 
 - Slug: `la-grand-mere`
-- Portrait default: `/projects/islt/portraits/la-grand-mere-default-vermeer-proustian-20260425-1609.png`
+- Portrait default: `none`
 - Annotation units: `65`
 - Rank spread: `5`
 - Max score span: `+5.706`
@@ -512,7 +512,7 @@ Notable units:
 ## Bloch
 
 - Slug: `bloch`
-- Portrait default: `/projects/islt/portraits/bloch-default-vermeer-proustian-20260425-1609.png`
+- Portrait default: `none`
 - Annotation units: `61`
 - Rank spread: `0`
 - Max score span: `+6.817`
@@ -558,7 +558,7 @@ Notable units:
 ## duc de Guermantes
 
 - Slug: `duc-de-guermantes`
-- Portrait default: `/projects/islt/portraits/duc-de-guermantes-default-vermeer-proustian-20260425-1609.png`
+- Portrait default: `none`
 - Annotation units: `61`
 - Rank spread: `0`
 - Max score span: `+7.073`
@@ -604,7 +604,7 @@ Notable units:
 ## Gilberte
 
 - Slug: `gilberte`
-- Portrait default: `/projects/islt/portraits/gilberte-default-vermeer-proustian-20260425-1609.png`
+- Portrait default: `none`
 - Annotation units: `44`
 - Rank spread: `28`
 - Max score span: `+6.239`
@@ -650,7 +650,7 @@ Notable units:
 ## docteur Cottard
 
 - Slug: `docteur-cottard`
-- Portrait default: `/projects/islt/portraits/docteur-cottard-default-vermeer-proustian-20260425-1609.png`
+- Portrait default: `none`
 - Annotation units: `44`
 - Rank spread: `3`
 - Max score span: `+5.98`
@@ -696,7 +696,7 @@ Notable units:
 ## la mère du narrateur
 
 - Slug: `la-mere-du-narrateur`
-- Portrait default: `/projects/islt/portraits/la-mere-du-narrateur-default-vermeer-proustian-20260425-1923.png`
+- Portrait default: `none`
 - Annotation units: `34`
 - Rank spread: `6`
 - Max score span: `+4.167`
@@ -742,7 +742,7 @@ Notable units:
 ## Bergotte
 
 - Slug: `bergotte`
-- Portrait default: `/projects/islt/portraits/bergotte-default-vermeer-proustian-20260425-1923.png`
+- Portrait default: `none`
 - Annotation units: `33`
 - Rank spread: `4`
 - Max score span: `+6.256`
@@ -788,7 +788,7 @@ Notable units:
 ## Legrandin
 
 - Slug: `legrandin`
-- Portrait default: `/projects/islt/portraits/legrandin-default-vermeer-proustian-20260425-1923.png`
+- Portrait default: `none`
 - Annotation units: `23`
 - Rank spread: `8`
 - Max score span: `+6.018`
@@ -834,7 +834,7 @@ Notable units:
 ## Mme de Cambremer
 
 - Slug: `mme-de-cambremer`
-- Portrait default: `/projects/islt/portraits/mme-de-cambremer-default-vermeer-proustian-20260425-1923.png`
+- Portrait default: `none`
 - Annotation units: `21`
 - Rank spread: `1`
 - Max score span: `+5.938`
@@ -879,7 +879,7 @@ Notable units:
 ## M. Vinteuil
 
 - Slug: `m-vinteuil`
-- Portrait default: `/projects/islt/portraits/m-vinteuil-default-vermeer-proustian-20260425-1923.png`
+- Portrait default: `none`
 - Annotation units: `19`
 - Rank spread: `10`
 - Max score span: `+6.21`
@@ -920,3 +920,47 @@ Notable units:
 - M. Vinteuil loses social status across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-311`
 - M. Vinteuil gains overall standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-530`
 - M. Vinteuil gains overall standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-531`
+
+## le narrateur
+
+- Slug: `le-narrateur`
+- Portrait default: `none`
+- Annotation units: `6`
+- Rank spread: `1`
+- Max score span: `+6.539`
+- Pattern: `relational_positive_understated`
+
+The perpetually admitted observer: first among reliable characters in advantage and inclusion, with mean scores that stay stubbornly near zero.
+
+The narrator became a scored participant only in the coverage-supplement pass, and immediately became the corpus's most-matched reliable figure. He prevails relatively, scene after scene — the rooms keep letting him in — while his absolute readings remain anxious and nearly neutral, which is as close as the data comes to restating the novel's own split between lived unease and narrated mastery.
+
+Why interesting:
+
+- He tops the reliable advantage and inclusion ELO standings despite near-zero mean net scores: he wins relative to whoever shares his scenes, not by dominating them.
+- His 281 matches touch more of the cast than any other reliable character, making him the connective tissue of the whole match graph.
+- The gap between his relational success and his neutral-to-negative self-account is the corpus's cleanest measurable version of the book's central irony.
+
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -5.616 | 39th | 38 | 6 | inclusion_exclusion | +5.121 |
+| inclusion | -9.101 | 39th | 38 | 6 | inclusion_exclusion | +6.539 |
+| prestige | -1.508 | 41st | 37 | 6 | inclusion_exclusion | +3.336 |
+
+Top chapters:
+
+| Chapter | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- |
+| v2-p2-noms-de-pays-le-pays | -4.421 | -1.572 | -6.819 |
+| v2-p1-autour-de-mme-swann | 0.0 | 0.0 | 0.0 |
+
+Reading path:
+
+- Balbec thresholds: the machinery of being received: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
+- Guermantes admission: the observer absorbed: `/projects/islt/fr-original/v3-p2`
+- The bal de têtes: survivor among the masks: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes`
+
+Notable units:
+
+- le narrateur loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-220`
+- le narrateur loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-221`
+- le narrateur gains inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-216`
