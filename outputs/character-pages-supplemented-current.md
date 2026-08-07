@@ -14,14 +14,14 @@
 - Max score span: `+8.609`
 - Pattern: `broad_negative`
 
-The corpus's most annotated figure, overwhelmingly shaped by repeated immediate, social, and emotional losses.
+The most-scored figure in the novel, overwhelmingly shaped by repeated immediate, social, and emotional losses.
 
-Swann dominates the corpus by sheer annotation footprint, and his aggregate profile remains broadly and repeatedly negative across all three lenses.
+Swann dominates the novel by sheer presence, and his overall pattern remains broadly and repeatedly negative across all three lenses.
 
 Why interesting:
 
-- He is both the most annotated character and one of the clearest broad negative cases.
-- His profile is not a narrow anomaly but a corpus-defining social pattern, especially in Un amour de Swann.
+- He is both the most-scored character and one of the clearest broad negative cases.
+- His profile is not a narrow anomaly but a book-wide social pattern, especially in Un amour de Swann.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -60,14 +60,14 @@ Notable units:
 - Max score span: `+7.299`
 - Pattern: `prestige_positive_inclusion_negative`
 
-A highly frequent aristocratic figure whose prestige often holds even where belonging and immediate advantage give way.
+An ever-present aristocratic figure whose prestige often holds even where belonging and immediate advantage give way.
 
-Robert de Saint-Loup combines very high annotation frequency with one of the largest lens spreads in the corpus, especially where aristocratic polish and emotional belonging pull apart.
+Robert de Saint-Loup appears throughout the book and shows one of the largest lens spreads in the novel, especially where aristocratic polish and emotional belonging pull apart.
 
 Why interesting:
 
 - He is central enough to matter structurally, not just as a curiosity of one chapter.
-- His strongest divergence is chapter-shaped rather than corpus-flat, especially in the Guermantes material.
+- His strongest divergence is chapter-shaped rather than flat across the book, especially in the Guermantes material.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -106,13 +106,13 @@ Notable units:
 - Max score span: `+8.061`
 - Pattern: `broad_negative`
 
-A heavily annotated recurring figure whose strongest shaping comes from imprisonment, suspicion, disappearance, and loss.
+A constant presence across the book whose strongest shaping comes from imprisonment, suspicion, disappearance, and loss.
 
-Albertine is one of the largest and most persistently negative figures in the corpus, with her strongest shaping concentrated in the prison and disappearance chapters.
+Albertine is one of the largest and most persistently negative figures in the novel, with her strongest shaping concentrated in the prison and disappearance chapters.
 
 Why interesting:
 
-- Her profile is both high-volume and highly concentrated in a few major late narrative blocks.
+- Her presence is both extensive and highly concentrated in a few major late narrative blocks.
 - She helps distinguish broad negative centrality from the more split prestige/inclusion cases.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
@@ -152,9 +152,9 @@ Notable units:
 - Max score span: `+6.422`
 - Pattern: `uniform_positive`
 
-The corpus's clearest uniformly positive great-world figure, with command and symbolic force holding across all three lenses.
+The novel's clearest uniformly positive great-world figure, with command and symbolic force holding across all three lenses.
 
-duchesse de Guermantes is the strongest uniformly positive figure in the current corpus surface, with her social command and symbolic force holding across every lens rather than depending on a narrow chapter exception.
+duchesse de Guermantes is the strongest uniformly positive figure in the novel, with her social command and symbolic force holding across every lens rather than depending on a narrow chapter exception.
 
 Why interesting:
 
@@ -198,9 +198,9 @@ Notable units:
 - Max score span: `+7.0`
 - Pattern: `volatile_broad_negative`
 
-A highly volatile major figure whose aggregate negatives are spread across salon, sexual, and wartime terrains.
+A highly volatile major figure whose negative scores are spread across salon, sexual, and wartime terrains.
 
-baron de Charlus is a highly annotated and highly volatile figure whose negative aggregate treatment is spread across salon, sexual, and wartime configurations rather than one single narrative block.
+baron de Charlus is a constant presence and a highly volatile figure, his negative scores spread across salon, sexual, and wartime configurations rather than one single narrative block.
 
 Why interesting:
 
@@ -246,12 +246,12 @@ Notable units:
 
 Prestige-positive but inclusion-negative, with her sharpest gains and reversals concentrated in a few high-pressure chapters.
 
-Odette is one of the clearest cross-lens split figures in the corpus: she rises strongly in prestige while remaining far more unstable in belonging and immediate advantage.
+Odette is one of the clearest cross-lens split figures in the novel: she rises strongly in prestige while remaining far more unstable in belonging and immediate advantage.
 
 Why interesting:
 
-- Her prestige and inclusion readings diverge much more sharply than her raw frequency alone would predict.
-- Her profile is driven by a few concentrated chapter zones rather than a flat corpus-wide pattern.
+- Her prestige and inclusion readings diverge much more sharply than how often she appears would predict.
+- Her profile is driven by a few concentrated chapter zones rather than a flat, book-wide pattern.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -339,7 +339,7 @@ Notable units:
 
 A frequent recurring figure whose overall downward pull includes a few brief local reversals.
 
-Françoise accumulates as a broadly negative figure across the corpus, though her profile is not flat: a small number of chapters briefly reverse the trend before the longer downward pull returns.
+Françoise accumulates as a broadly negative figure across the book, though her profile is not flat: a small number of chapters briefly reverse the trend before the longer downward pull returns.
 
 Why interesting:
 
@@ -385,7 +385,7 @@ Notable units:
 
 A moderate but revealing split figure, relatively strong in prestige while advantage and inclusion drift downward.
 
-Mme de Villeparisis is one of the clearest moderate split figures in the corpus: she remains comparatively strong in prestige while advantage and inclusion drift downward or oscillate by chapter.
+Mme de Villeparisis is one of the clearest moderate split figures in the novel: she remains comparatively strong in prestige while advantage and inclusion drift downward or oscillate by chapter.
 
 Why interesting:
 
@@ -431,7 +431,7 @@ Notable units:
 
 A recurring family figure whose harshest pressure falls on belonging and broader valuation.
 
-la grand-mère accumulates as one of the corpus's more strongly negative recurring figures, with the harshest pressure falling on inclusion and broad valuation rather than on a narrow prestige story alone.
+la grand-mère accumulates as one of the book's more strongly negative recurring figures, with the harshest pressure falling on inclusion and broad valuation rather than on a narrow prestige story alone.
 
 Why interesting:
 
@@ -475,13 +475,13 @@ Notable units:
 - Max score span: `+7.073`
 - Pattern: `prestige_expectation_reversed`
 
-A revealing reversal-of-expectation figure: high rank without correspondingly positive aggregate treatment.
+A revealing reversal-of-expectation figure: high rank without correspondingly positive scores.
 
-duc de Guermantes is one of the project's most revealing reversals of expectation: despite formal rank, his annotation surface is broadly negative across all three lenses.
+duc de Guermantes is one of the novel's most revealing reversals of expectation: despite formal rank, his scores are broadly negative across all three lenses.
 
 Why interesting:
 
-- He demonstrates that aristocratic title alone does not guarantee positive aggregate treatment in the corpus.
+- He demonstrates that aristocratic title alone does not guarantee a positive reading in the novel.
 - His profile sharpens the distinction between formal status and actual advantage or belonging.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
@@ -521,14 +521,14 @@ Notable units:
 - Max score span: `+6.53`
 - Pattern: `broad_negative`
 
-A salon figure whose aggregate reading is broadly negative across all three lenses.
+A salon figure whose overall reading is broadly negative across all three lenses.
 
-Mme Verdurin is one of the clearest broadly negative salon figures in the corpus, with losses in advantage, prestige, and inclusion all reinforcing rather than offsetting one another.
+Mme Verdurin is one of the clearest broadly negative salon figures in the novel, with losses in advantage, prestige, and inclusion all reinforcing rather than offsetting one another.
 
 Why interesting:
 
 - She is central enough to shape multiple social zones without becoming a prestige split case.
-- Her profile helps define the project's recurrent salon-world negative pattern.
+- Her pattern helps define the novel's recurrent salon-world negativity.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -569,7 +569,7 @@ Notable units:
 
 A strongly negative recurring figure whose losses reinforce each other across all three lenses.
 
-Bloch is one of the clearest aggregate negative cases in the corpus, with repeated losses in advantage, prestige, and inclusion reinforcing each other rather than splitting apart.
+Bloch is one of the clearest cases of consistent negative treatment in the novel, with repeated losses in advantage, prestige, and inclusion reinforcing each other rather than splitting apart.
 
 Why interesting:
 
@@ -666,7 +666,7 @@ Gilberte is a compact but revealing cross-lens figure: she scores very well in p
 Why interesting:
 
 - She is a smaller but especially clear example of lens divergence.
-- Her chapter locations make her useful for app-facing spotlighting without requiring a massive corpus footprint.
+- Her divergence is visible in just a few chapters, without needing a large presence in the book to make the case.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -757,7 +757,7 @@ docteur Cottard is a mid-tier negative figure whose profile is shaped by one str
 
 Why interesting:
 
-- He is a useful moderate case rather than an extreme corpus outlier.
+- He is a useful moderate case rather than an extreme outlier in the novel.
 - His chapter pattern helps show how one major concentration can dominate an otherwise mixed profile.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
@@ -799,12 +799,12 @@ Notable units:
 
 A symbolic positive figure whose literary authority carries strongly across advantage and prestige.
 
-Bergotte is one of the corpus's clearest positive symbolic figures, with his literary authority translating into very high advantage and prestige across several distinct narrative zones.
+Bergotte is one of the novel's clearest positive symbolic figures, with his literary authority translating into very high advantage and prestige across several distinct narrative zones.
 
 Why interesting:
 
 - He is strongly positive without being primarily a belonging-driven figure.
-- His profile is sharply chapter-shaped, which makes him useful for showing how aggregate positivity can arise from uneven terrain.
+- His profile is sharply chapter-shaped, which makes him useful for showing how strongly positive scores can arise from uneven terrain.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -843,9 +843,9 @@ Notable units:
 - Max score span: `+5.938`
 - Pattern: `compact_negative`
 
-A compact but stable negative case: limited in footprint, but strongly downward where it appears.
+A compact but stable negative case: rare in the novel, but strongly downward wherever she appears.
 
-Mme de Cambremer is a compact but stable negative case: she does not dominate the corpus by volume, but what is there reads overwhelmingly downward in advantage, prestige, and inclusion.
+Mme de Cambremer is a compact but stable negative case: she doesn't appear as often as the novel's biggest characters, but what is there reads overwhelmingly downward in advantage, prestige, and inclusion.
 
 Why interesting:
 
@@ -891,7 +891,7 @@ Notable units:
 
 A broadly negative recurring figure marked by repeated self-positioning failures and social discredit.
 
-Legrandin is a broadly negative figure whose profile is shaped by repeated discredit and awkward self-positioning, even though a few isolated units briefly interrupt the downward pattern.
+Legrandin is a broadly negative figure whose profile is shaped by repeated discredit and awkward self-positioning, even though a few isolated passages briefly interrupt the downward pattern.
 
 Why interesting:
 
@@ -935,14 +935,14 @@ Notable units:
 - Max score span: `+6.21`
 - Pattern: `rehabilitated_positive`
 
-A surprising aggregate positive whose late recoveries outweigh strongly negative early material.
+A surprising overall positive whose late recoveries outweigh strongly negative early material.
 
-M. Vinteuil is one of the more surprising positive figures in the corpus: despite some strongly negative early material, his aggregate treatment ends up decisively positive, especially in inclusion.
+M. Vinteuil is one of the more surprising positive figures in the novel: despite some strongly negative early material, his scores end up decisively positive, especially in inclusion.
 
 Why interesting:
 
 - He is a genuine reversal case rather than a merely stable positive.
-- His profile is sharply chapter-shaped, which makes him useful for showing how aggregate positivity can arise from uneven terrain.
+- His profile is sharply chapter-shaped, which makes him useful for showing how an overall positive reading can arise from uneven terrain.
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
