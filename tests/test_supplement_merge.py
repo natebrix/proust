@@ -457,3 +457,305 @@ def test_main_elo_supplement_diff_lens_aware_default_paths(tmp_path, capsys, mon
     assert payload["elo_timeline_output"] == "outputs/character-elo-prestige-timeline-supplemented-current.json"
     assert payload["diff_output"] == "outputs/character-elo-prestige-supplement-diff-current.json"
     assert (tmp_path / "outputs" / "character-elo-prestige-supplement-diff-current.json").exists()
+
+
+def _make_pilot_supplement_scenario(tmp_path):
+    # A small fixture used across the profile-card/chapter-analysis/pages
+    # supplement tests below: "Swann" and "Odette" are accepted-scored in
+    # two units; "le narrateur" is entirely absent from the accepted
+    # annotation (mirroring the pre-supplement production state) and only
+    # appears via the supplement run, in a unit the accepted annotation
+    # already covers (unit A, additive alongside Swann) and in a unit the
+    # accepted annotation never touched at all (unit C, which also grows
+    # Swann's own unit count). All three units share the same chapter
+    # ("v1-p1-combray") so chapter-level aggregation can be checked too.
+    accepted_run, supplement_run = _make_accepted_and_supplement_runs(tmp_path)
+    pn.write_annotation_result(
+        accepted_run,
+        "v1-p1-combray#p-17",
+        _annotation("v1-p1-combray#p-17", [{"character": "Swann", "delta": 1}]),
+    )
+    pn.write_annotation_result(
+        accepted_run,
+        "v1-p1-combray#p-274-p-275",
+        _annotation(
+            "v1-p1-combray#p-274-p-275",
+            [{"character": "Swann", "delta": 1}, {"character": "Odette", "delta": -1}],
+        ),
+    )
+    pn.write_annotation_result(
+        supplement_run,
+        "v1-p1-combray#p-17",
+        _annotation("v1-p1-combray#p-17", [{"character": "le narrateur", "delta": -1}]),
+    )
+    pn.write_annotation_result(
+        supplement_run,
+        "v1-p1-combray#p-312-p-313",
+        _annotation(
+            "v1-p1-combray#p-312-p-313",
+            [{"character": "le narrateur", "delta": 1}, {"character": "Swann", "delta": 1}],
+        ),
+    )
+    return accepted_run, supplement_run
+
+
+def test_build_corpus_sanity_review_merges_supplement_characters_without_touching_accepted(tmp_path):
+    accepted_run, supplement_run = _make_pilot_supplement_scenario(tmp_path)
+
+    baseline = pr.build_corpus_sanity_review([accepted_run])
+    review = pr.build_corpus_sanity_review([accepted_run], supplement_run_dirs=[supplement_run])
+
+    assert "supplemented" not in baseline
+    assert review["supplemented"] is True
+    assert review["supplement_runs"] == ["supplement-run-001"]
+
+    baseline_totals = {row["character"]: row for row in baseline["lens_reviews"]["advantage"]["character_totals"]}
+    merged_totals = {row["character"]: row for row in review["lens_reviews"]["advantage"]["character_totals"]}
+
+    assert "le narrateur" not in baseline_totals
+    assert merged_totals["le narrateur"]["unit_count"] == 2
+    # Swann gains one unit (unit C) from the supplement without losing the
+    # two units already accepted.
+    assert baseline_totals["Swann"]["unit_count"] == 2
+    assert merged_totals["Swann"]["unit_count"] == 3
+    # A character with no supplement contribution is untouched.
+    assert merged_totals["Odette"] == baseline_totals["Odette"]
+    # Run-level accepted-only accounting (never fed by supplements) is
+    # unaffected by the merge.
+    assert review["run_count"] == baseline["run_count"]
+    assert review["declared_unit_count"] == baseline["declared_unit_count"]
+    assert review["run_ids"] == baseline["run_ids"]
+
+
+def test_build_corpus_sanity_review_default_call_matches_explicit_none(tmp_path):
+    accepted_run, _supplement_run = _make_pilot_supplement_scenario(tmp_path)
+
+    default_call = pr.build_corpus_sanity_review([accepted_run])
+    explicit_none_call = pr.build_corpus_sanity_review([accepted_run], supplement_run_dirs=None)
+
+    assert json.dumps(default_call, sort_keys=True) == json.dumps(explicit_none_call, sort_keys=True)
+    assert "supplemented" not in default_call
+
+
+def test_build_character_profile_cards_with_supplements_includes_new_characters_and_higher_counts(tmp_path):
+    accepted_run, supplement_run = _make_pilot_supplement_scenario(tmp_path)
+
+    baseline = pr.build_character_profile_cards([accepted_run])
+    supplemented = pr.build_character_profile_cards([accepted_run], supplement_run_dirs=[supplement_run])
+
+    assert "supplemented" not in baseline
+    assert supplemented["supplemented"] is True
+    assert supplemented["supplement_runs"] == ["supplement-run-001"]
+
+    baseline_cards = {row["character"]: row for row in baseline["cards"]}
+    supplemented_cards = {row["character"]: row for row in supplemented["cards"]}
+
+    assert "le narrateur" not in baseline_cards
+    assert supplemented_cards["le narrateur"]["annotation_unit_count"] == 2
+    assert baseline_cards["Swann"]["annotation_unit_count"] == 2
+    assert supplemented_cards["Swann"]["annotation_unit_count"] == 3
+    # Odette's own totals are unaffected by the merge (her rank/percentile
+    # can still shift because the population gained "le narrateur").
+    assert supplemented_cards["Odette"]["annotation_unit_count"] == baseline_cards["Odette"]["annotation_unit_count"]
+    assert supplemented_cards["Odette"]["lens_scores"]["advantage"]["net_score"] == (
+        baseline_cards["Odette"]["lens_scores"]["advantage"]["net_score"]
+    )
+
+
+def test_build_character_profile_cards_default_call_matches_explicit_none(tmp_path):
+    accepted_run, _supplement_run = _make_pilot_supplement_scenario(tmp_path)
+
+    default_call = pr.build_character_profile_cards([accepted_run])
+    explicit_none_call = pr.build_character_profile_cards([accepted_run], supplement_run_dirs=None)
+
+    assert json.dumps(default_call, sort_keys=True) == json.dumps(explicit_none_call, sort_keys=True)
+    assert "supplemented" not in default_call
+
+
+def test_build_character_chapter_analysis_with_supplements_merges_chapter_rows_and_marks_metadata(tmp_path):
+    accepted_run, supplement_run = _make_pilot_supplement_scenario(tmp_path)
+
+    baseline = pr.build_character_chapter_analysis([accepted_run], target_characters=["Swann"])
+    supplemented = pr.build_character_chapter_analysis(
+        [accepted_run],
+        target_characters=["Swann", "le narrateur"],
+        supplement_run_dirs=[supplement_run],
+    )
+
+    assert "supplemented" not in baseline
+    assert supplemented["supplemented"] is True
+    assert supplemented["supplement_runs"] == ["supplement-run-001"]
+
+    baseline_swann_chapters = {
+        row["chapter_id"]: row
+        for row in next(row for row in baseline["characters"] if row["character"] == "Swann")["chapters"]
+    }
+    supplemented_swann_chapters = {
+        row["chapter_id"]: row
+        for row in next(row for row in supplemented["characters"] if row["character"] == "Swann")["chapters"]
+    }
+    supplemented_narrator_chapters = {
+        row["chapter_id"]: row
+        for row in next(row for row in supplemented["characters"] if row["character"] == "le narrateur")["chapters"]
+    }
+
+    baseline_swann_unit_count = max(
+        baseline_swann_chapters["v1-p1-combray"]["advantage"]["unit_count"],
+        baseline_swann_chapters["v1-p1-combray"]["prestige"]["unit_count"],
+        baseline_swann_chapters["v1-p1-combray"]["inclusion"]["unit_count"],
+    )
+    supplemented_swann_unit_count = max(
+        supplemented_swann_chapters["v1-p1-combray"]["advantage"]["unit_count"],
+        supplemented_swann_chapters["v1-p1-combray"]["prestige"]["unit_count"],
+        supplemented_swann_chapters["v1-p1-combray"]["inclusion"]["unit_count"],
+    )
+    narrator_unit_count = max(
+        supplemented_narrator_chapters["v1-p1-combray"]["advantage"]["unit_count"],
+        supplemented_narrator_chapters["v1-p1-combray"]["prestige"]["unit_count"],
+        supplemented_narrator_chapters["v1-p1-combray"]["inclusion"]["unit_count"],
+    )
+
+    assert baseline_swann_unit_count == 2
+    assert supplemented_swann_unit_count == 3
+    assert narrator_unit_count == 2
+
+
+def test_build_character_chapter_analysis_default_call_matches_explicit_none(tmp_path):
+    accepted_run, _supplement_run = _make_pilot_supplement_scenario(tmp_path)
+
+    default_call = pr.build_character_chapter_analysis([accepted_run], target_characters=["Swann"])
+    explicit_none_call = pr.build_character_chapter_analysis(
+        [accepted_run], target_characters=["Swann"], supplement_run_dirs=None
+    )
+
+    assert json.dumps(default_call, sort_keys=True) == json.dumps(explicit_none_call, sort_keys=True)
+    assert "supplemented" not in default_call
+
+
+def test_build_character_pages_with_supplements_marks_supplemented_and_gains_unit_count(tmp_path):
+    accepted_run, supplement_run = _make_pilot_supplement_scenario(tmp_path)
+
+    baseline = pr.build_character_pages([accepted_run], target_characters=["Swann"])
+    supplemented = pr.build_character_pages(
+        [accepted_run],
+        target_characters=["Swann", "le narrateur"],
+        supplement_run_dirs=[supplement_run],
+    )
+
+    assert "supplemented" not in baseline
+    assert supplemented["supplemented"] is True
+    assert supplemented["supplement_runs"] == ["supplement-run-001"]
+
+    baseline_swann = next(page for page in baseline["pages"] if page["character"] == "Swann")
+    supplemented_swann = next(page for page in supplemented["pages"] if page["character"] == "Swann")
+    supplemented_narrator = next(page for page in supplemented["pages"] if page["character"] == "le narrateur")
+
+    assert baseline_swann["profile"]["annotation_unit_count"] == 2
+    assert supplemented_swann["profile"]["annotation_unit_count"] == 3
+    assert supplemented_narrator["profile"]["annotation_unit_count"] == 2
+    assert supplemented_narrator["slug"] == "le-narrateur"
+    # notable_units draws from the supplement-merged overlay dataset, so a
+    # brand-new supplement-only character still gets notable unit entries.
+    assert len(supplemented_narrator["notable_units"]) > 0
+
+
+def test_build_character_pages_default_call_matches_explicit_none(tmp_path):
+    accepted_run, _supplement_run = _make_pilot_supplement_scenario(tmp_path)
+
+    default_call = pr.build_character_pages([accepted_run], target_characters=["Swann"])
+    explicit_none_call = pr.build_character_pages(
+        [accepted_run], target_characters=["Swann"], supplement_run_dirs=None
+    )
+
+    assert json.dumps(default_call, sort_keys=True) == json.dumps(explicit_none_call, sort_keys=True)
+    assert "supplemented" not in default_call
+
+
+def test_main_character_profile_cards_supplemented_default_paths(tmp_path, capsys, monkeypatch):
+    accepted_run, supplement_run = _make_pilot_supplement_scenario(tmp_path / "outputs")
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = pr.main(
+        [
+            "character-profile-cards",
+            "--discover-runs",
+            str(tmp_path / "outputs"),
+            "--include-supplements",
+            "--supplement-outputs-dir",
+            str(tmp_path / "outputs"),
+        ]
+    )
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert exit_code == 0
+    assert payload["json_output"] == "outputs/character-profile-cards-supplemented-current.json"
+    assert payload["markdown_output"] == "outputs/character-profile-cards-supplemented-current.md"
+    assert (tmp_path / "outputs" / "character-profile-cards-supplemented-current.json").exists()
+
+    # Without --include-supplements there is no default path at all -- the
+    # analysis is printed to stdout, exactly as before this feature existed.
+    exit_code_unsupplemented = pr.main(
+        [
+            "character-profile-cards",
+            "--discover-runs",
+            str(tmp_path / "outputs"),
+        ]
+    )
+    payload_unsupplemented = json.loads(capsys.readouterr().out)
+    assert exit_code_unsupplemented == 0
+    assert "cards" in payload_unsupplemented
+    assert not (tmp_path / "outputs" / "character-profile-cards-current.json").exists()
+
+
+def test_main_character_chapter_analysis_supplemented_default_paths(tmp_path, capsys, monkeypatch):
+    accepted_run, supplement_run = _make_pilot_supplement_scenario(tmp_path / "outputs")
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = pr.main(
+        [
+            "character-chapter-analysis",
+            "--discover-runs",
+            str(tmp_path / "outputs"),
+            "--character",
+            "Swann",
+            "--character",
+            "le narrateur",
+            "--include-supplements",
+            "--supplement-outputs-dir",
+            str(tmp_path / "outputs"),
+        ]
+    )
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert exit_code == 0
+    assert payload["json_output"] == "outputs/character-chapter-cross-lens-supplemented-current.json"
+    assert payload["markdown_output"] == "outputs/character-chapter-cross-lens-supplemented-current.md"
+    assert (tmp_path / "outputs" / "character-chapter-cross-lens-supplemented-current.json").exists()
+
+
+def test_main_character_pages_supplemented_default_paths(tmp_path, capsys, monkeypatch):
+    accepted_run, supplement_run = _make_pilot_supplement_scenario(tmp_path / "outputs")
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = pr.main(
+        [
+            "character-pages",
+            "--discover-runs",
+            str(tmp_path / "outputs"),
+            "--character",
+            "Swann",
+            "--character",
+            "le narrateur",
+            "--include-supplements",
+            "--supplement-outputs-dir",
+            str(tmp_path / "outputs"),
+        ]
+    )
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert exit_code == 0
+    assert payload["json_output"] == "outputs/character-pages-supplemented-current.json"
+    assert payload["markdown_output"] == "outputs/character-pages-supplemented-current.md"
+    analysis = json.loads((tmp_path / "outputs" / "character-pages-supplemented-current.json").read_text())
+    narrator_page = next(page for page in analysis["pages"] if page["character"] == "le narrateur")
+    assert narrator_page["profile"]["annotation_unit_count"] == 2

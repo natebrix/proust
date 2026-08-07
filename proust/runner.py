@@ -1470,7 +1470,39 @@ def _label_direction(label):
     return "non_directional"
 
 
-def build_corpus_sanity_review(run_dirs):
+def _corpus_review_run_id_sort_key(run_id):
+    match = re.search(r"(\d+)$", run_id)
+    return (int(match.group(1)), run_id) if match else (-1, run_id)
+
+
+def _accumulate_lens_character_total(totals_bucket, character, net_score, event_score, status_score, label, status_dimensions):
+    # Folds one unit-level outcome entry into a per-character totals bucket,
+    # in the same shape and with the same accumulation rules the accepted
+    # run loop below uses (there it accumulates a whole run's pre-aggregated
+    # character_summary at once; here it is called once per surviving
+    # supplement entry, which sums to the identical aggregate).
+    existing = totals_bucket.setdefault(
+        character,
+        {
+            "character": character,
+            "net_score": 0.0,
+            "event_score": 0.0,
+            "status_score": 0.0,
+            "unit_count": 0,
+            "labels": {"win": 0, "loss": 0, "mixed": 0, "neutral": 0},
+            "status_dimensions": {},
+        },
+    )
+    existing["net_score"] += net_score
+    existing["event_score"] += event_score
+    existing["status_score"] += status_score
+    existing["unit_count"] += 1
+    existing["labels"][label] += 1
+    for dimension, delta_total in status_dimensions.items():
+        existing["status_dimensions"][dimension] = existing["status_dimensions"].get(dimension, 0) + delta_total
+
+
+def build_corpus_sanity_review(run_dirs, supplement_run_dirs=None):
     if not run_dirs:
         raise ValueError("At least one run directory is required for a corpus sanity review.")
 
@@ -1498,6 +1530,7 @@ def build_corpus_sanity_review(run_dirs):
     lens_unit_entries = {lens: [] for lens in sorted(SCORING_LENS_CONFIGS)}
     lens_character_entries = {lens: defaultdict(list) for lens in sorted(SCORING_LENS_CONFIGS)}
     cross_lens_entries = {}
+    accepted_unit_character_sets = defaultdict(set)
 
     total_declared_unit_count = 0
     total_valid_annotation_count = 0
@@ -1572,6 +1605,7 @@ def build_corpus_sanity_review(run_dirs):
                 corpus_entry["run_id"] = run_id
                 lens_unit_entries[lens].append(corpus_entry)
                 lens_character_entries[lens][entry["character"]].append(corpus_entry)
+                accepted_unit_character_sets[entry["unit_id"]].add(entry["character"])
                 cross_lens_entries.setdefault(
                     (run_id, entry["unit_id"], entry["character"]),
                     {"run_id": run_id, "unit_id": entry["unit_id"], "character": entry["character"], "lenses": {}},
@@ -1580,6 +1614,63 @@ def build_corpus_sanity_review(run_dirs):
                     "net_score": entry["net_score"],
                     "dominant_status_dimension": entry["dominant_status_dimension"],
                 }
+
+    supplement_run_ids = []
+    if supplement_run_dirs:
+        # Additively fold winning supplement-run entries into the same
+        # per-lens totals/entries buckets the accepted loop above just
+        # populated, mirroring build_chapter_overlay_data's merge rule: a
+        # supplement entry is skipped whenever the accepted corpus already
+        # scored that character for that unit (in any lens), and when more
+        # than one supplement run covers the same unit the highest-numbered
+        # run id wins. Everything the accepted loop already computed above
+        # (run counts, declared/valid annotation counts, run surface
+        # summaries, cross-lens disagreement diagnostics) stays accepted-only
+        # and untouched; only the per-character lens totals that feed
+        # rank/percentile/lens-score presentation below are extended.
+        supplement_preferred_run_by_unit = {}
+        for run_dir in supplement_run_dirs:
+            status = get_run_status(run_dir)
+            run_id = status["manifest"]["run_id"]
+            for unit in status["units"]:
+                if unit["review_state"] != "reviewed":
+                    continue
+                unit_id = unit["unit_id"]
+                existing_run_id = supplement_preferred_run_by_unit.get(unit_id)
+                if existing_run_id is None or _corpus_review_run_id_sort_key(run_id) > _corpus_review_run_id_sort_key(existing_run_id):
+                    supplement_preferred_run_by_unit[unit_id] = run_id
+
+        seen_supplement_run_ids = set()
+        for run_dir in supplement_run_dirs:
+            status = get_run_status(run_dir)
+            run_id = status["manifest"]["run_id"]
+            if run_id not in seen_supplement_run_ids:
+                seen_supplement_run_ids.add(run_id)
+                supplement_run_ids.append(run_id)
+            for lens in sorted(SCORING_LENS_CONFIGS):
+                report = build_outcome_report(run_dir, lens=lens)
+                for entry in report["timeline"]:
+                    if supplement_preferred_run_by_unit.get(entry["unit_id"]) != run_id:
+                        continue
+                    if entry["character"] in accepted_unit_character_sets.get(entry["unit_id"], ()):
+                        # A supplement row must never overwrite or contest an
+                        # accepted row for the same unit.
+                        continue
+                    _accumulate_lens_character_total(
+                        lens_character_totals[lens],
+                        entry["character"],
+                        entry["net_score"],
+                        entry["event_score"],
+                        entry["status_score"],
+                        entry["label"],
+                        entry["status_dimensions"],
+                    )
+                    corpus_entry = dict(entry)
+                    corpus_entry["run_id"] = run_id
+                    corpus_entry["provenance"] = "supplement"
+                    lens_unit_entries[lens].append(corpus_entry)
+                    lens_character_entries[lens][entry["character"]].append(corpus_entry)
+        supplement_run_ids.sort(key=_corpus_review_run_id_sort_key)
 
     lens_reviews = {}
     for lens in sorted(SCORING_LENS_CONFIGS):
@@ -1738,7 +1829,7 @@ def build_corpus_sanity_review(run_dirs):
         ),
     )[:10]
 
-    return {
+    result = {
         "corpus_review_version": "corpus_sanity_review_v1",
         "run_count": len(run_statuses),
         "run_ids": run_ids,
@@ -1771,6 +1862,12 @@ def build_corpus_sanity_review(run_dirs):
             "sign_flip_examples": sign_flip_examples,
         },
     }
+
+    if supplement_run_dirs:
+        result["supplemented"] = True
+        result["supplement_runs"] = supplement_run_ids
+
+    return result
 
 
 def discover_annotation_run_dirs(outputs_dir="outputs"):
@@ -1821,13 +1918,14 @@ def build_character_cross_lens_analysis(review):
     return impl(review)
 
 
-def build_character_pages(run_dirs, target_characters=None, top_chapter_limit=5):
+def build_character_pages(run_dirs, target_characters=None, top_chapter_limit=5, supplement_run_dirs=None):
     from .app_exports import build_character_pages as impl
 
     return impl(
         run_dirs,
         target_characters=target_characters,
         top_chapter_limit=top_chapter_limit,
+        supplement_run_dirs=supplement_run_dirs,
     )
 
 
@@ -1858,6 +1956,7 @@ def build_character_chapter_analysis(
     target_characters=None,
     top_rank_spread_limit=10,
     top_volatile_limit=10,
+    supplement_run_dirs=None,
 ):
     from .app_exports import build_character_chapter_analysis as impl
 
@@ -1866,6 +1965,7 @@ def build_character_chapter_analysis(
         target_characters=target_characters,
         top_rank_spread_limit=top_rank_spread_limit,
         top_volatile_limit=top_volatile_limit,
+        supplement_run_dirs=supplement_run_dirs,
     )
 
 
@@ -1930,12 +2030,13 @@ def build_character_elo_supplement_diff(baseline_analysis, supplemented_analysis
     )
 
 
-def build_character_profile_cards(run_dirs, top_chapter_limit=5):
+def build_character_profile_cards(run_dirs, top_chapter_limit=5, supplement_run_dirs=None):
     from .app_exports import build_character_profile_cards as impl
 
     return impl(
         run_dirs,
         top_chapter_limit=top_chapter_limit,
+        supplement_run_dirs=supplement_run_dirs,
     )
 
 

@@ -510,18 +510,20 @@ def _build_character_page_notable_units(character, overlay_dataset, limit=3):
     ]
 
 
-def build_character_pages(run_dirs, target_characters=None, top_chapter_limit=5):
+def build_character_pages(run_dirs, target_characters=None, top_chapter_limit=5, supplement_run_dirs=None):
     selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
-    review = runner.build_corpus_sanity_review(run_dirs)
+    review = runner.build_corpus_sanity_review(run_dirs, supplement_run_dirs=supplement_run_dirs)
     profile_cards = build_character_profile_cards(
         run_dirs,
         top_chapter_limit=top_chapter_limit,
+        supplement_run_dirs=supplement_run_dirs,
     )
     chapter_analysis = build_character_chapter_analysis(
         run_dirs,
         target_characters=selected_characters,
+        supplement_run_dirs=supplement_run_dirs,
     )
-    overlay_dataset = build_chapter_overlay_data(run_dirs)
+    overlay_dataset = build_chapter_overlay_data(run_dirs, supplement_run_dirs=supplement_run_dirs)
     chapter_titles = _chapter_title_map()
 
     cards_by_character = {row["character"]: row for row in profile_cards["cards"]}
@@ -595,12 +597,18 @@ def build_character_pages(run_dirs, target_characters=None, top_chapter_limit=5)
             item["character"],
         )
     )
-    return {
+    result = {
         "character_pages_version": "character_pages_v1",
         "source_review_version": review["corpus_review_version"],
         "character_count": len(pages),
         "pages": pages,
     }
+
+    if supplement_run_dirs:
+        result["supplemented"] = True
+        result["supplement_runs"] = review.get("supplement_runs", [])
+
+    return result
 
 
 def build_chapter_summary_export(run_dirs, top_character_limit=8, top_passage_limit=5):
@@ -824,6 +832,40 @@ def _supplement_preferred_run_by_unit(supplement_run_dirs):
     return preferred_run_by_unit
 
 
+def _supplement_timeline_entries_by_lens(supplement_run_dirs, accepted_unit_character_sets=None):
+    # Returns {lens: [entry, ...]} of the winning (latest-supplement-run-wins)
+    # per-lens outcome-report timeline entries from the supplement run
+    # family, each entry annotated with "run_id". When
+    # accepted_unit_character_sets is given (a unit_id -> set(character)
+    # mapping), entries whose (unit_id, character) collides with an accepted
+    # row are skipped -- a supplement row must never contest an accepted row
+    # for the same unit. This mirrors the merge rule build_chapter_overlay_data
+    # already implements, generalized for callers that consume full per-lens
+    # timeline entries (corpus review totals, per-chapter breakdowns) rather
+    # than the overlay's unit-nested character rows.
+    timeline_by_lens = {lens: [] for lens in sorted(SCORING_LENS_CONFIGS)}
+    if not supplement_run_dirs:
+        return timeline_by_lens
+
+    accepted_unit_character_sets = accepted_unit_character_sets or {}
+    preferred_run_by_unit = _supplement_preferred_run_by_unit(supplement_run_dirs)
+
+    for run_dir in supplement_run_dirs:
+        status = runner.get_run_status(run_dir)
+        run_id = status["manifest"]["run_id"]
+        for lens in sorted(SCORING_LENS_CONFIGS):
+            report = runner.build_outcome_report(run_dir, lens=lens)
+            for entry in report["timeline"]:
+                if preferred_run_by_unit.get(entry["unit_id"]) != run_id:
+                    continue
+                if entry["character"] in accepted_unit_character_sets.get(entry["unit_id"], ()):
+                    continue
+                corpus_entry = dict(entry)
+                corpus_entry["run_id"] = run_id
+                timeline_by_lens[lens].append(corpus_entry)
+    return timeline_by_lens
+
+
 def _build_supplement_unit_character_rows(supplement_run_dirs):
     # Scores each supplement run with the same per-lens outcome-report path
     # used for accepted run_dirs, then buckets the winning (latest-run-wins)
@@ -1030,8 +1072,9 @@ def build_character_chapter_analysis(
     target_characters=None,
     top_rank_spread_limit=10,
     top_volatile_limit=10,
+    supplement_run_dirs=None,
 ):
-    review = runner.build_corpus_sanity_review(run_dirs)
+    review = runner.build_corpus_sanity_review(run_dirs, supplement_run_dirs=supplement_run_dirs)
     cross_lens = build_character_cross_lens_analysis(review)
 
     if target_characters:
@@ -1080,12 +1123,33 @@ def build_character_chapter_analysis(
 
     selected_set = set(selected_characters)
     chapter_rows = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: {"net_score": 0.0, "unit_count": 0})))
+    accepted_unit_character_sets = defaultdict(set)
 
     for lens, reports in lens_reports.items():
         for run_id, report in reports:
             for entry in report["timeline"]:
                 if preferred_run_by_unit.get(entry["unit_id"]) != run_id:
                     continue
+                accepted_unit_character_sets[entry["unit_id"]].add(entry["character"])
+                character = entry["character"]
+                if character not in selected_set:
+                    continue
+                chapter_id = _chapter_id_from_unit_id(entry["unit_id"])
+                chapter_row = chapter_rows[character][chapter_id][lens]
+                chapter_row["net_score"] += entry["net_score"]
+                chapter_row["unit_count"] += 1
+
+    if supplement_run_dirs:
+        # Additively fold winning supplement-run entries into the same
+        # per-character/per-chapter buckets the accepted loop above just
+        # populated, so a character's chapter breakdown (used for
+        # top_chapters selection on cards/pages) reflects the merged
+        # surface, not just the accepted one.
+        supplement_timeline_by_lens = _supplement_timeline_entries_by_lens(
+            supplement_run_dirs, accepted_unit_character_sets
+        )
+        for lens, entries in supplement_timeline_by_lens.items():
+            for entry in entries:
                 character = entry["character"]
                 if character not in selected_set:
                     continue
@@ -1135,13 +1199,19 @@ def build_character_chapter_analysis(
             }
         )
 
-    return {
+    result = {
         "character_chapter_analysis_version": "character_chapter_analysis_v1",
         "source_review_version": review["corpus_review_version"],
         "selected_character_count": len(characters),
         "selected_characters": selected_characters,
         "characters": characters,
     }
+
+    if supplement_run_dirs:
+        result["supplemented"] = True
+        result["supplement_runs"] = review.get("supplement_runs", [])
+
+    return result
 
 
 def build_character_annotation_counts(review):
@@ -1557,12 +1627,13 @@ def build_character_elo_timeline(
     return result
 
 
-def build_character_profile_cards(run_dirs, top_chapter_limit=5):
-    review = runner.build_corpus_sanity_review(run_dirs)
+def build_character_profile_cards(run_dirs, top_chapter_limit=5, supplement_run_dirs=None):
+    review = runner.build_corpus_sanity_review(run_dirs, supplement_run_dirs=supplement_run_dirs)
     cross_lens = build_character_cross_lens_analysis(review)
     chapter_analysis = build_character_chapter_analysis(
         run_dirs,
         target_characters=[row["character"] for row in cross_lens["characters"]],
+        supplement_run_dirs=supplement_run_dirs,
     )
     annotation_counts = build_character_annotation_counts(review)
 
@@ -1598,12 +1669,18 @@ def build_character_profile_cards(run_dirs, top_chapter_limit=5):
     cards.sort(
         key=lambda item: (-item["annotation_unit_count"], -item["rank_spread"], item["character"]),
     )
-    return {
+    result = {
         "character_profile_cards_version": "character_profile_cards_v1",
         "source_review_version": review["corpus_review_version"],
         "character_count": len(cards),
         "cards": cards,
     }
+
+    if supplement_run_dirs:
+        result["supplemented"] = True
+        result["supplement_runs"] = review.get("supplement_runs", [])
+
+    return result
 
 
 def build_character_elo_supplement_diff(baseline_analysis, supplemented_analysis, clearing_threshold=30, top_mover_limit=15):

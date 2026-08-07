@@ -29,6 +29,20 @@ def _character_elo_supplement_diff_default_paths(lens):
     return f"{base}.json", f"{base}.md"
 
 
+def _supplemented_default_paths(base_name, include_supplements):
+    # Unlike the character-elo family, these builders have no default output
+    # path at all when unsupplemented (an omitted --output/--markdown-output
+    # simply prints the analysis to stdout, preserving existing behavior
+    # exactly); --include-supplements is the only thing that turns on a
+    # default path, and it always points at the -supplemented- artifact
+    # names so the unsuffixed -current.* files are never touched by this
+    # flag.
+    if not include_supplements:
+        return None, None
+    base = f"outputs/{base_name}-supplemented-current"
+    return f"{base}.json", f"{base}.md"
+
+
 def _collect_runs(args):
     runs = list(args.runs or [])
     if getattr(args, "discover_runs", None):
@@ -170,8 +184,18 @@ def build_parser():
         action="append",
         help="Optional character to include. Repeat for multiple characters. Defaults to the union of top rank-spread and top volatile figures.",
     )
-    character_chapter_parser.add_argument("--output", help="Optional JSON output path.")
-    character_chapter_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    character_chapter_parser.add_argument(
+        "--include-supplements",
+        action="store_true",
+        help="Merge outputs/supplement-run-* annotations into the corpus review before computing the chapter analysis.",
+    )
+    character_chapter_parser.add_argument(
+        "--supplement-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover supplement-run-* directories from when --include-supplements is set. Defaults to outputs.",
+    )
+    character_chapter_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-chapter-cross-lens-supplemented-current.json with --include-supplements.")
+    character_chapter_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-chapter-cross-lens-supplemented-current.md with --include-supplements.")
 
     character_counts_parser = subparsers.add_parser(
         "character-annotation-counts",
@@ -335,8 +359,18 @@ def build_parser():
         const="outputs",
         help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
     )
-    character_cards_parser.add_argument("--output", help="Optional JSON output path.")
-    character_cards_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    character_cards_parser.add_argument(
+        "--include-supplements",
+        action="store_true",
+        help="Merge outputs/supplement-run-* annotations into the corpus review before computing profile cards.",
+    )
+    character_cards_parser.add_argument(
+        "--supplement-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover supplement-run-* directories from when --include-supplements is set. Defaults to outputs.",
+    )
+    character_cards_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-profile-cards-supplemented-current.json with --include-supplements.")
+    character_cards_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-profile-cards-supplemented-current.md with --include-supplements.")
 
     character_pages_parser = subparsers.add_parser(
         "character-pages",
@@ -355,8 +389,18 @@ def build_parser():
         action="append",
         help="Optional pilot character to include. Repeat for multiple characters.",
     )
-    character_pages_parser.add_argument("--output", help="Optional JSON output path.")
-    character_pages_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    character_pages_parser.add_argument(
+        "--include-supplements",
+        action="store_true",
+        help="Merge outputs/supplement-run-* annotations into the corpus review and overlay before computing character pages.",
+    )
+    character_pages_parser.add_argument(
+        "--supplement-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover supplement-run-* directories from when --include-supplements is set. Defaults to outputs.",
+    )
+    character_pages_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-pages-supplemented-current.json with --include-supplements.")
+    character_pages_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-pages-supplemented-current.md with --include-supplements.")
 
     chapter_summaries_parser = subparsers.add_parser(
         "chapter-summaries",
@@ -583,18 +627,28 @@ def main(argv=None):
 
     if args.command == "character-chapter-analysis":
         try:
+            runs = _collect_runs(args)
+            supplement_run_dirs = (
+                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
+            )
             analysis = core.build_character_chapter_analysis(
-                _collect_runs(args),
+                runs,
                 target_characters=args.characters,
+                supplement_run_dirs=supplement_run_dirs,
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_character_chapter_analysis_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
-        if args.output or args.markdown_output:
+        default_json_output, default_markdown_output = _supplemented_default_paths(
+            "character-chapter-cross-lens", args.include_supplements
+        )
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_chapter_analysis_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        if json_output or markdown_output:
             print(json.dumps({
                 "selected_character_count": analysis["selected_character_count"],
-                "json_output": args.output,
-                "markdown_output": args.markdown_output,
+                "json_output": json_output,
+                "markdown_output": markdown_output,
             }, ensure_ascii=False, indent=2))
         else:
             print(json.dumps(analysis, ensure_ascii=False, indent=2))
@@ -724,15 +778,24 @@ def main(argv=None):
 
     if args.command == "character-profile-cards":
         try:
-            analysis = core.build_character_profile_cards(_collect_runs(args))
+            runs = _collect_runs(args)
+            supplement_run_dirs = (
+                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
+            )
+            analysis = core.build_character_profile_cards(runs, supplement_run_dirs=supplement_run_dirs)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_character_profile_cards_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
-        if args.output or args.markdown_output:
+        default_json_output, default_markdown_output = _supplemented_default_paths(
+            "character-profile-cards", args.include_supplements
+        )
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_profile_cards_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        if json_output or markdown_output:
             print(json.dumps({
                 "character_count": analysis["character_count"],
-                "json_output": args.output,
-                "markdown_output": args.markdown_output,
+                "json_output": json_output,
+                "markdown_output": markdown_output,
             }, ensure_ascii=False, indent=2))
         else:
             print(json.dumps(analysis, ensure_ascii=False, indent=2))
@@ -752,18 +815,28 @@ def main(argv=None):
 
     if args.command == "character-pages":
         try:
+            runs = _collect_runs(args)
+            supplement_run_dirs = (
+                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
+            )
             analysis = core.build_character_pages(
-                _collect_runs(args),
+                runs,
                 target_characters=args.characters,
+                supplement_run_dirs=supplement_run_dirs,
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_character_pages_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
-        if args.output or args.markdown_output:
+        default_json_output, default_markdown_output = _supplemented_default_paths(
+            "character-pages", args.include_supplements
+        )
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_pages_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        if json_output or markdown_output:
             print(json.dumps({
                 "character_count": analysis["character_count"],
-                "json_output": args.output,
-                "markdown_output": args.markdown_output,
+                "json_output": json_output,
+                "markdown_output": markdown_output,
             }, ensure_ascii=False, indent=2))
         else:
             print(json.dumps(analysis, ensure_ascii=False, indent=2))

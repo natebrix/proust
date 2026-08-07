@@ -167,8 +167,10 @@ def render_character_chapter_analysis_markdown(analysis):
         f"- Analysis version: `{analysis['character_chapter_analysis_version']}`",
         f"- Source review version: `{analysis['source_review_version']}`",
         f"- Selected character count: `{analysis['selected_character_count']}`",
-        "",
     ]
+    if analysis.get("supplemented"):
+        lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
+    lines.append("")
 
     for character_row in analysis["characters"]:
         summary = character_row["cross_lens_summary"]
@@ -471,8 +473,10 @@ def render_character_profile_cards_markdown(analysis):
         f"- Analysis version: `{analysis['character_profile_cards_version']}`",
         f"- Source review version: `{analysis['source_review_version']}`",
         f"- Character count: `{analysis['character_count']}`",
-        "",
     ]
+    if analysis.get("supplemented"):
+        lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
+    lines.append("")
 
     for card in analysis["cards"][:20]:
         lines.extend(
@@ -560,8 +564,10 @@ def render_character_pages_markdown(analysis):
         f"- Analysis version: `{analysis['character_pages_version']}`",
         f"- Source review version: `{analysis['source_review_version']}`",
         f"- Character count: `{analysis['character_count']}`",
-        "",
     ]
+    if analysis.get("supplemented"):
+        lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
+    lines.append("")
 
     for page in analysis["pages"]:
         lines.extend(
