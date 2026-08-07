@@ -10,12 +10,12 @@ CHARACTER_PORTRAIT_SLUGS = {
 
 CHARACTER_PAGE_PILOT_EDITORIAL = {
     "le narrateur": {
-        "subheading": "The perpetually admitted observer: first among reliable characters in advantage and inclusion, with mean scores that stay stubbornly near zero.",
-        "summary": "The narrator became a scored participant only in the coverage-supplement pass, and immediately became the corpus's most-matched reliable figure. He prevails relatively, scene after scene — the rooms keep letting him in — while his absolute readings remain anxious and nearly neutral, which is as close as the data comes to restating the novel's own split between lived unease and narrated mastery.",
+        "subheading": "The perpetually admitted observer: first in advantage and inclusion among the novel's central figures, with average scores that stay stubbornly near zero.",
+        "summary": "The narrator is the novel's \"I\": nearly every scene passes through him, so he meets more of the cast, more often, than any other figure. Scene by scene he tends to come out ahead of whoever shares the room — admitted, favored, received — while his own overall readings stay anxious and nearly neutral. It is as close as the scores come to restating the novel's split between lived unease and narrated mastery.",
         "why_interesting": [
-            "He tops the reliable advantage and inclusion ELO standings despite near-zero mean net scores: he wins relative to whoever shares his scenes, not by dominating them.",
-            "His 281 matches touch more of the cast than any other reliable character, making him the connective tissue of the whole match graph.",
-            "The gap between his relational success and his neutral-to-negative self-account is the corpus's cleanest measurable version of the book's central irony.",
+            "He leads the advantage and inclusion standings despite near-zero average scores: he prevails relative to whoever shares his scenes, not by dominating them.",
+            "Because the whole novel passes through him, his fortunes brush against more of the cast than anyone else's — his outcomes are the connective tissue of the book's social world.",
+            "The gap between how consistently he comes out ahead and how anxiously he reports it is the cleanest measurable version of the book's central irony.",
         ],
         "primary_pattern": "relational_positive_understated",
         "reading_path": [
