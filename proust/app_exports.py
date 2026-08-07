@@ -6,6 +6,7 @@ import re
 from statistics import median
 import unicodedata
 
+from . import glicko2
 from . import runner
 from .app_config import ISLT_PORTRAITS_DIR, ISLT_READER_BASE_PATH, PORTRAIT_STYLES
 from .editorial import CHAPTER_SUMMARY_EDITORIAL, CHARACTER_PAGE_PILOT_EDITORIAL, CHARACTER_PORTRAIT_SLUGS
@@ -1757,3 +1758,245 @@ def build_character_elo_supplement_diff(baseline_analysis, supplemented_analysis
         "characters_newly_clearing_threshold": newly_clearing,
         "top_rating_movers": top_rating_movers,
     }
+
+
+def _character_glicko2_version(lens):
+    return f"character_glicko2_{lens}_v1"
+
+
+def build_character_glicko2(
+    run_dirs,
+    lens="advantage",
+    supplement_run_dirs=None,
+    tau=glicko2.DEFAULT_TAU,
+    epsilon=0.25,
+    rd_provisional_threshold=100.0,
+    initial_rating=glicko2.DEFAULT_INITIAL_RATING,
+    initial_rd=glicko2.DEFAULT_INITIAL_RD,
+    initial_volatility=glicko2.DEFAULT_INITIAL_VOLATILITY,
+    convergence_epsilon=glicko2.DEFAULT_CONVERGENCE_EPSILON,
+):
+    """Build a lens Glicko-2 rating surface alongside (not replacing) character ELO.
+
+    Matches are assembled exactly as in build_character_elo: within each
+    unit, every pair of scored characters is compared under `lens` with the
+    same epsilon draw band, reusing `build_chapter_overlay_data` and
+    `_elo_observed_scores`.
+
+    Unlike ELO, Glicko-2 rates in batches. Each canonical chapter (in
+    canonical order, which is how `build_chapter_overlay_data` already
+    yields chapters) is treated as one rating period: every match within a
+    chapter is resolved against opponents' PRE-period rating/RD (the state
+    as of the start of the chapter), and every currently-tracked character
+    is updated simultaneously at the chapter's end -- including characters
+    with zero matches that chapter, whose RD rises per the paper's
+    inactive-player rule while their rating and volatility hold steady.
+    This makes results order-independent within a chapter, unlike ELO's
+    strictly sequential updates.
+    """
+    _require_known_scoring_lens(lens)
+    if not run_dirs:
+        raise ValueError("At least one run directory is required for character Glicko-2.")
+
+    review = runner.build_corpus_sanity_review(run_dirs)
+    overlay_dataset = build_chapter_overlay_data(run_dirs, supplement_run_dirs=supplement_run_dirs)
+
+    state = {}
+    diagnostics = {}
+    draw_count = 0
+    match_count = 0
+
+    for period_index, chapter in enumerate(overlay_dataset["chapters"], start=1):
+        chapter_id = chapter["chapterId"]
+
+        chapter_unit_ordered_rows = []
+        for unit in chapter["units"]:
+            ordered_rows = sorted(unit["characters"], key=lambda row: row["character"])
+            chapter_unit_ordered_rows.append((unit, ordered_rows))
+            for character_row in ordered_rows:
+                character = character_row["character"]
+                row = diagnostics.setdefault(
+                    character,
+                    {
+                        "character": character,
+                        "match_count": 0,
+                        "win_count": 0,
+                        "loss_count": 0,
+                        "draw_count": 0,
+                        "unit_count": 0,
+                        "net_scores": [],
+                        "top_positive_unit": None,
+                        "top_negative_unit": None,
+                        "first_period_index": None,
+                        "first_period_chapter_id": None,
+                        "last_period_index": None,
+                        "last_period_chapter_id": None,
+                    },
+                )
+                net_score = character_row[lens]["netScore"]
+                row["unit_count"] += 1
+                row["net_scores"].append(net_score)
+                positive_unit = row["top_positive_unit"]
+                if positive_unit is None or net_score > positive_unit["net_score"]:
+                    row["top_positive_unit"] = {"unit_id": unit["unitId"], "net_score": net_score}
+                negative_unit = row["top_negative_unit"]
+                if negative_unit is None or net_score < negative_unit["net_score"]:
+                    row["top_negative_unit"] = {"unit_id": unit["unitId"], "net_score": net_score}
+                if row["first_period_index"] is None:
+                    row["first_period_index"] = period_index
+                    row["first_period_chapter_id"] = chapter_id
+                row["last_period_index"] = period_index
+                row["last_period_chapter_id"] = chapter_id
+
+                state.setdefault(
+                    character,
+                    {"rating": float(initial_rating), "rd": float(initial_rd), "volatility": float(initial_volatility)},
+                )
+
+        # Snapshot every currently-tracked character's pre-period state.
+        # Every match resolved below references this snapshot, never the
+        # mid-period state of an opponent who has already played this
+        # chapter, which is what makes Glicko-2 rating periods
+        # order-independent within a period.
+        pre_period_state = {name: dict(values) for name, values in state.items()}
+
+        matches_by_character = defaultdict(list)
+        for unit, ordered_rows in chapter_unit_ordered_rows:
+            for row_a, row_b in combinations(ordered_rows, 2):
+                character_a = row_a["character"]
+                character_b = row_b["character"]
+                score_a = row_a[lens]["netScore"]
+                score_b = row_b[lens]["netScore"]
+                observed_a, observed_b = _elo_observed_scores(score_a, score_b, epsilon)
+
+                opponent_a = pre_period_state[character_b]
+                opponent_b = pre_period_state[character_a]
+                matches_by_character[character_a].append((opponent_a["rating"], opponent_a["rd"], observed_a))
+                matches_by_character[character_b].append((opponent_b["rating"], opponent_b["rd"], observed_b))
+
+                match_count += 1
+                if observed_a == observed_b == 0.5:
+                    draw_count += 1
+                    diagnostics[character_a]["draw_count"] += 1
+                    diagnostics[character_b]["draw_count"] += 1
+                elif observed_a > observed_b:
+                    diagnostics[character_a]["win_count"] += 1
+                    diagnostics[character_b]["loss_count"] += 1
+                else:
+                    diagnostics[character_a]["loss_count"] += 1
+                    diagnostics[character_b]["win_count"] += 1
+
+                diagnostics[character_a]["match_count"] += 1
+                diagnostics[character_b]["match_count"] += 1
+
+        new_state = {}
+        for character, values in state.items():
+            opponents = matches_by_character.get(character, [])
+            rating_prime, rd_prime, volatility_prime = glicko2.rate_player(
+                values["rating"],
+                values["rd"],
+                values["volatility"],
+                opponents,
+                tau=tau,
+                convergence_epsilon=convergence_epsilon,
+            )
+            new_state[character] = {"rating": rating_prime, "rd": rd_prime, "volatility": volatility_prime}
+        state = new_state
+
+    period_count = len(overlay_dataset["chapters"])
+
+    characters = []
+    for character, row in diagnostics.items():
+        final_state = state[character]
+        rating = round(final_state["rating"], 1)
+        rd = round(final_state["rd"], 1)
+        mean_net_score = (
+            round(sum(row["net_scores"]) / len(row["net_scores"]), 3) if row["net_scores"] else 0.0
+        )
+        characters.append(
+            {
+                "character": character,
+                "rating": rating,
+                "rd": rd,
+                "volatility": round(final_state["volatility"], 4),
+                "conservative_rating": round(final_state["rating"] - 2.0 * final_state["rd"], 1),
+                "match_count": row["match_count"],
+                "win_count": row["win_count"],
+                "loss_count": row["loss_count"],
+                "draw_count": row["draw_count"],
+                "unit_count": row["unit_count"],
+                "mean_net_score": mean_net_score,
+                "provisional": final_state["rd"] > rd_provisional_threshold,
+                "top_positive_unit": row["top_positive_unit"],
+                "top_negative_unit": row["top_negative_unit"],
+                "first_period_index": row["first_period_index"],
+                "first_period_chapter_id": row["first_period_chapter_id"],
+                "last_period_index": row["last_period_index"],
+                "last_period_chapter_id": row["last_period_chapter_id"],
+                "periods_since_last_seen": period_count - row["last_period_index"],
+                "active_in_final_period": row["last_period_index"] == period_count,
+            }
+        )
+
+    glicko_rank = {
+        row["character"]: rank
+        for rank, row in enumerate(
+            sorted(characters, key=lambda item: (-item["conservative_rating"], item["character"])),
+            start=1,
+        )
+    }
+
+    # Cross-reference the ELO surface for the same lens/supplements purely
+    # to compute a rank divergence diagnostic; this does not change
+    # anything about how Glicko-2 itself is computed.
+    elo_analysis = build_character_elo(run_dirs, lens=lens, supplement_run_dirs=supplement_run_dirs)
+    elo_rank_by_character = {row["character"]: row["elo_rank"] for row in elo_analysis["characters"]}
+    elo_by_character = {row["character"]: row["elo"] for row in elo_analysis["characters"]}
+
+    for row in characters:
+        row["glicko_rank"] = glicko_rank[row["character"]]
+        elo_rank = elo_rank_by_character.get(row["character"])
+        row["elo_rank"] = elo_rank
+        row["elo"] = elo_by_character.get(row["character"])
+        row["glicko_rank_minus_elo_rank"] = (row["glicko_rank"] - elo_rank) if elo_rank is not None else None
+
+    characters.sort(key=lambda item: (-item["conservative_rating"], item["character"]))
+
+    non_provisional = [row for row in characters if not row["provisional"]]
+    provisional = [row for row in characters if row["provisional"]]
+
+    result = {
+        "character_glicko2_version": _character_glicko2_version(lens),
+        "lens": lens,
+        "source_review_version": review["corpus_review_version"],
+        "duplicate_resolution": overlay_dataset["duplicate_resolution"],
+        "initial_rating": initial_rating,
+        "initial_rd": initial_rd,
+        "initial_volatility": initial_volatility,
+        "tau": tau,
+        "epsilon": epsilon,
+        "rd_provisional_threshold": rd_provisional_threshold,
+        "rating_period_rule": "canonical_chapter",
+        "period_count": period_count,
+        "character_count": len(characters),
+        "match_count": match_count,
+        "draw_rate": round(draw_count / match_count, 3) if match_count else 0.0,
+        "top_rated_characters": sorted(
+            non_provisional, key=lambda item: (-item["conservative_rating"], item["character"])
+        )[:10],
+        "bottom_rated_characters": sorted(
+            non_provisional, key=lambda item: (item["conservative_rating"], item["character"])
+        )[:10],
+        "provisional_characters": sorted(provisional, key=lambda item: (-item["rating"], item["character"])),
+        "largest_glicko_elo_rank_divergences": sorted(
+            (row for row in non_provisional if row["elo_rank"] is not None),
+            key=lambda item: (-abs(item["glicko_rank_minus_elo_rank"]), item["character"]),
+        )[:10],
+        "characters": characters,
+    }
+
+    if supplement_run_dirs:
+        result["supplemented"] = True
+        result["supplement_runs"] = overlay_dataset.get("supplement_runs", [])
+
+    return result

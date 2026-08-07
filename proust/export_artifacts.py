@@ -891,3 +891,166 @@ def write_character_elo_supplement_diff_artifacts(diff, json_output=None, markdo
         markdown_path = Path(markdown_output)
         markdown_path.parent.mkdir(parents=True, exist_ok=True)
         markdown_path.write_text(render_character_elo_supplement_diff_markdown(diff))
+
+
+def _format_glicko_rating(row):
+    return f"{row['rating']:.0f} ± {2 * row['rd']:.0f}"
+
+
+def render_character_glicko2_markdown(analysis):
+    mean_column_label = f"Mean {analysis['lens'].capitalize()}"
+    lines = [
+        "# Character Glicko-2",
+        "",
+        f"- Analysis version: `{analysis['character_glicko2_version']}`",
+        f"- Lens: `{analysis['lens']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Character count: `{analysis['character_count']}`",
+        f"- Match count: `{analysis['match_count']}`",
+        f"- Draw rate: `{analysis['draw_rate']}`",
+        f"- Initial rating: `{analysis['initial_rating']}`",
+        f"- Initial RD: `{analysis['initial_rd']}`",
+        f"- Initial volatility: `{analysis['initial_volatility']}`",
+        f"- Tau: `{analysis['tau']}`",
+        f"- Epsilon: `{analysis['epsilon']}`",
+        f"- Rating period rule: `{analysis['rating_period_rule']}`",
+        f"- Period count: `{analysis['period_count']}`",
+        f"- Provisional RD threshold: `{analysis['rd_provisional_threshold']}`",
+    ]
+    if analysis.get("supplemented"):
+        lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
+    lines.extend(
+        [
+            "",
+            "Ratings are shown as `rating ± 2*RD`, an approximate 95% confidence band. "
+            "Characters whose RD exceeds the provisional threshold are excluded from the "
+            "top/bottom/divergence tables below (but never from the full character table), "
+            "since a rating built on very little evidence is noise.",
+            "",
+            "## Top Rated Characters",
+            "",
+            markdown_table(
+                ["Character", "Rating", "Conservative", "RD", "Volatility", "Matches", "W-L-D", "Units", mean_column_label],
+                [
+                    (
+                        row["character"],
+                        _format_glicko_rating(row),
+                        row["conservative_rating"],
+                        row["rd"],
+                        row["volatility"],
+                        row["match_count"],
+                        f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
+                        row["unit_count"],
+                        format_signed_number(row["mean_net_score"]),
+                    )
+                    for row in analysis["top_rated_characters"]
+                ],
+            ),
+            "",
+            "## Bottom Rated Characters",
+            "",
+            markdown_table(
+                ["Character", "Rating", "Conservative", "RD", "Volatility", "Matches", "W-L-D", "Units", mean_column_label],
+                [
+                    (
+                        row["character"],
+                        _format_glicko_rating(row),
+                        row["conservative_rating"],
+                        row["rd"],
+                        row["volatility"],
+                        row["match_count"],
+                        f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
+                        row["unit_count"],
+                        format_signed_number(row["mean_net_score"]),
+                    )
+                    for row in analysis["bottom_rated_characters"]
+                ],
+            ),
+            "",
+            "## Provisional Characters",
+            "",
+            "Characters whose RD is still above the provisional threshold -- their rating "
+            "should be treated as unstable.",
+            "",
+            markdown_table(
+                ["Character", "Rating", "RD", "Matches", "Units", "Last Period"],
+                [
+                    (
+                        row["character"],
+                        _format_glicko_rating(row),
+                        row["rd"],
+                        row["match_count"],
+                        row["unit_count"],
+                        row["last_period_chapter_id"],
+                    )
+                    for row in analysis["provisional_characters"]
+                ],
+            ),
+            "",
+            "## Largest Glicko-vs-ELO Rank Divergences",
+            "",
+            markdown_table(
+                ["Character", "Glicko Rank", "ELO Rank", "Delta", "Rating", "ELO"],
+                [
+                    (
+                        row["character"],
+                        row["glicko_rank"],
+                        row["elo_rank"],
+                        row["glicko_rank_minus_elo_rank"],
+                        _format_glicko_rating(row),
+                        row["elo"],
+                    )
+                    for row in analysis["largest_glicko_elo_rank_divergences"]
+                ],
+            ),
+            "",
+            "## Character Table",
+            "",
+            markdown_table(
+                [
+                    "Character",
+                    "Rating",
+                    "Conservative",
+                    "RD",
+                    "Volatility",
+                    "Glicko Rank",
+                    "ELO Rank",
+                    "Provisional",
+                    "Matches",
+                    "W-L-D",
+                    "Units",
+                    mean_column_label,
+                ],
+                [
+                    (
+                        row["character"],
+                        _format_glicko_rating(row),
+                        row["conservative_rating"],
+                        row["rd"],
+                        row["volatility"],
+                        row["glicko_rank"],
+                        row["elo_rank"],
+                        row["provisional"],
+                        row["match_count"],
+                        f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
+                        row["unit_count"],
+                        format_signed_number(row["mean_net_score"]),
+                    )
+                    for row in analysis["characters"]
+                ],
+            ),
+            "",
+        ]
+    )
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_glicko2_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_glicko2_markdown(analysis))

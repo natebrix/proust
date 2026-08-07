@@ -2040,6 +2040,34 @@ def build_character_profile_cards(run_dirs, top_chapter_limit=5, supplement_run_
     )
 
 
+def build_character_glicko2(
+    run_dirs,
+    lens="advantage",
+    supplement_run_dirs=None,
+    tau=0.5,
+    epsilon=0.25,
+    rd_provisional_threshold=100.0,
+    initial_rating=1500.0,
+    initial_rd=350.0,
+    initial_volatility=0.06,
+    convergence_epsilon=1e-6,
+):
+    from .app_exports import build_character_glicko2 as impl
+
+    return impl(
+        run_dirs,
+        lens=lens,
+        supplement_run_dirs=supplement_run_dirs,
+        tau=tau,
+        epsilon=epsilon,
+        rd_provisional_threshold=rd_provisional_threshold,
+        initial_rating=initial_rating,
+        initial_rd=initial_rd,
+        initial_volatility=initial_volatility,
+        convergence_epsilon=convergence_epsilon,
+    )
+
+
 def render_character_cross_lens_analysis_markdown(analysis):
     from .export_artifacts import render_character_cross_lens_analysis_markdown as impl
 
@@ -2080,6 +2108,18 @@ def render_character_elo_timeline_markdown(analysis):
     from .export_artifacts import render_character_elo_timeline_markdown as impl
 
     return impl(analysis)
+
+
+def render_character_glicko2_markdown(analysis):
+    from .export_artifacts import render_character_glicko2_markdown as impl
+
+    return impl(analysis)
+
+
+def write_character_glicko2_artifacts(analysis, json_output=None, markdown_output=None):
+    from .export_artifacts import write_character_glicko2_artifacts as impl
+
+    return impl(analysis, json_output=json_output, markdown_output=markdown_output)
 
 
 def write_character_annotation_counts_artifacts(analysis, json_output=None, markdown_output=None):

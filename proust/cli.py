@@ -29,6 +29,12 @@ def _character_elo_supplement_diff_default_paths(lens):
     return f"{base}.json", f"{base}.md"
 
 
+def _character_glicko2_default_paths(lens, include_supplements):
+    suffix = "-supplemented" if include_supplements else ""
+    base = f"outputs/character-glicko2-{lens}{suffix}-current"
+    return f"{base}.json", f"{base}.md"
+
+
 def _supplemented_default_paths(base_name, include_supplements):
     # Unlike the character-elo family, these builders have no default output
     # path at all when unsupplemented (an omitted --output/--markdown-output
@@ -246,6 +252,42 @@ def build_parser():
     )
     character_elo_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-current.json for the advantage lens (outputs/character-elo-<lens>-current.json for other lenses), or the -supplemented- variant with --include-supplements.")
     character_elo_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-current.md for the advantage lens (outputs/character-elo-<lens>-current.md for other lenses), or the -supplemented- variant with --include-supplements.")
+
+    character_glicko2_parser = subparsers.add_parser(
+        "character-glicko2",
+        help="Build a lens Glicko-2 rating surface from the same pairwise within-unit character comparisons as character-elo, batched by canonical chapter.",
+    )
+    character_glicko2_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
+    character_glicko2_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_glicko2_parser.add_argument(
+        "--lens",
+        default="advantage",
+        choices=list(core.SCORING_LENS_ORDER),
+        help="Scoring lens the Glicko-2 rating is computed over. Defaults to advantage.",
+    )
+    character_glicko2_parser.add_argument(
+        "--include-supplements",
+        action="store_true",
+        help="Merge outputs/supplement-run-* annotations into the overlay before computing Glicko-2.",
+    )
+    character_glicko2_parser.add_argument(
+        "--supplement-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover supplement-run-* directories from when --include-supplements is set. Defaults to outputs.",
+    )
+    character_glicko2_parser.add_argument(
+        "--tau",
+        type=float,
+        default=0.5,
+        help="Glicko-2 system constant that constrains volatility over time. Defaults to 0.5.",
+    )
+    character_glicko2_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-glicko2-advantage-current.json for the advantage lens (outputs/character-glicko2-<lens>-current.json for other lenses), or the -supplemented- variant with --include-supplements.")
+    character_glicko2_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-glicko2-advantage-current.md for the advantage lens (outputs/character-glicko2-<lens>-current.md for other lenses), or the -supplemented- variant with --include-supplements.")
 
     character_elo_timeline_parser = subparsers.add_parser(
         "character-elo-timeline",
@@ -692,6 +734,33 @@ def main(argv=None):
         print(json.dumps({
             "character_count": analysis["character_count"],
             "match_count": analysis["match_count"],
+            "json_output": json_output,
+            "markdown_output": markdown_output,
+        }, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-glicko2":
+        try:
+            runs = _collect_runs(args)
+            supplement_run_dirs = (
+                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
+            )
+            analysis = core.build_character_glicko2(
+                runs,
+                lens=args.lens,
+                supplement_run_dirs=supplement_run_dirs,
+                tau=args.tau,
+            )
+        except (core.RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        default_json_output, default_markdown_output = _character_glicko2_default_paths(args.lens, args.include_supplements)
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_glicko2_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        print(json.dumps({
+            "character_count": analysis["character_count"],
+            "match_count": analysis["match_count"],
+            "period_count": analysis["period_count"],
             "json_output": json_output,
             "markdown_output": markdown_output,
         }, ensure_ascii=False, indent=2))
