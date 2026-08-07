@@ -1,7 +1,10 @@
 from pathlib import Path
 
 
-ISLT_PORTRAITS_DIR = Path("/Users/nathan_brixius/dev/brixius-web/public/projects/islt/portraits")
+# Derived from the home directory rather than a baked absolute path: a stale
+# username in this constant once silently emptied every character's portrait
+# variants on regeneration.
+ISLT_PORTRAITS_DIR = Path.home() / "dev" / "brixius-web" / "public" / "projects" / "islt" / "portraits"
 ISLT_READER_BASE_PATH = "/projects/islt/fr-original"
 PORTRAIT_STYLES = (
     "vermeer-proustian",

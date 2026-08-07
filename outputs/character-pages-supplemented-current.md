@@ -8,7 +8,7 @@
 ## Swann
 
 - Slug: `swann`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/swann-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `302`
 - Rank spread: `0`
 - Max score span: `+8.609`
@@ -54,7 +54,7 @@ Notable units:
 ## Robert de Saint-Loup
 
 - Slug: `robert-de-saint-loup`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/saint-loup-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `220`
 - Rank spread: `51`
 - Max score span: `+7.299`
@@ -100,7 +100,7 @@ Notable units:
 ## Albertine
 
 - Slug: `albertine`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/albertine-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `199`
 - Rank spread: `1`
 - Max score span: `+8.061`
@@ -146,7 +146,7 @@ Notable units:
 ## duchesse de Guermantes
 
 - Slug: `duchesse-de-guermantes`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/duchesse-de-guermantes-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `196`
 - Rank spread: `0`
 - Max score span: `+6.422`
@@ -192,7 +192,7 @@ Notable units:
 ## baron de Charlus
 
 - Slug: `baron-de-charlus`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/charlus-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `152`
 - Rank spread: `2`
 - Max score span: `+7.0`
@@ -238,7 +238,7 @@ Notable units:
 ## Odette
 
 - Slug: `odette`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/odette-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `136`
 - Rank spread: `46`
 - Max score span: `+7.422`
@@ -331,7 +331,7 @@ Notable units:
 ## Françoise
 
 - Slug: `francoise`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/francoise-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `105`
 - Rank spread: `9`
 - Max score span: `+5.58`
@@ -377,7 +377,7 @@ Notable units:
 ## Mme de Villeparisis
 
 - Slug: `mme-de-villeparisis`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/mme-de-villeparisis-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `100`
 - Rank spread: `30`
 - Max score span: `+7.86`
@@ -423,7 +423,7 @@ Notable units:
 ## la grand-mère
 
 - Slug: `la-grand-mere`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/la-grand-mere-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `93`
 - Rank spread: `11`
 - Max score span: `+5.706`
@@ -469,7 +469,7 @@ Notable units:
 ## duc de Guermantes
 
 - Slug: `duc-de-guermantes`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/duc-de-guermantes-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `92`
 - Rank spread: `0`
 - Max score span: `+7.073`
@@ -515,7 +515,7 @@ Notable units:
 ## Mme Verdurin
 
 - Slug: `mme-verdurin`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/mme-verdurin-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `90`
 - Rank spread: `2`
 - Max score span: `+6.53`
@@ -561,7 +561,7 @@ Notable units:
 ## Bloch
 
 - Slug: `bloch`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/bloch-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `85`
 - Rank spread: `1`
 - Max score span: `+6.817`
@@ -607,7 +607,7 @@ Notable units:
 ## Norpois
 
 - Slug: `norpois`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/norpois-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `83`
 - Rank spread: `24`
 - Max score span: `+5.15`
@@ -653,7 +653,7 @@ Notable units:
 ## Gilberte
 
 - Slug: `gilberte`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/gilberte-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `62`
 - Rank spread: `36`
 - Max score span: `+7.116`
@@ -699,7 +699,7 @@ Notable units:
 ## la mère du narrateur
 
 - Slug: `la-mere-du-narrateur`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/la-mere-du-narrateur-default-vermeer-proustian-20260425-1923.png`
 - Annotation units: `62`
 - Rank spread: `3`
 - Max score span: `+4.167`
@@ -745,7 +745,7 @@ Notable units:
 ## docteur Cottard
 
 - Slug: `docteur-cottard`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/docteur-cottard-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `62`
 - Rank spread: `2`
 - Max score span: `+5.98`
@@ -791,7 +791,7 @@ Notable units:
 ## Bergotte
 
 - Slug: `bergotte`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/bergotte-default-vermeer-proustian-20260425-1923.png`
 - Annotation units: `42`
 - Rank spread: `4`
 - Max score span: `+6.256`
@@ -837,7 +837,7 @@ Notable units:
 ## Mme de Cambremer
 
 - Slug: `mme-de-cambremer`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/mme-de-cambremer-default-vermeer-proustian-20260425-1923.png`
 - Annotation units: `30`
 - Rank spread: `1`
 - Max score span: `+5.938`
@@ -883,7 +883,7 @@ Notable units:
 ## Legrandin
 
 - Slug: `legrandin`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/legrandin-default-vermeer-proustian-20260425-1923.png`
 - Annotation units: `29`
 - Rank spread: `5`
 - Max score span: `+6.018`
@@ -929,7 +929,7 @@ Notable units:
 ## M. Vinteuil
 
 - Slug: `m-vinteuil`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/m-vinteuil-default-vermeer-proustian-20260425-1923.png`
 - Annotation units: `22`
 - Rank spread: `6`
 - Max score span: `+6.21`
