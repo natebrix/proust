@@ -924,7 +924,7 @@ Notable units:
 ## le narrateur
 
 - Slug: `le-narrateur`
-- Portrait default: `none`
+- Portrait default: `/projects/islt/portraits/le-narrateur-default-vermeer-proustian-20260807-1130.png`
 - Annotation units: `6`
 - Rank spread: `1`
 - Max score span: `+6.539`
