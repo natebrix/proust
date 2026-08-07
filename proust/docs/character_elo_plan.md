@@ -452,3 +452,33 @@ directly from the pre-existing advantage filenames, which were never renamed.
 `inclusion` is not generated as a production artifact yet, but the same code path
 supports it without further changes, since the guard now accepts any lens in
 `SCORING_LENS_ORDER` rather than only `advantage`.
+
+## Inclusion Extension (2026-08-06)
+
+The `inclusion` artifact family completes the triptych, generated from the same
+supplemented corpus surface (`1801` matches, `70` characters):
+
+- `outputs/character-elo-inclusion-current.{json,md}` (baseline)
+- `outputs/character-elo-inclusion-supplemented-current.{json,md}`
+- `outputs/character-elo-inclusion-timeline-supplemented-current.{json,md}`
+- `outputs/character-elo-inclusion-supplement-diff-current.{json,md}`
+
+Interpretation: an inclusion "win" means the character's belonging or acceptance
+moved up relative to a co-present character in that passage. It is the most
+relational of the three lenses — closer to "who is being absorbed by the room"
+than to who wins it or who outranks whom.
+
+Cross-lens reading (characters with `>= 30` matches in all three lenses):
+
+- the extremes are stable across the whole triptych (Jupien/Aimé/Elstir/
+  le narrateur/Gilberte high; Charlus/Brichot/Swann/Saniette low), which is the
+  triptych's own robustness check
+- the diagnostic signal is divergence: `Odette` is the corpus's clearest
+  prestige-without-belonging case (prestige rank `9` vs inclusion rank `18`
+  among reliable characters) — standing rises while absorption lags; `Gilberte`
+  is the inverse pattern (inclusion `2`), absorbed by every world she enters;
+  `Bloch` carries the worst mean inclusion (`-1.072`) of any reliable character,
+  the corpus's most-snubbed aspirant
+- as with prestige, the pairwise-forcing caveat applies: co-presence is not
+  competition; a large salon scene creates more inclusion pressure than an
+  intimate one
