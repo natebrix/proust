@@ -3,13 +3,17 @@
 > **2026-08 update.** The coverage-supplement pass (see
 > [coverage_supplement_plan.md](coverage_supplement_plan.md)) regenerated the ELO
 > surface on a much richer match graph (276 -> 1801 matches). The app-facing
-> exports are now the `-supplemented-current` artifact family:
-> `character-elo-advantage-timeline-supplemented-current.json` for timelines,
-> plus `character-elo-advantage-supplemented-current.json` and
-> `character-elo-prestige-supplemented-current.json` for standings/leaderboard
+> exports are now the `-supplemented-current` artifact family, in all three
+> lenses (`advantage`, `prestige`, `inclusion`):
+> `character-elo-{lens}-timeline-supplemented-current.json` for timelines
+> (advantage keeps its legacy name
+> `character-elo-advantage-timeline-supplemented-current.json`), and
+> `character-elo-{lens}-supplemented-current.json` for standings/leaderboard
 > views (rank characters only at `match_count >= 30`; below that is
-> provisional). The original chart guidance below still applies to the timeline
-> module; artifact names in the body predate the supplement pass.
+> provisional). Non-advantage timeline points carry lens-generic
+> `net_score`/`label` keys instead of the `advantage_*` names. The original
+> chart guidance below still applies to the timeline module; artifact names in
+> the body predate the supplement pass.
 
 This document is the shortest engineering brief for a frontend session that adds an ELO plot to the existing `islt` character pages.
 
