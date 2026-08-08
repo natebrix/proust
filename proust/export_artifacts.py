@@ -1222,3 +1222,65 @@ def write_character_whr_artifacts(analysis, json_output=None, markdown_output=No
         markdown_path = Path(markdown_output)
         markdown_path.parent.mkdir(parents=True, exist_ok=True)
         markdown_path.write_text(render_character_whr_markdown(analysis))
+
+
+def _format_whr_timeline_rating(row):
+    if row["final_band"] is None:
+        return f"{row['final_rating']:.1f}"
+    return f"{row['final_rating']:.1f} ± {row['final_band']:.1f}"
+
+
+def render_character_whr_timeline_markdown(analysis):
+    lines = [
+        "# Character WHR Timeline",
+        "",
+        f"- Analysis version: `{analysis['character_whr_timeline_version']}`",
+        f"- Lens: `{analysis['lens']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Modes: `{', '.join(analysis['modes'])}`",
+        f"- Time axis: `{analysis['time_axis']}`",
+        f"- w2: `{analysis['w2_elo']}` Elo² per unit of narrative time",
+        f"- Epsilon: `{analysis['epsilon']}`",
+        f"- Tracked character count: `{analysis['tracked_character_count']}`",
+        f"- Point count: `{analysis['point_count']}`",
+    ]
+    if analysis.get("supplemented"):
+        lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
+
+    lines.extend(
+        [
+            "",
+            "## Character Coverage",
+            "",
+            "Points per mode are trajectory nodes joined to a corpus position; the final rating "
+            "and band are the character's last SMOOTHED node (the full point-by-point series, "
+            "smoothed and filtered, lives in the JSON artifact).",
+            "",
+            markdown_table(
+                ["Character", "Nodes", "Smoothed Points", "Filtered Points", "Final Rating"],
+                [
+                    (
+                        row["character"],
+                        row["node_count"],
+                        row["smoothed_point_count"],
+                        row["filtered_point_count"],
+                        _format_whr_timeline_rating(row),
+                    )
+                    for row in analysis["characters"]
+                ],
+            ),
+            "",
+        ]
+    )
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_whr_timeline_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_whr_timeline_markdown(analysis))

@@ -1,3 +1,4 @@
+from collections import defaultdict
 import json
 import math
 import random
@@ -619,3 +620,199 @@ def test_main_character_whr_lens_aware_default_paths(tmp_path, capsys, monkeypat
     payload_supplemented = json.loads(capsys.readouterr().out)
     assert exit_code_supplemented == 0
     assert payload_supplemented["json_output"] == "outputs/character-whr-advantage-supplemented-current.json"
+
+
+# ---------------------------------------------------------------------------
+# The app-facing WHR timeline (build_character_whr_timeline).
+# ---------------------------------------------------------------------------
+
+
+def test_build_character_whr_timeline_joins_every_node_to_a_corpus_position(tmp_path):
+    run_dir = _make_synthetic_corpus(tmp_path)
+    target_characters = ["Swann", "Odette", "Albertine"]
+
+    timeline = pn.build_character_whr_timeline(
+        [run_dir], target_characters=target_characters, w2_elo=15.0
+    )
+
+    assert timeline["character_whr_timeline_version"] == "character_whr_timeline_advantage_v1"
+    assert timeline["lens"] == "advantage"
+    assert timeline["time_axis"] == "cumulative_unit_index"
+    assert timeline["modes"] == ["smoothed", "filtered"]
+    assert timeline["tracked_characters"] == target_characters
+    assert timeline["tracked_character_count"] == 3
+    assert timeline["point_count"] == len(timeline["points"])
+    assert timeline["point_count"] > 0
+
+    for point in timeline["points"]:
+        assert point["character"] in target_characters
+        assert point["mode"] in ("smoothed", "filtered")
+        assert isinstance(point["rating"], float)
+        assert isinstance(point["band"], float)
+        assert isinstance(point["net_score"], float)
+        assert point["label"] in ("win", "loss", "mixed", "neutral")
+        assert point["unit_character_count"] >= 2
+        position = point["corpus_position"]
+        assert position["unit_id"]
+        assert position["chapter_id"]
+        assert position["cumulative_unit_index"] > 0
+        assert position["cumulative_word_count"] >= 0
+
+    # Every character with any nodes has points in BOTH modes, in equal
+    # numbers -- filtered and smoothed trajectories share the same times.
+    modes_by_character = defaultdict(set)
+    counts_by_character_mode = defaultdict(lambda: defaultdict(int))
+    for point in timeline["points"]:
+        modes_by_character[point["character"]].add(point["mode"])
+        counts_by_character_mode[point["character"]][point["mode"]] += 1
+    for character, modes in modes_by_character.items():
+        assert modes == {"smoothed", "filtered"}
+        assert (
+            counts_by_character_mode[character]["smoothed"]
+            == counts_by_character_mode[character]["filtered"]
+        )
+
+    # Points are sorted by (character, mode, cumulative_unit_index).
+    sort_keys = [
+        (point["character"], point["mode"], point["corpus_position"]["cumulative_unit_index"])
+        for point in timeline["points"]
+    ]
+    assert sort_keys == sorted(sort_keys)
+
+    # The per-character summary agrees with what the points actually contain.
+    for row in timeline["characters"]:
+        character = row["character"]
+        assert row["smoothed_point_count"] == counts_by_character_mode[character]["smoothed"]
+        assert row["filtered_point_count"] == counts_by_character_mode[character]["filtered"]
+        assert row["node_count"] == row["smoothed_point_count"]
+
+
+def test_build_character_whr_timeline_filters_to_target_characters(tmp_path):
+    run_dir = _make_synthetic_corpus(tmp_path)
+
+    timeline = pn.build_character_whr_timeline([run_dir], target_characters=["Swann"], w2_elo=15.0)
+
+    assert timeline["tracked_characters"] == ["Swann"]
+    assert timeline["tracked_character_count"] == 1
+    assert {point["character"] for point in timeline["points"]} == {"Swann"}
+    assert [row["character"] for row in timeline["characters"]] == ["Swann"]
+
+
+def test_build_character_whr_timeline_keeps_a_tracked_character_absent_from_the_corpus(tmp_path):
+    run_dir = _make_synthetic_corpus(tmp_path)
+
+    timeline = pn.build_character_whr_timeline(
+        [run_dir], target_characters=["Swann", "Nobody"], w2_elo=15.0
+    )
+
+    assert {point["character"] for point in timeline["points"]} == {"Swann"}
+    rows = {row["character"]: row for row in timeline["characters"]}
+    assert rows["Nobody"]["node_count"] == 0
+    assert rows["Nobody"]["smoothed_point_count"] == 0
+    assert rows["Nobody"]["filtered_point_count"] == 0
+    assert rows["Nobody"]["final_rating"] == 1500.0
+
+
+def test_build_character_whr_timeline_reuses_a_precomputed_whr_analysis(tmp_path):
+    run_dir = _make_synthetic_corpus(tmp_path)
+    whr_analysis = pn.build_character_whr([run_dir], w2_elo=15.0)
+
+    timeline = pn.build_character_whr_timeline(
+        [run_dir], target_characters=["Swann"], whr_analysis=whr_analysis
+    )
+
+    assert timeline["w2_elo"] == 15.0
+    assert timeline["point_count"] > 0
+
+
+def test_build_character_whr_timeline_rejects_a_whr_analysis_that_is_not_mode_both(tmp_path):
+    run_dir = _make_synthetic_corpus(tmp_path)
+    whr_analysis = pn.build_character_whr([run_dir], w2_elo=15.0, mode="smoothed")
+
+    try:
+        pn.build_character_whr_timeline([run_dir], whr_analysis=whr_analysis)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "mode" in str(exc)
+
+
+def test_build_character_whr_timeline_raises_when_a_node_cannot_be_resolved(tmp_path):
+    run_dir = _make_synthetic_corpus(tmp_path)
+    whr_analysis = pn.build_character_whr([run_dir], w2_elo=15.0)
+    rows = {row["character"]: row for row in whr_analysis["characters"]}
+    # Corrupt one node's time to a narrative position the corpus position
+    # index -- built fresh from the same run_dirs -- cannot know about.
+    rows["Swann"]["smoothed_trajectory"][0][0] = 999999
+
+    try:
+        pn.build_character_whr_timeline(
+            [run_dir], target_characters=["Swann"], whr_analysis=whr_analysis
+        )
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "999999" in str(exc)
+        assert "corpus position" in str(exc)
+
+
+def test_render_character_whr_timeline_markdown_covers_the_required_sections(tmp_path):
+    run_dir = _make_synthetic_corpus(tmp_path)
+    timeline = pn.build_character_whr_timeline(
+        [run_dir], target_characters=["Swann", "Odette", "Albertine"], w2_elo=15.0
+    )
+
+    markdown = pn.render_character_whr_timeline_markdown(timeline)
+
+    assert markdown.startswith("# Character WHR Timeline\n")
+    assert "## Character Coverage" in markdown
+    assert "±" in markdown
+    # No full point dump: the JSON artifact carries the points, not the Markdown.
+    assert "Cumulative Unit" not in markdown
+
+
+def test_main_character_whr_timeline_lens_aware_default_paths(tmp_path, capsys, monkeypatch):
+    outputs_dir = tmp_path / "outputs"
+    run_dir = outputs_dir / "run-001"
+    pn.prepare_annotation_run(run_dir)
+    pn.write_annotation_result(
+        run_dir,
+        "v1-p1-combray#p-17",
+        _annotation(
+            "v1-p1-combray#p-17",
+            [{"character": "Swann", "delta": 1}, {"character": "Odette", "delta": -1}],
+        ),
+    )
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = pr.main(
+        ["character-whr-timeline", "--discover-runs", str(outputs_dir), "--lens", "prestige", "--w2", "15"]
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert exit_code == 0
+    assert payload["json_output"] == "outputs/character-whr-prestige-timeline-current.json"
+    assert payload["markdown_output"] == "outputs/character-whr-prestige-timeline-current.md"
+    assert payload["w2_elo"] == 15.0
+    # "Swann" and "Odette" are both in the character-page pilot set, so
+    # the default tracked set (no --character flag on this command) picks
+    # them up without any extra configuration.
+    assert payload["point_count"] > 0
+    assert (tmp_path / "outputs" / "character-whr-prestige-timeline-current.json").exists()
+    assert (tmp_path / "outputs" / "character-whr-prestige-timeline-current.md").exists()
+
+    exit_code_supplemented = pr.main(
+        [
+            "character-whr-timeline",
+            "--discover-runs",
+            str(outputs_dir),
+            "--include-supplements",
+            "--supplement-outputs-dir",
+            str(outputs_dir),
+            "--w2",
+            "15",
+        ]
+    )
+    payload_supplemented = json.loads(capsys.readouterr().out)
+    assert exit_code_supplemented == 0
+    assert (
+        payload_supplemented["json_output"]
+        == "outputs/character-whr-advantage-timeline-supplemented-current.json"
+    )

@@ -41,6 +41,12 @@ def _character_whr_default_paths(lens, include_supplements):
     return f"{base}.json", f"{base}.md"
 
 
+def _character_whr_timeline_default_paths(lens, include_supplements):
+    suffix = "-supplemented" if include_supplements else ""
+    base = f"outputs/character-whr-{lens}-timeline{suffix}-current"
+    return f"{base}.json", f"{base}.md"
+
+
 def _supplemented_default_paths(base_name, include_supplements):
     # Unlike the character-elo family, these builders have no default output
     # path at all when unsupplemented (an omitted --output/--markdown-output
@@ -371,6 +377,41 @@ def build_parser():
     )
     character_elo_timeline_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-timeline-current.json for the advantage lens (outputs/character-elo-<lens>-timeline-current.json for other lenses), or the -supplemented- variant with --include-supplements.")
     character_elo_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-timeline-current.md for the advantage lens (outputs/character-elo-<lens>-timeline-current.md for other lenses), or the -supplemented- variant with --include-supplements.")
+
+    character_whr_timeline_parser = subparsers.add_parser(
+        "character-whr-timeline",
+        help="Build an app-facing WHR timeline for the tracked character set: every smoothed and filtered trajectory node joined to its corpus position.",
+    )
+    character_whr_timeline_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
+    character_whr_timeline_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_whr_timeline_parser.add_argument(
+        "--lens",
+        default="advantage",
+        choices=list(core.SCORING_LENS_ORDER),
+        help="Scoring lens the WHR timeline is computed over. Defaults to advantage.",
+    )
+    character_whr_timeline_parser.add_argument(
+        "--include-supplements",
+        action="store_true",
+        help="Merge outputs/supplement-run-* annotations into the overlay before computing the WHR timeline.",
+    )
+    character_whr_timeline_parser.add_argument(
+        "--supplement-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover supplement-run-* directories from when --include-supplements is set. Defaults to outputs.",
+    )
+    character_whr_timeline_parser.add_argument(
+        "--w2",
+        type=float,
+        help="Wiener drift rate in Elo^2 per unit of narrative time. Omitted, it is selected by sequential one-step-ahead log loss over the candidate set.",
+    )
+    character_whr_timeline_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-whr-<lens>-timeline-current.json, or the -supplemented- variant with --include-supplements.")
+    character_whr_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-whr-<lens>-timeline-current.md, or the -supplemented- variant with --include-supplements.")
 
     elo_supplement_diff_parser = subparsers.add_parser(
         "elo-supplement-diff",
@@ -863,6 +904,33 @@ def main(argv=None):
         print(json.dumps({
             "tracked_character_count": analysis["tracked_character_count"],
             "point_count": analysis["point_count"],
+            "json_output": json_output,
+            "markdown_output": markdown_output,
+        }, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-whr-timeline":
+        try:
+            runs = _collect_runs(args)
+            supplement_run_dirs = (
+                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
+            )
+            analysis = core.build_character_whr_timeline(
+                runs,
+                lens=args.lens,
+                supplement_run_dirs=supplement_run_dirs,
+                w2_elo=args.w2,
+            )
+        except (core.RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        default_json_output, default_markdown_output = _character_whr_timeline_default_paths(args.lens, args.include_supplements)
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_whr_timeline_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        print(json.dumps({
+            "tracked_character_count": analysis["tracked_character_count"],
+            "point_count": analysis["point_count"],
+            "w2_elo": analysis["w2_elo"],
             "json_output": json_output,
             "markdown_output": markdown_output,
         }, ensure_ascii=False, indent=2))

@@ -43,6 +43,9 @@ from .app_exports import (
     build_chapter_overlay_data,
     iter_character_lens_matches,
 )
+from .editorial import CHARACTER_PAGE_PILOT_EDITORIAL
+
+TIMELINE_MODES = ("smoothed", "filtered")
 
 DEFAULT_W2_ELO_CANDIDATES = (5.0, 15.0, 35.0, 60.0)
 # Mirrors Glicko-2's "provisional means RD > 100": a band is 2 sigma, so
@@ -60,6 +63,10 @@ PROBABILITY_FLOOR = 1e-15
 
 def _character_whr_version(lens):
     return f"character_whr_{lens}_v1"
+
+
+def _character_whr_timeline_version(lens):
+    return f"character_whr_timeline_{lens}_v1"
 
 
 # ---------------------------------------------------------------------------
@@ -620,10 +627,195 @@ def build_character_whr(
     return result
 
 
+def build_character_whr_timeline(
+    run_dirs,
+    lens="advantage",
+    supplement_run_dirs=None,
+    target_characters=None,
+    w2_elo=None,
+    epsilon=0.25,
+    w2_elo_candidates=DEFAULT_W2_ELO_CANDIDATES,
+    band_provisional_threshold=DEFAULT_BAND_PROVISIONAL_THRESHOLD,
+    initial_rd=whr.DEFAULT_INITIAL_RD,
+    max_sweeps=whr.DEFAULT_MAX_SWEEPS,
+    tolerance=whr.DEFAULT_TOLERANCE,
+    elo_k_factor=DEFAULT_ELO_K_FACTOR,
+    glicko2_tau=glicko2.DEFAULT_TAU,
+    whr_analysis=None,
+):
+    """App-facing WHR timeline: trajectory nodes joined to corpus positions.
+
+    Runs `build_character_whr` for `lens` with `mode="both"` -- or, when
+    the caller already has one on hand for the same `run_dirs`,
+    `supplement_run_dirs`, and `lens`, accepts it directly as
+    `whr_analysis` to avoid recomputing the fit. For each of the tracked
+    characters (`target_characters`, defaulting to the character-page
+    pilot set that `build_character_elo_timeline` also uses) every node
+    of both the smoothed and filtered trajectories becomes one point.
+
+    A trajectory node's time IS a `cumulative_unit_index` (see
+    `character_whr.build_character_whr`'s docstring and `TIME_AXIS`), so
+    each point is joined to its corpus position by building the same
+    position index `_build_corpus_position_index` gives
+    `build_character_elo_timeline` over the same overlay dataset, then
+    inverting it (`cumulative_unit_index -> position record`) -- a node's
+    time never repeats within a chapter walk, so the inversion is exact.
+    Every node must resolve to a position and, through it, to the
+    character's `lens` net score in that unit; either failure raises,
+    because it means the trajectory and the overlay it was built from
+    have drifted apart.
+    """
+    _require_known_scoring_lens(lens)
+    if not run_dirs:
+        raise ValueError("At least one run directory is required for character WHR timeline export.")
+
+    selected_characters = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
+    selected_set = set(selected_characters)
+
+    if whr_analysis is None:
+        whr_analysis = build_character_whr(
+            run_dirs,
+            lens=lens,
+            supplement_run_dirs=supplement_run_dirs,
+            w2_elo=w2_elo,
+            epsilon=epsilon,
+            mode="both",
+            w2_elo_candidates=w2_elo_candidates,
+            band_provisional_threshold=band_provisional_threshold,
+            initial_rd=initial_rd,
+            max_sweeps=max_sweeps,
+            tolerance=tolerance,
+            elo_k_factor=elo_k_factor,
+            glicko2_tau=glicko2_tau,
+        )
+    elif whr_analysis["mode"] != "both":
+        raise ValueError(
+            'build_character_whr_timeline requires a whr_analysis built with mode="both", '
+            f'got mode="{whr_analysis["mode"]}".'
+        )
+    elif whr_analysis["lens"] != lens:
+        raise ValueError(
+            f'whr_analysis was built for lens "{whr_analysis["lens"]}", not the requested "{lens}".'
+        )
+
+    overlay_dataset = build_chapter_overlay_data(run_dirs, supplement_run_dirs=supplement_run_dirs)
+    units_by_chapter = {chapter["chapterId"]: chapter["units"] for chapter in overlay_dataset["chapters"]}
+    corpus_positions_by_unit = _build_corpus_position_index(units_by_chapter)
+    corpus_positions_by_time = {
+        position["cumulative_unit_index"]: position for position in corpus_positions_by_unit.values()
+    }
+
+    unit_character_scores = {}
+    for chapter in overlay_dataset["chapters"]:
+        for unit in chapter["units"]:
+            for character_row in unit["characters"]:
+                character = character_row["character"]
+                if character not in selected_set:
+                    continue
+                unit_character_scores[(unit["unitId"], character)] = {
+                    "net_score": character_row[lens]["netScore"],
+                    "label": character_row[lens]["label"],
+                    "unit_character_count": len(unit["characters"]),
+                }
+
+    rows_by_character = {row["character"]: row for row in whr_analysis["characters"]}
+
+    points = []
+    for character in selected_characters:
+        row = rows_by_character.get(character)
+        if row is None:
+            continue
+        for mode in TIMELINE_MODES:
+            for node in row.get(f"{mode}_trajectory", []):
+                time_point, rating, band = node
+                position = corpus_positions_by_time.get(time_point)
+                if position is None:
+                    raise ValueError(
+                        f'WHR {mode} trajectory node at time {time_point} for "{character}" has no '
+                        "corresponding corpus position; the overlay dataset used to build the "
+                        "position index must be the same one build_character_whr scored."
+                    )
+                unit_id = position["unit_id"]
+                score_row = unit_character_scores.get((unit_id, character))
+                if score_row is None:
+                    raise ValueError(
+                        f'WHR {mode} trajectory node at time {time_point} for "{character}" resolves '
+                        f'to unit "{unit_id}", but that unit has no {lens} score for "{character}" in '
+                        "the overlay dataset."
+                    )
+                points.append(
+                    {
+                        "character": character,
+                        "mode": mode,
+                        "rating": rating,
+                        "band": band,
+                        "net_score": score_row["net_score"],
+                        "label": score_row["label"],
+                        "unit_character_count": score_row["unit_character_count"],
+                        "corpus_position": dict(position),
+                    }
+                )
+
+    points.sort(
+        key=lambda point: (
+            point["character"],
+            point["mode"],
+            point["corpus_position"]["cumulative_unit_index"],
+        )
+    )
+
+    point_counts = defaultdict(lambda: defaultdict(int))
+    for point in points:
+        point_counts[point["character"]][point["mode"]] += 1
+
+    default_rating = round(whr_analysis["initial_rating"], 1)
+    default_band = (
+        round(2.0 * whr_analysis["initial_rd"], 1) if whr_analysis["initial_rd"] is not None else None
+    )
+
+    characters = []
+    for character in selected_characters:
+        row = rows_by_character.get(character)
+        characters.append(
+            {
+                "character": character,
+                "node_count": row["node_count"] if row else 0,
+                "smoothed_point_count": point_counts[character]["smoothed"],
+                "filtered_point_count": point_counts[character]["filtered"],
+                "final_rating": row["rating"] if row else default_rating,
+                "final_band": row["band"] if row else default_band,
+            }
+        )
+
+    result = {
+        "character_whr_timeline_version": _character_whr_timeline_version(lens),
+        "lens": lens,
+        "source_review_version": whr_analysis["source_review_version"],
+        "duplicate_resolution": overlay_dataset["duplicate_resolution"],
+        "time_axis": TIME_AXIS,
+        "modes": list(TIMELINE_MODES),
+        "w2_elo": whr_analysis["w2_elo"],
+        "epsilon": epsilon,
+        "tracked_character_count": len(selected_characters),
+        "tracked_characters": selected_characters,
+        "point_count": len(points),
+        "characters": characters,
+        "points": points,
+    }
+
+    if supplement_run_dirs:
+        result["supplemented"] = True
+        result["supplement_runs"] = overlay_dataset.get("supplement_runs", [])
+
+    return result
+
+
 __all__ = [
     "DEFAULT_BAND_PROVISIONAL_THRESHOLD",
     "DEFAULT_ELO_K_FACTOR",
     "DEFAULT_W2_ELO_CANDIDATES",
     "TIME_AXIS",
+    "TIMELINE_MODES",
     "build_character_whr",
+    "build_character_whr_timeline",
 ]

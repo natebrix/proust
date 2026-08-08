@@ -107,7 +107,7 @@ from .app_exports import (
     build_character_profile_cards,
     discover_supplement_run_dirs,
 )
-from .character_whr import build_character_whr
+from .character_whr import build_character_whr, build_character_whr_timeline
 from .export_artifacts import (
     render_character_annotation_counts_markdown,
     render_character_elo_markdown,
@@ -115,6 +115,7 @@ from .export_artifacts import (
     render_character_elo_timeline_markdown,
     render_character_glicko2_markdown,
     render_character_whr_markdown,
+    render_character_whr_timeline_markdown,
     render_character_chapter_analysis_markdown,
     render_character_cross_lens_analysis_markdown,
     render_character_pages_markdown,
@@ -126,6 +127,7 @@ from .export_artifacts import (
     write_character_elo_timeline_artifacts,
     write_character_glicko2_artifacts,
     write_character_whr_artifacts,
+    write_character_whr_timeline_artifacts,
     write_character_chapter_analysis_artifacts,
     write_character_cross_lens_analysis_artifacts,
     write_character_pages_artifacts,
@@ -178,6 +180,7 @@ __all__ = [
     "build_character_elo_timeline",
     "build_character_glicko2",
     "build_character_whr",
+    "build_character_whr_timeline",
     "build_character_pages",
     "build_chapter_overlay_data",
     "build_chapter_summary_export",
@@ -263,6 +266,7 @@ __all__ = [
     "render_character_elo_timeline_markdown",
     "render_character_glicko2_markdown",
     "render_character_whr_markdown",
+    "render_character_whr_timeline_markdown",
     "render_character_chapter_analysis_markdown",
     "render_character_cross_lens_analysis_markdown",
     "render_character_pages_markdown",
@@ -303,6 +307,7 @@ __all__ = [
     "write_character_elo_timeline_artifacts",
     "write_character_glicko2_artifacts",
     "write_character_whr_artifacts",
+    "write_character_whr_timeline_artifacts",
     "write_character_chapter_analysis_artifacts",
     "write_character_cross_lens_analysis_artifacts",
     "write_character_pages_artifacts",

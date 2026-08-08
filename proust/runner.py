@@ -2100,6 +2100,38 @@ def write_character_whr_artifacts(analysis, json_output=None, markdown_output=No
     return impl(analysis, json_output=json_output, markdown_output=markdown_output)
 
 
+def build_character_whr_timeline(
+    run_dirs,
+    lens="advantage",
+    supplement_run_dirs=None,
+    target_characters=None,
+    w2_elo=None,
+    epsilon=0.25,
+):
+    from .character_whr import build_character_whr_timeline as impl
+
+    return impl(
+        run_dirs,
+        lens=lens,
+        supplement_run_dirs=supplement_run_dirs,
+        target_characters=target_characters,
+        w2_elo=w2_elo,
+        epsilon=epsilon,
+    )
+
+
+def render_character_whr_timeline_markdown(analysis):
+    from .export_artifacts import render_character_whr_timeline_markdown as impl
+
+    return impl(analysis)
+
+
+def write_character_whr_timeline_artifacts(analysis, json_output=None, markdown_output=None):
+    from .export_artifacts import write_character_whr_timeline_artifacts as impl
+
+    return impl(analysis, json_output=json_output, markdown_output=markdown_output)
+
+
 def render_character_cross_lens_analysis_markdown(analysis):
     from .export_artifacts import render_character_cross_lens_analysis_markdown as impl
 
