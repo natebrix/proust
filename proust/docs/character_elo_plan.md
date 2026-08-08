@@ -523,3 +523,56 @@ Findings worth keeping:
 - the reader-facing standings consume the Glicko-2 surface; the per-passage
   ELO timeline remains the dossier journey chart (chapter-period Glicko is too
   coarse for the narrative arc view)
+
+## Whole-History Rating Extension (2026-08-08)
+
+WHR (Coulom 2008) is now the unified rating surface (`proust/whr.py`,
+`proust/character_whr.py`, `character-whr` / `character-whr-timeline` CLI,
+`character-whr-{lens}-supplemented-current.*` artifacts): per-character rating
+trajectories over narrative time (`cumulative_unit_index`), a Wiener-process
+prior (`w2 = 5` Elo²/unit, chosen by one-step-ahead predictive log-loss over
+`{5, 15, 35, 60}`), Bradley-Terry likelihood with half-win/half-loss draws,
+tridiagonal Newton fitting, and posterior bands (`± 2 sigma`). Two modes:
+
+- **smoothed** ("in retrospect"): full-history MAP — every moment informed by
+  the whole novel
+- **filtered** ("as you read"): prefix fits — each moment informed only by what
+  the reader has seen
+
+Validation findings (recorded so no surface ever overclaims):
+
+1. **Sequential ELO remains the best one-step-ahead predictor** (log-loss
+   0.672 vs WHR-filtered 0.706 vs Glicko-2 0.728, advantage lens; same
+   ordering on all lenses; result survives freezing ELO at unit boundaries and
+   giving WHR variance-aware predictions). WHR's MAP is overconfident on a
+   coarse signal with a 16% draw rate; ELO's bounded step is effective
+   shrinkage. WHR's case is the trajectory and the band, not accuracy.
+2. Final WHR ratings agree with Glicko-2 at Pearson `0.986` / Spearman `0.981`
+   (non-provisional intersection), so the standings story is stable across
+   systems.
+3. Bands do not narrow monotonically: the narrator's filtered band collapses
+   `196 -> 78` across v1->v2, then all bands widen modestly through v5-v7
+   because trajectory-end nodes are one-sidedly supported and late appearance
+   density thins. Reader-facing copy must not present end-of-book widening as
+   growing interpretive ambiguity; the honest gloss is that the book ends and
+   evidence stops accumulating.
+4. The two modes diverge exactly where retrospection should: at settled nodes
+   the largest gaps are Odette in *Un amour de Swann* (filtered `1311 ± 195`
+   vs smoothed `1507` — the whole-history fit refuses the courtship-era
+   verdict because she ends as Mme de Forcheville), Charlus's Balbec entrance
+   (filtered `1686` vs smoothed `1542`), and the duchesse named inside Swann's
+   story (`1415` vs `1557`). Filtered tracks the scene; smoothed tracks the
+   book.
+
+Unification decision (reviewed 2026-08-08): the reader-facing standings and
+journey charts both consume WHR — standings from final smoothed ratings
+(conservative = rating − band, provisional when band > 200), journeys from the
+trajectories with a mode toggle. ELO and Glicko-2 remain as artifacts and as
+the write-up's comparison points; ELO additionally remains the best forecaster
+and should be cited as such.
+
+For the eventual formal write-up: the chosen estimator is itself an act of
+retrospection — a smoothing method in which the whole history revises every
+moment, applied to a novel whose subject is exactly that revision. The method
+agrees with its material; this belongs in the write-up as more than a
+footnote.
