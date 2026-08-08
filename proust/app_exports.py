@@ -1259,6 +1259,41 @@ def _elo_observed_scores(score_a, score_b, epsilon):
     return 0.5, 0.5
 
 
+def iter_character_lens_matches(overlay_dataset, lens, epsilon):
+    """Yield the pairwise within-unit character matches every rating surface shares.
+
+    This is the match definition `build_character_elo`,
+    `build_character_elo_timeline`, and `build_character_glicko2` all
+    inline: within each unit, in canonical chapter order, every pair of
+    co-scored characters (ordered by name so pair generation is stable)
+    is compared on `lens`'s net score, with differences of at most
+    `epsilon` recorded as draws. Chapters and units are yielded in
+    canonical narrative order, so consuming this generator in order is
+    consuming the novel in order.
+
+    Each match is a dict with `chapter_id`, `unit_id`, `character_a`,
+    `character_b`, `net_score_a`, `net_score_b`, `observed_a`, and
+    `observed_b`.
+    """
+    for chapter in overlay_dataset["chapters"]:
+        for unit in chapter["units"]:
+            ordered_rows = sorted(unit["characters"], key=lambda row: row["character"])
+            for row_a, row_b in combinations(ordered_rows, 2):
+                net_score_a = row_a[lens]["netScore"]
+                net_score_b = row_b[lens]["netScore"]
+                observed_a, observed_b = _elo_observed_scores(net_score_a, net_score_b, epsilon)
+                yield {
+                    "chapter_id": chapter["chapterId"],
+                    "unit_id": unit["unitId"],
+                    "character_a": row_a["character"],
+                    "character_b": row_b["character"],
+                    "net_score_a": net_score_a,
+                    "net_score_b": net_score_b,
+                    "observed_a": observed_a,
+                    "observed_b": observed_b,
+                }
+
+
 def _word_count(text):
     return len(re.findall(r"\S+", text or ""))
 

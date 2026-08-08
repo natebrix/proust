@@ -1054,3 +1054,171 @@ def write_character_glicko2_artifacts(analysis, json_output=None, markdown_outpu
         markdown_path = Path(markdown_output)
         markdown_path.parent.mkdir(parents=True, exist_ok=True)
         markdown_path.write_text(render_character_glicko2_markdown(analysis))
+
+
+def _format_whr_rating(row):
+    if row["band"] is None:
+        return f"{row['rating']:.0f}"
+    return f"{row['rating']:.0f} ± {row['band']:.0f}"
+
+
+def _format_whr_point(point):
+    if point is None:
+        return ""
+    return f"t{point[0]}: {point[1]:.0f} ± {point[2]:.0f}"
+
+
+def render_character_whr_markdown(analysis):
+    mean_column_label = f"Mean {analysis['lens'].capitalize()}"
+    lines = [
+        "# Character Whole-History Rating",
+        "",
+        f"- Analysis version: `{analysis['character_whr_version']}`",
+        f"- Lens: `{analysis['lens']}`",
+        f"- Source review version: `{analysis['source_review_version']}`",
+        f"- Mode: `{analysis['mode']}`",
+        f"- Time axis: `{analysis['time_axis']}`",
+        f"- Character count: `{analysis['character_count']}`",
+        f"- Match count: `{analysis['match_count']}`",
+        f"- Time point count: `{analysis['time_point_count']}`",
+        f"- Node count: `{analysis['node_count']}`",
+        f"- Draw rate: `{analysis['draw_rate']}`",
+        f"- Draw model: `{analysis['draw_model']}`",
+        f"- w2: `{analysis['w2_elo']}` Elo² per unit of narrative time "
+        f"(selected by `{analysis['w2_elo_selected_by']}` from `{analysis['w2_elo_candidates']}`)",
+        f"- Epsilon: `{analysis['epsilon']}`",
+        f"- Initial rating / RD: `{analysis['initial_rating']}` / `{analysis['initial_rd']}`",
+        f"- Provisional band threshold: `{analysis['band_provisional_threshold']}` Elo",
+        f"- Wall clock: smoothed `{analysis['wall_clock_seconds']['smoothed']}`s, "
+        f"filtered `{analysis['wall_clock_seconds']['filtered']}`s "
+        f"(all w2 candidates `{analysis['wall_clock_seconds']['filtered_all_candidates']}`s)",
+        f"- Convergence: smoothed `{analysis['convergence']['smoothed_sweep_count']}` sweeps "
+        f"(converged: `{analysis['convergence']['smoothed_converged']}`), filtered "
+        f"`{analysis['convergence']['filtered_fit_count']}` fits / "
+        f"`{analysis['convergence']['filtered_sweep_total']}` sweeps, "
+        f"`{analysis['convergence']['filtered_non_converged_fits']}` of them unconverged",
+    ]
+    if analysis.get("supplemented"):
+        lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
+
+    lines.extend(
+        [
+            "",
+            "Ratings are shown as `rating ± band`, where the band is `2*sigma` from the per-node "
+            "posterior variance -- an approximate 95% interval, conditional on the other characters' "
+            "trajectories. Ranked listings sort by the conservative rating `rating - band` "
+            "(i.e. `rating - 2*sigma`), the same conservative convention the Glicko-2 surface uses, "
+            "so the two are read the same way. A character is provisional when their band exceeds "
+            f"`{analysis['band_provisional_threshold']}` Elo, which is Glicko-2's `RD > 100` said about the same quantity.",
+            "",
+            "## Predictive Comparison",
+            "",
+            "Sequential one-step-ahead prediction over every match in narrative order, each match "
+            "predicted from prior information only. Lower is better for both columns.",
+            "",
+            markdown_table(
+                ["System", "Log Loss", "Brier", "Matches", "Basis"],
+                [
+                    (
+                        f"`{row['system']}`",
+                        row["log_loss"],
+                        row["brier"],
+                        row["match_count"],
+                        row["description"],
+                    )
+                    for row in analysis["predictive_evaluation"]["comparison"]
+                ],
+            ),
+            "",
+            analysis["predictive_evaluation"]["protocol"] + ".",
+            "",
+            "### w2 Selection",
+            "",
+            markdown_table(
+                ["w2 (Elo² per unit)", "Log Loss", "Brier", "Filtered Seconds"],
+                [
+                    (row["w2_elo"], row["log_loss"], row["brier"], row["wall_clock_seconds"])
+                    for row in analysis["predictive_evaluation"]["whr_candidates"]
+                ],
+            ),
+            "",
+            "## Final Standings",
+            "",
+            "Final smoothed rating at each character's last node, ordered by conservative rating.",
+            "",
+            markdown_table(
+                ["Character", "Rating", "Conservative", "Band", "Matches", "W-L-D", "Units", "Nodes", mean_column_label],
+                [
+                    (
+                        row["character"],
+                        _format_whr_rating(row),
+                        row["conservative_rating"],
+                        row["band"],
+                        row["match_count"],
+                        f"{row['win_count']}-{row['loss_count']}-{row['draw_count']}",
+                        row["unit_count"],
+                        row["node_count"],
+                        format_signed_number(row["mean_net_score"]),
+                    )
+                    for row in analysis["characters"]
+                    if not row["provisional"]
+                ],
+            ),
+            "",
+            "## Provisional Characters",
+            "",
+            "Characters whose band is still wider than the provisional threshold -- too little "
+            "evidence for the rating to mean much.",
+            "",
+            markdown_table(
+                ["Character", "Rating", "Band", "Matches", "Units", "Nodes", "Last Time"],
+                [
+                    (
+                        row["character"],
+                        _format_whr_rating(row),
+                        row["band"],
+                        row["match_count"],
+                        row["unit_count"],
+                        row["node_count"],
+                        row["last_time"],
+                    )
+                    for row in analysis["provisional_characters"]
+                ],
+            ),
+            "",
+            "## Trajectory Summaries",
+            "",
+            "First, last, lowest, and highest point of each character's SMOOTHED trajectory "
+            "(`t<time>: rating ± band`, time being the cumulative unit index). The full "
+            "point-by-point trajectories, smoothed and filtered, live in the JSON artifact.",
+            "",
+            markdown_table(
+                ["Character", "Points", "First", "Last", "Lowest", "Highest"],
+                [
+                    (
+                        row["character"],
+                        row["smoothed_summary"]["point_count"],
+                        _format_whr_point(row["smoothed_summary"]["first"]),
+                        _format_whr_point(row["smoothed_summary"]["last"]),
+                        _format_whr_point(row["smoothed_summary"]["min"]),
+                        _format_whr_point(row["smoothed_summary"]["max"]),
+                    )
+                    for row in analysis["characters"]
+                    if row["smoothed_summary"]
+                ],
+            ),
+            "",
+        ]
+    )
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def write_character_whr_artifacts(analysis, json_output=None, markdown_output=None):
+    if json_output:
+        json_path = Path(json_output)
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(analysis, ensure_ascii=False, indent=2) + "\n")
+    if markdown_output:
+        markdown_path = Path(markdown_output)
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_character_whr_markdown(analysis))

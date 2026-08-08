@@ -2068,6 +2068,38 @@ def build_character_glicko2(
     )
 
 
+def build_character_whr(
+    run_dirs,
+    lens="advantage",
+    supplement_run_dirs=None,
+    w2_elo=None,
+    epsilon=0.25,
+    mode="both",
+):
+    from .character_whr import build_character_whr as impl
+
+    return impl(
+        run_dirs,
+        lens=lens,
+        supplement_run_dirs=supplement_run_dirs,
+        w2_elo=w2_elo,
+        epsilon=epsilon,
+        mode=mode,
+    )
+
+
+def render_character_whr_markdown(analysis):
+    from .export_artifacts import render_character_whr_markdown as impl
+
+    return impl(analysis)
+
+
+def write_character_whr_artifacts(analysis, json_output=None, markdown_output=None):
+    from .export_artifacts import write_character_whr_artifacts as impl
+
+    return impl(analysis, json_output=json_output, markdown_output=markdown_output)
+
+
 def render_character_cross_lens_analysis_markdown(analysis):
     from .export_artifacts import render_character_cross_lens_analysis_markdown as impl
 

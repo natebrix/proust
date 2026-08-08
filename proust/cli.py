@@ -35,6 +35,12 @@ def _character_glicko2_default_paths(lens, include_supplements):
     return f"{base}.json", f"{base}.md"
 
 
+def _character_whr_default_paths(lens, include_supplements):
+    suffix = "-supplemented" if include_supplements else ""
+    base = f"outputs/character-whr-{lens}{suffix}-current"
+    return f"{base}.json", f"{base}.md"
+
+
 def _supplemented_default_paths(base_name, include_supplements):
     # Unlike the character-elo family, these builders have no default output
     # path at all when unsupplemented (an omitted --output/--markdown-output
@@ -288,6 +294,47 @@ def build_parser():
     )
     character_glicko2_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-glicko2-advantage-current.json for the advantage lens (outputs/character-glicko2-<lens>-current.json for other lenses), or the -supplemented- variant with --include-supplements.")
     character_glicko2_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-glicko2-advantage-current.md for the advantage lens (outputs/character-glicko2-<lens>-current.md for other lenses), or the -supplemented- variant with --include-supplements.")
+
+    character_whr_parser = subparsers.add_parser(
+        "character-whr",
+        help="Build a lens Whole-History Rating surface: per-character rating trajectories with uncertainty bands, smoothed and/or filtered, from the same pairwise within-unit character comparisons as character-elo.",
+    )
+    character_whr_parser.add_argument("--run", dest="runs", action="append", help="Run directory to include. Repeat for multiple runs.")
+    character_whr_parser.add_argument(
+        "--discover-runs",
+        nargs="?",
+        const="outputs",
+        help="Discover annotated run directories under this outputs directory. Defaults to outputs.",
+    )
+    character_whr_parser.add_argument(
+        "--lens",
+        default="advantage",
+        choices=list(core.SCORING_LENS_ORDER),
+        help="Scoring lens the rating is computed over. Defaults to advantage.",
+    )
+    character_whr_parser.add_argument(
+        "--include-supplements",
+        action="store_true",
+        help="Merge outputs/supplement-run-* annotations into the overlay before computing WHR.",
+    )
+    character_whr_parser.add_argument(
+        "--supplement-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover supplement-run-* directories from when --include-supplements is set. Defaults to outputs.",
+    )
+    character_whr_parser.add_argument(
+        "--w2",
+        type=float,
+        help="Wiener drift rate in Elo^2 per unit of narrative time. Omitted, it is selected by sequential one-step-ahead log loss over the candidate set.",
+    )
+    character_whr_parser.add_argument(
+        "--mode",
+        default="both",
+        choices=["smoothed", "filtered", "both"],
+        help="Which trajectories to write. Defaults to both.",
+    )
+    character_whr_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-whr-<lens>-current.json, or the -supplemented- variant with --include-supplements.")
+    character_whr_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-whr-<lens>-current.md, or the -supplemented- variant with --include-supplements.")
 
     character_elo_timeline_parser = subparsers.add_parser(
         "character-elo-timeline",
@@ -761,6 +808,35 @@ def main(argv=None):
             "character_count": analysis["character_count"],
             "match_count": analysis["match_count"],
             "period_count": analysis["period_count"],
+            "json_output": json_output,
+            "markdown_output": markdown_output,
+        }, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "character-whr":
+        try:
+            runs = _collect_runs(args)
+            supplement_run_dirs = (
+                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
+            )
+            analysis = core.build_character_whr(
+                runs,
+                lens=args.lens,
+                supplement_run_dirs=supplement_run_dirs,
+                w2_elo=args.w2,
+                mode=args.mode,
+            )
+        except (core.RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        default_json_output, default_markdown_output = _character_whr_default_paths(args.lens, args.include_supplements)
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_whr_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        print(json.dumps({
+            "character_count": analysis["character_count"],
+            "match_count": analysis["match_count"],
+            "time_point_count": analysis["time_point_count"],
+            "w2_elo": analysis["w2_elo"],
             "json_output": json_output,
             "markdown_output": markdown_output,
         }, ensure_ascii=False, indent=2))
