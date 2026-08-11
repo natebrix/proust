@@ -1,0 +1,2587 @@
+version: 1
+generated_by: scripts/build_character_registry.py
+notes: 'Single source of truth for character identity. Layers merged: root aliases.csv, per-run
+  alias maps, annotation usage, plus a hand-authored overlay. status=proposed/review entries
+  and all review_questions await Nathan''s decision. Scope grammar and safety rules: see proust/registry.py
+  docstring.'
+known_source_issues:
+- whitespace in row 'M. de Guermantes' -> 'duc de Guermantes '
+- 'excluded row ''Mme Octave'' -> ''Octave'': Mme Octave is tante Léonie (Combray), not Octave
+  the Balbec dandy'
+- 'excluded row ''Madame Octave'' -> ''Octave'': Madame Octave is tante Léonie, not Octave'
+- 'excluded row ''Robert'' -> ''Saint-Loup'': bare first name; unsafe as a global rewrite
+  — reference only'
+- 'excluded row ''Charles'' -> ''Swann'': bare first name; collides with Charlie/Charlus contexts
+  — reference only'
+- 'excluded row ''Charlie'' -> ''Morel'': bare first name; reference only'
+entities:
+- id: amie-de-mlle-vinteuil
+  display_name: l'amie de Mlle Vinteuil
+  status: review
+  notes: Genuinely unnamed but individuated and consequential; the named-characters-only rule
+    needs a decision for her.
+  review_questions:
+  - Admit descriptor-identified recurring figures as entities (mention-only, never rewritten)?
+  surface_forms:
+  - form: l'amie de Mlle Vinteuil
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+- id: le-peintre
+  display_name: le peintre
+  status: review
+  annotation_names:
+  - le peintre
+  same_person_links:
+  - entity: elstir
+    relation: '''le peintre'' of the Verdurin salon is Elstir pre-revelation'
+    policy: person_view_merge
+    review: true
+  review_questions:
+  - Merge the 29-match 'le peintre' standings row into Elstir (person view), keep split (name
+    view), or both via era ledger?
+  surface_forms:
+  - form: le peintre
+    scope: context:verdurin-salon
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+    - run_maps(515 runs)
+  - form: le peintre favori
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(4 runs)
+  - form: peintre
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(503 runs)
+- id: m-de-marsantes
+  display_name: M. de Marsantes
+  status: review
+  annotation_names:
+  - M. de Marsantes
+  notes: Robert's father, dead before the novel opens; legitimate only as posthumous/associational
+    mention.
+  review_questions:
+  - 'Audit adjudicates the 4 unit-annotations listing him present: genuine posthumous mentions
+    vs substituted Mme de Marsantes.'
+  surface_forms:
+  - form: M. de Marsantes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(428 runs)
+    - annotation_surface_forms(4x)
+  - form: Marsantes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(428 runs)
+    - annotation_surface_forms(2x)
+  - form: Saint-Loup de Saint-Loup
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(428 runs)
+- id: octave
+  display_name: Octave
+  status: review
+  annotation_names:
+  - Octave
+  notes: The Balbec dandy ('dans les choux'), later revealed a genius; must NOT absorb tante
+    Léonie's 'Mme Octave'.
+  review_questions:
+  - Audit whether the existing 4-0-0 record includes units where only Mme Octave (= Léonie)
+    appears.
+  surface_forms:
+  - form: Octave
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+- id: prince-des-laumes
+  display_name: prince des Laumes
+  status: review
+  annotation_names:
+  - prince des Laumes
+  notes: Era identity of the future duc de Guermantes (Un amour de Swann). Kept split to mirror
+    the current annotation corpus.
+  same_person_links:
+  - entity: duc-de-guermantes
+    relation: same person, pre-succession title
+    policy: person_view_merge
+    review: true
+  review_questions:
+  - Merge into duc de Guermantes to match the accepted princesse-des-Laumes precedent, or
+    keep the era ledger split?
+  surface_forms:
+  - form: prince des Laumes
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(426 runs)
+  - form: M. des Laumes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    notes: Laumes-era address form (Un amour de Swann)
+- id: princesse-de-guermantes
+  display_name: princesse de Guermantes
+  status: review
+  annotation_names:
+  - princesse de Guermantes
+  same_person_links:
+  - entity: mme-verdurin
+    relation: the post-V7 princesse de Guermantes IS Mme Verdurin after her remarriage
+    policy: keep_separate
+    review: true
+  review_questions:
+  - Split by era (Marie-Gilbert vs Verdurin-era) or key standings on person with a name-era
+    ledger? Current standings row may blend the two people.
+  surface_forms:
+  - form: princesse de Guermantes
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(346 runs)
+    - annotation_surface_forms(8x)
+  - form: Marie-Gilbert
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: la princesse
+    scope: mention_only
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+    notes: bare descriptor — was a live rewrite rule in runs 067-071; reference-only forever
+  - form: Mme de Guermantes-Bavière
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(346 runs)
+  - form: princesse de Guermantes-Bavière
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - run_maps(346 runs)
+- id: celeste-albaret
+  display_name: Céleste Albaret
+  status: proposed
+  notes: MISSING from all legacy layers.
+  surface_forms:
+  - form: Céleste Albaret
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: Céleste
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+- id: duc-de-guermantes
+  display_name: duc de Guermantes
+  status: proposed
+  annotation_names:
+  - duc de Guermantes
+  review_questions:
+  - Annotations also use canonical 'prince des Laumes' (separate provisional standings row,
+    4 matches). Same person, earlier title — merge to match the accepted princesse-des-Laumes
+    precedent?
+  eras:
+  - name: prince des Laumes
+    note: see the prince-des-laumes era entity
+  - name: duc de Guermantes
+  surface_forms:
+  - form: duc de Guermantes
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(489 runs)
+    - annotation_surface_forms(55x)
+  - form: M. de Guermantes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - aliases_csv
+    notes: occasionally the prince; review ambiguity
+  - form: Basin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - aliases_csv
+  - form: duc
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - annotation_surface_forms(8x)
+- id: eulalie
+  display_name: Eulalie
+  status: proposed
+  surface_forms:
+  - form: Eulalie
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+- id: gisele
+  display_name: Gisèle
+  status: proposed
+  notes: Petite bande member; missing from legacy layers.
+  surface_forms:
+  - form: Gisèle
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+- id: mlle-vinteuil
+  display_name: Mlle Vinteuil
+  status: proposed
+  notes: MISSING from all legacy layers despite Montjouvain and the posthumous transcription
+    arc.
+  surface_forms:
+  - form: Mlle Vinteuil
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+- id: mme-de-marsantes
+  display_name: Mme de Marsantes
+  status: proposed
+  notes: Robert's mother. MISSING from all legacy layers; her mentions risk mis-resolving
+    to her dead husband.
+  surface_forms:
+  - form: Mme de Marsantes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: comtesse de Marsantes
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+- id: mme-sazerat
+  display_name: Mme Sazerat
+  status: proposed
+  surface_forms:
+  - form: Mme Sazerat
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+- id: prince-de-guermantes
+  display_name: prince de Guermantes
+  status: proposed
+  notes: MISSING from standings despite major scenes (Dreyfus confession, V7 matinée host).
+  surface_forms:
+  - form: prince de Guermantes
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: Gilbert
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+- id: princesse-sherbatoff
+  display_name: princesse Sherbatoff
+  status: proposed
+  notes: Faithful of the little clan; MISSING from all legacy layers.
+  surface_forms:
+  - form: princesse Sherbatoff
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: Mme Sherbatoff
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+- id: rachel
+  display_name: Rachel
+  status: proposed
+  notes: MISSING from every legacy layer -> structurally invisible to the annotator under
+    scope rule 17 despite co-lead scenes in V3 and the V7 Berma duel.
+  eras:
+  - name: Rachel quand du Seigneur
+    note: maison de passe period (V2)
+  - name: Rachel
+    note: actress; Saint-Loup's mistress
+  - name: Rachel
+    note: celebrated reciter, V7
+  surface_forms:
+  - form: Rachel
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: Rachel quand du Seigneur
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: narrator's Halévy joke-name; scan, never rewrite
+  - form: Zézette
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: Saint-Loup's pet name for her
+- id: rosemonde
+  display_name: Rosemonde
+  status: proposed
+  notes: Petite bande member; missing from legacy layers.
+  surface_forms:
+  - form: Rosemonde
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+- id: remi
+  display_name: Rémi
+  status: proposed
+  annotation_names:
+  - Rémi
+  - Remi
+  notes: Swann's coachman; standings currently split him across a diacritic variant (Rémi
+    4 matches / Remi 2 matches).
+  surface_forms:
+  - form: Rémi
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(10 runs)
+    - run_maps(487 runs)
+  - form: Remi
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(10 runs)
+    - run_maps(487 runs)
+    notes: diacritic variant
+  - form: le cocher
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(10 runs)
+- id: tante-leonie
+  display_name: tante Léonie
+  status: proposed
+  notes: MISSING from all legacy layers as herself; root aliases.csv wrongly merged her forms
+    of address into Octave.
+  review_questions:
+  - Confirm creating this entity and retiring the aliases.csv rows 'Mme Octave,Octave' and
+    'Madame Octave,Octave'.
+  surface_forms:
+  - form: tante Léonie
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: Léonie
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: ma tante Léonie
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: Mme Octave
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: How Françoise addresses her — NOT Octave
+  - form: Madame Octave
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+- id: theodore
+  display_name: Théodore
+  status: proposed
+  surface_forms:
+  - form: Théodore
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+- id: aime
+  display_name: Aimé
+  status: confirmed
+  annotation_names:
+  - Aimé
+  surface_forms:
+  - form: Aimé
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(440 runs)
+    - annotation_surface_forms(15x)
+  - form: Aime
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(440 runs)
+- id: albertine
+  display_name: Albertine
+  status: confirmed
+  annotation_names:
+  - Albertine
+  surface_forms:
+  - form: Albertine
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(315 runs)
+    - annotation_surface_forms(171x)
+  - form: Albertine Simonet
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: Mlle Simonet
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - annotation_surface_forms(2x)
+  - form: ALBERTINE
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(3x)
+  - form: Mademoiselle Albertine
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(11x)
+  - form: Mlle Albertine
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(6x)
+- id: andree
+  display_name: Andrée
+  status: confirmed
+  annotation_names:
+  - Andrée
+  surface_forms:
+  - form: Andrée
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(315 runs)
+    - annotation_surface_forms(18x)
+  - form: Andree
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(315 runs)
+- id: charlus
+  display_name: baron de Charlus
+  status: confirmed
+  annotation_names:
+  - baron de Charlus
+  - Charlus
+  surface_forms:
+  - form: baron de Charlus
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(493 runs)
+  - form: M. de Charlus
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(2 runs)
+    - aliases_csv
+  - form: Charlus
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(2 runs)
+    - run_maps(495 runs)
+    - annotation_surface_forms(21x)
+  - form: Palamède
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - aliases_csv
+  - form: Mémé
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: le baron
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+  - form: le baron de Charlus
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+  - form: Baron de Charlus
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - aliases_csv
+  - form: Monsieur
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+- id: bergotte
+  display_name: Bergotte
+  status: confirmed
+  annotation_names:
+  - Bergotte
+  surface_forms:
+  - form: Bergotte
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(483 runs)
+    - annotation_surface_forms(33x)
+  - form: M. Bergotte
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+- id: bloch
+  display_name: Bloch
+  status: confirmed
+  annotation_names:
+  - Bloch
+  eras:
+  - name: Bloch
+  - name: Jacques du Rozier
+    note: V7
+  surface_forms:
+  - form: Bloch
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(426 runs)
+    - annotation_surface_forms(61x)
+  - form: M. Bloch
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - aliases_csv
+    notes: ambiguous with Bloch père — resolver must flag
+  - form: Jacques du Rozier
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: Bloch fils
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(426 runs)
+  - form: Monsieur Bloch
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+- id: bloch-pere
+  display_name: Bloch père
+  status: confirmed
+  annotation_names:
+  - Bloch père
+  surface_forms:
+  - form: Bloch père
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(422 runs)
+    - annotation_surface_forms(6x)
+  - form: M. Bloch
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: shared with Bloch fils — resolver must flag
+  - form: Bloch le père
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+- id: brichot
+  display_name: Brichot
+  status: confirmed
+  annotation_names:
+  - Brichot
+  surface_forms:
+  - form: Brichot
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(513 runs)
+    - annotation_surface_forms(10x)
+  - form: M. Brichot
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(513 runs)
+- id: comte-de-forcheville
+  display_name: comte de Forcheville
+  status: confirmed
+  annotation_names:
+  - comte de Forcheville
+  surface_forms:
+  - form: comte de Forcheville
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(513 runs)
+  - form: Forcheville
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(513 runs)
+    - annotation_surface_forms(2x)
+  - form: M. de Forcheville
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(513 runs)
+- id: comtesse-de-monteriender
+  display_name: comtesse de Monteriender
+  status: confirmed
+  annotation_names:
+  - comtesse de Monteriender
+  surface_forms:
+  - form: comtesse de Monteriender
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(487 runs)
+  - form: Mme de Monteriender
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(487 runs)
+  - form: Monteriender
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(487 runs)
+- id: docteur-cottard
+  display_name: docteur Cottard
+  status: confirmed
+  annotation_names:
+  - docteur Cottard
+  surface_forms:
+  - form: docteur Cottard
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(511 runs)
+    - annotation_surface_forms(39x)
+  - form: Cottard
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(523 runs)
+    - annotation_surface_forms(10x)
+  - form: le docteur Cottard
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+    - run_maps(12 runs)
+  - form: le docteur
+    scope: context:verdurin-salon
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+    - run_maps(523 runs)
+    notes: 'THE regression case: a historical rewrite rule inserted Cottard into a V2 brothel
+      simile'
+  - form: docteur
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - annotation_surface_forms(2x)
+- id: dreyfus
+  display_name: Dreyfus
+  status: confirmed
+  annotation_names:
+  - Dreyfus
+  surface_forms:
+  - form: Dreyfus
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(418 runs)
+    - annotation_surface_forms(2x)
+- id: duc-de-chatellerault
+  display_name: duc de Châtellerault
+  status: confirmed
+  annotation_names:
+  - duc de Châtellerault
+  surface_forms:
+  - form: duc de Châtellerault
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(346 runs)
+    - annotation_surface_forms(7x)
+  - form: Châtellerault
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(346 runs)
+    - annotation_surface_forms(3x)
+  - form: M. de Châtellerault
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(346 runs)
+- id: duchesse-de-guermantes
+  display_name: duchesse de Guermantes
+  status: confirmed
+  annotation_names:
+  - duchesse de Guermantes
+  - princesse des Laumes
+  notes: princesse des Laumes -> duchesse merge already reviewed and accepted upstream in
+    Nathan's normalization plan.
+  eras:
+  - name: princesse des Laumes
+    note: before the old duke dies
+  - name: duchesse de Guermantes
+  surface_forms:
+  - form: duchesse de Guermantes
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(404 runs)
+    - aliases_csv
+    - annotation_surface_forms(129x)
+    notes: already canonical
+  - form: Mme de Guermantes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(43 runs)
+    - run_maps(446 runs)
+    - annotation_surface_forms(2x)
+  - form: Madame de Guermantes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(404 runs)
+  - form: Oriane
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - aliases_csv
+  - form: princesse des Laumes
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(43 runs)
+    - run_maps(42 runs)
+    - annotation_surface_forms(5x)
+  - form: Mme des Laumes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(43 runs)
+    - run_maps(42 runs)
+    - annotation_surface_forms(4x)
+  - form: la duchesse
+    scope: mention_only
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+    - run_maps(404 runs)
+    notes: descriptor — was a live rewrite rule in 404 runs; must remain reference-only
+  - form: princesse
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(26 runs)
+    - run_maps(25 runs)
+  - form: Madame duchesse de Guermantes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+  - form: Mme duchesse de Guermantes
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(3x)
+  - form: duchesse
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - annotation_surface_forms(2x)
+- id: elstir
+  display_name: Elstir
+  status: confirmed
+  annotation_names:
+  - Elstir
+  eras:
+  - name: M. Biche / Tiche
+    note: Verdurin salon period
+  - name: Elstir
+  surface_forms:
+  - form: Elstir
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(313 runs)
+    - annotation_surface_forms(17x)
+  - form: M. Elstir
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - annotation_surface_forms(2x)
+  - form: M. Biche
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: Biche
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: Tiche
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+- id: francoise
+  display_name: Françoise
+  status: confirmed
+  annotation_names:
+  - Françoise
+  surface_forms:
+  - form: Françoise
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(483 runs)
+    - annotation_surface_forms(70x)
+  - form: Francoise
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(483 runs)
+    - annotation_surface_forms(2x)
+- id: genevieve
+  display_name: Geneviève
+  status: confirmed
+  annotation_names:
+  - Geneviève
+  surface_forms:
+  - form: Geneviève
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+  - form: Geneviève de Brabant
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - aliases_csv
+- id: gilberte
+  display_name: Gilberte
+  status: confirmed
+  annotation_names:
+  - Gilberte
+  eras:
+  - name: Mlle Swann
+  - name: Mlle de Forcheville
+  - name: Mme de Saint-Loup
+  review_questions:
+  - Standings show 'Mlle d'Éporcheville' as a separate provisional character (2 matches);
+    it is Gilberte misheard — merge?
+  surface_forms:
+  - form: Gilberte
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(485 runs)
+    - annotation_surface_forms(44x)
+  - form: Mlle Swann
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - aliases_csv
+  - form: Gilberte Swann
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - annotation_surface_forms(4x)
+  - form: Mlle de Forcheville
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: Mme de Saint-Loup
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: Mlle d'Éporcheville
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: misheard name; V5 incident
+  - form: la fille de Odette
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+  - form: Mlle de comte de Forcheville
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+  - form: Mme de Robert de Saint-Loup
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+- id: general-de-froberville
+  display_name: général de Froberville
+  status: confirmed
+  annotation_names:
+  - général de Froberville
+  surface_forms:
+  - form: général de Froberville
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(491 runs)
+    - annotation_surface_forms(3x)
+  - form: Froberville
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(491 runs)
+    - annotation_surface_forms(2x)
+  - form: general de Froberville
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - run_maps(491 runs)
+- id: jeune-blonde-de-rivebelle
+  display_name: jeune blonde de Rivebelle
+  status: confirmed
+  annotation_names:
+  - jeune blonde de Rivebelle
+  surface_forms:
+  - form: jeune blonde de Rivebelle
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+  - form: jeune blonde
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - run_maps(416 runs)
+  - form: jeune blonde à l'air triste
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - run_maps(416 runs)
+- id: jupien
+  display_name: Jupien
+  status: confirmed
+  annotation_names:
+  - Jupien
+  surface_forms:
+  - form: Jupien
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(404 runs)
+    - annotation_surface_forms(4x)
+- id: la-berma
+  display_name: la Berma
+  status: confirmed
+  annotation_names:
+  - la Berma
+  surface_forms:
+  - form: la Berma
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(483 runs)
+  - form: Berma
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(483 runs)
+    - annotation_surface_forms(7x)
+  - form: Mme la Berma
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(6x)
+- id: la-grand-mere
+  display_name: la grand-mère
+  status: confirmed
+  annotation_names:
+  - la grand-mère
+  - la grand-mère du narrateur
+  surface_forms:
+  - form: la grand-mère
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(444 runs)
+  - form: ma grand-mère
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(444 runs)
+  - form: ma grand'mère
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(2 runs)
+    - run_maps(446 runs)
+    notes: apostrophe variant used in the corpus
+  - form: Bathilde
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: Mme Amédée
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: la grand-mère du narrateur
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+  - form: ma grand-mere
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+  - form: grand'mère
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(444 runs)
+  - form: grand-mère
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(444 runs)
+  - form: Grand'mère
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+- id: la-jeune-ouvriere
+  display_name: la jeune ouvriere
+  status: confirmed
+  annotation_names:
+  - la jeune ouvriere
+  surface_forms:
+  - form: la jeune ouvriere
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - annotations
+    - run_maps(2 runs)
+  - form: la jeune ouvrière
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+- id: la-mere
+  display_name: la mère du narrateur
+  status: confirmed
+  annotation_names:
+  - la mère du narrateur
+  surface_forms:
+  - form: la mère du narrateur
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+  - form: maman
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(519 runs)
+  - form: ma mère
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(521 runs)
+  - form: Madame
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(2 runs)
+  - form: Maman
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(3x)
+- id: la-reine-de-naples
+  display_name: la reine de Naples
+  status: confirmed
+  annotation_names:
+  - la reine de Naples
+  surface_forms:
+  - form: la reine de Naples
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - annotations
+- id: le-directeur
+  display_name: le directeur
+  status: confirmed
+  annotation_names:
+  - le directeur
+  surface_forms:
+  - form: le directeur
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - annotations
+    - run_maps(418 runs)
+  - form: directeur
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(418 runs)
+- id: le-grand-pere
+  display_name: le grand-père du narrateur
+  status: confirmed
+  annotation_names:
+  - le grand-père du narrateur
+  surface_forms:
+  - form: le grand-père du narrateur
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+  - form: mon grand-père
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(2 runs)
+  - form: Amédée
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: mon grand-pere
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+- id: le-narrateur
+  display_name: le narrateur
+  status: confirmed
+  annotation_names:
+  - le narrateur
+  notes: First-person narrator; never a rewrite target.
+  surface_forms:
+  - form: le narrateur
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+  - form: Marcel
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: Named twice in La Prisonnière; review whether to scan.
+  - form: je
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(6 runs)
+  - form: moi
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(6 runs)
+  - form: mon fils
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+- id: le-pianiste
+  display_name: le pianiste
+  status: confirmed
+  annotation_names:
+  - le pianiste
+  surface_forms:
+  - form: le pianiste
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - annotations
+    - run_maps(6 runs)
+  - form: le jeune artiste
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(4 runs)
+  - form: le jeune pianiste
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(6 runs)
+  - form: le petit pianiste
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+- id: le-pere
+  display_name: le père du narrateur
+  status: confirmed
+  annotation_names:
+  - le père du narrateur
+  surface_forms:
+  - form: le père du narrateur
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+  - form: mon père
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(440 runs)
+  - form: Monsieur votre père
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(2 runs)
+  - form: votre père
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(438 runs)
+- id: legrandin
+  display_name: Legrandin
+  status: confirmed
+  annotation_names:
+  - Legrandin
+  eras:
+  - name: Legrandin
+  - name: comte de Méséglise
+    note: late self-ennoblement
+  surface_forms:
+  - form: Legrandin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(519 runs)
+    - annotation_surface_forms(22x)
+  - form: M. Legrandin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(519 runs)
+    - aliases_csv
+  - form: comte de Méséglise
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+- id: m-d-orsan
+  display_name: M. d'Orsan
+  status: confirmed
+  annotation_names:
+  - M. d'Orsan
+  surface_forms:
+  - form: M. d'Orsan
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(487 runs)
+  - form: Orsan
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(487 runs)
+  - form: d'Orsan
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(487 runs)
+- id: m-de-chevregny
+  display_name: M. de Chevregny
+  status: confirmed
+  annotation_names:
+  - M. de Chevregny
+  surface_forms:
+  - form: M. de Chevregny
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+- id: m-de-stermaria
+  display_name: M. de Stermaria
+  status: confirmed
+  annotation_names:
+  - M. de Stermaria
+  surface_forms:
+  - form: M. de Stermaria
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(442 runs)
+    - annotation_surface_forms(4x)
+  - form: Stermaria
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(442 runs)
+  - form: de Stermaria
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(442 runs)
+- id: m-de-vaugoubert
+  display_name: M. de Vaugoubert
+  status: confirmed
+  annotation_names:
+  - M. de Vaugoubert
+  surface_forms:
+  - form: M. de Vaugoubert
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(346 runs)
+    - annotation_surface_forms(12x)
+  - form: Vaugoubert
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(346 runs)
+    - annotation_surface_forms(6x)
+- id: m-grevy
+  display_name: M. Grevy
+  status: confirmed
+  annotation_names:
+  - M. Grevy
+  surface_forms:
+  - form: M. Grevy
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(2 runs)
+  - form: M. Grévy
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(2 runs)
+  - form: le Chef de l'État
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+  - form: le Président de la République
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+- id: m-nissim-bernard
+  display_name: M. Nissim Bernard
+  status: confirmed
+  annotation_names:
+  - M. Nissim Bernard
+  surface_forms:
+  - form: M. Nissim Bernard
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+- id: ski
+  display_name: M. Ski
+  status: confirmed
+  annotation_names:
+  - M. Ski
+  surface_forms:
+  - form: M. Ski
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: Ski
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - aliases_csv
+  - form: Viradobetski
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+- id: m-verdurin
+  display_name: M. Verdurin
+  status: confirmed
+  annotation_names:
+  - M. Verdurin
+  surface_forms:
+  - form: M. Verdurin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(527 runs)
+    - annotation_surface_forms(18x)
+  - form: le Patron
+    scope: context:verdurin-salon
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+  - form: Monsieur Verdurin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(527 runs)
+    - annotation_surface_forms(6x)
+  - form: Verdurin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(513 runs)
+    - annotation_surface_forms(4x)
+- id: m-vinteuil
+  display_name: M. Vinteuil
+  status: confirmed
+  annotation_names:
+  - M. Vinteuil
+  - Vinteuil
+  surface_forms:
+  - form: M. Vinteuil
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(1 runs)
+    - run_maps(520 runs)
+    - aliases_csv
+    - annotation_surface_forms(18x)
+    notes: already canonical
+  - form: Vinteuil
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(1 runs)
+    - run_maps(520 runs)
+    - annotation_surface_forms(9x)
+- id: marquis-de-breaute
+  display_name: marquis de Bréauté
+  status: confirmed
+  annotation_names:
+  - marquis de Bréauté
+  surface_forms:
+  - form: marquis de Bréauté
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(491 runs)
+  - form: Breaute
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(491 runs)
+  - form: Bréauté
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(491 runs)
+  - form: marquis de Breaute
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - run_maps(491 runs)
+- id: marquis-de-cambremer
+  display_name: marquis de Cambremer
+  status: confirmed
+  annotation_names:
+  - marquis de Cambremer
+  surface_forms:
+  - form: marquis de Cambremer
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(440 runs)
+    - annotation_surface_forms(8x)
+  - form: M. de Cambremer
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(440 runs)
+  - form: Cancan
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(3x)
+- id: marquis-de-forestelle
+  display_name: marquis de Forestelle
+  status: confirmed
+  annotation_names:
+  - marquis de Forestelle
+  surface_forms:
+  - form: marquis de Forestelle
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(495 runs)
+  - form: Forestelle
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(495 runs)
+  - form: M. de Forestelle
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(495 runs)
+- id: marquis-du-lau
+  display_name: marquis du Lau
+  status: confirmed
+  annotation_names:
+  - marquis du Lau
+  surface_forms:
+  - form: marquis du Lau
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(311 runs)
+  - form: du Lau
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(311 runs)
+- id: marquise-de-gallardon
+  display_name: marquise de Gallardon
+  status: confirmed
+  annotation_names:
+  - marquise de Gallardon
+  surface_forms:
+  - form: marquise de Gallardon
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(489 runs)
+    - annotation_surface_forms(10x)
+  - form: Gallardon
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(489 runs)
+  - form: Mme de Gallardon
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(489 runs)
+- id: marquise-de-saint-euverte
+  display_name: marquise de Saint-Euverte
+  status: confirmed
+  annotation_names:
+  - marquise de Saint-Euverte
+  surface_forms:
+  - form: marquise de Saint-Euverte
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(491 runs)
+    - annotation_surface_forms(7x)
+  - form: Mme de Saint-Euverte
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(491 runs)
+    - annotation_surface_forms(3x)
+  - form: Saint-Euverte
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(491 runs)
+- id: mlle-d-eporcheville
+  display_name: Mlle d'Éporcheville
+  status: confirmed
+  annotation_names:
+  - Mlle d'Éporcheville
+  surface_forms:
+  - form: Mlle d'Éporcheville
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+- id: mlle-de-stermaria
+  display_name: Mlle de Stermaria
+  status: confirmed
+  annotation_names:
+  - Mlle de Stermaria
+  surface_forms:
+  - form: Mlle de Stermaria
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(440 runs)
+- id: mme-blandais
+  display_name: Mme Blandais
+  status: confirmed
+  annotation_names:
+  - Mme Blandais
+  surface_forms:
+  - form: Mme Blandais
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(438 runs)
+  - form: Madame Blandais
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(438 runs)
+- id: mme-bontemps
+  display_name: Mme Bontemps
+  status: confirmed
+  annotation_names:
+  - Mme Bontemps
+  surface_forms:
+  - form: Mme Bontemps
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(315 runs)
+    - annotation_surface_forms(2x)
+  - form: Madame Bontemps
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(315 runs)
+- id: mme-cottard
+  display_name: Mme Cottard
+  status: confirmed
+  annotation_names:
+  - Mme Cottard
+  surface_forms:
+  - form: Mme Cottard
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(509 runs)
+    - annotation_surface_forms(9x)
+  - form: Madame Cottard
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(509 runs)
+    - annotation_surface_forms(2x)
+- id: mme-de-cambremer
+  display_name: Mme de Cambremer
+  status: confirmed
+  annotation_names:
+  - Mme de Cambremer
+  surface_forms:
+  - form: Mme de Cambremer
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(519 runs)
+    - annotation_surface_forms(16x)
+  - form: Madame de Cambremer
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(519 runs)
+    - annotation_surface_forms(3x)
+  - form: Mme de Cambremer-Legrandin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(6x)
+- id: mme-de-chaussepierre
+  display_name: Mme de Chaussepierre
+  status: confirmed
+  annotation_names:
+  - Mme de Chaussepierre
+  surface_forms:
+  - form: Mme de Chaussepierre
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(311 runs)
+  - form: Chaussepierre
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(311 runs)
+  - form: Madame de Chaussepierre
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(311 runs)
+- id: mme-de-vaugoubert
+  display_name: Mme de Vaugoubert
+  status: confirmed
+  annotation_names:
+  - Mme de Vaugoubert
+  surface_forms:
+  - form: Mme de Vaugoubert
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(346 runs)
+  - form: Madame de Vaugoubert
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(346 runs)
+- id: mme-de-villeparisis
+  display_name: Mme de Villeparisis
+  status: confirmed
+  annotation_names:
+  - Mme de Villeparisis
+  surface_forms:
+  - form: Mme de Villeparisis
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(523 runs)
+    - annotation_surface_forms(77x)
+  - form: Madame de Villeparisis
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(523 runs)
+    - annotation_surface_forms(16x)
+  - form: marquise de Villeparisis
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - aliases_csv
+  - form: Madame la Marquise
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+  - form: marquise
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - annotation_surface_forms(4x)
+- id: mme-poncin
+  display_name: Mme Poncin
+  status: confirmed
+  annotation_names:
+  - Mme Poncin
+  surface_forms:
+  - form: Mme Poncin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(438 runs)
+  - form: Madame Poncin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(438 runs)
+- id: mme-verdurin
+  display_name: Mme Verdurin
+  status: confirmed
+  annotation_names:
+  - Mme Verdurin
+  eras:
+  - name: Mme Verdurin
+  - name: duchesse de Duras
+  - name: princesse de Guermantes
+    note: see same_person_links
+  surface_forms:
+  - form: Mme Verdurin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(527 runs)
+    - annotation_surface_forms(66x)
+  - form: Madame Verdurin
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(527 runs)
+    - annotation_surface_forms(18x)
+  - form: la Patronne
+    scope: context:verdurin-salon
+    rewrite: never
+    scan: false
+    sources:
+    - overlay
+    - run_maps(12 runs)
+- id: morel
+  display_name: Morel
+  status: confirmed
+  annotation_names:
+  - Morel
+  surface_forms:
+  - form: Morel
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(315 runs)
+    - annotation_surface_forms(17x)
+  - form: Charles Morel
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: Charlie
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: bare first name — unsafe as rewrite
+- id: napoleon-iii
+  display_name: Napoléon III
+  status: confirmed
+  annotation_names:
+  - Napoléon III
+  surface_forms:
+  - form: Napoléon III
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotations
+    - run_maps(485 runs)
+  - form: Napoleon III
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(485 runs)
+- id: norpois
+  display_name: Norpois
+  status: confirmed
+  annotation_names:
+  - Norpois
+  surface_forms:
+  - form: Norpois
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(477 runs)
+    - annotation_surface_forms(65x)
+  - form: M. de Norpois
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(477 runs)
+    - aliases_csv
+    - annotation_surface_forms(6x)
+  - form: marquis de Norpois
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: l'Ambassadeur
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(2 runs)
+  - form: le marquis de Norpois
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(477 runs)
+  - form: M. de Noirpois
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+  - form: Monsieur l'Ambassadeur
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+- id: odette
+  display_name: Odette
+  status: confirmed
+  annotation_names:
+  - Odette
+  - Mme Swann
+  eras:
+  - name: Mme de Crécy / la dame en rose
+    note: pre-marriage
+  - name: Odette / Mme Swann
+    note: Swann marriage
+  - name: Mme de Forcheville
+    note: remarriage
+  surface_forms:
+  - form: Odette
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(533 runs)
+    - annotation_surface_forms(78x)
+  - form: Mme Swann
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(3 runs)
+    - aliases_csv
+    - annotation_surface_forms(3x)
+  - form: Madame Swann
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(3 runs)
+    - annotation_surface_forms(5x)
+  - form: Odette de Crécy
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(533 runs)
+  - form: Mme de Crécy
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(533 runs)
+    notes: also her first husband's name-sphere; review
+  - form: la dame en rose
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+  - form: Miss Sacripant
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: Elstir portrait identity
+  - form: Mme de Forcheville
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+  - form: la belle Madame Swann
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(1 runs)
+  - form: Mme de Crecy
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(533 runs)
+  - form: Odette de Crecy
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(519 runs)
+- id: oncle-adolphe
+  display_name: oncle Adolphe
+  status: confirmed
+  annotation_names:
+  - oncle Adolphe
+  surface_forms:
+  - form: oncle Adolphe
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(491 runs)
+  - form: mon oncle Adolphe
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(491 runs)
+  - form: Adolphe
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(491 runs)
+  - form: oncle
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - annotation_surface_forms(3x)
+- id: prince-de-guermantes-2
+  display_name: prince de Guermantes
+  status: confirmed
+  annotation_names:
+  - prince de Guermantes
+  surface_forms:
+  - form: prince de Guermantes
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+- id: prince-de-leon
+  display_name: prince de Léon
+  status: confirmed
+  annotation_names:
+  - prince de Léon
+  surface_forms:
+  - form: prince de Léon
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(311 runs)
+  - form: Leon
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(311 runs)
+  - form: Léon
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - run_maps(311 runs)
+  - form: prince de Leon
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - run_maps(311 runs)
+- id: princesse-de-luxembourg
+  display_name: princesse de Luxembourg
+  status: confirmed
+  annotation_names:
+  - princesse de Luxembourg
+  surface_forms:
+  - form: princesse de Luxembourg
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(438 runs)
+    - annotation_surface_forms(4x)
+  - form: La princesse de Luxembourg
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(438 runs)
+  - form: Mme de Luxembourg
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(3x)
+- id: princesse-de-parme
+  display_name: princesse de Parme
+  status: confirmed
+  annotation_names:
+  - princesse de Parme
+  surface_forms:
+  - form: princesse de Parme
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotations
+    - run_maps(489 runs)
+    - annotation_surface_forms(12x)
+- id: saint-loup
+  display_name: Robert de Saint-Loup
+  status: confirmed
+  annotation_names:
+  - Robert de Saint-Loup
+  - Saint-Loup
+  surface_forms:
+  - form: Robert de Saint-Loup
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(2 runs)
+    - run_maps(430 runs)
+    - annotation_surface_forms(187x)
+  - form: Saint-Loup
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(2 runs)
+    - run_maps(430 runs)
+    - annotation_surface_forms(27x)
+  - form: marquis de Saint-Loup-en-Bray
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - run_maps(428 runs)
+  - form: Robert
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    - annotation_surface_forms(41x)
+    notes: bare first name — unsafe as rewrite
+  - form: Bobbey
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: Rachel-circle nickname; review
+  - form: le neveu de Mme de Villeparisis
+    scope: global
+    rewrite: never
+    scan: false
+    sources:
+    - run_maps(428 runs)
+  - form: M. le marquis
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+  - form: M. le marquis de Robert de Saint-Loup
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+  - form: marquis de Robert de Saint-Loup
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
+- id: saniette
+  display_name: Saniette
+  status: confirmed
+  annotation_names:
+  - Saniette
+  surface_forms:
+  - form: Saniette
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(509 runs)
+    - annotation_surface_forms(11x)
+- id: swann
+  display_name: Swann
+  status: confirmed
+  annotation_names:
+  - Swann
+  surface_forms:
+  - form: Swann
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(541 runs)
+    - annotation_surface_forms(257x)
+  - form: M. Swann
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(541 runs)
+    - aliases_csv
+    - annotation_surface_forms(9x)
+  - form: Charles Swann
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - overlay
+    - run_maps(541 runs)
+  - form: Charles
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: bare first name — unsafe as rewrite
+  - form: Monsieur Swann
+    scope: global
+    rewrite: allow
+    scan: true
+    sources:
+    - annotation_surface_forms(2x)
