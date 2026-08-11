@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 from . import coverage
+from . import foundation
 from . import runner as core
 from . import supplement
 from .export_artifacts import write_coverage_audit_artifacts
@@ -170,6 +171,46 @@ def build_parser():
         help="Path to a newline-delimited file of unit ids to include.",
     )
     prepare_supplements_parser.add_argument("--notes", default="", help="Optional note stored in run.json.")
+
+    prepare_foundation_parser = subparsers.add_parser(
+        "prepare-foundation",
+        help="Prepare a foundation (prompt v2 + registry reference sheet) annotation run, or plan the whole corpus.",
+    )
+    prepare_foundation_mode_group = prepare_foundation_parser.add_mutually_exclusive_group(required=True)
+    prepare_foundation_mode_group.add_argument("--chapter", help="Canonical chapter id to window and prepare.")
+    prepare_foundation_mode_group.add_argument(
+        "--all-chapters",
+        action="store_true",
+        help="Plan the whole corpus into consecutive run batches instead of preparing one run.",
+    )
+    prepare_foundation_mode_group.add_argument(
+        "--run",
+        help="Prepare one run named in an existing foundation plan (see --plan).",
+    )
+    prepare_foundation_parser.add_argument(
+        "--output",
+        help="Run directory to create (--chapter), or the plan path to write (--all-chapters). "
+        "Defaults to the plan's runDir when --run is used.",
+    )
+    prepare_foundation_parser.add_argument(
+        "--plan",
+        default=foundation.DEFAULT_PLAN_PATH,
+        help="Foundation plan path read by --run.",
+    )
+    prepare_foundation_parser.add_argument(
+        "--window",
+        type=int,
+        default=foundation.DEFAULT_WINDOW,
+        help="Paragraphs per annotation unit.",
+    )
+    prepare_foundation_parser.add_argument(
+        "--run-size",
+        type=int,
+        default=foundation.DEFAULT_RUN_SIZE,
+        help="Maximum units per run directory in --all-chapters mode.",
+    )
+    prepare_foundation_parser.add_argument("--run-id", help="Optional run identifier. Defaults to the output directory name.")
+    prepare_foundation_parser.add_argument("--notes", default="", help="Optional note stored in run.json.")
 
     character_analysis_parser = subparsers.add_parser(
         "character-analysis",
@@ -718,6 +759,54 @@ def main(argv=None):
             "run_id": manifest["run_id"],
             "unit_count": len(manifest["unit_ids"]),
             "output": args.output,
+        }, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "prepare-foundation":
+        if args.all_chapters:
+            plan = foundation.build_foundation_plan(window=args.window, run_size=args.run_size)
+            plan_path = foundation.write_foundation_plan(plan, args.output or foundation.DEFAULT_PLAN_PATH)
+            print(json.dumps({
+                "unit_count": plan["unit_count"],
+                "run_count": plan["run_count"],
+                "window": plan["window"],
+                "run_size": plan["run_size"],
+                "volumes": plan["volumes"],
+                "plan_path": str(plan_path),
+            }, ensure_ascii=False, indent=2))
+            return 0
+
+        if args.run:
+            try:
+                plan = foundation.load_foundation_plan(args.plan)
+                manifest = foundation.prepare_planned_run(
+                    plan,
+                    args.run,
+                    output_dir=args.output,
+                    notes=args.notes,
+                )
+            except (ValueError, OSError) as exc:
+                parser.error(str(exc))
+        else:
+            if not args.output:
+                parser.error("--output is required when preparing a chapter run.")
+            try:
+                manifest = foundation.prepare_foundation_run(
+                    args.output,
+                    args.chapter,
+                    foundation.derive_foundation_unit_specs(args.chapter, window=args.window),
+                    run_id=args.run_id,
+                    notes=args.notes,
+                )
+            except (ValueError, OSError) as exc:
+                parser.error(str(exc))
+
+        print(json.dumps({
+            "run_id": manifest["run_id"],
+            "chapter_id": manifest["chapter_id"],
+            "unit_count": len(manifest["unit_ids"]),
+            "registry_content_sha256": manifest["registry"]["content_sha256"],
+            "reference_sheet_entity_count": manifest["registry"]["reference_sheet_entity_count"],
         }, ensure_ascii=False, indent=2))
         return 0
 
