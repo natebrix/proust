@@ -47,9 +47,9 @@ Reading path:
 
 Notable units:
 
-- Swann loses inclusion standing across all three lenses. le peintre loses social status across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-343`
-- Swann loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-342`
-- Swann loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-367`
+- Swann loses inclusion standing across all three lenses. le peintre loses social status across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-341`
+- Swann loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-340`
+- Swann loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-365`
 
 ## Robert de Saint-Loup
 
@@ -93,8 +93,8 @@ Reading path:
 
 Notable units:
 
-- Robert de Saint-Loup gains social status across all three lenses.: `/projects/islt/fr-original/v3-p2#p-251`
-- Robert de Saint-Loup loses social status across all three lenses.: `/projects/islt/fr-original/v4-p2#p-96`
+- Robert de Saint-Loup gains social status across all three lenses.: `/projects/islt/fr-original/v3-p2#p-243`
+- Robert de Saint-Loup loses social status across all three lenses.: `/projects/islt/fr-original/v4-p2#p-95`
 - Robert de Saint-Loup gains inclusion standing across all three lenses.: `/projects/islt/fr-original/v3-p1#p-186`
 
 ## Albertine
@@ -139,9 +139,9 @@ Reading path:
 
 Notable units:
 
-- Albertine loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v6-p1#p-41`
+- Albertine loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v6-p1#p-37`
 - Albertine loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v6-p3#p-51`
-- Albertine loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v6-p1#p-31`
+- Albertine loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v6-p1#p-27`
 
 ## duchesse de Guermantes
 
@@ -185,7 +185,7 @@ Reading path:
 
 Notable units:
 
-- duchesse de Guermantes gains social status across all three lenses.: `/projects/islt/fr-original/v3-p2#p-411`
+- duchesse de Guermantes gains social status across all three lenses.: `/projects/islt/fr-original/v3-p2#p-400`
 - duchesse de Guermantes gains social status across all three lenses. Françoise loses overall standing across all three lenses.: `/projects/islt/fr-original/v3-p1#p-46`
 - duchesse de Guermantes gains social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-86`
 
@@ -231,9 +231,9 @@ Reading path:
 
 Notable units:
 
-- baron de Charlus gains inclusion standing across all three lenses. docteur Cottard loses overall standing across all three lenses.: `/projects/islt/fr-original/v4-p2#p-406`
-- baron de Charlus loses social status across all three lenses. duc de Guermantes loses social status across all three lenses.: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes#p-101`
-- baron de Charlus loses social status across all three lenses. Morel loses overall standing across all three lenses.: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre#p-31`
+- baron de Charlus gains inclusion standing across all three lenses. docteur Cottard loses overall standing across all three lenses.: `/projects/islt/fr-original/v4-p2#p-381`
+- baron de Charlus loses social status across all three lenses. duc de Guermantes loses social status across all three lenses.: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes#p-88`
+- baron de Charlus loses social status across all three lenses. Morel loses overall standing across all three lenses.: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre#p-25`
 
 ## Odette
 
@@ -277,9 +277,9 @@ Reading path:
 
 Notable units:
 
-- Odette loses inclusion standing across all three lenses. Mme Verdurin loses overall standing across all three lenses.: `/projects/islt/fr-original/v3-p1#p-686`
-- Odette gains social status across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-191`
-- Odette gains social status across all three lenses. Gilberte loses overall standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-326`
+- Odette loses inclusion standing across all three lenses. Mme Verdurin loses overall standing across all three lenses.: `/projects/islt/fr-original/v3-p1#p-683`
+- Odette gains social status across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-187`
+- Odette gains social status across all three lenses. Gilberte loses overall standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-315`
 
 ## le narrateur
 
@@ -325,8 +325,8 @@ Reading path:
 Notable units:
 
 - le narrateur loses inclusion standing across all three lenses. Swann loses rhetorical authority across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-26`
-- le narrateur loses inclusion standing across all three lenses. la grand-mère gains inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-220`
-- le narrateur loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-221`
+- le narrateur loses inclusion standing across all three lenses. la grand-mère gains inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-217`
+- le narrateur loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-218`
 
 ## Françoise
 
@@ -370,8 +370,8 @@ Reading path:
 
 Notable units:
 
-- Françoise loses overall standing across all three lenses. Legrandin loses overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-266`
-- Françoise loses overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-261`
+- Françoise loses overall standing across all three lenses. Legrandin loses overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-263`
+- Françoise loses overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-258`
 - Françoise gains overall standing across all three lenses. la mère du narrateur gains overall standing in advantage and prestige; shows mixed overall standing in inclusion.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-11`
 
 ## Mme de Villeparisis
@@ -416,9 +416,9 @@ Reading path:
 
 Notable units:
 
-- Mme de Villeparisis loses social status across all three lenses. Robert de Saint-Loup shows mixed overall standing across all three lenses.: `/projects/islt/fr-original/v3-p1#p-416`
-- Mme de Villeparisis gains social status across all three lenses. Norpois gains social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-431`
-- Mme de Villeparisis loses social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-846`
+- Mme de Villeparisis loses social status across all three lenses. Robert de Saint-Loup shows mixed overall standing across all three lenses.: `/projects/islt/fr-original/v3-p1#p-415`
+- Mme de Villeparisis gains social status across all three lenses. Norpois gains social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-430`
+- Mme de Villeparisis loses social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-842`
 
 ## la grand-mère
 
@@ -462,9 +462,9 @@ Reading path:
 
 Notable units:
 
-- la grand-mère gains overall standing across all three lenses. Françoise gains overall standing across all three lenses.: `/projects/islt/fr-original/v3-p2#p-91`
-- la grand-mère loses overall standing across all three lenses. la mère du narrateur gains overall standing across all three lenses.: `/projects/islt/fr-original/v3-p2#p-26`
-- la grand-mère gains overall standing across all three lenses. le narrateur gains emotional standing in advantage and prestige; shows mixed emotional standing in inclusion.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-36`
+- la grand-mère gains overall standing across all three lenses. Françoise gains overall standing across all three lenses.: `/projects/islt/fr-original/v3-p2#p-90`
+- la grand-mère loses overall standing across all three lenses. la mère du narrateur gains overall standing across all three lenses.: `/projects/islt/fr-original/v3-p2#p-25`
+- la grand-mère gains overall standing across all three lenses. le narrateur gains emotional standing in advantage and prestige; shows mixed emotional standing in inclusion.: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays#p-35`
 
 ## duc de Guermantes
 
@@ -508,9 +508,9 @@ Reading path:
 
 Notable units:
 
-- baron de Charlus loses social status across all three lenses. duc de Guermantes loses social status across all three lenses.: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes#p-101`
-- duc de Guermantes loses social status across all three lenses. duchesse de Guermantes loses overall standing across all three lenses.: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes#p-106`
-- duc de Guermantes gains social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-311`
+- baron de Charlus loses social status across all three lenses. duc de Guermantes loses social status across all three lenses.: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes#p-88`
+- duc de Guermantes loses social status across all three lenses. duchesse de Guermantes loses overall standing across all three lenses.: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes#p-93`
+- duc de Guermantes gains social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-310`
 
 ## Mme Verdurin
 
@@ -554,9 +554,9 @@ Reading path:
 
 Notable units:
 
-- Mme Verdurin loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v5#p-336`
-- Mme Verdurin gains social status across all three lenses. Gilberte gains inclusion standing across all three lenses.: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre#p-6`
-- Mme Verdurin gains social status across all three lenses. Odette loses overall standing in advantage and inclusion; shows mixed overall standing in prestige.: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes#p-36`
+- Mme Verdurin loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v5#p-312`
+- Mme Verdurin gains social status across all three lenses. Gilberte gains inclusion standing across all three lenses.: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre#p-5`
+- Mme Verdurin gains social status across all three lenses. Odette loses overall standing in advantage and inclusion; shows mixed overall standing in prestige.: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes#p-34`
 
 ## Bloch
 
@@ -600,9 +600,9 @@ Reading path:
 
 Notable units:
 
-- Bloch loses inclusion standing across all three lenses. Mme de Villeparisis loses social status in advantage and prestige; shows mixed social status in inclusion.: `/projects/islt/fr-original/v3-p1#p-676`
+- Bloch loses inclusion standing across all three lenses. Mme de Villeparisis loses social status in advantage and prestige; shows mixed social status in inclusion.: `/projects/islt/fr-original/v3-p1#p-674`
 - Bloch loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-161`
-- Bloch loses social status across all three lenses. marquis de Bréauté loses overall standing across all three lenses.: `/projects/islt/fr-original/v3-p2#p-446`
+- Bloch loses social status across all three lenses. marquis de Bréauté loses overall standing across all three lenses.: `/projects/islt/fr-original/v3-p2#p-435`
 
 ## Norpois
 
@@ -646,9 +646,9 @@ Reading path:
 
 Notable units:
 
-- Norpois loses overall standing across all three lenses. Swann loses overall standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-222`
-- Norpois loses rhetorical authority across all three lenses. Bergotte gains rhetorical authority across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-221`
-- Norpois gains rhetorical authority across all three lenses. docteur Cottard loses overall standing across all three lenses.: `/projects/islt/fr-original/v3-p1#p-726`
+- Norpois loses overall standing across all three lenses. Swann loses overall standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-217`
+- Norpois loses rhetorical authority across all three lenses. Bergotte gains rhetorical authority across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-216`
+- Norpois gains rhetorical authority across all three lenses. docteur Cottard loses overall standing across all three lenses.: `/projects/islt/fr-original/v3-p1#p-723`
 
 ## Gilberte
 
@@ -693,7 +693,7 @@ Reading path:
 Notable units:
 
 - Gilberte loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v6-p2#p-21`
-- Gilberte gains social status across all three lenses. Swann loses overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-201`
+- Gilberte gains social status across all three lenses. Swann loses overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-198`
 - Gilberte gains social status across all three lenses. Odette gains social status across all three lenses.: `/projects/islt/fr-original/v6-p2#p-16`
 
 ## la mère du narrateur
@@ -738,9 +738,9 @@ Reading path:
 
 Notable units:
 
-- la mère du narrateur gains overall standing across all three lenses. le narrateur loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-366`
-- la mère du narrateur gains emotional standing across all three lenses.: `/projects/islt/fr-original/v6-p3#p-66`
-- la mère du narrateur gains overall standing across all three lenses. le narrateur gains emotional standing across all three lenses.: `/projects/islt/fr-original/v4-p2#p-256`
+- la mère du narrateur gains overall standing across all three lenses. le narrateur loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-362`
+- la mère du narrateur gains emotional standing across all three lenses.: `/projects/islt/fr-original/v6-p3#p-65`
+- la mère du narrateur gains overall standing across all three lenses. le narrateur gains emotional standing across all three lenses.: `/projects/islt/fr-original/v4-p2#p-246`
 
 ## docteur Cottard
 
@@ -785,8 +785,8 @@ Reading path:
 Notable units:
 
 - docteur Cottard loses overall standing across all three lenses. M. Verdurin loses overall standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-41`
-- docteur Cottard gains overall standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-116`
-- docteur Cottard gains overall standing across all three lenses. le narrateur loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-114`
+- docteur Cottard gains overall standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-114`
+- docteur Cottard gains overall standing across all three lenses. le narrateur loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-112`
 
 ## Bergotte
 
@@ -830,9 +830,9 @@ Reading path:
 
 Notable units:
 
-- Bergotte loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-77`
-- Bergotte gains social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-491`
-- Bloch loses inclusion standing across all three lenses. Bergotte gains overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-186`
+- Bergotte loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-76`
+- Bergotte gains social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-489`
+- Bloch loses inclusion standing across all three lenses. Bergotte gains overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-184`
 
 ## Mme de Cambremer
 
@@ -878,7 +878,7 @@ Notable units:
 
 - Mme de Cambremer loses social status across all three lenses.: `/projects/islt/fr-original/v3-p1#p-76`
 - marquise de Saint-Euverte loses social status across all three lenses. Mme de Cambremer loses inclusion standing across all three lenses.: `/projects/islt/fr-original/v4-p2#p-61`
-- Mme de Cambremer loses overall standing across all three lenses. duc de Guermantes loses overall standing in advantage; shows mixed overall standing in inclusion and prestige.: `/projects/islt/fr-original/v3-p1#p-606`
+- Mme de Cambremer loses overall standing across all three lenses. duc de Guermantes loses overall standing in advantage; shows mixed overall standing in inclusion and prestige.: `/projects/islt/fr-original/v3-p1#p-604`
 
 ## Legrandin
 
@@ -922,9 +922,9 @@ Reading path:
 
 Notable units:
 
-- Legrandin gains social status across all three lenses. le narrateur gains inclusion standing across all three lenses.: `/projects/islt/fr-original/v6-p4#p-6`
-- Legrandin loses overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-271`
-- Legrandin loses overall standing across all three lenses. la grand-mère gains overall standing in advantage; shows mixed overall standing in inclusion and prestige.: `/projects/islt/fr-original/v1-p1-combray#p-281`
+- Legrandin gains social status across all three lenses. le narrateur gains inclusion standing across all three lenses.: `/projects/islt/fr-original/v6-p4#p-5`
+- Legrandin loses overall standing across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-267`
+- Legrandin loses overall standing across all three lenses. la grand-mère gains overall standing in advantage; shows mixed overall standing in inclusion and prestige.: `/projects/islt/fr-original/v1-p1-combray#p-277`
 
 ## M. Vinteuil
 
@@ -968,6 +968,6 @@ Reading path:
 
 Notable units:
 
-- M. Vinteuil loses social status across all three lenses. Swann loses social status across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-311`
-- M. Vinteuil gains overall standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-530`
-- M. Vinteuil gains overall standing across all three lenses. Swann loses emotional standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-531`
+- M. Vinteuil loses social status across all three lenses. Swann loses social status across all three lenses.: `/projects/islt/fr-original/v1-p1-combray#p-307`
+- M. Vinteuil gains overall standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-527`
+- M. Vinteuil gains overall standing across all three lenses. Swann loses emotional standing across all three lenses.: `/projects/islt/fr-original/v1-p2-un-amour-de-swann#p-528`
