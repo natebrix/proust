@@ -1,0 +1,67 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["votre ami", "Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Mme Verdurin",
+      "surface_forms": ["Mme Verdurin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "M. Verdurin",
+      "surface_forms": ["M. Verdurin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "Mme Verdurin",
+      "target": "Swann",
+      "type": "praise",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.85,
+      "evidence": "\"Il est simple, charmant ; si vous n'avez jamais à nous présenter que des amis comme cela, vous pouvez les amener.\"",
+      "explanation": "Mme Verdurin directly praises Swann to Odette and explicitly welcomes his return to the salon, a positive appraisal reported without narrator commentary."
+    },
+    {
+      "event_id": "E2",
+      "source": "M. Verdurin",
+      "target": "Swann",
+      "type": "blame",
+      "polarity": "negative",
+      "narrative_stance": "ironized",
+      "confidence": 0.65,
+      "evidence": "M. Verdurin fit remarquer que pourtant Swann n'avait pas apprécié la tante du pianiste.",
+      "explanation": "M. Verdurin counters his wife's praise with a pointed criticism of Swann's failure to appreciate a member of the clan; the prior context (M. Verdurin unable to match his wife's amiability) frames this correction as a deflating substitute rather than a neutral fact."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.82,
+      "explanation": "Swann is locally elevated by Mme Verdurin's explicit compliment and open invitation to return, marking approval by the salon's hostess."
+    },
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.6,
+      "explanation": "M. Verdurin's corrective remark mildly qualifies the preceding praise by pointing out a specific social lapse on Swann's part."
+    }
+  ],
+  "ambiguities": [
+    "M. Verdurin's remark could be read as a neutral factual correction or, given the immediately preceding context about his inability to match his wife's amiability, as a subtly petty deflation of her praise; this affects whether the narrative_stance should be read as ironized or neutral_report."
+  ]
+}
