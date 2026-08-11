@@ -5,7 +5,12 @@ notes: 'Single source of truth for character identity. Layers merged: root alias
   and all review_questions await Nathan''s decision. Scope grammar and safety rules: see proust/registry.py
   docstring. Ruling 2026-08-11: family-possessive surface forms (ma grand''mère, maman, mon
   père, etc.) are resolution-only knowledge — scope mention_only, rewrite never, scan false;
-  never scan evidence, never a rewrite target.'
+  never scan evidence, never a rewrite target. Ruling 2026-08-11 (registry-audit v2 candidates):
+  absorbed 30 recurring named characters from outputs/character-registry-audit-v2.md section E
+  (count>=8, plus M. d''Argencourt confirmed via A/B) as status=proposed entities, plus surface
+  forms attached to seven already-existing entities; see individual entity notes for
+  consolidations, the Cambremer dowager ambiguity, and the Froberville colonel/général
+  review:true case.'
 known_source_issues:
 - whitespace in row 'M. de Guermantes' -> 'duc de Guermantes '
 - 'excluded row ''Mme Octave'' -> ''Octave'': Mme Octave is tante Léonie (Combray), not Octave
@@ -1139,6 +1144,15 @@ entities:
     scan: true
     sources:
     - annotation_surface_forms(2x)
+  - form: marquise de Saint-Loup
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+    notes: 'Registry-audit candidate 2026-08 (count 8), Gilberte''s title after her marriage
+      to Robert de Saint-Loup (late-era, per the batch ruling); attached to this existing entity
+      rather than creating a new one.'
 - id: general-de-froberville
   display_name: général de Froberville
   status: confirmed
@@ -1772,6 +1786,11 @@ entities:
   status: confirmed
   annotation_names:
   - marquis de Bréauté
+  notes: 'Ruling 2026-08-11 (registry-audit v2 candidates): ''M. de Bréauté'' (audit candidate,
+    count 53 -- the highest-count gap in the audit) is the same man under his common address
+    form; attached here rather than as a new entity even though it is not among the consolidations
+    explicitly enumerated in the batch ruling, to avoid registering a duplicate for an
+    already-confirmed entity.'
   surface_forms:
   - form: marquis de Bréauté
     scope: global
@@ -1798,6 +1817,12 @@ entities:
     scan: true
     sources:
     - run_maps(491 runs)
+  - form: M. de Bréauté
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
 - id: marquis-de-cambremer
   display_name: marquis de Cambremer
   status: confirmed
@@ -1921,6 +1946,14 @@ entities:
     scan: true
     sources:
     - run_maps(491 runs)
+  - form: Mme de Sainte-Euverte
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+    notes: 'Registry-audit candidate 2026-08 (count 14); spelling variant of the existing
+      marquise de Saint-Euverte entity.'
 - id: mlle-d-eporcheville
   display_name: Mlle d'Éporcheville
   status: confirmed
@@ -2011,6 +2044,11 @@ entities:
   status: confirmed
   annotation_names:
   - Mme de Cambremer
+  notes: 'Ruling 2026-08-11 (registry-audit v2 candidates): the audit candidate ''marquise de
+    Cambremer'' (count 11) is ambiguous between this entity (nee Legrandin, the marquis''s wife)
+    and his mother, the dowager marquise -- see the new la-marquise-douairiere-de-cambremer
+    entity. The shared surface form is added to both entities and deliberately resolves as
+    ambiguous rather than guessed, per registry semantics.'
   surface_forms:
   - form: Mme de Cambremer
     scope: global
@@ -2033,6 +2071,14 @@ entities:
     scan: true
     sources:
     - annotation_surface_forms(6x)
+  - form: marquise de Cambremer
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+    notes: ambiguous with la-marquise-douairiere-de-cambremer's identical global form; see that
+      entity's review_questions
 - id: mme-de-chaussepierre
   display_name: Mme de Chaussepierre
   status: confirmed
@@ -2118,6 +2164,15 @@ entities:
     scan: false
     sources:
     - annotation_surface_forms(4x)
+  - form: tante Villeparisis
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+    notes: 'Registry-audit candidate 2026-08 (count 7, admitted below the count>=8 threshold per
+      the batch ruling since it attaches to an already-existing entity). Saint-Loup''s form of
+      address for his great-aunt.'
 - id: mme-poncin
   display_name: Mme Poncin
   status: confirmed
@@ -2488,6 +2543,14 @@ entities:
     - annotations
     - run_maps(489 runs)
     - annotation_surface_forms(12x)
+  - form: Mme de Parme
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+    notes: 'Registry-audit candidate 2026-08 (count 9); attaches to the existing princesse de
+      Parme entity.'
 - id: saint-loup
   display_name: Robert de Saint-Loup
   status: confirmed
@@ -2559,6 +2622,14 @@ entities:
     scan: true
     sources:
     - annotation_surface_forms(2x)
+  - form: marquis de Saint-Loup
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+    notes: 'Registry-audit candidate 2026-08 (count 16), short form of his existing marquis de
+      Saint-Loup-en-Bray title; attached per the batch ruling rather than creating a new entity.'
 - id: saniette
   display_name: Saniette
   status: confirmed
@@ -2616,3 +2687,439 @@ entities:
     scan: true
     sources:
     - annotation_surface_forms(2x)
+- id: m-d-argencourt
+  display_name: M. d'Argencourt
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 47); confirmed via A/B review. Faubourg
+    Saint-Germain habitue, part of the Guermantes salon set.'
+  surface_forms:
+  - form: M. d'Argencourt
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+    - A/B review
+- id: mme-d-arpajon
+  display_name: Mme d'Arpajon
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 38). Guermantes-salon figure, briefly the
+    duc de Guermantes'' mistress.'
+  surface_forms:
+  - form: Mme d'Arpajon
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-de-surgis
+  display_name: Mme de Surgis
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 34). Mme de Surgis-le-Duc; mother of two sons
+    Charlus courts at the Guermantes soiree.'
+  surface_forms:
+  - form: Mme de Surgis
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-leroi
+  display_name: Mme Leroi
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 28). Arbiter of Faubourg Saint-Germain taste,
+    frequently discussed in the Guermantes salon.'
+  surface_forms:
+  - form: Mme Leroi
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: comtesse-mole
+  display_name: comtesse Molé
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08: consolidates ''comtesse Molé'' (count 21) and
+    ''Mme Molé'' (count 18) as one entity, same person under different address forms. Late-era
+    society hostess praised by Charlus.'
+  surface_forms:
+  - form: comtesse Molé
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+  - form: Mme Molé
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-de-souvre
+  display_name: Mme de Souvré
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 19). Guermantes-salon figure noted for her
+    noncommittal politeness.'
+  surface_forms:
+  - form: Mme de Souvré
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-putbus
+  display_name: Mme Putbus
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08: consolidates ''Mme Putbus'' (count 18) and
+    ''baronne Putbus'' (count 8) as one entity, same person. Never appears on stage; famous
+    only as the mistress of her lady''s maid, an object of the narrator''s and Saint-Loup''s
+    desire.'
+  surface_forms:
+  - form: Mme Putbus
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+  - form: baronne Putbus
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-goupil
+  display_name: Mme Goupil
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 16). Combray notable, watched from the
+    church pew.'
+  surface_forms:
+  - form: Mme Goupil
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: docteur-du-boulbon
+  display_name: docteur du Boulbon
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 12). Nerve specialist consulted about the
+    grandmother''s illness; distinct from the existing docteur Cottard entity.'
+  surface_forms:
+  - form: docteur du Boulbon
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-de-franquetot
+  display_name: Mme de Franquetot
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 11). Guermantes-salon and Sainte-Euverte
+    soiree figure.'
+  surface_forms:
+  - form: Mme de Franquetot
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-de-montmorency
+  display_name: Mme de Montmorency
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08: consolidates ''Mme de Montmorency'' (count 11) and
+    ''duchesse de Montmorency'' (count 6) as one entity, same person.'
+  surface_forms:
+  - form: Mme de Montmorency
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+  - form: duchesse de Montmorency
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-de-mortemart
+  display_name: Mme de Mortemart
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 11). Guermantes-salon figure.'
+  surface_forms:
+  - form: Mme de Mortemart
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mlle-de-saint-loup
+  display_name: Mlle de Saint-Loup
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 11). Daughter of Robert de Saint-Loup and
+    Gilberte; a real in-novel character (Le Temps retrouve), not a mention-only reference.'
+  surface_forms:
+  - form: Mlle de Saint-Loup
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: docteur-percepied
+  display_name: docteur Percepied
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 10). Combray family doctor; drives the
+    narrator past the Martinville steeples.'
+  surface_forms:
+  - form: docteur Percepied
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: m-bontemps
+  display_name: M. Bontemps
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 10). Albertine''s uncle, a ministry official;
+    distinct from the existing Mme Bontemps entity (his wife, Albertine''s aunt/guardian).'
+  surface_forms:
+  - form: M. Bontemps
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-de-valcourt
+  display_name: Mme de Valcourt
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 9). Guermantes-salon figure.'
+  surface_forms:
+  - form: Mme de Valcourt
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: duc-de-chartres
+  display_name: duc de Chartres
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 8). Named guest at Guermantes receptions;
+    real Orleans-family royalty, but not among the mention-only reference figures explicitly
+    named in this batch''s ruling (unlike duc d''Aumale), so admitted as a regular entity per
+    the count threshold -- flagged in the task report as a judgment call.'
+  surface_forms:
+  - form: duc de Chartres
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-blatin
+  display_name: Mme Blatin
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 8). Formidable Balbec-hotel acquaintance of
+    the grandmother.'
+  surface_forms:
+  - form: Mme Blatin
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: capitaine-de-borodino
+  display_name: capitaine de Borodino
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08: consolidates ''capitaine de Borodino'' (count 8) and
+    ''M. de Borodino'' (count 5) as one entity, same person -- a Doncieres regiment officer
+    known by rank and by hereditary title. ''prince de Borodino'' (his formal title, per task
+    ruling) added as a third surface form though it did not itself surface as an audit
+    candidate.'
+  surface_forms:
+  - form: capitaine de Borodino
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+  - form: M. de Borodino
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+  - form: prince de Borodino
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - task ruling 2026-08
+    notes: hereditary title form; not independently audited as a candidate
+- id: m-de-grouchy
+  display_name: M. de Grouchy
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 8). Named guest of the Faubourg Saint-Germain
+    set.'
+  surface_forms:
+  - form: M. de Grouchy
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: princesse-d-epinay
+  display_name: princesse d'Épinay
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 8). Guermantes-salon figure.'
+  surface_forms:
+  - form: princesse d'Épinay
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: mme-de-varambon
+  display_name: Mme de Varambon
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 8). Princesse de Parme''s lady-in-waiting,
+    known for the running melon-metaphor joke.'
+  surface_forms:
+  - form: Mme de Varambon
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: duc-de-brabant
+  display_name: duc de Brabant
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 8). Named guest at Guermantes receptions; real
+    Belgian-royalty title, but not among the mention-only reference figures explicitly named in
+    this batch''s ruling, so admitted as a regular entity per the count threshold -- flagged in
+    the task report as a judgment call. Distinct from ''Geneviève de Brabant'', the legendary
+    magic-lantern figure already in the registry (genevieve entity).'
+  surface_forms:
+  - form: duc de Brabant
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: princesse-de-caprarola
+  display_name: princesse de Caprarola
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 8). Fashionable rival hostess discussed in
+    the Guermantes salon.'
+  surface_forms:
+  - form: princesse de Caprarola
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: colonel-de-froberville
+  display_name: colonel de Froberville
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08: consolidates ''M. de Froberville'' (count 6) and
+    ''colonel de Froberville'' (count 5). général de Froberville already exists as a confirmed
+    entity; kept as a separate entity per the task ruling (the novel appears to distinguish the
+    général from a colonel cousin) but linked with review:true since the generic honorific
+    ''M. de Froberville'' could in principle denote either man and the family relation is not
+    independently verified here.'
+  same_person_links:
+  - entity: general-de-froberville
+    relation: 'possibly a cousin sharing the family name, or the same man referred to by a
+      different rank in some mentions -- unresolved'
+    policy: keep_separate
+    review: true
+  surface_forms:
+  - form: colonel de Froberville
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+  - form: M. de Froberville
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: la-marquise-douairiere-de-cambremer
+  display_name: la marquise douairière de Cambremer
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08: ''marquise de Cambremer'' (count 11) is ambiguous
+    between the existing mme-de-cambremer entity (nee Legrandin, the marquis''s wife) and the
+    marquis''s mother, the dowager marquise. No dowager entity previously existed; created here
+    per task ruling. The shared surface form ''marquise de Cambremer'' is also added to
+    mme-de-cambremer and is deliberately left to resolve as ambiguous per registry semantics
+    rather than guessed.'
+  review_questions:
+  - 'Disambiguate ''marquise de Cambremer'' per-mention between this dowager entity and
+    mme-de-cambremer; the registry currently surfaces it as ambiguous by design.'
+  surface_forms:
+  - form: marquise de Cambremer
+    scope: global
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+    notes: ambiguous with mme-de-cambremer's identical global form; see this entity's
+      review_questions
+- id: mme-de-sevigne
+  display_name: Mme de Sévigné
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08: consolidates ''Mme de Sévigné'' (count 36) and
+    ''Madame de Sévigné'' (count 8). Referenced figure, association source; not a scene
+    participant by default -- the grandmother''s favorite letter-writer, quoted throughout as
+    a touchstone.'
+  surface_forms:
+  - form: Mme de Sévigné
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+  - form: Madame de Sévigné
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: princesse-mathilde
+  display_name: princesse Mathilde
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 9). Referenced figure, association source;
+    not a scene participant by default -- real historical Bonapartist salonniere, discussed
+    (e.g. by M. de Norpois) rather than staged.'
+  surface_forms:
+  - form: princesse Mathilde
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: duc-d-aumale
+  display_name: duc d'Aumale
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 13). Referenced figure, association source;
+    not a scene participant by default -- real historical Orleans prince, invoked as a point of
+    social/artistic reference.'
+  surface_forms:
+  - form: duc d'Aumale
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
+- id: m-de-chateaubriand
+  display_name: M. de Chateaubriand
+  status: proposed
+  notes: 'Registry-audit candidate 2026-08 (count 6; admitted below the count>=8 threshold per
+    explicit task ruling). Referenced figure, association source; not a scene participant by
+    default -- writer quoted/invoked as a literary touchstone.'
+  surface_forms:
+  - form: M. de Chateaubriand
+    scope: mention_only
+    rewrite: never
+    scan: true
+    sources:
+    - registry-audit candidates 2026-08
