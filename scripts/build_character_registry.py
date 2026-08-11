@@ -574,7 +574,22 @@ def build(repo: Path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=REPO)
+    parser.add_argument(
+        "--force-bootstrap",
+        action="store_true",
+        help="overwrite an existing characters.yaml (DESTROYS hand-applied rulings)",
+    )
     args = parser.parse_args()
+
+    existing = args.repo / "characters.yaml"
+    if existing.exists() and not args.force_bootstrap:
+        raise SystemExit(
+            "characters.yaml already exists and is the source of truth: reviewed "
+            "rulings (2026-08-11) live in the YAML, not in this script's OVERLAY. "
+            "Re-running this bootstrap would silently revert them. Edit "
+            "characters.yaml directly, or pass --force-bootstrap if you truly "
+            "mean to regenerate from the legacy layers."
+        )
 
     ordered, csv_issues = build(args.repo)
     payload = {
