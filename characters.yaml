@@ -3,7 +3,9 @@ generated_by: scripts/build_character_registry.py
 notes: 'Single source of truth for character identity. Layers merged: root aliases.csv, per-run
   alias maps, annotation usage, plus a hand-authored overlay. status=proposed/review entries
   and all review_questions await Nathan''s decision. Scope grammar and safety rules: see proust/registry.py
-  docstring.'
+  docstring. Ruling 2026-08-11: family-possessive surface forms (ma grand''mère, maman, mon
+  père, etc.) are resolution-only knowledge — scope mention_only, rewrite never, scan false;
+  never scan evidence, never a rewrite target.'
 known_source_issues:
 - whitespace in row 'M. de Guermantes' -> 'duc de Guermantes '
 - 'excluded row ''Mme Octave'' -> ''Octave'': Mme Octave is tante Léonie (Combray), not Octave
@@ -17,11 +19,9 @@ known_source_issues:
 entities:
 - id: amie-de-mlle-vinteuil
   display_name: l'amie de Mlle Vinteuil
-  status: review
-  notes: Genuinely unnamed but individuated and consequential; the named-characters-only rule
-    needs a decision for her.
-  review_questions:
-  - Admit descriptor-identified recurring figures as entities (mention-only, never rewritten)?
+  status: confirmed
+  notes: 'Genuinely unnamed but individuated and consequential. Ruling 2026-08-11: admitted as
+    an entity — reviewed case-by-case; descriptor-identified; mention-only.'
   surface_forms:
   - form: l'amie de Mlle Vinteuil
     scope: mention_only
@@ -31,17 +31,20 @@ entities:
     - overlay
 - id: le-peintre
   display_name: le peintre
-  status: review
+  status: confirmed
   annotation_names:
   - le peintre
+  notes: 'Ruling 2026-08-11: person-view merges into Elstir via same_person_links (policy
+    person_view_merge); this name-view entity is kept separate by construction so the novel''s
+    revelation (''le peintre'' IS Elstir) stays visible rather than being flattened.'
+  eras:
+  - name: le peintre
+    note: Verdurin-salon era (Un amour de Swann); pre-revelation identity of Elstir
   same_person_links:
   - entity: elstir
     relation: '''le peintre'' of the Verdurin salon is Elstir pre-revelation'
     policy: person_view_merge
-    review: true
-  review_questions:
-  - Merge the 29-match 'le peintre' standings row into Elstir (person view), keep split (name
-    view), or both via era ledger?
+    review: false
   surface_forms:
   - form: le peintre
     scope: context:verdurin-salon
@@ -64,36 +67,36 @@ entities:
     - run_maps(503 runs)
 - id: m-de-marsantes
   display_name: M. de Marsantes
-  status: review
+  status: confirmed
   annotation_names:
   - M. de Marsantes
-  notes: Robert's father, dead before the novel opens; legitimate only as posthumous/associational
-    mention.
-  review_questions:
-  - 'Audit adjudicates the 4 unit-annotations listing him present: genuine posthumous mentions
-    vs substituted Mme de Marsantes.'
+  notes: 'Robert''s father, dead before the novel opens; posthumous-mention-only, NEVER a scene
+    participant. Ruling 2026-08-11 closes the audit''s 4-unit adjudication question without
+    re-annotating those units: they belong to the legacy pipeline, and legacy units die with
+    the legacy corpus (text rewriting is dead under prompt v2 regardless).'
   surface_forms:
   - form: M. de Marsantes
-    scope: global
-    rewrite: allow
+    scope: mention_only
+    rewrite: never
     scan: true
     sources:
     - overlay
     - run_maps(428 runs)
     - annotation_surface_forms(4x)
   - form: Marsantes
-    scope: global
-    rewrite: allow
+    scope: mention_only
+    rewrite: never
     scan: true
     sources:
     - run_maps(428 runs)
     - annotation_surface_forms(2x)
   - form: Saint-Loup de Saint-Loup
-    scope: global
-    rewrite: allow
+    scope: mention_only
+    rewrite: never
     scan: true
     sources:
     - run_maps(428 runs)
+    notes: legacy alias artifact; kept mention-only, never rewrite
 - id: octave
   display_name: Octave
   status: review
@@ -113,19 +116,21 @@ entities:
     - overlay
 - id: prince-des-laumes
   display_name: prince des Laumes
-  status: review
+  status: confirmed
   annotation_names:
   - prince des Laumes
-  notes: Era identity of the future duc de Guermantes (Un amour de Swann). Kept split to mirror
-    the current annotation corpus.
+  notes: 'Era identity of the future duc de Guermantes (Un amour de Swann). Ruling 2026-08-11
+    keeps the era ledger split (name-view preserved by construction) with an explicit
+    person_view_merge link to duc-de-guermantes for person-view aggregation.'
+  eras:
+  - name: prince des Laumes
+    note: 'until his father, the old duc de Guermantes, dies (early in the corpus); the era
+      boundary is interpretive — chapter-level granularity only'
   same_person_links:
   - entity: duc-de-guermantes
     relation: same person, pre-succession title
     policy: person_view_merge
-    review: true
-  review_questions:
-  - Merge into duc de Guermantes to match the accepted princesse-des-Laumes precedent, or
-    keep the era ledger split?
+    review: false
   surface_forms:
   - form: prince des Laumes
     scope: global
@@ -143,17 +148,24 @@ entities:
     notes: Laumes-era address form (Un amour de Swann)
 - id: princesse-de-guermantes
   display_name: princesse de Guermantes
-  status: review
+  status: confirmed
   annotation_names:
   - princesse de Guermantes
+  notes: 'Marie-Gilbert, princesse de Guermantes in her own right. Ruling 2026-08-11: her era
+    ends with her death; the title later passes to Mme Verdurin by remarriage — a different
+    person holding the same title, not a same-person merge (policy keep_separate). In the Le
+    Temps retrouvé matinée, the bare form "princesse de Guermantes" is genuinely ambiguous
+    between the two entities; the registry surfaces that as an ambiguous resolution (see
+    mme-verdurin''s chapter-scoped form of the same text) rather than guessing.'
+  eras:
+  - name: princesse de Guermantes
+    note: ends with her death, before Le Temps retrouvé; see same_person_links
   same_person_links:
   - entity: mme-verdurin
-    relation: the post-V7 princesse de Guermantes IS Mme Verdurin after her remarriage
+    relation: 'the post-V7 princesse de Guermantes title is held by Mme Verdurin after her
+      remarriage; same title, different person'
     policy: keep_separate
-    review: true
-  review_questions:
-  - Split by era (Marie-Gilbert vs Verdurin-era) or key standings on person with a name-era
-    ledger? Current standings row may blend the two people.
+    review: false
   surface_forms:
   - form: princesse de Guermantes
     scope: global
@@ -163,6 +175,8 @@ entities:
     - overlay
     - run_maps(346 runs)
     - annotation_surface_forms(8x)
+    notes: 'ambiguous with Mme Verdurin''s chapter-scoped form of the same text in the Le Temps
+      retrouvé matinée (v7-p3/v7-p4) — resolves to "ambiguous" there by design, not guessed'
   - form: Marie-Gilbert
     scope: mention_only
     rewrite: never
@@ -210,14 +224,15 @@ entities:
   status: proposed
   annotation_names:
   - duc de Guermantes
-  review_questions:
-  - Annotations also use canonical 'prince des Laumes' (separate provisional standings row,
-    4 matches). Same person, earlier title — merge to match the accepted princesse-des-Laumes
-    precedent?
+  notes: 'Ruling 2026-08-11: kept separate from prince-des-laumes (name-view); linked via
+    same_person_links on that entity (policy person_view_merge, review false) for person-view
+    aggregation.'
   eras:
   - name: prince des Laumes
-    note: see the prince-des-laumes era entity
+    note: 'see the prince-des-laumes era entity; ends when his father, the old duc de Guermantes,
+      dies'
   - name: duc de Guermantes
+    note: begins after his father dies
   surface_forms:
   - form: duc de Guermantes
     scope: global
@@ -441,9 +456,9 @@ entities:
     sources:
     - overlay
   - form: ma tante Léonie
-    scope: global
+    scope: mention_only
     rewrite: never
-    scan: true
+    scan: false
     sources:
     - overlay
   - form: Mme Octave
@@ -972,9 +987,13 @@ entities:
   annotation_names:
   - Elstir
   eras:
+  - name: le peintre
+    note: 'see le-peintre entity (Verdurin-salon era, Un amour de Swann); person_view_merge
+      target'
   - name: M. Biche / Tiche
     note: Verdurin salon period
   - name: Elstir
+    note: revealed era, Balbec onward
   surface_forms:
   - form: Elstir
     scope: global
@@ -1227,16 +1246,16 @@ entities:
     - overlay
     - run_maps(444 runs)
   - form: ma grand-mère
-    scope: global
+    scope: mention_only
     rewrite: never
-    scan: true
+    scan: false
     sources:
     - overlay
     - run_maps(444 runs)
   - form: ma grand'mère
-    scope: global
+    scope: mention_only
     rewrite: never
-    scan: true
+    scan: false
     sources:
     - overlay
     - run_maps(2 runs)
@@ -1261,7 +1280,7 @@ entities:
     sources:
     - run_maps(2 runs)
   - form: ma grand-mere
-    scope: global
+    scope: mention_only
     rewrite: never
     scan: false
     sources:
@@ -1316,16 +1335,16 @@ entities:
     sources:
     - overlay
   - form: maman
-    scope: global
+    scope: mention_only
     rewrite: never
-    scan: true
+    scan: false
     sources:
     - overlay
     - run_maps(519 runs)
   - form: ma mère
-    scope: global
+    scope: mention_only
     rewrite: never
-    scan: true
+    scan: false
     sources:
     - overlay
     - run_maps(521 runs)
@@ -1336,9 +1355,9 @@ entities:
     sources:
     - run_maps(2 runs)
   - form: Maman
-    scope: global
-    rewrite: allow
-    scan: true
+    scope: mention_only
+    rewrite: never
+    scan: false
     sources:
     - annotation_surface_forms(3x)
 - id: la-reine-de-naples
@@ -1385,9 +1404,9 @@ entities:
     sources:
     - overlay
   - form: mon grand-père
-    scope: global
+    scope: mention_only
     rewrite: never
-    scan: true
+    scan: false
     sources:
     - overlay
     - run_maps(2 runs)
@@ -1398,7 +1417,7 @@ entities:
     sources:
     - overlay
   - form: mon grand-pere
-    scope: global
+    scope: mention_only
     rewrite: never
     scan: false
     sources:
@@ -1436,7 +1455,7 @@ entities:
     sources:
     - run_maps(6 runs)
   - form: mon fils
-    scope: global
+    scope: mention_only
     rewrite: never
     scan: false
     sources:
@@ -1485,20 +1504,20 @@ entities:
     sources:
     - overlay
   - form: mon père
-    scope: global
+    scope: mention_only
     rewrite: never
-    scan: true
+    scan: false
     sources:
     - overlay
     - run_maps(440 runs)
   - form: Monsieur votre père
-    scope: global
-    rewrite: allow
-    scan: true
+    scope: mention_only
+    rewrite: never
+    scan: false
     sources:
     - run_maps(2 runs)
   - form: votre père
-    scope: global
+    scope: mention_only
     rewrite: never
     scan: false
     sources:
@@ -2127,7 +2146,9 @@ entities:
   - name: Mme Verdurin
   - name: duchesse de Duras
   - name: princesse de Guermantes
-    note: see same_person_links
+    note: 'Le Temps retrouvé matinée, after her second remarriage; title also held earlier by
+      a different person (see princesse-de-guermantes entity, same_person_links, policy
+      keep_separate)'
   surface_forms:
   - form: Mme Verdurin
     scope: global
@@ -2152,6 +2173,16 @@ entities:
     sources:
     - overlay
     - run_maps(12 runs)
+  - form: princesse de Guermantes
+    scope: chapters:v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle,v7-p4-le-bal-de-tetes
+    rewrite: never
+    scan: true
+    sources:
+    - overlay
+    notes: 'Ruling 2026-08-11: late-era title, gained by remarriage. Deliberately overlaps with
+      the princesse-de-guermantes entity''s global form of the same text — resolver returns
+      "ambiguous" for this string in these chapters rather than guessing, per registry
+      semantics; exact per-mention disambiguation was judged too hard to encode structurally.'
 - id: morel
   display_name: Morel
   status: confirmed
@@ -2356,9 +2387,9 @@ entities:
     - overlay
     - run_maps(491 runs)
   - form: mon oncle Adolphe
-    scope: global
+    scope: mention_only
     rewrite: never
-    scan: true
+    scan: false
     sources:
     - overlay
     - run_maps(491 runs)
