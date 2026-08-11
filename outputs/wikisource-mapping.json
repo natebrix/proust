@@ -1,0 +1,357 @@
+{
+  "fetched_at": "2026-08-11T21:28:06Z",
+  "source": "https://fr.wikisource.org/w/api.php",
+  "method_notes": "Fetched action=parse&prop=text|templates for all 24 candidate Wikisource pages, and action=query&prop=revisions|info for provenance. Verified chapter boundaries by extracting plain text (HTML tags/pagenum-spans/header-footer nav stripped) and locating our current chapters' first/last paragraph text (data/islt/editions/fr-original/chapters/<id>.json) as substrings, using distinctive multi-word phrases (apostrophe/quote-style differs: our source uses straight quotes, Wikisource uses U+2019/guillemets — this is a known transcription difference, not a content mismatch). scan_backed=true for all 24 pages (all transclude Page: namespace content per templates list, ns=104).",
+  "chapters": [
+    {
+      "canonical_id": "v1-p1-combray",
+      "pages": [
+        {
+          "title": "Du côté de chez Swann/Partie 1",
+          "revid": 4966056,
+          "timestamp": "2015-02-17T14:18:19Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "1:1 with Wikisource page. Scan: Gallimard 1946 (tome 1, p.10-251) — the revised NRF 'édition définitive'. First/last paragraph text verified verbatim-equivalent (only apostrophe-style/typographic differences) against our current chapter file."
+    },
+    {
+      "canonical_id": "v1-p2-un-amour-de-swann",
+      "pages": [
+        {
+          "title": "Du côté de chez Swann/Partie 2",
+          "revid": 6010454,
+          "timestamp": "2016-07-02T15:30:58Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "1:1 with Wikisource page. Same djvu source as Partie 1 (Gallimard 1946 tome 1). Start/end verified verbatim-equivalent."
+    },
+    {
+      "canonical_id": "v1-p3-noms-de-pays-le-nom",
+      "pages": [
+        {
+          "title": "Du côté de chez Swann/Partie 3",
+          "revid": 4966058,
+          "timestamp": "2015-02-17T14:18:48Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "1:1 with Wikisource page. NOTE edition mismatch within the volume: this page is scanned from the 1919 original NRF edition (tome 2, p.221-281), NOT the 1946 Gallimard scan used for Partie 1/2 of the same volume — see volume-level notes."
+    },
+    {
+      "canonical_id": "v2-p1-autour-de-mme-swann",
+      "pages": [
+        {
+          "title": "À l’ombre des jeunes filles en fleurs/Première partie",
+          "revid": 3939419,
+          "timestamp": "2013-02-22T20:55:19Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        },
+        {
+          "title": "À l’ombre des jeunes filles en fleurs/Deuxième partie",
+          "revid": 14982744,
+          "timestamp": "2025-03-12T10:16:41Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": "...à me revoir causant ainsi avec Mme Swann, sous son ombrelle, comme sous le reflet d’un berceau de glycines."
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "IMPORTANT: Wikisource's own 'Première/Deuxième/Troisième partie' page split does NOT align with the novel's actual two named parts (Autour de Mme Swann / Noms de pays: le pays). The real part boundary falls INSIDE the 'Deuxième partie' Wikisource page. Verified verbatim: our chapter's last paragraph ('...comme sous le reflet d'un berceau de glycines.') is found character-for-character (mod. apostrophe style) as paragraph in the middle of the Wikisource 'Deuxième partie' page, immediately followed by 'J'étais arrivé à une presque complète indifférence à l'égard de Gilberte...' which begins v2-p2. A section-break marker (⁂) sits exactly at this boundary in the Wikisource wikitext, confirming it is a genuine authorial part break, just not reflected in Wikisource's page-title split."
+    },
+    {
+      "canonical_id": "v2-p2-noms-de-pays-le-pays",
+      "pages": [
+        {
+          "title": "À l’ombre des jeunes filles en fleurs/Deuxième partie",
+          "revid": 14982744,
+          "timestamp": "2025-03-12T10:16:41Z",
+          "scan_backed": true,
+          "from_anchor": "J’étais arrivé à une presque complète indifférence à l’égard de Gilberte, quand deux ans plus tard",
+          "to_anchor": null
+        },
+        {
+          "title": "À l’ombre des jeunes filles en fleurs/Troisième partie",
+          "revid": 2222082,
+          "timestamp": "2011-02-17T20:29:36Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "Starts mid-page in 'Deuxième partie' (see v2-p1 notes for the shared boundary), runs to the end of that page, then all of 'Troisième partie' (verified end-of-page match against our chapter's last paragraph, digue/Balbec close-out)."
+    },
+    {
+      "canonical_id": "v3-p1",
+      "pages": [
+        {
+          "title": "Le Côté de Guermantes/Première partie",
+          "revid": 3939407,
+          "timestamp": "2013-02-22T20:51:42Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        },
+        {
+          "title": "Le Côté de Guermantes/Deuxième partie",
+          "revid": 4270224,
+          "timestamp": "2013-10-27T18:02:56Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": "ce que j’avais deviné tout de suite : qu’elle venait d’avoir une petite attaque."
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "Same phenomenon as v2-p1/v2-p2: our v3-p1/v3-p2 split (Guermantes I / Guermantes II) does not coincide with Wikisource's Première/Deuxième page split. v3-p1 continues from the end of 'Première partie' into roughly the first 70% of 'Deuxième partie', ending exactly at 'CHAPITRE...' heading marking the start of Guermantes II's own internal chapter 2 in the original tome-7 scan. Verified verbatim end-of-paragraph match."
+    },
+    {
+      "canonical_id": "v3-p2",
+      "pages": [
+        {
+          "title": "Le Côté de Guermantes/Deuxième partie",
+          "revid": 4270224,
+          "timestamp": "2013-10-27T18:02:56Z",
+          "scan_backed": true,
+          "from_anchor": "Nous retraversâmes l’avenue Gabriel, au milieu de la foule des promeneurs.",
+          "to_anchor": null
+        },
+        {
+          "title": "Le Côté de Guermantes/Troisième partie",
+          "revid": 4497021,
+          "timestamp": "2014-03-21T22:41:21Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "Starts mid-page in 'Deuxième partie' (immediately after the 'petite attaque' sentence and a CHAPITRE heading), runs to end of that page, then all of 'Troisième partie' (end verified verbatim against our chapter's final line about Vous nous enterrerez tous !)."
+    },
+    {
+      "canonical_id": "v4-p1",
+      "pages": [
+        {
+          "title": "Sodome et Gomorrhe/Partie 1",
+          "revid": 4497996,
+          "timestamp": "2014-03-22T17:13:51Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "1:1 with Wikisource page — the short Sodome et Gomorrhe I essay (epigraph 'La femme aura Gomorrhe...' through the Jupien-Charlus/bourdon closing sentence). Verified verbatim start and end."
+    },
+    {
+      "canonical_id": "v4-p2",
+      "pages": [
+        {
+          "title": "Sodome et Gomorrhe/Partie 2 - chapitre 1",
+          "revid": 10484547,
+          "timestamp": "2020-06-02T09:26:19Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        },
+        {
+          "title": "Sodome et Gomorrhe/Partie 2 - chapitre 2",
+          "revid": 4616362,
+          "timestamp": "2014-06-20T08:33:06Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        },
+        {
+          "title": "Sodome et Gomorrhe/Partie 2 - chapitre 3",
+          "revid": 7292642,
+          "timestamp": "2018-04-03T12:40:56Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        },
+        {
+          "title": "Sodome et Gomorrhe/Partie 2 - chapitre 4",
+          "revid": 4641264,
+          "timestamp": "2014-07-13T16:34:39Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "Our single v4-p2 chapter = all 4 Wikisource 'Partie 2 - chapitre N' pages concatenated in order. Start of chapitre 1 and end of chapitre 4 verified verbatim against our chapter's first/last paragraphs ('Comme je n'étais pas pressé...' / '...il faut absolument que j'épouse Albertine.'). Internal chapitre 1-4 boundaries need no anchors since all 4 pages belong wholly to this one canonical chapter."
+    },
+    {
+      "canonical_id": "v5",
+      "pages": [
+        {
+          "title": "La Prisonnière/Chapitre 1",
+          "revid": 4684429,
+          "timestamp": "2014-08-21T09:43:13Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        },
+        {
+          "title": "La Prisonnière/Chapitre 2",
+          "revid": 4725952,
+          "timestamp": "2014-09-20T17:03:34Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        },
+        {
+          "title": "La Prisonnière/Chapitre 3",
+          "revid": 4748205,
+          "timestamp": "2014-10-07T12:02:51Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "All 3 Wikisource chapters concatenated in order = our single v5 chapter. Start/end verified verbatim ('Dès le matin, la tête encore tournée contre le mur...' / '...je vais vous sonner tout à l'heure.'). Chapitre 1 and Chapitre 3 are scanned from different physical tomes (tome 11 vs tome 12 of the 1946 Gallimard printing) but the text is continuous."
+    },
+    {
+      "canonical_id": "v6-p1",
+      "pages": [
+        {
+          "title": "Albertine disparue/Chapitre I",
+          "revid": 4766819,
+          "timestamp": "2014-10-22T11:17:21Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "1:1 with Wikisource page. Verified verbatim start/end."
+    },
+    {
+      "canonical_id": "v6-p2",
+      "pages": [
+        {
+          "title": "Albertine disparue/Chapitre II",
+          "revid": 4775678,
+          "timestamp": "2014-10-29T13:16:25Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "1:1 with Wikisource page. Verified verbatim start/end. Page includes an editorial footnote (Robert Proust) after the body text ends — footnote must be excluded during extraction (it is a <references>/note block, not the chapter's own final sentence)."
+    },
+    {
+      "canonical_id": "v6-p3",
+      "pages": [
+        {
+          "title": "Albertine disparue/Chapitre III",
+          "revid": 4784837,
+          "timestamp": "2014-11-04T12:36:42Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "1:1 with Wikisource page. Verified verbatim start/end."
+    },
+    {
+      "canonical_id": "v6-p4",
+      "pages": [
+        {
+          "title": "Albertine disparue/Chapitre IV",
+          "revid": 4793526,
+          "timestamp": "2014-11-10T19:25:46Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "1:1 with Wikisource page. Verified verbatim start/end."
+    },
+    {
+      "canonical_id": "v7-p1-a-tansonville",
+      "pages": [
+        {
+          "title": "Le Temps retrouvé/I",
+          "revid": 4805044,
+          "timestamp": "2014-11-19T21:37:56Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": "je l’avais pris pour un raseur du monde, pour un simple figurant, c’était une figure ! »"
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "Wikisource splits Le Temps retrouvé into only 3 pages (I/II/III) vs our 4 canonical parts. v7-p1 occupies roughly the first 86% of Wikisource page I (chars 0-55301 of 64042 in extracted plain text), ending right before 'Cette disposition-là, les pages de Goncourt...' which begins v7-p2. Start verified verbatim ('Toute la journée, dans cette demeure de Tansonville...')."
+    },
+    {
+      "canonical_id": "v7-p2-m-de-charlus-pendant-la-guerre",
+      "pages": [
+        {
+          "title": "Le Temps retrouvé/I",
+          "revid": 4805044,
+          "timestamp": "2014-11-19T21:37:56Z",
+          "scan_backed": true,
+          "from_anchor": "Cette disposition-là, les pages de Goncourt que je lus me la firent regretter.",
+          "to_anchor": null
+        },
+        {
+          "title": "Le Temps retrouvé/II",
+          "revid": 4831288,
+          "timestamp": "2014-12-03T19:45:32Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "Starts mid-page in Wikisource 'I' (final ~14% of that page), then all of Wikisource 'II' verbatim to its very end ('...ajoutant encore à ce tableau d'horreur de nouveaux détails terrifiants.', confirmed 71 chars from the true end of the page's extracted text, i.e. the actual final sentence)."
+    },
+    {
+      "canonical_id": "v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle",
+      "pages": [
+        {
+          "title": "Le Temps retrouvé/III",
+          "revid": 4873511,
+          "timestamp": "2014-12-23T16:06:42Z",
+          "scan_backed": true,
+          "from_anchor": null,
+          "to_anchor": "la belle fille dont déjà nous ne sommes plus jaloux et que nous n’aimons plus."
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "Wikisource page III contains BOTH our v7-p3 and v7-p4 (its own internal chapter markers 'Chapitre III' / not further split by Wikisource page title). v7-p3 = the first third of page III (chars 0-154867 of 466413), start verified verbatim ('La nouvelle maison de santé dans laquelle je me retirai alors...'). CAUTION: a shorter/generic anchor like 'que nous n'aimons plus' alone is NOT unique in this page (an earlier, unrelated sentence about sexual inversion also contains it) — use the full ~14-word anchor given here."
+    },
+    {
+      "canonical_id": "v7-p4-le-bal-de-tetes",
+      "pages": [
+        {
+          "title": "Le Temps retrouvé/III",
+          "revid": 4873511,
+          "timestamp": "2014-12-23T16:06:42Z",
+          "scan_backed": true,
+          "from_anchor": "À ce moment le maître d’hôtel vint me dire que, le premier morceau étant terminé,",
+          "to_anchor": null
+        }
+      ],
+      "boundary_confidence": "exact",
+      "notes": "Remainder of Wikisource page III, running to the true end of the page/novel. IMPORTANT DATA QUALITY NOTE: our CURRENT (fan-site) v7-p4 chapter file has a trailing paragraph (p-141) that is site navigation boilerplate ('--> Retour à la première page : 001 : ...'), not novel text — the real final paragraph of the novel is paragraph 137 ('...comme des géants, plongés dans les années, à des époques vécues par eux, si distantes, dans le Temps.'), which matches the true end of the Wikisource page verbatim. Any migration script must not use the naive 'last paragraph' of the current source for this chapter."
+    }
+  ]
+}
