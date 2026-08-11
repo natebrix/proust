@@ -19,10 +19,12 @@ def test_build_annotation_unit_uses_canonical_coordinates_and_reader_urls():
 
 
 def test_build_annotation_unit_aliases_do_not_corrupt_other_words():
+    # Paragraph numbering follows the Wikisource edition (see
+    # outputs/source-migration-map.json); the target passage moved 214 -> 211.
     unit = pn.build_annotation_unit(
         "v2-p2-noms-de-pays-le-pays",
-        214,
-        215,
+        211,
+        212,
         alias_map={
             "Charlus": {
                 "aliases": ["Charlus", "l'oncle de Saint-Loup"],
@@ -42,7 +44,7 @@ def test_build_annotation_unit_aliases_do_not_corrupt_other_words():
     assert "le narrateurns" not in unit["preprocessed_text"]
     assert "oble narrateurt" not in unit["preprocessed_text"]
     assert "moins idéologue" in unit["preprocessed_text"]
-    assert "l'objet de notre observation" in unit["preprocessed_text"]
+    assert "l’objet de notre observation" in unit["preprocessed_text"]
 
 
 def test_build_starter_units_returns_three_prompt_ready_units():
