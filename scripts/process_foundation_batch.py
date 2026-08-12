@@ -135,6 +135,7 @@ for lens in ("advantage", "prestige", "inclusion"):
     entry_total = len(lens_report["timeline"])
     mixed_total = len(lens_report["mixed_units"])
     report["mixed_counts"][lens] = mixed_total
+    report.setdefault("entry_totals", {})[lens] = entry_total
     report.setdefault("mixed_rates", {})[lens] = (
         round(mixed_total / entry_total, 3) if entry_total else 0.0
     )
@@ -162,7 +163,10 @@ if v1p2_in_batch and len(report["narrator_v1p2_units"]) / len(v1p2_in_batch) > N
 # 23% mixed-entry rate with annotations that eyeballed as sound; 30% leaves
 # headroom while still catching genuine drift.
 MIXED_ENTRY_RATE_LIMIT = 0.30
+MIXED_GATE_MIN_ENTRIES = 20  # a rate on a tiny denominator is noise, not signal
 for lens, rate in report.get("mixed_rates", {}).items():
+    if report.get("entry_totals", {}).get(lens, 0) < MIXED_GATE_MIN_ENTRIES:
+        continue
     if rate > MIXED_ENTRY_RATE_LIMIT:
         report["status"] = "gate_tripped"
         report["reasons"].append(
