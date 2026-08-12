@@ -277,7 +277,37 @@ def fit_view(
     scored = [match for match in matches if match["weight"] > weight_floor]
     zero_weight_count = len(matches) - len(scored)
     if not scored:
-        raise ValueError(f"No comparisons with positive weight for lens {lens!r}, view {view!r}.")
+        # Under the vacuous-pair rule an effect-sparse lens can legitimately
+        # yield zero comparisons (e.g. tiny corpora): every character is
+        # unrated-provisional rather than this being an error.
+        return {
+            "scoring_v2_ratings_version": f"scoring_v2_{lens}_{view}_view_v1",
+            "scoring_version": v2.SCORING_V2_VERSION,
+            "lens": lens,
+            "view": view,
+            "time_axis": TIME_AXIS,
+            "w2_elo": w2_elo,
+            "w2_elo_selected_by": "no_comparisons",
+            "w2_elo_candidates": [],
+            "tie_band": v2.TIE_BAND,
+            "draw_model": whr.DRAW_MODEL,
+            "initial_rating": whr.DEFAULT_INITIAL_RATING,
+            "initial_rd": initial_rd,
+            "band_provisional_threshold": band_provisional_threshold,
+            "conservative_rating_rule": "rating_minus_band",
+            "character_count": 0,
+            "non_provisional_count": 0,
+            "comparison_count": 0,
+            "zero_weight_comparison_count": zero_weight_count,
+            "weight_total": 0.0,
+            "mean_weight": 0.0,
+            "draw_rate": 0.0,
+            "time_point_count": 0,
+            "node_count": 0,
+            "convergence": None,
+            "wall_clock_seconds": None,
+            "characters": [],
+        }
 
     diagnostics = {}
     for reading in readings:
@@ -583,21 +613,41 @@ def build_corpus_summary(ratings_by_lens, readings_by_lens, view="name"):
     for lens in lenses:
         rating_rows = {row["character"]: row for row in ratings_by_lens[lens]["characters"]}
         appearances = defaultdict(int)
+        movements = defaultdict(list)
         for reading in readings_by_lens[lens]:
-            appearances[view_reading_key(reading, view)] += 1
-        for character, rating_row in rating_rows.items():
+            key = view_reading_key(reading, view)
+            appearances[key] += 1
+            movements[key].append(reading["movement"])
+        # every character with readings gets a lens entry; a character the
+        # lens never rated (vacuous-pair rule: no comparisons touched them)
+        # still reports appearances and movement, with null standing
+        for character in set(appearances) | set(rating_rows):
+            rating_row = rating_rows.get(character)
             entry = rows.setdefault(character, {"character": character, "lenses": {}})
+            character_movements = movements.get(character, [])
+            mean_movement = (
+                round(sum(character_movements) / len(character_movements), 4)
+                if character_movements
+                else 0.0
+            )
+            mean_absolute = (
+                round(sum(abs(m) for m in character_movements) / len(character_movements), 4)
+                if character_movements
+                else 0.0
+            )
             entry["lenses"][lens] = {
                 "appearances": appearances.get(character, 0),
-                "mean_movement": rating_row["mean_movement"],
-                "mean_absolute_movement": rating_row["mean_absolute_movement"],
-                "labels": rating_row["labels"],
-                "rating": rating_row["rating"],
-                "band": rating_row["band"],
-                "conservative_rating": rating_row["conservative_rating"],
-                "rank": rating_row["rank"],
-                "provisional": rating_row["provisional"],
-                "comparison_count": rating_row["match_count"],
+                "mean_movement": rating_row["mean_movement"] if rating_row else mean_movement,
+                "mean_absolute_movement": (
+                    rating_row["mean_absolute_movement"] if rating_row else mean_absolute
+                ),
+                "labels": rating_row["labels"] if rating_row else None,
+                "rating": rating_row["rating"] if rating_row else None,
+                "band": rating_row["band"] if rating_row else None,
+                "conservative_rating": rating_row["conservative_rating"] if rating_row else None,
+                "rank": rating_row["rank"] if rating_row else None,
+                "provisional": rating_row["provisional"] if rating_row else True,
+                "comparison_count": rating_row["match_count"] if rating_row else 0,
             }
 
     summary_rows = sorted(
@@ -608,12 +658,15 @@ def build_corpus_summary(ratings_by_lens, readings_by_lens, view="name"):
         ),
     )
     for row in summary_rows:
-        signs = tuple(
-            1 if row["lenses"][lens]["rating"] > whr.DEFAULT_INITIAL_RATING else -1
-            if row["lenses"][lens]["rating"] < whr.DEFAULT_INITIAL_RATING
-            else 0
-            for lens in lenses
-        )
+        signs = []
+        for lens in lenses:
+            # a character can be unrated in a lens that never saw them move
+            # (vacuous-pair rule); that lens contributes a neutral sign
+            rating = (row["lenses"].get(lens) or {}).get("rating")
+            if rating is None or rating == whr.DEFAULT_INITIAL_RATING:
+                signs.append(0)
+            else:
+                signs.append(1 if rating > whr.DEFAULT_INITIAL_RATING else -1)
         row["archetype_signs"] = {lens: sign for lens, sign in zip(lenses, signs)}
 
     return {

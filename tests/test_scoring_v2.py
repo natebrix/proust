@@ -330,23 +330,32 @@ def test_a_zero_effect_character_falls_back_to_presence_confidence():
     assert row["weight"] == pytest.approx(0.4)
 
 
-def test_zero_effect_characters_are_compared_in_every_lens():
-    # In prestige and inclusion most characters have no effect at all;
-    # they must still be present as drawn comparisons rather than vanish.
+def test_vacuous_pair_rule_scopes_comparisons_to_lens_participants():
+    # Amendment (2026-08-12): a pair where NEITHER character has an effect
+    # in the lens is vacuous and emits nothing; a bystander still compares
+    # against anyone who moved.
     annotation = _annotation(
         [_character("a"), _character("b"), _character("c")],
         events=[_event("E1", "a")],
         effects=[_effect("a", "general_appraisal", 2)],
     )
 
-    prestige = scoring_v2.unit_comparisons(annotation, "prestige")
-    assert len(prestige) == 3
-    assert all(row["observed_a"] == 0.5 for row in prestige)
+    # prestige saw nobody move: no comparisons at all
+    assert scoring_v2.unit_comparisons(annotation, "prestige") == []
+    # advantage saw "a" move: a-b and a-c stay, b-c is vacuous
+    advantage = scoring_v2.unit_comparisons(annotation, "advantage")
+    pairs = {(row["character_a"], row["character_b"]) for row in advantage}
+    assert pairs == {("a", "b"), ("a", "c")}
 
 
 def test_comparisons_carry_the_unit_id_and_a_stable_pair_order():
     annotation = _annotation(
         [_character("Zola"), _character("Bloch"), _character("Swann")],
+        events=[_event("E1", "Bloch"), _event("E2", "Swann")],
+        effects=[
+            _effect("Bloch", "social_status", 1),
+            _effect("Swann", "social_status", -1),
+        ],
         unit_id="v2-p2-noms-de-pays#p-10-p-14",
     )
 
@@ -400,8 +409,11 @@ def test_an_unresolved_name_keys_on_itself(registry):
 def test_comparisons_carry_both_keyings(registry):
     annotation = _annotation(
         [_character("le peintre"), _character("Swann"), _character("un inconnu")],
-        events=[_event("E1", "le peintre")],
-        effects=[_effect("le peintre", "social_status", 2)],
+        events=[_event("E1", "le peintre"), _event("E2", "Swann")],
+        effects=[
+            _effect("le peintre", "social_status", 2),
+            _effect("Swann", "social_status", 1),
+        ],
     )
 
     rows = {
@@ -430,7 +442,11 @@ def test_a_person_view_self_pairing_is_visible_rather_than_dropped(registry):
 
 
 def test_person_keys_fall_back_to_names_without_a_registry():
-    annotation = _annotation([_character("le peintre"), _character("Swann")])
+    annotation = _annotation(
+        [_character("le peintre"), _character("Swann")],
+        events=[_event("E1", "le peintre")],
+        effects=[_effect("le peintre", "social_status", 1)],
+    )
 
     row = scoring_v2.unit_comparisons(annotation, "prestige")[0]
     assert row["person_a"] == row["character_a"]
@@ -486,11 +502,13 @@ def test_view_matches_drops_person_view_self_pairings(registry):
     name_matches, name_dropped = scoring_v2_build.view_matches(comparisons, "name")
     person_matches, person_dropped = scoring_v2_build.view_matches(comparisons, "person")
 
-    assert len(comparisons) == 3
-    assert name_dropped == 0 and len(name_matches) == 3
+    # the "le peintre" / Swann pair is vacuous (only Elstir moved) and is
+    # not emitted; the two Elstir pairings survive.
+    assert len(comparisons) == 2
+    assert name_dropped == 0 and len(name_matches) == 2
     # "le peintre" vs Elstir is one man against himself once the person
-    # view merges them; the other two pairings survive.
-    assert person_dropped == 1 and len(person_matches) == 2
+    # view merges them.
+    assert person_dropped == 1 and len(person_matches) == 1
     assert all(match["character_a"] != match["character_b"] for match in person_matches)
 
 
@@ -565,3 +583,43 @@ def test_corpus_summary_reports_intensity_per_appearance_not_sums(registry):
     assert swann["mean_movement"] == pytest.approx(1.8)
     assert swann["mean_absolute_movement"] == pytest.approx(1.8)
     assert rows["Bloch"]["lenses"]["prestige"]["mean_movement"] == 0.0
+
+
+def test_vacuous_pairs_are_skipped_but_baselines_and_cancelling_movers_stay():
+    from proust import scoring_v2
+
+    annotation = {
+        "unit_id": "v1-p1-combray#p-1-p-5",
+        "characters_present": [
+            {"canonical_name": n, "surface_forms": [n], "presence_type": "explicit",
+             "presence_confidence": 0.9}
+            for n in ("Swann", "Odette", "docteur Cottard", "Mme Cottard")
+        ],
+        "appraisal_events": [
+            {"event_id": "E1", "source": "narrator", "target": "Swann",
+             "type": "narrated_elevation", "polarity": "positive", "narrative_stance": "endorsed",
+             "confidence": 0.9, "evidence": "x", "explanation": "x"},
+        ],
+        "status_effects": [
+            # Swann moves in advantage
+            {"character": "Swann", "dimension": "general_appraisal", "delta": 1,
+             "based_on_events": ["E1"], "confidence": 0.9, "explanation": "x"},
+            # Odette's advantage effects cancel to zero movement but she participated
+            {"character": "Odette", "dimension": "emotional_position", "delta": 1,
+             "based_on_events": ["E1"], "confidence": 0.5, "explanation": "x"},
+            {"character": "Odette", "dimension": "emotional_position", "delta": -1,
+             "based_on_events": ["E1"], "confidence": 0.5, "explanation": "x"},
+        ],
+        "ambiguities": [],
+    }
+
+    comps = scoring_v2.unit_comparisons(annotation, "advantage")
+    pairs = {(c["character_a"], c["character_b"]) for c in comps}
+    # Cottard vs Mme Cottard: neither moved in advantage -> vacuous, skipped
+    assert ("Mme Cottard", "docteur Cottard") not in pairs
+    # bystander vs mover stays
+    assert ("Swann", "docteur Cottard") in pairs
+    # cancelled-to-zero participant stays comparable, even against a bystander
+    assert ("Mme Cottard", "Odette") in pairs
+    # prestige: nobody has prestige effects -> no comparisons at all
+    assert scoring_v2.unit_comparisons(annotation, "prestige") == []

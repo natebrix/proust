@@ -329,10 +329,24 @@ def unit_comparisons(
     person collapses in the person view; that is visible here as
     `person_a == person_b` and is left for the caller to drop, since it is
     a fact about the pair rather than an error.
+
+    Vacuous-pair rule (design amendment, 2026-08-12): a pair in which
+    NEITHER character has any effect in this lens is skipped entirely — the
+    passage said nothing about that lens for either of them, and silence is
+    not evidence of equality. A character whose lens effects cancel to zero
+    still participated (the lens saw movement) and stays comparable; a
+    zero-movement bystander remains comparable against anyone who moved.
+    Without this rule, effect-sparse lenses drown in 0-0 draws and the
+    uncertainty band couples standing to appearance count.
     """
     require_known_lens(lens)
     movements = unit_movements(annotation, lens)
     confidences = unit_confidences(annotation, lens)
+    lens_participants = {
+        effect.get("character")
+        for effect in annotation.get("status_effects") or []
+        if isinstance(effect, dict) and lens_weight(lens, effect.get("dimension")) > 0
+    }
     rho = ambiguity_weight(annotation)
     resolved_unit_id = unit_id or annotation.get("unit_id")
     if merge_map is None and registry is not None:
@@ -345,6 +359,8 @@ def unit_comparisons(
 
     comparisons = []
     for character_a, character_b in combinations(sorted(movements), 2):
+        if character_a not in lens_participants and character_b not in lens_participants:
+            continue  # vacuous pair: this lens saw neither of them move
         movement_a = movements[character_a]
         movement_b = movements[character_b]
         observed_a, observed_b = comparison_outcome(movement_a, movement_b, tie_band=tie_band)
