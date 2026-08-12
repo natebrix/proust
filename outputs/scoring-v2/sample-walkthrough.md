@@ -16,9 +16,7 @@ Per unit: the annotator's effects verbatim, the v2 movement arithmetic, labels, 
   - Legrandin vs le narrateur: le narrateur wins (m -0.80 vs +0.72), weight 0.58
   - la grand-mère vs le narrateur: le narrateur wins (m +0.00 vs +0.72), weight 0.58
 **prestige**: Legrandin = +0.00 [neutral], la grand-mère = +0.00 [neutral], le narrateur = +0.00 [neutral]
-  - (+ 3 draws among characters with no relative movement)
 **inclusion**: Legrandin = +0.00 [neutral], la grand-mère = +0.00 [neutral], le narrateur = +0.00 [neutral]
-  - (+ 3 draws among characters with no relative movement)
 
 ## v3-p2#p-91-p-95
 *The grandmother's death: advantage internal weights, solemn passage*  (run: foundation-run-017)
@@ -32,9 +30,7 @@ Per unit: the annotator's effects verbatim, the v2 movement arithmetic, labels, 
 **advantage**: la grand-mère = +1.70 [positive], le narrateur = +1.25 [positive]
   - la grand-mère vs le narrateur: la grand-mère wins (m +1.70 vs +1.25), weight 0.62
 **prestige**: la grand-mère = +0.00 [neutral], le narrateur = +0.00 [neutral]
-  - (+ 1 draws among characters with no relative movement)
 **inclusion**: la grand-mère = +0.00 [neutral], le narrateur = +0.00 [neutral]
-  - (+ 1 draws among characters with no relative movement)
 
 ## v2-p2-noms-de-pays-le-pays#p-101-p-105
 *Villeparisis at Balbec: the adjudicated prestige/inclusion divergence*  (run: foundation-run-009)
@@ -46,7 +42,6 @@ Per unit: the annotator's effects verbatim, the v2 movement arithmetic, labels, 
 - Mme de Villeparisis: inclusion_exclusion -1 (confidence 0.72) — For most of the passage she is the object of hostile scrutiny by the hotel's bourgeois group, held outside the
 
 **advantage**: Mme de Villeparisis = +0.00 [neutral], princesse de Luxembourg = +0.00 [neutral]
-  - (+ 1 draws among characters with no relative movement)
 **prestige**: Mme de Villeparisis = +0.78 [positive], princesse de Luxembourg = +0.00 [neutral]
   - Mme de Villeparisis vs princesse de Luxembourg: Mme de Villeparisis wins (m +0.78 vs +0.00), weight 0.62
 **inclusion**: Mme de Villeparisis = -0.72 [negative], princesse de Luxembourg = +0.00 [neutral]
@@ -95,7 +90,7 @@ Per unit: the annotator's effects verbatim, the v2 movement arithmetic, labels, 
   - docteur Cottard vs le narrateur: docteur Cottard wins (m +0.00 vs -0.85), weight 0.68
   - la marquise douairière de Cambremer vs le narrateur: la marquise douairière de Cambremer wins (m +0.00 vs -0.85), weight 0.68
   - le narrateur vs marquis de Cambremer: marquis de Cambremer wins (m -0.85 vs +0.00), weight 0.68
-  - (+ 106 draws among characters with no relative movement)
+  - (+ 1 draws among characters with no relative movement)
 **prestige**: Albertine = +0.00 [neutral], Bloch = +0.00 [neutral], Bloch père = +0.00 [neutral], Brichot = +0.00 [neutral], Legrandin = +0.00 [neutral], M. de Chevregny = +0.00 [neutral], M. de Crécy = +0.00 [neutral], Mme Féré = +0.00 [neutral], Mme Verdurin = +0.00 [neutral], Mme de Cambremer = -1.76 [negative], Morel = +0.00 [neutral], Robert de Saint-Loup = +0.00 [neutral], baron de Charlus = +0.75 [positive], docteur Cottard = +0.00 [neutral], la marquise douairière de Cambremer = +0.00 [neutral], le narrateur = +0.00 [neutral], marquis de Cambremer = -0.80 [negative]
   - Albertine vs Mme de Cambremer: Albertine wins (m +0.00 vs -1.76), weight 0.70
   - Albertine vs baron de Charlus: baron de Charlus wins (m +0.00 vs +0.75), weight 0.60
@@ -142,9 +137,7 @@ Per unit: the annotator's effects verbatim, the v2 movement arithmetic, labels, 
   - docteur Cottard vs marquis de Cambremer: docteur Cottard wins (m +0.00 vs -0.80), weight 0.64
   - la marquise douairière de Cambremer vs marquis de Cambremer: la marquise douairière de Cambremer wins (m +0.00 vs -0.80), weight 0.64
   - le narrateur vs marquis de Cambremer: le narrateur wins (m +0.00 vs -0.80), weight 0.64
-  - (+ 91 draws among characters with no relative movement)
 **inclusion**: Albertine = +0.00 [neutral], Bloch = +0.00 [neutral], Bloch père = +0.00 [neutral], Brichot = +0.00 [neutral], Legrandin = +0.00 [neutral], M. de Chevregny = +0.00 [neutral], M. de Crécy = +0.00 [neutral], Mme Féré = +0.00 [neutral], Mme Verdurin = +0.00 [neutral], Mme de Cambremer = +0.00 [neutral], Morel = +0.00 [neutral], Robert de Saint-Loup = +0.00 [neutral], baron de Charlus = +0.00 [neutral], docteur Cottard = +0.00 [neutral], la marquise douairière de Cambremer = +0.00 [neutral], le narrateur = +0.00 [neutral], marquis de Cambremer = +0.00 [neutral]
-  - (+ 136 draws among characters with no relative movement)
 
 ## v7-p4-le-bal-de-tetes#p-66-p-70
 *Search hit for Rachel & Berma*  (run: foundation-run-034)
@@ -165,7 +158,6 @@ Per unit: the annotator's effects verbatim, the v2 movement arithmetic, labels, 
   - Rachel vs la Berma: Rachel wins (m +0.00 vs -0.70), weight 0.56
   - duchesse de Guermantes vs la Berma: duchesse de Guermantes wins (m +0.00 vs -0.70), weight 0.56
   - la Berma vs le narrateur: le narrateur wins (m -0.70 vs +0.00), weight 0.56
-  - (+ 15 draws among characters with no relative movement)
 **prestige**: Bloch = +0.00 [neutral], Gilberte = -0.70 [negative], Mme Verdurin = +0.00 [neutral], Rachel = +1.86 [positive], duchesse de Guermantes = -0.78 [negative], la Berma = -1.90 [negative], le narrateur = +0.00 [neutral]
   - Bloch vs Gilberte: Bloch wins (m +0.00 vs -0.70), weight 0.45
   - Bloch vs Rachel: Rachel wins (m +0.00 vs +1.86), weight 0.60
@@ -184,9 +176,8 @@ Per unit: the annotator's effects verbatim, the v2 movement arithmetic, labels, 
   - duchesse de Guermantes vs la Berma: duchesse de Guermantes wins (m -0.78 vs -1.90), weight 0.50
   - duchesse de Guermantes vs le narrateur: le narrateur wins (m -0.78 vs +0.00), weight 0.50
   - la Berma vs le narrateur: le narrateur wins (m -1.90 vs +0.00), weight 0.61
-  - (+ 4 draws among characters with no relative movement)
+  - (+ 1 draws among characters with no relative movement)
 **inclusion**: Bloch = +0.00 [neutral], Gilberte = +0.00 [neutral], Mme Verdurin = +0.00 [neutral], Rachel = +0.00 [neutral], duchesse de Guermantes = +0.00 [neutral], la Berma = +0.00 [neutral], le narrateur = +0.00 [neutral]
-  - (+ 21 draws among characters with no relative movement)
 
 ## v2-p1-autour-de-mme-swann#p-111-p-115
 *Search hit for Norpois & Bergotte*  (run: foundation-run-007)
@@ -209,11 +200,8 @@ Per unit: the annotator's effects verbatim, the v2 movement arithmetic, labels, 
   - la grand-mère vs la mère du narrateur: la grand-mère wins (m +1.22 vs +0.00), weight 0.55
   - la grand-mère vs le narrateur: la grand-mère wins (m +1.22 vs -0.31), weight 0.50
   - la mère du narrateur vs le narrateur: la mère du narrateur wins (m +0.00 vs -0.31), weight 0.50
-  - (+ 6 draws among characters with no relative movement)
 **prestige**: Bergotte = +0.00 [neutral], Gilberte = +0.00 [neutral], Norpois = +0.00 [neutral], la grand-mère = +0.00 [neutral], la mère du narrateur = +0.00 [neutral], le narrateur = +0.00 [neutral]
-  - (+ 15 draws among characters with no relative movement)
 **inclusion**: Bergotte = +0.00 [neutral], Gilberte = +0.00 [neutral], Norpois = +0.00 [neutral], la grand-mère = +0.00 [neutral], la mère du narrateur = +0.00 [neutral], le narrateur = +0.00 [neutral]
-  - (+ 15 draws among characters with no relative movement)
 
 ## v1-p1-combray#p-101-p-105
 *Zero-effect bystander case (la grand-mère)*  (run: foundation-run-001)
@@ -229,7 +217,5 @@ Per unit: the annotator's effects verbatim, the v2 movement arithmetic, labels, 
   - Legrandin vs le narrateur: le narrateur wins (m -0.80 vs +0.72), weight 0.58
   - la grand-mère vs le narrateur: le narrateur wins (m +0.00 vs +0.72), weight 0.58
 **prestige**: Legrandin = +0.00 [neutral], la grand-mère = +0.00 [neutral], le narrateur = +0.00 [neutral]
-  - (+ 3 draws among characters with no relative movement)
 **inclusion**: Legrandin = +0.00 [neutral], la grand-mère = +0.00 [neutral], le narrateur = +0.00 [neutral]
-  - (+ 3 draws among characters with no relative movement)
 
