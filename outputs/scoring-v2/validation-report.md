@@ -1,10 +1,10 @@
 # Scoring v2 validation report (staged, pre-adoption)
 
-Corpus: foundation, 34 runs, 963 reviewed units, 963 narrative time points. Comparisons per lens: {'advantage': 5756, 'prestige': 5756, 'inclusion': 5756}.
+Corpus: foundation, 34 runs, 963 reviewed units, 963 narrative time points. Comparisons per lens: {'advantage': 3475, 'prestige': 1184, 'inclusion': 531}.
 
 Formula: `proust/scoring_v2.py`, exactly as specified in `proust/docs/scoring_v2_design.md`. Ratings: weighted WHR (`proust/whr.py`), smoothed and filtered, on the `cumulative_unit_index` narrative axis. Everything here is staged under `outputs/scoring-v2/`; adoption is a separate reviewed decision.
 
-w2 selected per lens/view: advantage/name = 15, advantage/person = 15, inclusion/name = 5, inclusion/person = 5, prestige/name = 15, prestige/person = 15
+w2 selected per lens/view: advantage/name = 15, advantage/person = 15, inclusion/name = 5, inclusion/person = 5, prestige/name = 60, prestige/person = 60
 
 ## 1. Lens orthogonality
 
@@ -12,10 +12,10 @@ The design predicts cross-lens rating correlations should FALL against v1: v1's 
 
 | pair | v2 Spearman (all rated) |
 | --- | ---: |
-| advantage vs prestige | +0.1761 (n=288) |
-| advantage vs inclusion | +0.1795 (n=288) |
-| prestige vs inclusion | +0.0549 (n=288) |
-| **mean abs** | **0.1368** |
+| advantage vs prestige | +0.0980 (n=288) |
+| advantage vs inclusion | +0.2193 (n=288) |
+| prestige vs inclusion | +0.0670 (n=288) |
+| **mean abs** | **0.1281** |
 
 | pair | v1 Spearman (all rated) |
 | --- | ---: |
@@ -26,10 +26,10 @@ The design predicts cross-lens rating correlations should FALL against v1: v1's 
 
 | pair | v2 Spearman (non-provisional) |
 | --- | ---: |
-| advantage vs prestige | +0.1741 (n=60) |
-| advantage vs inclusion | +0.2314 (n=60) |
-| prestige vs inclusion | +0.1137 (n=66) |
-| **mean abs** | **0.1731** |
+| advantage vs prestige | -0.6667 (n=8) |
+| advantage vs inclusion | -0.6500 (n=9) |
+| prestige vs inclusion | +0.2000 (n=6) |
+| **mean abs** | **0.5056** |
 
 | pair | v1 Spearman (non-provisional) |
 | --- | ---: |
@@ -38,7 +38,7 @@ The design predicts cross-lens rating correlations should FALL against v1: v1's 
 | prestige vs inclusion | +0.9627 (n=91) |
 | **mean abs** | **0.9759** |
 
-**Verdict**: mean |rho| 0.983 (v1) -> 0.137 (v2): prediction held.
+**Verdict**: mean |rho| 0.983 (v1) -> 0.128 (v2): prediction held.
 
 ## 2. Bootstrap stability
 
@@ -46,9 +46,9 @@ The design predicts cross-lens rating correlations should FALL against v1: v1's 
 
 | lens | field | v2 mean sd | v1 mean sd | v2 median sd | v1 median sd | v2 non-prov | v1 non-prov |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| advantage | 60 | 9.91 | 10.167 | 10.199 | 10.067 | 60 | 91 |
-| prestige | 66 | 9.519 | 10.975 | 9.714 | 11.041 | 66 | 91 |
-| inclusion | 70 | 9.064 | 11.935 | 9.098 | 11.939 | 70 | 91 |
+| advantage | 35 | 5.912 | 5.799 | 6.074 | 5.835 | 35 | 91 |
+| prestige | 8 | 1.643 | 1.808 | 1.539 | 1.893 | 8 | 91 |
+| inclusion | 9 | 1.57 | 2.298 | 1.712 | 2.337 | 9 | 91 |
 
 ### 2b. Frequency confounding
 
@@ -56,11 +56,11 @@ The design's fourth principle is that frequency must not masquerade as strength.
 
 | lens | formula | conservative vs count | rating vs count | band vs count | rating spread | band spread |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| advantage | v2 | 0.443 | -0.087 | -0.904 | 332.3 | 122.4 |
+| advantage | v2 | 0.122 | -0.199 | -0.891 | 424.2 | 110.6 |
 | advantage | v1 | 0.44 | -0.121 | -0.925 | 607.4 | 132.3 |
-| prestige | v2 | 0.731 | 0.068 | -0.923 | 288.9 | 125.6 |
+| prestige | v2 | -0.524 | -0.595 | -0.548 | 370.4 | 35.4 |
 | prestige | v1 | 0.447 | -0.088 | -0.927 | 554.1 | 132.6 |
-| inclusion | v2 | 0.934 | -0.15 | -0.981 | 118.3 | 142.8 |
+| inclusion | v2 | 0.05 | -0.283 | -0.883 | 257.8 | 83.1 |
 | inclusion | v1 | 0.434 | -0.17 | -0.927 | 605.5 | 133.4 |
 
 ## 3. Predictive sanity
@@ -69,75 +69,75 @@ One-step-ahead over the v2 comparisons in narrative order. Every system is score
 
 | lens/view | system | log-loss | Brier | comparisons |
 | --- | --- | ---: | ---: | ---: |
-| advantage/name | whr_filtered | 0.710754 | 0.256290 | 5756 |
-| advantage/name | whr_filtered_deflated | 0.702428 | 0.253394 | 5756 |
-| advantage/name | elo_sequential | 0.664231 | 0.236127 | 5756 |
-| advantage/name | elo_unit_frozen | 0.696975 | 0.251322 | 5756 |
-| advantage/name | glicko2_chapter_period | 0.723843 | 0.262102 | 5756 |
-| advantage/person | whr_filtered | 0.710220 | 0.256034 | 5755 |
-| advantage/person | whr_filtered_deflated | 0.702080 | 0.253221 | 5755 |
-| advantage/person | elo_sequential | 0.664197 | 0.236112 | 5755 |
-| advantage/person | elo_unit_frozen | 0.696956 | 0.251312 | 5755 |
-| advantage/person | glicko2_chapter_period | 0.726389 | 0.263152 | 5755 |
-| prestige/name | whr_filtered | 0.700859 | 0.253272 | 5756 |
-| prestige/name | whr_filtered_deflated | 0.698047 | 0.252171 | 5756 |
-| prestige/name | elo_sequential | 0.682428 | 0.244749 | 5756 |
-| prestige/name | elo_unit_frozen | 0.697130 | 0.251805 | 5756 |
-| prestige/name | glicko2_chapter_period | 0.707798 | 0.256266 | 5756 |
-| prestige/person | whr_filtered | 0.700803 | 0.253245 | 5755 |
-| prestige/person | whr_filtered_deflated | 0.698010 | 0.252152 | 5755 |
-| prestige/person | elo_sequential | 0.682463 | 0.244767 | 5755 |
-| prestige/person | elo_unit_frozen | 0.697147 | 0.251814 | 5755 |
-| prestige/person | glicko2_chapter_period | 0.707779 | 0.256256 | 5755 |
-| inclusion/name | whr_filtered | 0.697158 | 0.251801 | 5756 |
-| inclusion/name | whr_filtered_deflated | 0.695895 | 0.251281 | 5756 |
-| inclusion/name | elo_sequential | 0.689974 | 0.248414 | 5756 |
-| inclusion/name | elo_unit_frozen | 0.695510 | 0.251118 | 5756 |
-| inclusion/name | glicko2_chapter_period | 0.700971 | 0.253614 | 5756 |
-| inclusion/person | whr_filtered | 0.697122 | 0.251783 | 5755 |
-| inclusion/person | whr_filtered_deflated | 0.695867 | 0.251267 | 5755 |
-| inclusion/person | elo_sequential | 0.689972 | 0.248414 | 5755 |
-| inclusion/person | elo_unit_frozen | 0.695511 | 0.251118 | 5755 |
-| inclusion/person | glicko2_chapter_period | 0.700997 | 0.253628 | 5755 |
+| advantage/name | whr_filtered | 0.712944 | 0.255273 | 3475 |
+| advantage/name | whr_filtered_deflated | 0.700120 | 0.251245 | 3475 |
+| advantage/name | elo_sequential | 0.639731 | 0.224781 | 3475 |
+| advantage/name | elo_unit_frozen | 0.690754 | 0.247897 | 3475 |
+| advantage/name | glicko2_chapter_period | 0.750061 | 0.268868 | 3475 |
+| advantage/person | whr_filtered | 0.712578 | 0.255024 | 3474 |
+| advantage/person | whr_filtered_deflated | 0.699967 | 0.251108 | 3474 |
+| advantage/person | elo_sequential | 0.639673 | 0.224759 | 3474 |
+| advantage/person | elo_unit_frozen | 0.690789 | 0.247900 | 3474 |
+| advantage/person | glicko2_chapter_period | 0.776715 | 0.276820 | 3474 |
+| prestige/name | whr_filtered | 0.726454 | 0.256436 | 1184 |
+| prestige/name | whr_filtered_deflated | 0.700606 | 0.249012 | 1184 |
+| prestige/name | elo_sequential | 0.621480 | 0.215890 | 1184 |
+| prestige/name | elo_unit_frozen | 0.686416 | 0.244655 | 1184 |
+| prestige/name | glicko2_chapter_period | 0.751339 | 0.269992 | 1184 |
+| prestige/person | whr_filtered | 0.728047 | 0.256969 | 1183 |
+| prestige/person | whr_filtered_deflated | 0.701779 | 0.249448 | 1183 |
+| prestige/person | elo_sequential | 0.621698 | 0.215988 | 1183 |
+| prestige/person | elo_unit_frozen | 0.686573 | 0.244724 | 1183 |
+| prestige/person | glicko2_chapter_period | 0.753169 | 0.270541 | 1183 |
+| inclusion/name | whr_filtered | 0.720449 | 0.255018 | 531 |
+| inclusion/name | whr_filtered_deflated | 0.694206 | 0.247104 | 531 |
+| inclusion/name | elo_sequential | 0.629650 | 0.218810 | 531 |
+| inclusion/name | elo_unit_frozen | 0.682716 | 0.243506 | 531 |
+| inclusion/name | glicko2_chapter_period | 0.830490 | 0.299996 | 531 |
+| inclusion/person | whr_filtered | 0.719676 | 0.254638 | 531 |
+| inclusion/person | whr_filtered_deflated | 0.693599 | 0.246804 | 531 |
+| inclusion/person | elo_sequential | 0.629459 | 0.218717 | 531 |
+| inclusion/person | elo_unit_frozen | 0.682495 | 0.243397 | 531 |
+| inclusion/person | glicko2_chapter_period | 0.828472 | 0.298909 | 531 |
 
 ### w2 selection
 
 | lens/view | w2 | log-loss |
 | --- | ---: | ---: |
-| advantage/name | 5 | 0.711218 |
-| advantage/name | 15 **(selected)** | 0.710754 |
-| advantage/name | 35 | 0.711479 |
-| advantage/name | 60 | 0.712824 |
-| advantage/person | 5 | 0.710655 |
-| advantage/person | 15 **(selected)** | 0.710220 |
-| advantage/person | 35 | 0.710971 |
-| advantage/person | 60 | 0.712341 |
-| prestige/name | 5 | 0.700893 |
-| prestige/name | 15 **(selected)** | 0.700859 |
-| prestige/name | 35 | 0.701139 |
-| prestige/name | 60 | 0.701636 |
-| prestige/person | 5 | 0.700822 |
-| prestige/person | 15 **(selected)** | 0.700803 |
-| prestige/person | 35 | 0.701101 |
-| prestige/person | 60 | 0.701609 |
-| inclusion/name | 5 **(selected)** | 0.697158 |
-| inclusion/name | 15 | 0.697185 |
-| inclusion/name | 35 | 0.697320 |
-| inclusion/name | 60 | 0.697512 |
-| inclusion/person | 5 **(selected)** | 0.697122 |
-| inclusion/person | 15 | 0.697152 |
-| inclusion/person | 35 | 0.697291 |
-| inclusion/person | 60 | 0.697485 |
+| advantage/name | 5 | 0.714412 |
+| advantage/name | 15 **(selected)** | 0.712944 |
+| advantage/name | 35 | 0.712998 |
+| advantage/name | 60 | 0.714222 |
+| advantage/person | 5 | 0.714020 |
+| advantage/person | 15 **(selected)** | 0.712578 |
+| advantage/person | 35 | 0.712692 |
+| advantage/person | 60 | 0.713984 |
+| prestige/name | 5 | 0.732717 |
+| prestige/name | 15 | 0.729890 |
+| prestige/name | 35 | 0.727362 |
+| prestige/name | 60 **(selected)** | 0.726454 |
+| prestige/person | 5 | 0.734353 |
+| prestige/person | 15 | 0.731528 |
+| prestige/person | 35 | 0.728982 |
+| prestige/person | 60 **(selected)** | 0.728047 |
+| inclusion/name | 5 **(selected)** | 0.720449 |
+| inclusion/name | 15 | 0.721532 |
+| inclusion/name | 35 | 0.723758 |
+| inclusion/name | 60 | 0.726438 |
+| inclusion/person | 5 **(selected)** | 0.719676 |
+| inclusion/person | 15 | 0.720813 |
+| inclusion/person | 35 | 0.723126 |
+| inclusion/person | 60 | 0.725895 |
 
 ## 4. Literary panel (pre-registered)
 
 Each claim comes from the design doc; each operationalization was fixed before the ratings were read. Name view, and the standings referred to are the non-provisional set.
 
-**6/8 claims pass.**
+**5/8 claims pass.**
 
 | claim | verdict |
 | --- | --- |
-| the duchesse de Guermantes's standing among the corpus elite: non-provisional and ranked in the top 10% of the non-provisional set in at least one lens | PASS |
+| the duchesse de Guermantes's standing among the corpus elite: non-provisional and ranked in the top 10% of the non-provisional set in at least one lens | FAIL |
 | Rachel ranked: present in the corpus, playing comparisons, and non-provisional in at least one lens (the closed-world corpus could not see her at all) | PASS |
 | Bloch's inclusion near the bottom: bottom quartile of the non-provisional inclusion set | FAIL |
 | Odette's prestige above her inclusion: prestige rating > inclusion rating | PASS |
@@ -146,15 +146,15 @@ Each claim comes from the design doc; each operationalization was fixed before t
 | Saniette last or near it: bottom 10% of the non-provisional advantage set | PASS |
 | l'amie de Mlle Vinteuil present: appears in at least one scored unit and plays comparisons | PASS |
 
-### duchesse — PASS
+### duchesse — FAIL
 
 the duchesse de Guermantes's standing among the corpus elite: non-provisional and ranked in the top 10% of the non-provisional set in at least one lens
 
 | lens | rating | band | rank | non provisional count | rank percentile |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| advantage | 1484.4 | 80.5 | 19 | 60 | 0.317 |
-| prestige | 1516.6 | 79.9 | 9 | 66 | 0.136 |
-| inclusion | 1503 | 62.1 | 4 | 70 | 0.057 |
+| advantage | 1460.6 | 104.1 | 14 | 35 | 0.4 |
+| prestige | 1588.4 | 167.4 | 6 | 8 | 0.75 |
+| inclusion | 1479 | 163.2 | 3 | 9 | 0.333 |
 
 ### rachel — PASS
 
@@ -162,9 +162,9 @@ Rachel ranked: present in the corpus, playing comparisons, and non-provisional i
 
 | lens | rating | band | rank | unit count | comparison count | provisional |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| advantage | 1514.1 | 113.3 | 21 | 43 | 146 | False |
-| prestige | 1571.8 | 113 | 2 | 43 | 146 | False |
-| inclusion | 1485.5 | 93.3 | 36 | 43 | 146 | False |
+| advantage | 1497.5 | 148.3 | 16 | 43 | 94 | False |
+| prestige | 1761.5 | 233 | - | 43 | 33 | True |
+| inclusion | 1169.3 | 331.9 | - | 43 | 13 | True |
 
 ### bloch — FAIL
 
@@ -172,7 +172,7 @@ Bloch's inclusion near the bottom: bottom quartile of the non-provisional inclus
 
 | lens | rating | rank | rank percentile | non provisional count | provisional |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| inclusion | 1495.6 | 8 | 0.114 | 70 | False |
+| inclusion | 1362.3 | 6 | 0.667 | 9 | False |
 
 ### odette — PASS
 
@@ -180,8 +180,8 @@ Odette's prestige above her inclusion: prestige rating > inclusion rating
 
 | lens | rating | rank | mean movement |
 | --- | ---: | ---: | ---: |
-| prestige | 1537.9 | 7 | 0.039 |
-| inclusion | 1495.7 | 10 | -0.037 |
+| prestige | 1688.7 | - | 0.039 |
+| inclusion | 1348.5 | 5 | -0.037 |
 
 ### charlus — PASS
 
@@ -189,9 +189,9 @@ Charlus's trajectory declining across the late volumes: mean smoothed advantage 
 
 | lens | first rating | last rating | early volume mean | late volume mean | early node count | late node count | rating | rank |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| advantage | 1545.1 | 1459.5 | 1515.9 | 1458.8 | 84 | 34 | 1459.5 | 28 |
-| prestige | 1516.2 | 1485 | 1545.3 | 1506.6 | 84 | 34 | 1485 | 16 |
-| inclusion | 1516.9 | 1515.7 | 1516.1 | 1516.7 | 84 | 34 | 1515.7 | 1 |
+| advantage | 1533.5 | 1407.3 | 1488.1 | 1409.4 | 81 | 33 | 1407.3 | 23 |
+| prestige | 1622.6 | 1446.9 | 1673.8 | 1496.1 | 39 | 22 | 1446.9 | 8 |
+| inclusion | 1779.7 | 1785.9 | 1782.7 | 1785.7 | 18 | 8 | 1785.9 | - |
 
 ### narrator — FAIL
 
@@ -199,9 +199,9 @@ the narrator mid-table with a tight band: advantage rank in the middle third of 
 
 | lens | rating | band | rank | rank percentile | median band | unit count | comparison count |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| advantage | 1421 | 76.1 | 42 | 0.7 | 130.3 | 316 | 1093 |
-| prestige | 1531.3 | - | 3 | - | - | - | - |
-| inclusion | 1505.1 | - | 2 | - | - | - | - |
+| advantage | 1368.7 | 87.2 | 26 | 0.743 | 148.3 | 316 | 816 |
+| prestige | 1702 | - | 2 | - | - | - | - |
+| inclusion | 1520.1 | - | 1 | - | - | - | - |
 
 ### saniette — PASS
 
@@ -209,7 +209,7 @@ Saniette last or near it: bottom 10% of the non-provisional advantage set
 
 | lens | rating | band | rank | rank percentile | provisional | non provisional count | mean movement |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| advantage | 1300.8 | 174.1 | 60 | 1 | False | 60 | -1.13 |
+| advantage | 1230 | 197.8 | 35 | 1 | False | 35 | -1.13 |
 
 ### amie — PASS
 
@@ -217,99 +217,86 @@ l'amie de Mlle Vinteuil present: appears in at least one scored unit and plays c
 
 | lens | unit count | comparison count | rating | band | rank | provisional |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| advantage | 12 | 44 | 1605.5 | 158.3 | 8 | False |
+| advantage | 12 | 24 | 1700.1 | 241.9 | - | True |
 
 ## 5. Headline standings (name view, non-provisional)
 
-### advantage — top 15 of 60 non-provisional (288 rated)
+### advantage — top 15 of 35 non-provisional (288 rated)
 
 | rank | character | rating | band | conservative | units | comparisons | mean m | mean abs m |
 | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | Françoise | 1601.4 | 121.9 | 1479.5 | 82 | 217 | +0.120 | 0.529 |
-| 2 | la grand-mère | 1600.0 | 127.9 | 1472.1 | 80 | 225 | +0.138 | 0.639 |
-| 3 | Elstir | 1578.7 | 121.5 | 1457.2 | 29 | 106 | +0.476 | 0.677 |
-| 4 | le peintre | 1605.4 | 150.0 | 1455.4 | 8 | 42 | +0.279 | 0.279 |
-| 5 | Bergotte | 1597.4 | 145.1 | 1452.3 | 36 | 129 | +0.145 | 0.662 |
-| 6 | Jupien | 1575.0 | 124.1 | 1450.9 | 18 | 68 | +0.339 | 0.512 |
-| 7 | Aimé | 1576.4 | 127.3 | 1449.1 | 18 | 79 | +0.153 | 0.248 |
-| 8 | l'amie de Mlle Vinteuil | 1605.5 | 158.3 | 1447.2 | 12 | 44 | +0.068 | 0.068 |
-| 9 | le grand-père du narrateur | 1633.1 | 190.7 | 1442.4 | 16 | 63 | +0.069 | 0.069 |
-| 10 | la mère du narrateur | 1543.3 | 115.4 | 1427.9 | 40 | 144 | +0.087 | 0.306 |
-| 11 | Mlle Vinteuil | 1553.3 | 125.8 | 1427.5 | 15 | 71 | -0.152 | 0.264 |
-| 12 | Swann | 1503.3 | 83.6 | 1419.7 | 202 | 667 | -0.314 | 0.658 |
-| 13 | Norpois | 1566.2 | 149.5 | 1416.7 | 63 | 180 | -0.157 | 0.442 |
-| 14 | Robert de Saint-Loup | 1498.5 | 84.9 | 1413.6 | 168 | 508 | -0.107 | 0.604 |
-| 15 | le père du narrateur | 1566.1 | 154.4 | 1411.7 | 24 | 90 | +0.007 | 0.135 |
+| 1 | Françoise | 1647.8 | 140.9 | 1506.9 | 82 | 141 | +0.120 | 0.529 |
+| 2 | la grand-mère | 1654.2 | 164.8 | 1489.4 | 80 | 142 | +0.138 | 0.639 |
+| 3 | Bergotte | 1630.8 | 174.8 | 1456.0 | 36 | 79 | +0.145 | 0.662 |
+| 4 | Elstir | 1609.7 | 154.9 | 1454.8 | 29 | 70 | +0.476 | 0.677 |
+| 5 | Aimé | 1616.0 | 183.9 | 1432.1 | 18 | 40 | +0.153 | 0.248 |
+| 6 | la mère du narrateur | 1579.5 | 166.9 | 1412.6 | 40 | 81 | +0.087 | 0.306 |
+| 7 | Norpois | 1573.0 | 164.7 | 1408.3 | 63 | 121 | -0.157 | 0.442 |
+| 8 | princesse de Guermantes | 1576.7 | 174.1 | 1402.6 | 25 | 58 | +0.129 | 0.470 |
+| 9 | Albertine | 1482.9 | 96.0 | 1386.9 | 146 | 298 | -0.173 | 0.705 |
+| 10 | prince de Guermantes | 1542.3 | 163.6 | 1378.7 | 22 | 61 | -0.093 | 0.338 |
+| 11 | le père du narrateur | 1559.8 | 187.0 | 1372.8 | 24 | 47 | +0.007 | 0.135 |
+| 12 | Mme Verdurin | 1488.5 | 120.8 | 1367.7 | 82 | 162 | -0.299 | 0.345 |
+| 13 | Swann | 1474.9 | 111.1 | 1363.8 | 202 | 446 | -0.314 | 0.658 |
+| 14 | duchesse de Guermantes | 1460.6 | 104.1 | 1356.5 | 199 | 452 | +0.051 | 0.485 |
+| 15 | Robert de Saint-Loup | 1457.4 | 106.9 | 1350.5 | 168 | 338 | -0.107 | 0.604 |
 
 Bottom 5, advantage:
 
 | rank | character | rating | band | conservative |
 | ---: | --- | ---: | ---: | ---: |
-| 60 | Saniette | 1300.8 | 174.1 | 1126.7 |
-| 59 | Mme d'Arpajon | 1374.2 | 163.8 | 1210.4 |
-| 58 | M. de Vaugoubert | 1396.1 | 169.1 | 1227.0 |
-| 57 | comtesse Molé | 1432.2 | 173.9 | 1258.3 |
-| 56 | la Berma | 1456.1 | 161.9 | 1294.2 |
+| 35 | Saniette | 1230.0 | 197.8 | 1032.2 |
+| 34 | Morel | 1303.8 | 120.8 | 1183.0 |
+| 33 | Mme de Cambremer | 1400.7 | 180.0 | 1220.7 |
+| 32 | Bloch | 1349.2 | 121.4 | 1227.8 |
+| 31 | la Berma | 1419.8 | 185.7 | 1234.1 |
 
-### prestige — top 15 of 66 non-provisional (288 rated)
+### prestige — top 15 of 8 non-provisional (288 rated)
 
 | rank | character | rating | band | conservative | units | comparisons | mean m | mean abs m |
 | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | Morel | 1589.4 | 96.2 | 1493.2 | 32 | 152 | +0.077 | 0.128 |
-| 2 | Rachel | 1571.8 | 113.0 | 1458.8 | 43 | 146 | +0.067 | 0.178 |
-| 3 | le narrateur | 1531.3 | 73.6 | 1457.7 | 316 | 1093 | +0.026 | 0.063 |
-| 4 | Bloch | 1548.4 | 92.7 | 1455.7 | 71 | 270 | -0.067 | 0.159 |
-| 5 | Gilberte | 1533.7 | 83.9 | 1449.8 | 76 | 312 | +0.098 | 0.134 |
-| 6 | Mme Verdurin | 1537.1 | 93.5 | 1443.6 | 82 | 311 | +0.070 | 0.223 |
-| 7 | Odette | 1537.9 | 94.4 | 1443.5 | 142 | 462 | +0.039 | 0.151 |
-| 8 | Robert de Saint-Loup | 1525.4 | 83.3 | 1442.1 | 168 | 508 | -0.000 | 0.160 |
-| 9 | duchesse de Guermantes | 1516.6 | 79.9 | 1436.7 | 199 | 662 | +0.163 | 0.206 |
-| 10 | Albertine | 1506.7 | 84.8 | 1421.9 | 146 | 387 | -0.017 | 0.051 |
-| 11 | Andrée | 1524.4 | 104.6 | 1419.8 | 31 | 114 | +0.023 | 0.023 |
-| 12 | Jupien | 1529.4 | 118.8 | 1410.6 | 18 | 68 | +0.094 | 0.094 |
-| 13 | M. Verdurin | 1532.8 | 122.5 | 1410.3 | 27 | 110 | -0.032 | 0.087 |
-| 14 | Mlle Vinteuil | 1529.7 | 121.0 | 1408.7 | 15 | 71 | +0.000 | 0.000 |
-| 15 | princesse de Parme | 1510.4 | 105.3 | 1405.1 | 38 | 130 | +0.095 | 0.095 |
+| 1 | Morel | 1817.3 | 195.1 | 1622.2 | 32 | 41 | +0.077 | 0.128 |
+| 2 | le narrateur | 1702.0 | 170.7 | 1531.3 | 316 | 187 | +0.026 | 0.063 |
+| 3 | Bloch | 1689.0 | 186.6 | 1502.4 | 71 | 55 | -0.067 | 0.159 |
+| 4 | Gilberte | 1643.3 | 161.5 | 1481.8 | 76 | 77 | +0.098 | 0.134 |
+| 5 | Mme Verdurin | 1637.7 | 169.5 | 1468.2 | 82 | 94 | +0.070 | 0.223 |
+| 6 | duchesse de Guermantes | 1588.4 | 167.4 | 1421.0 | 199 | 197 | +0.163 | 0.206 |
+| 7 | Robert de Saint-Loup | 1588.6 | 183.7 | 1404.9 | 168 | 128 | -0.000 | 0.160 |
+| 8 | baron de Charlus | 1446.9 | 159.7 | 1287.2 | 119 | 164 | +0.041 | 0.268 |
 
 Bottom 5, prestige:
 
 | rank | character | rating | band | conservative |
 | ---: | --- | ---: | ---: | ---: |
-| 66 | Saniette | 1300.5 | 177.2 | 1123.3 |
-| 65 | marquis de Cambremer | 1375.0 | 141.1 | 1233.9 |
-| 64 | la Berma | 1408.0 | 165.8 | 1242.2 |
-| 63 | Mme d'Arpajon | 1410.2 | 161.1 | 1249.1 |
-| 62 | Mme de Sévigné | 1480.4 | 195.3 | 1285.1 |
+| 8 | baron de Charlus | 1446.9 | 159.7 | 1287.2 |
+| 7 | Robert de Saint-Loup | 1588.6 | 183.7 | 1404.9 |
+| 6 | duchesse de Guermantes | 1588.4 | 167.4 | 1421.0 |
+| 5 | Mme Verdurin | 1637.7 | 169.5 | 1468.2 |
+| 4 | Gilberte | 1643.3 | 161.5 | 1481.8 |
 
-### inclusion — top 15 of 70 non-provisional (288 rated)
+### inclusion — top 15 of 9 non-provisional (288 rated)
 
 | rank | character | rating | band | conservative | units | comparisons | mean m | mean abs m |
 | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | baron de Charlus | 1515.7 | 61.6 | 1454.1 | 119 | 485 | +0.012 | 0.012 |
-| 2 | le narrateur | 1505.1 | 55.0 | 1450.1 | 316 | 1093 | +0.051 | 0.220 |
-| 3 | Gilberte | 1514.4 | 68.4 | 1446.0 | 76 | 312 | +0.008 | 0.035 |
-| 4 | duchesse de Guermantes | 1503.0 | 62.1 | 1440.9 | 199 | 662 | -0.004 | 0.004 |
-| 5 | Robert de Saint-Loup | 1502.1 | 65.2 | 1436.9 | 168 | 508 | -0.011 | 0.021 |
-| 6 | duc de Guermantes | 1504.5 | 73.2 | 1431.3 | 110 | 401 | +0.000 | 0.000 |
-| 7 | Morel | 1502.0 | 79.2 | 1422.8 | 32 | 152 | -0.024 | 0.024 |
-| 8 | Bloch | 1495.6 | 75.0 | 1420.6 | 71 | 270 | -0.120 | 0.177 |
-| 9 | Mme de Villeparisis | 1510.5 | 90.1 | 1420.4 | 79 | 236 | -0.029 | 0.029 |
-| 10 | Odette | 1495.7 | 75.4 | 1420.3 | 142 | 462 | -0.037 | 0.071 |
-| 11 | la mère du narrateur | 1514.0 | 94.1 | 1419.9 | 40 | 144 | -0.018 | 0.018 |
-| 12 | Mlle Vinteuil | 1529.8 | 111.9 | 1417.9 | 15 | 71 | +0.000 | 0.000 |
-| 13 | Swann | 1482.0 | 64.7 | 1417.3 | 202 | 667 | -0.067 | 0.117 |
-| 14 | Brichot | 1501.5 | 85.0 | 1416.5 | 21 | 135 | +0.000 | 0.000 |
-| 15 | Françoise | 1503.1 | 88.0 | 1415.1 | 82 | 217 | -0.018 | 0.018 |
+| 1 | le narrateur | 1520.1 | 101.3 | 1418.8 | 316 | 223 | +0.051 | 0.220 |
+| 2 | Gilberte | 1544.9 | 173.8 | 1371.1 | 76 | 33 | +0.008 | 0.035 |
+| 3 | duchesse de Guermantes | 1479.0 | 163.2 | 1315.8 | 199 | 41 | -0.004 | 0.004 |
+| 4 | Robert de Saint-Loup | 1427.2 | 162.8 | 1264.4 | 168 | 44 | -0.011 | 0.021 |
+| 5 | Odette | 1348.5 | 154.0 | 1194.5 | 142 | 64 | -0.037 | 0.071 |
+| 6 | Bloch | 1362.3 | 184.4 | 1177.9 | 71 | 38 | -0.120 | 0.177 |
+| 7 | Swann | 1287.1 | 127.2 | 1159.9 | 202 | 99 | -0.067 | 0.117 |
+| 8 | Mme Verdurin | 1333.9 | 181.3 | 1152.6 | 82 | 35 | -0.056 | 0.074 |
+| 9 | Albertine | 1292.8 | 166.7 | 1126.1 | 146 | 50 | -0.071 | 0.090 |
 
 Bottom 5, inclusion:
 
 | rank | character | rating | band | conservative |
 | ---: | --- | ---: | ---: | ---: |
-| 70 | Saniette | 1426.4 | 146.2 | 1280.2 |
-| 69 | Mme Féré | 1497.6 | 197.8 | 1299.8 |
-| 68 | M. de Crécy | 1497.6 | 195.2 | 1302.4 |
-| 67 | marquise de Gallardon | 1501.9 | 192.7 | 1309.2 |
-| 66 | tante Léonie | 1462.4 | 147.5 | 1314.9 |
+| 9 | Albertine | 1292.8 | 166.7 | 1126.1 |
+| 8 | Mme Verdurin | 1333.9 | 181.3 | 1152.6 |
+| 7 | Swann | 1287.1 | 127.2 | 1159.9 |
+| 6 | Bloch | 1362.3 | 184.4 | 1177.9 |
+| 5 | Odette | 1348.5 | 154.0 | 1194.5 |
 
 ## 6. Person view
 
@@ -317,32 +304,32 @@ The person view aggregates on registry entity ids with `person_view_merge` links
 
 | lens | merged | name-view rows | person-view row | mean abs rank shift | self-pairings dropped |
 | --- | --- | --- | --- | ---: | ---: |
-| advantage | le-peintre -> elstir | le peintre r=1605 rank=4 units=8; Elstir r=1579 rank=3 units=29 | elstir r=1584 rank=3 units=37 | 1.367 | 1 |
-| advantage | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1532 rank=41 units=3; duc de Guermantes r=1449 rank=39 units=110 | duc-de-guermantes r=1451 rank=38 units=113 | 1.367 | 1 |
-| prestige | le-peintre -> elstir | le peintre r=1518 rank=30 units=8; Elstir r=1501 rank=27 units=29 | elstir r=1503 rank=27 units=37 | 1.0 | 1 |
-| prestige | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1495 rank=58 units=3; duc de Guermantes r=1456 rank=40 units=110 | duc-de-guermantes r=1456 rank=40 units=113 | 1.0 | 1 |
-| inclusion | le-peintre -> elstir | le peintre r=1515 rank=43 units=8; Elstir r=1504 rank=23 units=29 | elstir r=1506 rank=19 units=37 | 1.743 | 1 |
-| inclusion | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1503 rank=60 units=3; duc de Guermantes r=1504 rank=6 units=110 | duc-de-guermantes r=1505 rank=6 units=113 | 1.743 | 1 |
+| advantage | le-peintre -> elstir | le peintre r=1729 rank=- units=8; Elstir r=1610 rank=4 units=29 | elstir r=1630 rank=3 units=37 | 0.114 | 1 |
+| advantage | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1570 rank=- units=3; duc de Guermantes r=1396 rank=27 units=110 | duc-de-guermantes r=1400 rank=27 units=113 | 0.114 | 1 |
+| prestige | le-peintre -> elstir | le peintre r=1590 rank=- units=8; Elstir r=1336 rank=- units=29 | elstir r=1394 rank=- units=37 | 0.0 | 1 |
+| prestige | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1477 rank=- units=3; duc de Guermantes r=1367 rank=- units=110 | duc-de-guermantes r=1366 rank=- units=113 | 0.0 | 1 |
+| inclusion | le-peintre -> elstir | le peintre r=1611 rank=- units=8; Elstir r=1574 rank=- units=29 | elstir r=1612 rank=- units=37 | 0.0 | 0 |
+| inclusion | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1500 rank=- units=3; duc de Guermantes r=1413 rank=- units=110 | duc-de-guermantes r=1414 rank=- units=113 | 0.0 | 0 |
 
 Largest rank shifts between the two views (name-view rank minus person-view rank; the two views rank different fields, so a shift is not by itself a finding):
 
 | lens | character | person key | name rank | person rank | shift | rating shift |
 | --- | --- | --- | ---: | ---: | ---: | ---: |
-| advantage | Albertine | albertine | 17 | 14 | +3 | +1.2 |
-| advantage | Mme de Villeparisis | mme-de-villeparisis | 32 | 29 | +3 | +0.9 |
-| advantage | prince des Laumes | duc-de-guermantes | 41 | 38 | +3 | -80.5 |
-| advantage | princesse de Parme | princesse-de-parme | 47 | 44 | +3 | +1.9 |
-| advantage | Bloch | bloch | 44 | 42 | +2 | +1.1 |
-| prestige | prince des Laumes | duc-de-guermantes | 58 | 40 | +18 | -39.7 |
-| prestige | le peintre | elstir | 30 | 27 | +3 | -15.2 |
-| prestige | M. d'Argencourt | m-d-argencourt | 61 | 59 | +2 | -0.1 |
-| prestige | Mme Sazerat | mme-sazerat | 60 | 58 | +2 | +0.0 |
-| prestige | Mme d'Arpajon | mme-d-arpajon | 63 | 61 | +2 | -0.2 |
-| inclusion | prince des Laumes | duc-de-guermantes | 60 | 6 | +54 | +1.6 |
-| inclusion | le peintre | elstir | 43 | 19 | +24 | -9.0 |
-| inclusion | Elstir | elstir | 23 | 19 | +4 | +1.8 |
-| inclusion | M. Ski | ski | 65 | 63 | +2 | +0.2 |
-| inclusion | M. de Crécy | M. de Crécy | 68 | 66 | +2 | +0.1 |
+| advantage | Bergotte | bergotte | 3 | 4 | -1 | +1.8 |
+| advantage | Elstir | elstir | 4 | 3 | +1 | +20.0 |
+| advantage | M. Verdurin | m-verdurin | 18 | 17 | +1 | -1.5 |
+| advantage | comte de Forcheville | comte-de-forcheville | 17 | 18 | -1 | -4.8 |
+| advantage | Aimé | aime | 5 | 5 | +0 | +2.3 |
+| prestige | Bloch | bloch | 3 | 3 | +0 | +0.0 |
+| prestige | Gilberte | gilberte | 4 | 4 | +0 | -0.3 |
+| prestige | Mme Verdurin | mme-verdurin | 5 | 5 | +0 | +0.2 |
+| prestige | Morel | morel | 1 | 1 | +0 | +0.1 |
+| prestige | Robert de Saint-Loup | saint-loup | 7 | 7 | +0 | +0.0 |
+| inclusion | Albertine | albertine | 9 | 9 | +0 | +1.6 |
+| inclusion | Bloch | bloch | 6 | 6 | +0 | +1.0 |
+| inclusion | Gilberte | gilberte | 2 | 2 | +0 | +1.3 |
+| inclusion | Mme Verdurin | mme-verdurin | 8 | 8 | +0 | +0.9 |
+| inclusion | Odette | odette | 5 | 5 | +0 | +1.1 |
 
 ## 7. Reading notes: where the implementation had to choose
 
@@ -355,5 +342,5 @@ The design doc leaves four points open; each was resolved once, in code, and is 
 
 Deferred, as the design doc says: dossier lens cards (dominant dimension, percentile), the archetype rewrite, and the person/name UI toggle -- all app-facing, all after the adoption gate. The corpus summary carries the sign triple the archetype would use.
 
-Wall clock: 126.8 s for the validation battery; 2160.312 s for the build it reads.
+Wall clock: 87.2 s for the validation battery; 540.057 s for the build it reads.
 
