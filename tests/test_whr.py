@@ -313,6 +313,183 @@ def test_fit_rejects_a_non_positive_wiener_rate():
         assert "w2_elo" in str(exc)
 
 
+def test_expand_draws_splits_a_weighted_draw_evenly_between_the_sides():
+    expanded = whr.expand_draws(
+        [
+            ("A", "B", 0, 1.0, 0.8),
+            ("A", "B", 0, 0.0, 0.8),
+            ("A", "B", 0, 0.5, 0.8),
+            ("A", "B", 0, 1.0),
+        ]
+    )
+
+    assert expanded == [
+        ("A", "B", 0, 0.8),
+        ("B", "A", 0, 0.8),
+        ("A", "B", 0, 0.4),
+        ("B", "A", 0, 0.4),
+        ("A", "B", 0, 1.0),
+    ]
+
+
+def test_two_half_weight_games_equal_one_full_weight_game():
+    # A weight is evidence, not a count: staking 0.5 twice on the same
+    # reading is staking 1.0 once. If this failed, weighted comparisons
+    # would not compose and no weighted fit could be interpreted.
+    halved = []
+    whole = []
+    for game in (
+        ("A", "B", 0, 1.0),
+        ("B", "C", 0, 0.5),
+        ("A", "C", 6, 0.0),
+        ("A", "B", 14, 1.0),
+        ("B", "C", 14, 0.5),
+    ):
+        player_a, player_b, time, score_a = game
+        halved.append((player_a, player_b, time, score_a, 0.5))
+        halved.append((player_a, player_b, time, score_a, 0.5))
+        whole.append((player_a, player_b, time, score_a, 1.0))
+
+    from_halves = whr.fit(halved, 15.0, tolerance=1e-12)
+    from_wholes = whr.fit(whole, 15.0, tolerance=1e-12)
+
+    for name, nodes in from_wholes["players"].items():
+        for whole_node, half_node in zip(nodes, from_halves["players"][name]):
+            assert whole_node["time"] == half_node["time"]
+            assert abs(whole_node["log_gamma"] - half_node["log_gamma"]) < 1e-9
+            assert abs(whole_node["band"] - half_node["band"]) < 1e-7
+
+
+def test_analytic_gradient_matches_finite_differences_with_mixed_weights():
+    # The same check as the unweighted case, but with every game carrying
+    # its own weight and evaluated well away from the optimum, which is
+    # where a weight dropped from the gradient (or from the Hessian, via
+    # a Newton step that no longer matches its own gradient) shows up.
+    random.seed(20260812)
+    names = ["p1", "p2", "p3", "p4"]
+    times = [0, 7, 30]
+    games = []
+    for _game in range(16):
+        first, second = random.sample(names, 2)
+        games.append(
+            (
+                first,
+                second,
+                random.choice(times),
+                random.choice([1.0, 0.5, 0.0]),
+                random.choice([0.15, 0.5, 0.83, 1.0]),
+            )
+        )
+
+    players = whr._build_players(games)
+    for name in players:
+        for index in range(len(players[name]["log_gammas"])):
+            players[name]["log_gammas"][index] = random.uniform(-1.5, 1.5)
+
+    w2 = whr.w2_from_elo(15.0)
+    initial_variance = whr.variance_from_rd(whr.DEFAULT_INITIAL_RD)
+    step = 1e-6
+    for name in sorted(players):
+        gradient, _diagonal, _off_diagonal = whr._player_system(players[name], players, w2, initial_variance)
+        for index in range(len(gradient)):
+            original = players[name]["log_gammas"][index]
+            players[name]["log_gammas"][index] = original + step
+            up = whr.log_posterior(players, w2, initial_variance)
+            players[name]["log_gammas"][index] = original - step
+            down = whr.log_posterior(players, w2, initial_variance)
+            players[name]["log_gammas"][index] = original
+            numeric = (up - down) / (2.0 * step)
+            assert abs(numeric - gradient[index]) < 1e-4
+
+
+# Pinned from the unweighted implementation as it stood before game
+# weights existed (commit 7751542). Weight 1.0 everywhere must reproduce
+# it to the last digit, which is what makes the weighted generalization a
+# generalization rather than a rewrite.
+UNWEIGHTED_REGRESSION_GAMES = [
+    ("Charlus", "Swann", 0, 1.0),
+    ("Odette", "Swann", 0, 0.0),
+    ("Charlus", "Odette", 0, 0.5),
+    ("Swann", "Odette", 4, 1.0),
+    ("Charlus", "Swann", 4, 0.0),
+    ("Odette", "Charlus", 11, 1.0),
+    ("Swann", "Charlus", 11, 0.5),
+    ("Odette", "Swann", 11, 1.0),
+    ("Charlus", "Odette", 30, 0.0),
+    ("Swann", "Odette", 30, 0.5),
+]
+UNWEIGHTED_REGRESSION_LOG_GAMMAS = {
+    "Charlus": [
+        (0, -0.409085215531),
+        (4, -0.410871253130),
+        (11, -0.412778418794),
+        (30, -0.416066760902),
+    ],
+    "Odette": [
+        (0, 0.202101646499),
+        (4, 0.203486990227),
+        (11, 0.207647637058),
+        (30, 0.210922337540),
+    ],
+    "Swann": [
+        (0, 0.206983569032),
+        (4, 0.207384262903),
+        (11, 0.205130781736),
+        (30, 0.205144423362),
+    ],
+}
+UNWEIGHTED_REGRESSION_BANDS = {
+    "Charlus": [274.001047, 273.945219, 274.062729, 275.548537],
+    "Odette": [250.700636, 250.582585, 250.591762, 251.732411],
+    "Swann": [250.486691, 250.367758, 250.573425, 252.247744],
+}
+
+
+def test_unweighted_fit_reproduces_the_pinned_pre_weight_fixture():
+    implicit = whr.fit(UNWEIGHTED_REGRESSION_GAMES, 15.0, tolerance=1e-10)
+    explicit = whr.fit(
+        [game + (1.0,) for game in UNWEIGHTED_REGRESSION_GAMES], 15.0, tolerance=1e-10
+    )
+
+    assert json.dumps(implicit, sort_keys=True) == json.dumps(explicit, sort_keys=True)
+    for name, expected_nodes in UNWEIGHTED_REGRESSION_LOG_GAMMAS.items():
+        nodes = implicit["players"][name]
+        assert len(nodes) == len(expected_nodes)
+        for node, (time, log_gamma) in zip(nodes, expected_nodes):
+            assert node["time"] == time
+            assert abs(node["log_gamma"] - log_gamma) < 1e-9
+        for node, band in zip(nodes, UNWEIGHTED_REGRESSION_BANDS[name]):
+            assert abs(node["band"] - band) < 1e-5
+
+
+def test_fit_rejects_a_non_positive_game_weight():
+    for weight in (0.0, -0.5):
+        try:
+            whr.fit([("A", "B", 0, 1.0, weight)], 15.0)
+            assert False, "expected ValueError"
+        except ValueError as exc:
+            assert "weight" in str(exc)
+
+
+def test_fit_rejects_a_malformed_game_tuple():
+    try:
+        whr.fit([("A", "B", 0)], 15.0)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "player_a" in str(exc)
+
+
+def test_a_lighter_game_moves_a_rating_less():
+    # Two identical head-to-head histories, one staked at full weight and
+    # one at a tenth of it: uncertainty must weigh, and only weigh.
+    def gap_at(weight):
+        games = [("winner", "loser", time, 1.0, weight) for time in range(0, 20, 2)]
+        result = whr.fit(games, 15.0, tolerance=1e-10)
+        return result["players"]["winner"][-1]["rating"] - result["players"]["loser"][-1]["rating"]
+
+    assert gap_at(1.0) > gap_at(0.4) > gap_at(0.1) > 0.0
+
+
 def test_rating_scale_round_trips():
     assert abs(whr.to_rating(0.0) - 1500.0) < 1e-12
     assert abs(whr.from_rating(whr.to_rating(1.25)) - 1.25) < 1e-12

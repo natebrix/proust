@@ -287,6 +287,32 @@ Use when:
 - you want to explain a chapter as a social field before drilling into paragraph overlays
 - you want the next app-facing middle layer after character pages and chapter overlays
 
+## Staged Scoring v2 Surfaces
+
+Everything under `outputs/scoring-v2/` is the scoring v2 build described in
+[scoring_v2_design.md](/Users/nathan_brixius/dev/proust/proust/docs/scoring_v2_design.md:1).
+It is STAGED, not adopted: no `-current` artifact is built from it, and nothing
+outside that directory is written by it. Adoption is a reviewed decision on the
+validation report.
+
+Contents:
+
+- `scoring-v2-{lens}-{name|person}-view-ratings.json` — weighted-WHR standings
+  and trajectories per lens, in both entity keyings
+- `scoring-v2-{lens}-{name|person}-view-timeline.json` — trajectory nodes joined
+  to corpus positions for the tracked character set
+- `scoring-v2-{lens}-comparisons.json` — the comparisons themselves (the primary
+  object; the ratings are downstream of these)
+- `scoring-v2-corpus-summary.json` / `.md` — per character per lens: appearances,
+  mean movement, mean |movement|, label counts, rating, band, rank
+- `scoring-v2-build-manifest.json` — corpus, weights, w2 selected per lens/view
+- `validation-report.md` / `.json` — the adoption gate: lens orthogonality vs v1,
+  bootstrap stability vs the v1 formula, predictive table with ELO/Glicko-2
+  baselines, and the pre-registered literary panel
+
+Rebuild with `python3 scripts/build_scoring_v2.py` (`--stage validate` re-runs
+only the battery against the staged artifacts).
+
 ## Historical Milestone Artifacts
 
 Some aggregate files are important historical checkpoints but are not the current default surface.

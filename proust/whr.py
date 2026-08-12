@@ -9,6 +9,12 @@ point of a Bayesian model in which
 
 - game results follow Bradley-Terry: player i beats player j with
   probability gamma_i / (gamma_i + gamma_j)
+- a game may carry a WEIGHT w > 0, which multiplies its contribution to
+  the log-likelihood (and hence to the gradient and the Hessian). A
+  weight is not a count: it is how much of one reading's evidence the
+  caller is willing to stake, so half-weight games are the model's way
+  of saying "this comparison is half as certain", and two weight-0.5
+  copies of a game are exactly one weight-1.0 game.
 - a player's rating follows a Wiener process (Brownian motion) in time:
   the increment between two consecutive appearances separated by `dt` is
   Normal(0, w2 * dt) on the natural log-gamma scale
@@ -173,25 +179,54 @@ def tridiagonal_inverse_diagonal(diagonal, off_diagonal):
     return [1.0 / (forward_pivots[i] + backward_pivots[i] - diagonal[i]) for i in range(n)]
 
 
-def expand_draws(games):
-    """Rewrite `(player_a, player_b, time, score_a)` games as weighted decisive games.
+def unpack_game(game):
+    """Read one input game as `(player_a, player_b, time, score_a, weight)`.
 
-    A win becomes one full-weight game; a loss becomes one full-weight
-    game with the players swapped; a draw becomes TWO half-weight games,
-    one in each direction. That is the draw model this module commits to,
-    and it is what `DRAW_MODEL` names.
+    A game is `(player_a, player_b, time, score_a)` -- weight 1.0, the
+    unweighted case -- or `(player_a, player_b, time, score_a, weight)`
+    with `weight > 0`. A non-positive weight is rejected rather than
+    silently dropped: a zero-weight game carries no evidence, so its
+    player would get a node with no likelihood attached to it, and a
+    negative weight would make the log-posterior non-concave.
+    """
+    if len(game) == 4:
+        player_a, player_b, time, score_a = game
+        weight = 1.0
+    elif len(game) == 5:
+        player_a, player_b, time, score_a, weight = game
+    else:
+        raise ValueError(
+            f"Game {game!r} must be (player_a, player_b, time, score_a) "
+            "or (player_a, player_b, time, score_a, weight)."
+        )
+    weight = float(weight)
+    if not weight > 0.0:
+        raise ValueError(f"Game weight must be positive; got {weight!r} for {player_a!r} vs {player_b!r}.")
+    return player_a, player_b, time, score_a, weight
+
+
+def expand_draws(games):
+    """Rewrite input games as one-directional decisive games carrying weights.
+
+    A win of weight w becomes one game of weight w; a loss of weight w
+    becomes one game of weight w with the players swapped; a draw of
+    weight w becomes TWO games of weight w/2, one in each direction.
+    That is the draw model this module commits to -- it is what
+    `DRAW_MODEL` names -- and it generalizes the unweighted half-win
+    convention, which is the w = 1 case.
     """
     expanded = []
-    for player_a, player_b, time, score_a in games:
+    for game in games:
+        player_a, player_b, time, score_a, weight = unpack_game(game)
         if player_a == player_b:
             raise ValueError(f'Player "{player_a}" cannot play itself at time {time}.')
         if score_a == 1.0:
-            expanded.append((player_a, player_b, time, 1.0))
+            expanded.append((player_a, player_b, time, weight))
         elif score_a == 0.0:
-            expanded.append((player_b, player_a, time, 1.0))
+            expanded.append((player_b, player_a, time, weight))
         elif score_a == 0.5:
-            expanded.append((player_a, player_b, time, 0.5))
-            expanded.append((player_b, player_a, time, 0.5))
+            expanded.append((player_a, player_b, time, 0.5 * weight))
+            expanded.append((player_b, player_a, time, 0.5 * weight))
         else:
             raise ValueError(f"Unsupported score {score_a!r}; expected 1.0, 0.5, or 0.0.")
     return expanded
@@ -378,9 +413,13 @@ def fit(
 ):
     """Fit whole-history rating trajectories to `games` by coordinate ascent.
 
-    `games` is an iterable of `(player_a, player_b, time, score_a)` where
-    `time` is an integer narrative index supplied by the caller and
-    `score_a` is 1.0, 0.5, or 0.0 from player_a's point of view.
+    `games` is an iterable of `(player_a, player_b, time, score_a)` or
+    `(player_a, player_b, time, score_a, weight)`, where `time` is an
+    integer narrative index supplied by the caller, `score_a` is 1.0,
+    0.5, or 0.0 from player_a's point of view, and `weight` (default
+    1.0, and required to be positive) multiplies that game's
+    log-likelihood contribution. A drawn game of weight w contributes
+    w/2 to each side.
 
     `w2_elo` is the Wiener variance rate in Elo^2 per unit of time; it is
     converted internally to the log-gamma scale. `initial_rd` is the
@@ -502,6 +541,7 @@ __all__ = [
     "to_rating",
     "to_rating_span",
     "tridiagonal_inverse_diagonal",
+    "unpack_game",
     "variance_from_rd",
     "w2_from_elo",
     "warm_start_from",
