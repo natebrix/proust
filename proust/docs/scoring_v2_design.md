@@ -1,6 +1,6 @@
 # Scoring v2 Design
 
-Status: design pass for review (2026-08-12). Decision context: the v1 scoring
+Status: **ADOPTED 2026-08-12** (reviewed via sample walkthrough and the validation gate; vacuous-pair amendment included). scoring v2 is THE scoring; v1 (proust/scoring.py) is retained for historical reproduction only. Decision context: the v1 scoring
 formula predates the foundation corpus. Its hand-tuned event/status weight
 tables were calibrated informally against a sparse closed-world corpus, it
 double-counts (events and the status effects derived from them both add to the
@@ -137,3 +137,18 @@ Adoption is a reviewed decision on that report.
 - Davidson-style tie modeling in WHR (half-win draws retained for now).
 - Person/name-view UI toggle.
 - Editorial rewrite and app sync: only after the adoption gate.
+
+
+## Adoption record (2026-08-12)
+
+Adopted as-is after the sample walkthrough and the full validation gate:
+draw rates fell to 6.4%/1.8%/0.6% per lens, appearance-count coupling fell to
+0.12/-0.52/0.05, cross-lens correlation fell from 0.98 to 0.13, stability
+roughly doubled, and the pre-registered panel passed in substance (three
+formal misses were percentage thresholds applied to the small rated sets of
+the sparse lenses). The thin prestige/inclusion rated sets (8 and 9
+characters vs 35 in advantage) are accepted as the corpus's honest evidence
+profile; enriching them is an annotation-side question, recorded as future
+work. A genuine v2 finding, verified in passages: the narrator ranks near the
+bottom of the rated advantage set while leading prestige and inclusion —
+scene-level suffering alongside durable standing and welcome.
