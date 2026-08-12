@@ -5,8 +5,10 @@ from pathlib import Path
 
 from . import coverage
 from . import foundation
+from . import foundation_reports
 from . import runner as core
 from . import supplement
+from .editorial import CHARACTER_PAGE_PILOT_EDITORIAL
 from .export_artifacts import write_coverage_audit_artifacts
 
 
@@ -48,21 +50,66 @@ def _character_whr_timeline_default_paths(lens, include_supplements):
     return f"{base}.json", f"{base}.md"
 
 
-def _supplemented_default_paths(base_name, include_supplements):
+def _aggregate_default_paths(base_name, include_supplements, foundation_corpus):
     # Unlike the character-elo family, these builders have no default output
-    # path at all when unsupplemented (an omitted --output/--markdown-output
+    # path at all when neither flag is set (an omitted --output/--markdown-output
     # simply prints the analysis to stdout, preserving existing behavior
-    # exactly); --include-supplements is the only thing that turns on a
-    # default path, and it always points at the -supplemented- artifact
-    # names so the unsuffixed -current.* files are never touched by this
-    # flag.
-    if not include_supplements:
+    # exactly). --include-supplements points at the -supplemented- artifact
+    # names so the unsuffixed -current.* files are never touched by that flag;
+    # --foundation writes the unsuffixed -current.* names, because the
+    # foundation corpus IS the current surface (git history keeps the
+    # superseded versions).
+    if foundation_corpus:
+        base = f"outputs/{base_name}-current"
+    elif include_supplements:
+        base = f"outputs/{base_name}-supplemented-current"
+    else:
         return None, None
-    base = f"outputs/{base_name}-supplemented-current"
     return f"{base}.json", f"{base}.md"
 
 
+FOUNDATION_HELP = (
+    "Build from the foundation corpus (outputs/foundation-run-*) alone. Legacy run-* and "
+    "supplement-run-* directories never feed a --foundation build, so a corpus change and a "
+    "scoring change can never be confused for one another."
+)
+
+
+def _add_foundation_arguments(command_parser):
+    command_parser.add_argument("--foundation", action="store_true", help=FOUNDATION_HELP)
+    command_parser.add_argument(
+        "--foundation-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover foundation-run-* directories from when --foundation is set. Defaults to outputs.",
+    )
+
+
+def _read_json_artifact(path):
+    return json.loads(Path(path).read_text())
+
+
+def _collect_supplement_runs(args):
+    # A foundation build never merges supplements: the supplement pass exists
+    # only to patch the legacy closed-world corpus, and the foundation pass
+    # re-annotated the whole corpus open-world instead.
+    if getattr(args, "foundation", False) or not getattr(args, "include_supplements", False):
+        return None
+    return core.discover_supplement_run_dirs(args.supplement_outputs_dir)
+
+
 def _collect_runs(args):
+    if getattr(args, "foundation", False):
+        if args.runs or getattr(args, "discover_runs", None):
+            raise ValueError(
+                "--foundation builds from outputs/foundation-run-* alone; drop --run and --discover-runs."
+            )
+        if getattr(args, "include_supplements", False):
+            raise ValueError(
+                "--foundation and --include-supplements are mutually exclusive: supplements do not "
+                "exist in the foundation corpus."
+            )
+        return core.discover_foundation_run_dirs(args.foundation_outputs_dir)
+
     runs = list(args.runs or [])
     if getattr(args, "discover_runs", None):
         runs.extend(core.discover_annotation_run_dirs(args.discover_runs))
@@ -133,6 +180,7 @@ def build_parser():
     )
     corpus_review_parser.add_argument("--output", help="Optional JSON output path.")
     corpus_review_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    _add_foundation_arguments(corpus_review_parser)
 
     coverage_audit_parser = subparsers.add_parser(
         "coverage-audit",
@@ -212,6 +260,62 @@ def build_parser():
     prepare_foundation_parser.add_argument("--run-id", help="Optional run identifier. Defaults to the output directory name.")
     prepare_foundation_parser.add_argument("--notes", default="", help="Optional note stored in run.json.")
 
+    unresolved_triage_parser = subparsers.add_parser(
+        "foundation-unresolved-triage",
+        help="Inventory every unresolved name in the foundation runs' resolutions/ sidecars, with a suggested disposition per name.",
+    )
+    unresolved_triage_parser.add_argument(
+        "--outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover foundation-run-* directories from. Defaults to outputs.",
+    )
+    unresolved_triage_parser.add_argument("--output", help="Optional JSON output path.")
+    unresolved_triage_parser.add_argument(
+        "--markdown-output",
+        default="outputs/foundation-unresolved-triage.md",
+        help="Markdown output path.",
+    )
+
+    editorial_discrepancies_parser = subparsers.add_parser(
+        "foundation-editorial-discrepancies",
+        help="Re-check the pilot character editorial's corpus claims against the foundation surfaces and report every claim that no longer holds.",
+    )
+    editorial_discrepancies_parser.add_argument(
+        "--outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover foundation-run-* directories from. Defaults to outputs.",
+    )
+    editorial_discrepancies_parser.add_argument(
+        "--cards",
+        default="outputs/character-profile-cards-current.json",
+        help="Foundation profile-cards artifact the claims are checked against.",
+    )
+    editorial_discrepancies_parser.add_argument(
+        "--baseline-cards",
+        default="outputs/character-profile-cards-supplemented-current.json",
+        help="Superseded profile-cards artifact the editorial prose was written against.",
+    )
+    editorial_discrepancies_parser.add_argument(
+        "--chapter-analysis",
+        help="Optional foundation chapter analysis artifact for the reading-path checks. Rebuilt for the pilot characters when omitted.",
+    )
+    editorial_discrepancies_parser.add_argument(
+        "--whr",
+        default="outputs/character-whr-advantage-current.json",
+        help="Foundation WHR artifact, for per-character match counts.",
+    )
+    editorial_discrepancies_parser.add_argument(
+        "--baseline-whr",
+        default="outputs/character-whr-advantage-supplemented-current.json",
+        help="Superseded WHR artifact, for per-character match counts.",
+    )
+    editorial_discrepancies_parser.add_argument("--output", help="Optional JSON output path.")
+    editorial_discrepancies_parser.add_argument(
+        "--markdown-output",
+        default="outputs/foundation-editorial-discrepancies.md",
+        help="Markdown output path.",
+    )
+
     character_analysis_parser = subparsers.add_parser(
         "character-analysis",
         help="Build a per-character cross-lens downstream analysis from the corpus review surface.",
@@ -225,6 +329,7 @@ def build_parser():
     )
     character_analysis_parser.add_argument("--output", help="Optional JSON output path.")
     character_analysis_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    _add_foundation_arguments(character_analysis_parser)
 
     character_chapter_parser = subparsers.add_parser(
         "character-chapter-analysis",
@@ -255,6 +360,7 @@ def build_parser():
     )
     character_chapter_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-chapter-cross-lens-supplemented-current.json with --include-supplements.")
     character_chapter_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-chapter-cross-lens-supplemented-current.md with --include-supplements.")
+    _add_foundation_arguments(character_chapter_parser)
 
     character_counts_parser = subparsers.add_parser(
         "character-annotation-counts",
@@ -269,6 +375,7 @@ def build_parser():
     )
     character_counts_parser.add_argument("--output", help="Optional JSON output path.")
     character_counts_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    _add_foundation_arguments(character_counts_parser)
 
     character_elo_parser = subparsers.add_parser(
         "character-elo",
@@ -305,6 +412,7 @@ def build_parser():
     )
     character_elo_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-current.json for the advantage lens (outputs/character-elo-<lens>-current.json for other lenses), or the -supplemented- variant with --include-supplements.")
     character_elo_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-current.md for the advantage lens (outputs/character-elo-<lens>-current.md for other lenses), or the -supplemented- variant with --include-supplements.")
+    _add_foundation_arguments(character_elo_parser)
 
     character_glicko2_parser = subparsers.add_parser(
         "character-glicko2",
@@ -341,6 +449,7 @@ def build_parser():
     )
     character_glicko2_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-glicko2-advantage-current.json for the advantage lens (outputs/character-glicko2-<lens>-current.json for other lenses), or the -supplemented- variant with --include-supplements.")
     character_glicko2_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-glicko2-advantage-current.md for the advantage lens (outputs/character-glicko2-<lens>-current.md for other lenses), or the -supplemented- variant with --include-supplements.")
+    _add_foundation_arguments(character_glicko2_parser)
 
     character_whr_parser = subparsers.add_parser(
         "character-whr",
@@ -382,6 +491,7 @@ def build_parser():
     )
     character_whr_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-whr-<lens>-current.json, or the -supplemented- variant with --include-supplements.")
     character_whr_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-whr-<lens>-current.md, or the -supplemented- variant with --include-supplements.")
+    _add_foundation_arguments(character_whr_parser)
 
     character_elo_timeline_parser = subparsers.add_parser(
         "character-elo-timeline",
@@ -418,6 +528,7 @@ def build_parser():
     )
     character_elo_timeline_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-elo-advantage-timeline-current.json for the advantage lens (outputs/character-elo-<lens>-timeline-current.json for other lenses), or the -supplemented- variant with --include-supplements.")
     character_elo_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-elo-advantage-timeline-current.md for the advantage lens (outputs/character-elo-<lens>-timeline-current.md for other lenses), or the -supplemented- variant with --include-supplements.")
+    _add_foundation_arguments(character_elo_timeline_parser)
 
     character_whr_timeline_parser = subparsers.add_parser(
         "character-whr-timeline",
@@ -453,6 +564,7 @@ def build_parser():
     )
     character_whr_timeline_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-whr-<lens>-timeline-current.json, or the -supplemented- variant with --include-supplements.")
     character_whr_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-whr-<lens>-timeline-current.md, or the -supplemented- variant with --include-supplements.")
+    _add_foundation_arguments(character_whr_timeline_parser)
 
     elo_supplement_diff_parser = subparsers.add_parser(
         "elo-supplement-diff",
@@ -542,6 +654,7 @@ def build_parser():
     )
     character_cards_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-profile-cards-supplemented-current.json with --include-supplements.")
     character_cards_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-profile-cards-supplemented-current.md with --include-supplements.")
+    _add_foundation_arguments(character_cards_parser)
 
     character_pages_parser = subparsers.add_parser(
         "character-pages",
@@ -572,6 +685,7 @@ def build_parser():
     )
     character_pages_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-pages-supplemented-current.json with --include-supplements.")
     character_pages_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-pages-supplemented-current.md with --include-supplements.")
+    _add_foundation_arguments(character_pages_parser)
 
     chapter_summaries_parser = subparsers.add_parser(
         "chapter-summaries",
@@ -586,6 +700,7 @@ def build_parser():
     )
     chapter_summaries_parser.add_argument("--output", help="Optional JSON output path.")
     chapter_summaries_parser.add_argument("--markdown-output", help="Optional Markdown output path.")
+    _add_foundation_arguments(chapter_summaries_parser)
 
     chapter_overlay_parser = subparsers.add_parser(
         "chapter-overlays",
@@ -603,6 +718,7 @@ def build_parser():
         required=True,
         help="Directory where manifest.json and chapter JSON files should be written.",
     )
+    _add_foundation_arguments(chapter_overlay_parser)
 
     alias_audit_parser = subparsers.add_parser(
         "character-alias-audit",
@@ -711,14 +827,19 @@ def main(argv=None):
             review = core.build_corpus_sanity_review(runs)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_corpus_review_artifacts(review, json_output=args.output, markdown_output=args.markdown_output)
-        if args.output or args.markdown_output:
+        default_json_output, default_markdown_output = _aggregate_default_paths(
+            "corpus-review", False, args.foundation
+        )
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_corpus_review_artifacts(review, json_output=json_output, markdown_output=markdown_output)
+        if json_output or markdown_output:
             print(json.dumps({
                 "run_count": review["run_count"],
                 "declared_unit_count": review["declared_unit_count"],
                 "valid_annotation_count": review["valid_annotation_count"],
-                "json_output": args.output,
-                "markdown_output": args.markdown_output,
+                "json_output": json_output,
+                "markdown_output": markdown_output,
             }, ensure_ascii=False, indent=2))
         else:
             print(json.dumps(review, ensure_ascii=False, indent=2))
@@ -810,6 +931,59 @@ def main(argv=None):
         }, ensure_ascii=False, indent=2))
         return 0
 
+    if args.command == "foundation-unresolved-triage":
+        try:
+            runs = core.discover_foundation_run_dirs(args.outputs_dir)
+            report = foundation_reports.build_foundation_unresolved_triage(runs)
+        except (ValueError, OSError) as exc:
+            parser.error(str(exc))
+        foundation_reports.write_foundation_unresolved_triage_artifacts(
+            report, json_output=args.output, markdown_output=args.markdown_output
+        )
+        print(json.dumps({
+            "run_count": report["run_count"],
+            "distinct_name_count": report["distinct_name_count"],
+            "unresolved_entry_count": report["unresolved_entry_count"],
+            "disposition_counts": report["disposition_counts"],
+            "json_output": args.output,
+            "markdown_output": args.markdown_output,
+        }, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "foundation-editorial-discrepancies":
+        try:
+            runs = core.discover_foundation_run_dirs(args.outputs_dir)
+            if args.chapter_analysis:
+                chapter_analysis = _read_json_artifact(args.chapter_analysis)
+            else:
+                chapter_analysis = core.build_character_chapter_analysis(
+                    runs,
+                    target_characters=list(CHARACTER_PAGE_PILOT_EDITORIAL),
+                )
+            report = foundation_reports.build_foundation_editorial_discrepancies(
+                _read_json_artifact(args.cards),
+                _read_json_artifact(args.baseline_cards),
+                foundation_chapter_analysis=chapter_analysis,
+                foundation_whr=_read_json_artifact(args.whr),
+                baseline_whr=_read_json_artifact(args.baseline_whr),
+                ambiguity_statistics=foundation_reports.build_ambiguity_statistics(
+                    runs, baseline_run_dirs=core.discover_annotation_run_dirs(args.outputs_dir)
+                ),
+            )
+        except (core.RunManifestNotFoundError, ValueError, OSError) as exc:
+            parser.error(str(exc))
+        foundation_reports.write_foundation_editorial_discrepancies_artifacts(
+            report, json_output=args.output, markdown_output=args.markdown_output
+        )
+        print(json.dumps({
+            "claim_count": report["claim_count"],
+            "discrepant_claim_count": report["discrepant_claim_count"],
+            "discrepant_reading_path_count": report["discrepant_reading_path_count"],
+            "json_output": args.output,
+            "markdown_output": args.markdown_output,
+        }, ensure_ascii=False, indent=2))
+        return 0
+
     if args.command == "character-alias-audit":
         try:
             audit = core.build_character_alias_audit(outputs_dir=args.outputs_dir, aliases_csv=args.aliases_csv)
@@ -833,12 +1007,17 @@ def main(argv=None):
             analysis = core.build_character_cross_lens_analysis(review)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_character_cross_lens_analysis_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
-        if args.output or args.markdown_output:
+        default_json_output, default_markdown_output = _aggregate_default_paths(
+            "character-cross-lens", False, args.foundation
+        )
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_cross_lens_analysis_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        if json_output or markdown_output:
             print(json.dumps({
                 "character_count": analysis["character_count"],
-                "json_output": args.output,
-                "markdown_output": args.markdown_output,
+                "json_output": json_output,
+                "markdown_output": markdown_output,
             }, ensure_ascii=False, indent=2))
         else:
             print(json.dumps(analysis, ensure_ascii=False, indent=2))
@@ -847,9 +1026,7 @@ def main(argv=None):
     if args.command == "character-chapter-analysis":
         try:
             runs = _collect_runs(args)
-            supplement_run_dirs = (
-                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
-            )
+            supplement_run_dirs = _collect_supplement_runs(args)
             analysis = core.build_character_chapter_analysis(
                 runs,
                 target_characters=args.characters,
@@ -857,8 +1034,8 @@ def main(argv=None):
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        default_json_output, default_markdown_output = _supplemented_default_paths(
-            "character-chapter-cross-lens", args.include_supplements
+        default_json_output, default_markdown_output = _aggregate_default_paths(
+            "character-chapter-cross-lens", args.include_supplements, args.foundation
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
@@ -879,12 +1056,17 @@ def main(argv=None):
             analysis = core.build_character_annotation_counts(review)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_character_annotation_counts_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
-        if args.output or args.markdown_output:
+        default_json_output, default_markdown_output = _aggregate_default_paths(
+            "character-annotation-counts", False, args.foundation
+        )
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_character_annotation_counts_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        if json_output or markdown_output:
             print(json.dumps({
                 "character_count": analysis["character_count"],
-                "json_output": args.output,
-                "markdown_output": args.markdown_output,
+                "json_output": json_output,
+                "markdown_output": markdown_output,
             }, ensure_ascii=False, indent=2))
         else:
             print(json.dumps(analysis, ensure_ascii=False, indent=2))
@@ -893,9 +1075,7 @@ def main(argv=None):
     if args.command == "character-elo":
         try:
             runs = _collect_runs(args)
-            supplement_run_dirs = (
-                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
-            )
+            supplement_run_dirs = _collect_supplement_runs(args)
             analysis = core.build_character_elo(
                 runs,
                 lens=args.lens,
@@ -919,9 +1099,7 @@ def main(argv=None):
     if args.command == "character-glicko2":
         try:
             runs = _collect_runs(args)
-            supplement_run_dirs = (
-                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
-            )
+            supplement_run_dirs = _collect_supplement_runs(args)
             analysis = core.build_character_glicko2(
                 runs,
                 lens=args.lens,
@@ -946,9 +1124,7 @@ def main(argv=None):
     if args.command == "character-whr":
         try:
             runs = _collect_runs(args)
-            supplement_run_dirs = (
-                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
-            )
+            supplement_run_dirs = _collect_supplement_runs(args)
             analysis = core.build_character_whr(
                 runs,
                 lens=args.lens,
@@ -975,9 +1151,7 @@ def main(argv=None):
     if args.command == "character-elo-timeline":
         try:
             runs = _collect_runs(args)
-            supplement_run_dirs = (
-                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
-            )
+            supplement_run_dirs = _collect_supplement_runs(args)
             analysis = core.build_character_elo_timeline(
                 runs,
                 lens=args.lens,
@@ -1001,9 +1175,7 @@ def main(argv=None):
     if args.command == "character-whr-timeline":
         try:
             runs = _collect_runs(args)
-            supplement_run_dirs = (
-                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
-            )
+            supplement_run_dirs = _collect_supplement_runs(args)
             analysis = core.build_character_whr_timeline(
                 runs,
                 lens=args.lens,
@@ -1081,14 +1253,12 @@ def main(argv=None):
     if args.command == "character-profile-cards":
         try:
             runs = _collect_runs(args)
-            supplement_run_dirs = (
-                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
-            )
+            supplement_run_dirs = _collect_supplement_runs(args)
             analysis = core.build_character_profile_cards(runs, supplement_run_dirs=supplement_run_dirs)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        default_json_output, default_markdown_output = _supplemented_default_paths(
-            "character-profile-cards", args.include_supplements
+        default_json_output, default_markdown_output = _aggregate_default_paths(
+            "character-profile-cards", args.include_supplements, args.foundation
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
@@ -1118,9 +1288,7 @@ def main(argv=None):
     if args.command == "character-pages":
         try:
             runs = _collect_runs(args)
-            supplement_run_dirs = (
-                core.discover_supplement_run_dirs(args.supplement_outputs_dir) if args.include_supplements else None
-            )
+            supplement_run_dirs = _collect_supplement_runs(args)
             analysis = core.build_character_pages(
                 runs,
                 target_characters=args.characters,
@@ -1128,8 +1296,8 @@ def main(argv=None):
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        default_json_output, default_markdown_output = _supplemented_default_paths(
-            "character-pages", args.include_supplements
+        default_json_output, default_markdown_output = _aggregate_default_paths(
+            "character-pages", args.include_supplements, args.foundation
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
@@ -1149,12 +1317,17 @@ def main(argv=None):
             analysis = core.build_chapter_summary_export(_collect_runs(args))
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        core.write_chapter_summary_export_artifacts(analysis, json_output=args.output, markdown_output=args.markdown_output)
-        if args.output or args.markdown_output:
+        default_json_output, default_markdown_output = _aggregate_default_paths(
+            "chapter-summaries", False, args.foundation
+        )
+        json_output = args.output or default_json_output
+        markdown_output = args.markdown_output or default_markdown_output
+        core.write_chapter_summary_export_artifacts(analysis, json_output=json_output, markdown_output=markdown_output)
+        if json_output or markdown_output:
             print(json.dumps({
                 "chapter_count": analysis["chapter_count"],
-                "json_output": args.output,
-                "markdown_output": args.markdown_output,
+                "json_output": json_output,
+                "markdown_output": markdown_output,
             }, ensure_ascii=False, indent=2))
         else:
             print(json.dumps(analysis, ensure_ascii=False, indent=2))

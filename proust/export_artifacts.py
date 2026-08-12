@@ -10,6 +10,16 @@ from .reporting_utils import (
 from .scoring import SCORING_LENS_CONFIGS, SCORING_LENS_ORDER
 
 
+def _corpus_metadata_line(analysis):
+    """Which corpus a rating surface was built from, when it is not the default one.
+
+    The foundation surfaces keep the standard -current artifact names, so the
+    corpus is recorded in the metadata rather than in the filename.
+    """
+    corpus = analysis.get("corpus")
+    return [f"- Corpus: `{corpus}`"] if corpus else []
+
+
 def render_character_cross_lens_analysis_markdown(analysis):
     lines = [
         "# Character Cross-Lens Analysis",
@@ -278,6 +288,7 @@ def render_character_elo_markdown(analysis):
         f"- Epsilon: `{analysis['epsilon']}`",
         f"- Min match count (summary tables): `{analysis.get('min_match_count', 0)}`",
     ]
+    lines.extend(_corpus_metadata_line(analysis))
     if analysis.get("supplemented"):
         lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
     lines.extend(
@@ -401,6 +412,7 @@ def render_character_elo_timeline_markdown(analysis):
         f"- Initial rating: `{analysis['initial_rating']}`",
         f"- K factor: `{analysis['k_factor']}`",
         f"- Epsilon: `{analysis['epsilon']}`",
+        *_corpus_metadata_line(analysis),
         "",
         "## Character Coverage",
         "",
@@ -917,6 +929,7 @@ def render_character_glicko2_markdown(analysis):
         f"- Period count: `{analysis['period_count']}`",
         f"- Provisional RD threshold: `{analysis['rd_provisional_threshold']}`",
     ]
+    lines.extend(_corpus_metadata_line(analysis))
     if analysis.get("supplemented"):
         lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
     lines.extend(
@@ -1098,6 +1111,7 @@ def render_character_whr_markdown(analysis):
         f"`{analysis['convergence']['filtered_sweep_total']}` sweeps, "
         f"`{analysis['convergence']['filtered_non_converged_fits']}` of them unconverged",
     ]
+    lines.extend(_corpus_metadata_line(analysis))
     if analysis.get("supplemented"):
         lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
 
@@ -1244,6 +1258,7 @@ def render_character_whr_timeline_markdown(analysis):
         f"- Tracked character count: `{analysis['tracked_character_count']}`",
         f"- Point count: `{analysis['point_count']}`",
     ]
+    lines.extend(_corpus_metadata_line(analysis))
     if analysis.get("supplemented"):
         lines.append(f"- Supplemented: `true` (runs: {', '.join(analysis.get('supplement_runs', [])) or 'none'})")
 

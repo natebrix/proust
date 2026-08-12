@@ -10,6 +10,7 @@ from . import glicko2
 from . import runner
 from .app_config import ISLT_PORTRAITS_DIR, ISLT_READER_BASE_PATH, PORTRAIT_STYLES
 from .editorial import CHAPTER_SUMMARY_EDITORIAL, CHARACTER_PAGE_PILOT_EDITORIAL, CHARACTER_PORTRAIT_SLUGS
+from .foundation import FOUNDATION_RUN_TYPE
 from .paths import ISLT_EDITIONS_DIR
 from .reporting_utils import character_ranks, character_totals_by_name
 from .scoring import SCORING_LENS_CONFIGS, SCORING_LENS_ORDER
@@ -814,6 +815,53 @@ def discover_supplement_run_dirs(outputs_dir="outputs"):
     )
 
 
+def _run_type(run_dir):
+    manifest_path = Path(run_dir) / "run.json"
+    if not manifest_path.exists():
+        return None
+    try:
+        return json.loads(manifest_path.read_text()).get("run_type")
+    except ValueError:
+        return None
+
+
+def discover_foundation_run_dirs(outputs_dir="outputs"):
+    """The foundation corpus: foundation-run-* directories, and nothing else.
+
+    A directory qualifies only when its run.json declares
+    run_type == "foundation", so the legacy run-* and supplement-run-*
+    families can never leak into a foundation build even if one of them is
+    ever renamed into the foundation namespace.
+    """
+    output_path = Path(outputs_dir)
+    if not output_path.exists():
+        raise ValueError(f'Outputs directory "{output_path}" does not exist.')
+
+    run_dirs = sorted(
+        run_dir
+        for run_dir in output_path.glob("foundation-run-*")
+        if run_dir.is_dir() and _run_type(run_dir) == FOUNDATION_RUN_TYPE
+    )
+    if not run_dirs:
+        raise ValueError(f'No foundation run directories found under "{output_path}".')
+    return run_dirs
+
+
+def foundation_corpus_label(run_dirs):
+    """"foundation" when every run feeding a build is a foundation run, else None.
+
+    The foundation surfaces keep the standard -current artifact names (the
+    -supplemented- naming era is over), so which corpus an artifact was
+    built from is recorded in its metadata instead of in its filename.
+    """
+    run_dirs = list(run_dirs or [])
+    if not run_dirs:
+        return None
+    if all(_run_type(run_dir) == FOUNDATION_RUN_TYPE for run_dir in run_dirs):
+        return FOUNDATION_RUN_TYPE
+    return None
+
+
 def _supplement_preferred_run_by_unit(supplement_run_dirs):
     # Mirrors the "latest_reviewed_run_wins" duplicate-unit resolution used
     # for accepted run_dirs above, scoped to the supplement run family only:
@@ -1547,6 +1595,10 @@ def build_character_elo(
         "characters": characters,
     }
 
+    corpus = foundation_corpus_label(run_dirs)
+    if corpus:
+        result["corpus"] = corpus
+
     if supplement_run_dirs:
         result["supplemented"] = True
         result["supplement_runs"] = overlay_dataset.get("supplement_runs", [])
@@ -1655,6 +1707,10 @@ def build_character_elo_timeline(
         "characters": characters,
         "points": points,
     }
+
+    corpus = foundation_corpus_label(run_dirs)
+    if corpus:
+        result["corpus"] = corpus
 
     if supplement_run_dirs:
         result["supplemented"] = True
@@ -2029,6 +2085,10 @@ def build_character_glicko2(
         )[:10],
         "characters": characters,
     }
+
+    corpus = foundation_corpus_label(run_dirs)
+    if corpus:
+        result["corpus"] = corpus
 
     if supplement_run_dirs:
         result["supplemented"] = True

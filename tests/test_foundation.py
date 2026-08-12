@@ -516,3 +516,212 @@ def test_reconcile_maps_narrator_targets_to_le_narrateur():
     assert result["appraisal_events"][0]["source"] == "narrator"  # voice stays
     assert result["appraisal_events"][0]["target"] == "le narrateur"
     assert result["status_effects"][0]["character"] == "le narrateur"
+
+
+# ------------------------------------------------- foundation-only discovery
+
+
+def _write_foundation_run(outputs_dir, run_id, characters, chapter_id=CHAPTER_ID):
+    """A real foundation run (prompt v2 + reference sheet) with one annotated unit."""
+    run_dir = outputs_dir / run_id
+    spec = foundation.derive_foundation_unit_specs(chapter_id, window=5)[0]
+    foundation.prepare_foundation_run(run_dir, chapter_id, [spec], run_id=run_id)
+    unit_id = foundation.foundation_unit_id(spec)
+    foundation.write_foundation_result(run_dir, unit_id, _scored_annotation(unit_id, characters))
+    return run_dir
+
+
+def _scored_annotation(unit_id, characters):
+    characters_present = []
+    appraisal_events = []
+    status_effects = []
+    for index, character in enumerate(characters, start=1):
+        event_id = f"E{index}"
+        characters_present.append(
+            {
+                "canonical_name": character,
+                "surface_forms": [character],
+                "presence_type": "explicit",
+                "presence_confidence": 0.9,
+            }
+        )
+        appraisal_events.append(
+            {
+                "event_id": event_id,
+                "source": "narrator",
+                "target": character,
+                "type": "admiration",
+                "polarity": "positive",
+                "narrative_stance": "endorsed",
+                "confidence": 1.0,
+                "evidence": "x",
+                "explanation": "x",
+            }
+        )
+        status_effects.append(
+            {
+                "character": character,
+                "dimension": "social_status",
+                "delta": index,
+                "based_on_events": [event_id],
+                "confidence": 1.0,
+                "explanation": "x",
+            }
+        )
+    return {
+        "unit_id": unit_id,
+        "characters_present": characters_present,
+        "appraisal_events": appraisal_events,
+        "status_effects": status_effects,
+        "ambiguities": [],
+    }
+
+
+def _write_legacy_runs(outputs_dir):
+    """A legacy run-* and a supplement-run-*, both annotated, as decoys."""
+    from proust import runner as core
+
+    legacy_run = outputs_dir / "run-001"
+    supplement_run = outputs_dir / "supplement-run-001"
+    for run_dir in (legacy_run, supplement_run):
+        manifest = core.prepare_annotation_run(run_dir)
+        core.write_annotation_result(
+            run_dir,
+            manifest.unit_ids[0],
+            _scored_annotation(manifest.unit_ids[0], ["Legacy Only Character"]),
+        )
+    return legacy_run, supplement_run
+
+
+def test_foundation_discovery_excludes_legacy_and_supplement_runs(tmp_path):
+    from proust import app_exports
+
+    outputs_dir = tmp_path / "outputs"
+    outputs_dir.mkdir()
+    foundation_run = _write_foundation_run(outputs_dir, "foundation-run-001", ["Swann"])
+    _write_legacy_runs(outputs_dir)
+
+    # A directory in the foundation namespace whose manifest does not declare
+    # run_type "foundation" is not a foundation run either.
+    impostor = outputs_dir / "foundation-run-999"
+    impostor.mkdir()
+    (impostor / "run.json").write_text(json.dumps({"run_id": "foundation-run-999", "unit_ids": []}))
+
+    assert app_exports.discover_foundation_run_dirs(outputs_dir) == [foundation_run]
+
+
+def test_foundation_discovery_raises_when_there_is_no_foundation_corpus(tmp_path):
+    from proust import app_exports
+
+    outputs_dir = tmp_path / "outputs"
+    outputs_dir.mkdir()
+    _write_legacy_runs(outputs_dir)
+
+    with pytest.raises(ValueError):
+        app_exports.discover_foundation_run_dirs(outputs_dir)
+
+
+def test_foundation_corpus_label_is_all_or_nothing(tmp_path):
+    from proust import app_exports
+
+    outputs_dir = tmp_path / "outputs"
+    outputs_dir.mkdir()
+    foundation_run = _write_foundation_run(outputs_dir, "foundation-run-001", ["Swann"])
+    legacy_run, _supplement_run = _write_legacy_runs(outputs_dir)
+
+    assert app_exports.foundation_corpus_label([foundation_run]) == "foundation"
+    assert app_exports.foundation_corpus_label([foundation_run, legacy_run]) is None
+    assert app_exports.foundation_corpus_label([]) is None
+
+
+def test_foundation_aggregate_build_uses_only_foundation_runs(tmp_path):
+    from proust import cli
+
+    outputs_dir = tmp_path / "outputs"
+    outputs_dir.mkdir()
+    _write_foundation_run(outputs_dir, "foundation-run-001", ["Swann", "Odette"])
+    _write_legacy_runs(outputs_dir)
+
+    review_path = tmp_path / "corpus-review.json"
+    assert cli.main([
+        "corpus-review",
+        "--foundation",
+        "--foundation-outputs-dir",
+        str(outputs_dir),
+        "--output",
+        str(review_path),
+    ]) == 0
+
+    review = json.loads(review_path.read_text())
+    assert review["run_count"] == 1
+    characters = {row["character"] for row in review["lens_reviews"]["advantage"]["character_totals"]}
+    assert characters == {"Swann", "Odette"}
+    assert "Legacy Only Character" not in characters
+    assert "supplemented" not in review
+
+
+def test_foundation_elo_records_the_corpus_and_never_mixes_run_families(tmp_path):
+    from proust import runner as core
+
+    outputs_dir = tmp_path / "outputs"
+    outputs_dir.mkdir()
+    _write_foundation_run(outputs_dir, "foundation-run-001", ["Swann", "Odette"])
+    legacy_run, _supplement_run = _write_legacy_runs(outputs_dir)
+
+    foundation_runs = core.discover_foundation_run_dirs(outputs_dir)
+    analysis = core.build_character_elo(foundation_runs, min_match_count=0)
+
+    assert analysis["corpus"] == "foundation"
+    assert {row["character"] for row in analysis["characters"]} == {"Swann", "Odette"}
+    # The legacy family keeps its existing artifact shape: no corpus key.
+    assert "corpus" not in core.build_character_elo([legacy_run], min_match_count=0)
+
+
+def test_foundation_flag_refuses_explicit_runs_and_supplements(tmp_path):
+    from proust import cli
+
+    outputs_dir = tmp_path / "outputs"
+    outputs_dir.mkdir()
+    _write_foundation_run(outputs_dir, "foundation-run-001", ["Swann", "Odette"])
+    legacy_run, _supplement_run = _write_legacy_runs(outputs_dir)
+
+    with pytest.raises(SystemExit):
+        cli.main([
+            "corpus-review",
+            "--foundation",
+            "--foundation-outputs-dir",
+            str(outputs_dir),
+            "--run",
+            str(legacy_run),
+        ])
+
+    with pytest.raises(SystemExit):
+        cli.main([
+            "character-pages",
+            "--foundation",
+            "--foundation-outputs-dir",
+            str(outputs_dir),
+            "--include-supplements",
+        ])
+
+
+def test_unresolved_triage_aggregates_the_resolution_sidecars(tmp_path):
+    from proust import foundation_reports
+
+    outputs_dir = tmp_path / "outputs"
+    outputs_dir.mkdir()
+    run_dir = outputs_dir / "foundation-run-001"
+    spec = foundation.derive_foundation_unit_specs(CHAPTER_ID, window=5)[0]
+    foundation.prepare_foundation_run(run_dir, CHAPTER_ID, [spec], run_id="foundation-run-001")
+    unit_id = foundation.foundation_unit_id(spec)
+    annotation = _scored_annotation(unit_id, ["Swann", "un inconnu de Doncières"])
+    annotation["characters_present"][1]["resolution"] = "unresolved"
+    foundation.write_foundation_result(run_dir, unit_id, annotation)
+
+    report = foundation_reports.build_foundation_unresolved_triage([run_dir])
+
+    assert report["unresolved_entry_count"] == 1
+    assert [row["name"] for row in report["names"]] == ["un inconnu de Doncières"]
+    row = report["names"][0]
+    assert row["unit_ids"] == [unit_id]
+    assert row["disposition"] == "one-off-legitimate"

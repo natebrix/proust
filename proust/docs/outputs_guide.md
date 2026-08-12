@@ -27,6 +27,30 @@ If you are re-entering the project and want the shortest useful path, read in th
 4. [character-chapter-cross-lens-current.md](/Users/nathan_brixius/dev/proust/outputs/character-chapter-cross-lens-current.md:1)
 5. [annotation_log.md](/Users/nathan_brixius/dev/proust/proust/docs/annotation_log.md:1) only if you need the historical path
 
+## Which Corpus The Current Artifacts Come From
+
+Every `-current` aggregate artifact is now built from the FOUNDATION corpus:
+the `outputs/foundation-run-*` directories (963 units, prompt v2, open world,
+annotated against the authoritative Wikisource text with a per-chapter registry
+reference sheet). The scoring config did NOT change in that cutover, so every
+difference between a current artifact and its superseded version is a corpus
+difference.
+
+The legacy `outputs/run-*` and `outputs/supplement-run-*` families and the
+`-supplemented-current` artifacts built from them are history. They are kept on
+disk, and the aggregate commands still build from them when asked, but nothing
+current is derived from them. `--foundation` on an aggregate command builds
+from the foundation corpus alone; the two families are never mixed in one
+build.
+
+Two reports accompany the cutover:
+
+- `foundation-unresolved-triage.*`: every name prompt v2 named but could not
+  resolve against the registry, with counts, units, and a suggested disposition
+- `foundation-editorial-discrepancies.*`: every corpus claim the pilot
+  character editorial makes that the new numbers no longer support. The pages
+  still ship the existing editorial text; rewriting it is a human judgement.
+
 ## Output Families
 
 The `outputs/` directory now contains five main artifact families:

@@ -1951,6 +1951,12 @@ def discover_supplement_run_dirs(outputs_dir="outputs"):
     return impl(outputs_dir)
 
 
+def discover_foundation_run_dirs(outputs_dir="outputs"):
+    from .app_exports import discover_foundation_run_dirs as impl
+
+    return impl(outputs_dir)
+
+
 def build_character_chapter_analysis(
     run_dirs,
     target_characters=None,

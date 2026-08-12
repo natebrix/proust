@@ -2,7 +2,7 @@
 
 - Analysis version: `character_cross_lens_analysis_v1`
 - Source review version: `corpus_sanity_review_v1`
-- Character count: `62`
+- Character count: `288`
 
 ## Top Positive By Lens
 
@@ -10,46 +10,46 @@
 
 | Character | Net Score | Units |
 | --- | --- | --- |
-| duchesse de Guermantes | +95.726 | 143 |
-| Elstir | +29.391 | 18 |
-| Bergotte | +17.016 | 33 |
-| Norpois | +14.145 | 67 |
-| princesse de Guermantes | +10.865 | 12 |
-| le peintre | +10.346 | 12 |
-| M. Vinteuil | +9.671 | 19 |
-| comte de Forcheville | +9.403 | 12 |
-| la mère du narrateur | +7.838 | 34 |
-| la Berma | +7.514 | 13 |
+| Céleste Albaret | +5.575 | 3 |
+| Elstir | +5.046 | 29 |
+| Mlle de Saint-Loup | +3.85 | 2 |
+| docteur Dieulafoy | +3.83 | 1 |
+| marquis du Lau | +3.295 | 2 |
+| M. de Courgivaux | +2.42 | 1 |
+| le pianiste | +2.277 | 3 |
+| Théodore | +2.26 | 1 |
+| colonel Picquart | +2.15 | 1 |
+| Jupien | +2.123 | 18 |
 
 ### inclusion
 
 | Character | Net Score | Units |
 | --- | --- | --- |
-| duchesse de Guermantes | +50.901 | 143 |
-| Elstir | +21.649 | 18 |
-| M. Vinteuil | +6.652 | 19 |
-| comte de Forcheville | +6.54 | 12 |
-| le peintre | +6.365 | 12 |
-| princesse de Guermantes | +5.569 | 12 |
-| Bergotte | +5.239 | 33 |
-| la mère du narrateur | +5.006 | 34 |
-| Jupien | +4.831 | 5 |
-| Norpois | +4.56 | 67 |
+| Céleste Albaret | +3.599 | 3 |
+| docteur Dieulafoy | +2.699 | 1 |
+| Mlle de Saint-Loup | +2.575 | 2 |
+| Victurnien | +2.117 | 2 |
+| marquis du Lau | +2.064 | 2 |
+| M. de Courgivaux | +1.854 | 1 |
+| Théodore | +1.638 | 1 |
+| colonel Picquart | +1.555 | 1 |
+| Mlle Bloch | +1.343 | 1 |
+| le pianiste | +1.314 | 3 |
 
 ### prestige
 
 | Character | Net Score | Units |
 | --- | --- | --- |
-| duchesse de Guermantes | +102.284 | 143 |
-| Elstir | +25.428 | 18 |
-| Bergotte | +18.336 | 33 |
-| Odette | +15.86 | 88 |
-| Norpois | +14.297 | 67 |
-| Gilberte | +12.637 | 44 |
-| princesse de Guermantes | +12.067 | 12 |
-| Robert de Saint-Loup | +9.924 | 197 |
-| comte de Forcheville | +9.845 | 12 |
-| le peintre | +9.151 | 12 |
+| Céleste Albaret | +4.56 | 3 |
+| docteur Dieulafoy | +3.605 | 1 |
+| Mlle de Saint-Loup | +2.945 | 2 |
+| marquis du Lau | +2.923 | 2 |
+| Mme de Chaussepierre | +2.32 | 1 |
+| le pianiste | +2.098 | 3 |
+| M. de Courgivaux | +2.018 | 1 |
+| Mlle d'Oloron | +1.92 | 1 |
+| Théodore | +1.818 | 1 |
+| colonel Picquart | +1.725 | 1 |
 
 ## Top Negative By Lens
 
@@ -57,130 +57,130 @@
 
 | Character | Net Score | Units |
 | --- | --- | --- |
-| Swann | -206.613 | 263 |
-| Albertine | -111.185 | 177 |
-| baron de Charlus | -95.347 | 124 |
-| Bloch | -81.142 | 61 |
-| duc de Guermantes | -59.531 | 61 |
-| Saniette | -30.311 | 11 |
-| Morel | -25.323 | 17 |
-| la grand-mère | -24.753 | 65 |
-| Mme de Cambremer | -22.629 | 21 |
-| Legrandin | -20.948 | 23 |
+| le narrateur | -268.695 | 316 |
+| Swann | -202.791 | 202 |
+| Albertine | -126.789 | 146 |
+| duc de Guermantes | -124.918 | 110 |
+| Bloch | -120.771 | 71 |
+| Odette | -102.025 | 142 |
+| Robert de Saint-Loup | -101.126 | 168 |
+| baron de Charlus | -96.286 | 119 |
+| Mme Verdurin | -73.213 | 82 |
+| Mme de Villeparisis | -57.389 | 79 |
 
 ### inclusion
 
 | Character | Net Score | Units |
 | --- | --- | --- |
-| Swann | -225.958 | 263 |
-| Albertine | -121.659 | 177 |
-| baron de Charlus | -86.557 | 124 |
-| Bloch | -82.66 | 61 |
-| duc de Guermantes | -52.097 | 61 |
-| la grand-mère | -30.265 | 65 |
-| Saniette | -28.381 | 11 |
-| Mme Verdurin | -25.921 | 68 |
-| Robert de Saint-Loup | -24.925 | 197 |
-| Mme de Cambremer | -24.435 | 21 |
+| le narrateur | -267.072 | 316 |
+| Swann | -206.587 | 202 |
+| Albertine | -129.528 | 146 |
+| duc de Guermantes | -114.591 | 110 |
+| Bloch | -114.21 | 71 |
+| Odette | -106.221 | 142 |
+| Robert de Saint-Loup | -104.621 | 168 |
+| baron de Charlus | -95.23 | 119 |
+| Mme Verdurin | -74.541 | 82 |
+| Mme de Villeparisis | -59.184 | 79 |
 
 ### prestige
 
 | Character | Net Score | Units |
 | --- | --- | --- |
-| Swann | -139.776 | 263 |
-| Albertine | -79.975 | 177 |
-| baron de Charlus | -77.192 | 124 |
-| Bloch | -56.308 | 61 |
-| duc de Guermantes | -47.194 | 61 |
-| Saniette | -25.672 | 11 |
-| Morel | -18.788 | 17 |
-| Legrandin | -17.293 | 23 |
-| marquise de Saint-Euverte | -16.261 | 7 |
-| Mme de Cambremer | -15.493 | 21 |
+| le narrateur | -226.919 | 316 |
+| Swann | -164.941 | 202 |
+| Albertine | -113.52 | 146 |
+| duc de Guermantes | -108.339 | 110 |
+| Bloch | -99.93 | 71 |
+| Robert de Saint-Loup | -92.039 | 168 |
+| Odette | -88.736 | 142 |
+| baron de Charlus | -86.021 | 119 |
+| Mme Verdurin | -60.504 | 82 |
+| Mme de Villeparisis | -50.284 | 79 |
 
 ## Largest Cross-Lens Rank Spread
 
 | Character | Advantage Rank | Prestige Rank | Inclusion Rank | Rank Spread | Max Units |
 | --- | --- | --- | --- | --- | --- |
-| Odette | 28 | 4 | 52 | 48 | 88 |
-| Robert de Saint-Loup | 35 | 8 | 54 | 46 | 197 |
-| Gilberte | 12 | 6 | 34 | 28 | 44 |
-| Mme de Villeparisis | 36 | 19 | 42 | 23 | 82 |
-| le père du narrateur | 40 | 30 | 45 | 15 | 15 |
-| marquise de Saint-Euverte | 48 | 54 | 41 | 13 | 7 |
-| Aimé | 25 | 36 | 26 | 11 | 15 |
-| princesse de Luxembourg | 37 | 42 | 31 | 11 | 4 |
-| Françoise | 46 | 40 | 50 | 10 | 70 |
-| M. Vinteuil | 7 | 13 | 3 | 10 | 19 |
-| Legrandin | 53 | 55 | 47 | 8 | 23 |
-| M. Verdurin | 47 | 48 | 40 | 8 | 18 |
-| Bloch père | 44 | 47 | 39 | 8 | 6 |
-| Mlle de Stermaria | 33 | 38 | 30 | 8 | 2 |
-| duc de Châtellerault | 42 | 43 | 36 | 7 | 8 |
+| Jupien | 10 | 21 | 145 | 135 | 18 |
+| Eulalie | 38 | 147 | 17 | 130 | 7 |
+| M. Bontemps | 63 | 38 | 143 | 105 | 2 |
+| Octave | 66 | 64 | 140 | 76 | 2 |
+| Bergotte | 180 | 209 | 236 | 56 | 36 |
+| duchesse de Guermantes | 253 | 256 | 278 | 25 | 199 |
+| le peintre | 165 | 190 | 187 | 25 | 8 |
+| M. d'Herweck | 219 | 224 | 204 | 20 | 2 |
+| Elstir | 2 | 16 | 19 | 17 | 29 |
+| Mme de Souvré | 204 | 197 | 214 | 17 | 2 |
+| docteur du Boulbon | 183 | 196 | 199 | 16 | 6 |
+| la marquise douairière de Cambremer | 22 | 23 | 37 | 15 | 6 |
+| Victurnien | 13 | 19 | 4 | 15 | 2 |
+| la Berma | 231 | 245 | 233 | 14 | 19 |
+| princesse de Guermantes | 234 | 233 | 246 | 13 | 25 |
 
 ## Highest Volatility
 
 | Character | Advantage Span | Prestige Span | Inclusion Span | Max Span | Max Units |
 | --- | --- | --- | --- | --- | --- |
-| Swann | +7.484 | +7.545 | +8.609 | +8.609 | 263 |
-| Albertine | +6.472 | +5.631 | +8.061 | +8.061 | 177 |
-| Mme de Villeparisis | +6.624 | +7.86 | +4.05 | +7.86 | 82 |
-| Odette | +6.598 | +7.422 | +6.155 | +7.422 | 88 |
-| Robert de Saint-Loup | +6.49 | +7.299 | +6.25 | +7.299 | 197 |
-| duc de Guermantes | +6.339 | +7.073 | +4.055 | +7.073 | 61 |
-| baron de Charlus | +7.0 | +6.188 | +6.854 | +7.0 | 124 |
-| Bloch | +6.315 | +6.817 | +6.633 | +6.817 | 61 |
-| le père du narrateur | +5.98 | +4.324 | +6.624 | +6.624 | 15 |
-| le narrateur | +5.121 | +3.336 | +6.539 | +6.539 | 6 |
-| Mme Verdurin | +6.53 | +5.85 | +6.496 | +6.53 | 68 |
-| la Berma | +6.142 | +6.407 | +6.236 | +6.407 | 13 |
-| Bergotte | +6.001 | +5.54 | +6.256 | +6.256 | 33 |
-| Gilberte | +6.239 | +5.954 | +6.197 | +6.239 | 44 |
-| M. Vinteuil | +6.21 | +6.125 | +4.324 | +6.21 | 19 |
+| Odette | +10.808 | +8.153 | +11.148 | +11.148 | 142 |
+| le narrateur | +9.253 | +7.413 | +10.648 | +10.648 | 316 |
+| Swann | +8.187 | +7.96 | +9.844 | +9.844 | 202 |
+| Robert de Saint-Loup | +9.378 | +9.167 | +8.558 | +9.378 | 168 |
+| baron de Charlus | +9.217 | +9.063 | +6.725 | +9.217 | 119 |
+| Mme de Villeparisis | +8.268 | +8.917 | +6.276 | +8.917 | 79 |
+| Mme Verdurin | +8.855 | +7.485 | +8.745 | +8.855 | 82 |
+| Albertine | +8.818 | +7.374 | +7.917 | +8.818 | 146 |
+| duc de Guermantes | +8.19 | +8.813 | +5.784 | +8.813 | 110 |
+| duchesse de Guermantes | +8.795 | +8.5 | +6.655 | +8.795 | 199 |
+| M. Vinteuil | +8.094 | +7.645 | +6.028 | +8.094 | 15 |
+| Rachel | +8.016 | +7.232 | +7.752 | +8.016 | 43 |
+| Norpois | +7.778 | +7.079 | +5.66 | +7.778 | 63 |
+| Bloch | +7.72 | +7.204 | +7.446 | +7.72 | 71 |
+| la Berma | +7.568 | +7.303 | +5.587 | +7.568 | 19 |
 
 ## Character Table
 
 | Character | Advantage | Prestige | Inclusion | Advantage Rank | Prestige Rank | Inclusion Rank | Max Units | Max Span |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| duchesse de Guermantes | +95.726 | +102.284 | +50.901 | 1 | 1 | 1 | 143 | +5.627 |
-| Elstir | +29.391 | +25.428 | +21.649 | 2 | 2 | 2 | 18 | +4.51 |
-| Bergotte | +17.016 | +18.336 | +5.239 | 3 | 3 | 7 | 33 | +6.256 |
-| Norpois | +14.145 | +14.297 | +4.56 | 4 | 5 | 10 | 67 | +5.15 |
-| princesse de Guermantes | +10.865 | +12.067 | +5.569 | 5 | 7 | 6 | 12 | +5.205 |
-| le peintre | +10.346 | +9.151 | +6.365 | 6 | 10 | 5 | 12 | +4.689 |
-| M. Vinteuil | +9.671 | +6.24 | +6.652 | 7 | 13 | 3 | 19 | +6.21 |
-| comte de Forcheville | +9.403 | +9.845 | +6.54 | 8 | 9 | 4 | 12 | +2.27 |
-| la mère du narrateur | +7.838 | +6.219 | +5.006 | 9 | 14 | 8 | 34 | +4.167 |
-| la Berma | +7.514 | +6.529 | +3.4 | 10 | 12 | 11 | 13 | +6.407 |
-| Jupien | +7.196 | +7.405 | +4.831 | 11 | 11 | 9 | 5 | +3.956 |
-| Gilberte | +6.706 | +12.637 | -5.8 | 12 | 6 | 34 | 44 | +6.239 |
-| M. de Marsantes | +4.42 | +4.234 | +2.262 | 13 | 15 | 13 | 4 | +4.699 |
-| jeune blonde de Rivebelle | +3.228 | +2.548 | +2.376 | 14 | 18 | 12 | 2 | 0.0 |
-| princesse de Parme | +3.205 | +4.179 | +0.871 | 15 | 16 | 18 | 14 | +5.242 |
-| M. Nissim Bernard | +3.096 | +3.526 | +1.806 | 16 | 17 | 14 | 1 | 0.0 |
-| marquis de Forestelle | +1.72 | +1.462 | +1.29 | 17 | 21 | 15 | 1 | 0.0 |
-| le pianiste | +1.537 | +1.214 | +1.136 | 18 | 23 | 16 | 1 | 0.0 |
-| Mlle d'Éporcheville | +1.46 | +1.241 | +1.095 | 19 | 22 | 17 | 1 | 0.0 |
-| Mme Cottard | +0.363 | +1.568 | -1.216 | 20 | 20 | 23 | 10 | +3.6 |
-| M. de Stermaria | +0.113 | +0.944 | -0.848 | 21 | 24 | 22 | 4 | +3.536 |
-| Dreyfus | +0.023 | +0.018 | -0.066 | 22 | 25 | 21 | 2 | +3.169 |
-| la reine de Naples | 0.0 | 0.0 | 0.0 | 23 | 26 | 19 | 1 | 0.0 |
-| le grand-père du narrateur | 0.0 | 0.0 | 0.0 | 24 | 27 | 20 | 1 | 0.0 |
-| Aimé | -0.944 | -1.477 | -1.474 | 25 | 36 | 26 | 15 | +3.42 |
-| Mme Bontemps | -1.582 | -1.07 | -1.522 | 26 | 29 | 27 | 2 | +2.898 |
-| Andrée | -1.602 | -0.873 | -3.393 | 27 | 28 | 32 | 18 | +5.24 |
-| Odette | -1.638 | +15.86 | -23.464 | 28 | 4 | 52 | 88 | +7.422 |
-| prince de Guermantes | -1.7 | -1.36 | -1.446 | 29 | 31 | 24 | 1 | 0.0 |
-| marquis de Bréauté | -1.72 | -1.376 | -1.462 | 30 | 32 | 25 | 1 | 0.0 |
-| M. de Chevregny | -1.8 | -1.44 | -1.53 | 31 | 33 | 28 | 1 | 0.0 |
-| général de Froberville | -1.84 | -1.472 | -1.564 | 32 | 35 | 29 | 3 | +1.84 |
-| Mlle de Stermaria | -2.224 | -1.852 | -1.852 | 33 | 38 | 30 | 2 | +0.664 |
-| Mme de Chaussepierre | -2.867 | -1.472 | -4.017 | 34 | 34 | 33 | 1 | 0.0 |
-| Robert de Saint-Loup | -3.318 | +9.924 | -24.925 | 35 | 8 | 54 | 197 | +7.299 |
-| Mme de Villeparisis | -4.415 | +1.839 | -11.403 | 36 | 19 | 42 | 82 | +7.86 |
-| princesse de Luxembourg | -5.009 | -6.109 | -3.165 | 37 | 42 | 31 | 4 | +2.066 |
-| le narrateur | -5.616 | -1.508 | -9.101 | 38 | 37 | 38 | 6 | +6.539 |
-| oncle Adolphe | -6.122 | -4.652 | -6.124 | 39 | 39 | 35 | 5 | +4.269 |
-| le père du narrateur | -6.537 | -1.294 | -13.533 | 40 | 30 | 45 | 15 | +6.624 |
+| Céleste Albaret | +5.575 | +4.56 | +3.599 | 1 | 1 | 1 | 3 | +3.065 |
+| Elstir | +5.046 | +0.99 | +0.411 | 2 | 16 | 19 | 29 | +6.6 |
+| Mlle de Saint-Loup | +3.85 | +2.945 | +2.575 | 3 | 3 | 3 | 2 | +0.81 |
+| docteur Dieulafoy | +3.83 | +3.605 | +2.699 | 4 | 2 | 2 | 1 | 0.0 |
+| marquis du Lau | +3.295 | +2.923 | +2.064 | 5 | 4 | 5 | 2 | +0.876 |
+| M. de Courgivaux | +2.42 | +2.018 | +1.854 | 6 | 7 | 6 | 1 | 0.0 |
+| le pianiste | +2.277 | +2.098 | +1.314 | 7 | 6 | 10 | 3 | +2.222 |
+| Théodore | +2.26 | +1.818 | +1.638 | 8 | 9 | 7 | 1 | 0.0 |
+| colonel Picquart | +2.15 | +1.725 | +1.555 | 9 | 10 | 8 | 1 | 0.0 |
+| Jupien | +2.123 | +0.55 | -1.139 | 10 | 21 | 145 | 18 | +5.491 |
+| Mme de Chaussepierre | +1.81 | +2.32 | +0.79 | 11 | 5 | 14 | 1 | 0.0 |
+| Duroc | +1.708 | +1.273 | +1.205 | 12 | 13 | 11 | 1 | 0.0 |
+| Victurnien | +1.525 | +0.573 | +2.117 | 13 | 19 | 4 | 2 | +2.917 |
+| grand-duc héritier de Luxembourg | +1.46 | +1.018 | +0.838 | 14 | 15 | 13 | 2 | +3.06 |
+| marquis Maurice de Vaudémont | +1.414 | +1.574 | +0.843 | 15 | 11 | 12 | 1 | 0.0 |
+| Mlle d'Oloron | +1.41 | +1.92 | +0.39 | 16 | 8 | 20 | 1 | 0.0 |
+| Mlle Bloch | +1.28 | +1.142 | +1.343 | 17 | 14 | 9 | 1 | 0.0 |
+| la reine de Naples | +1.09 | +0.552 | +0.552 | 18 | 20 | 16 | 3 | +1.04 |
+| duc d'Aumale | +1.01 | +1.275 | +0.495 | 19 | 12 | 18 | 2 | +2.315 |
+| duchesse de La Trémoïlle | +0.91 | +0.665 | +0.665 | 20 | 18 | 15 | 1 | 0.0 |
+| prince de Saxe | +0.865 | +0.975 | +0.37 | 21 | 17 | 22 | 1 | 0.0 |
+| la marquise douairière de Cambremer | +0.79 | +0.498 | -0.381 | 22 | 23 | 37 | 6 | +5.13 |
+| Mme Elstir | +0.78 | +0.544 | +0.384 | 23 | 22 | 21 | 1 | 0.0 |
+| le commandant Duroc | +0.628 | +0.328 | +0.256 | 24 | 25 | 23 | 1 | 0.0 |
+| Bismarck | +0.548 | +0.343 | +0.214 | 25 | 24 | 24 | 1 | 0.0 |
+| Mme de Sévigné | +0.39 | -0.075 | -0.261 | 26 | 34 | 36 | 4 | +3.59 |
+| Mme Poncin | +0.347 | +0.119 | +0.131 | 27 | 27 | 26 | 1 | 0.0 |
+| Bibi | +0.3 | +0.16 | +0.16 | 28 | 26 | 25 | 1 | 0.0 |
+| Gribelin | +0.15 | +0.04 | +0.04 | 29 | 28 | 27 | 1 | 0.0 |
+| le capitaine | +0.15 | +0.04 | +0.04 | 30 | 29 | 28 | 1 | 0.0 |
+| Mme de Grouchy | +0.144 | -0.06 | +0.008 | 31 | 33 | 29 | 1 | 0.0 |
+| elle | +0.02 | -0.12 | -0.05 | 32 | 35 | 33 | 1 | 0.0 |
+| Lady Israels | 0.0 | 0.0 | 0.0 | 33 | 30 | 30 | 1 | 0.0 |
+| Madame d'Ambresac | 0.0 | 0.0 | 0.0 | 34 | 31 | 31 | 1 | 0.0 |
+| comtesse de Monteriender | 0.0 | 0.0 | 0.0 | 35 | 32 | 32 | 1 | 0.0 |
+| marquis de Beausergent | -0.08 | -0.224 | -0.224 | 36 | 36 | 34 | 1 | 0.0 |
+| Marie | -0.1 | -0.24 | -0.24 | 37 | 37 | 35 | 1 | 0.0 |
+| Eulalie | -0.144 | -1.179 | +0.521 | 38 | 147 | 17 | 7 | +4.037 |
+| Arnulphe | -0.4 | -0.4 | -0.4 | 39 | 39 | 39 | 1 | 0.0 |
+| D'Annunzio | -0.4 | -0.4 | -0.4 | 40 | 40 | 40 | 1 | 0.0 |
 
-_Showing first 40 of 62 character rows._
+_Showing first 40 of 288 character rows._

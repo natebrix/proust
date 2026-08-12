@@ -2,463 +2,464 @@
 
 - Analysis version: `character_profile_cards_v1`
 - Source review version: `corpus_sanity_review_v1`
-- Character count: `62`
+- Character count: `288`
+
+## le narrateur
+
+- Annotation units: `316`
+- Rank spread: `0`
+- Max score span: `+10.648`
+- Selected by: `volatility`
+
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -268.695 | 0th | 288 | 316 | emotional_position | +9.253 |
+| inclusion | -267.072 | 0th | 288 | 316 | emotional_position | +10.648 |
+| prestige | -226.919 | 0th | 288 | 316 | emotional_position | +7.413 |
+
+Top chapters:
+
+| Chapter | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- |
+| v5 | -50.092 | -40.841 | -47.948 |
+| v2-p2-noms-de-pays-le-pays | -45.617 | -34.673 | -49.347 |
+| v2-p1-autour-de-mme-swann | -34.311 | -28.176 | -31.276 |
+| v3-p1 | -33.072 | -31.538 | -33.074 |
+| v6-p1 | -28.737 | -23.963 | -24.773 |
 
 ## Swann
 
-- Annotation units: `263`
+- Annotation units: `202`
 - Rank spread: `0`
-- Max score span: `+8.609`
+- Max score span: `+9.844`
 - Selected by: `volatility`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -206.613 | 0th | 62 | 263 | emotional_position | +7.484 |
-| inclusion | -225.958 | 0th | 62 | 263 | emotional_position | +8.609 |
-| prestige | -139.776 | 0th | 62 | 263 | emotional_position | +7.545 |
+| advantage | -202.791 | 0th | 287 | 202 | emotional_position | +8.187 |
+| inclusion | -206.587 | 0th | 287 | 202 | emotional_position | +9.844 |
+| prestige | -164.941 | 0th | 287 | 202 | emotional_position | +7.96 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v1-p2-un-amour-de-swann | -131.884 | -83.052 | -145.721 |
-| v1-p1-combray | -11.003 | -7.807 | -13.963 |
-| v4-p2 | -11.352 | -7.931 | -11.451 |
-| v3-p2 | -8.321 | -5.679 | -9.204 |
-| v2-p1-autour-de-mme-swann | -8.289 | -5.915 | -9.099 |
-
-## Robert de Saint-Loup
-
-- Annotation units: `197`
-- Rank spread: `46`
-- Max score span: `+7.299`
-- Selected by: `rank_spread, volatility`
-
-| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- | --- |
-| advantage | -3.318 | 44th | 35 | 197 | emotional_position | +6.49 |
-| inclusion | -24.925 | 13th | 54 | 197 | emotional_position | +6.25 |
-| prestige | +9.924 | 89th | 8 | 197 | emotional_position | +7.299 |
-
-Top chapters:
-
-| Chapter | Advantage | Prestige | Inclusion |
-| --- | --- | --- | --- |
-| v3-p1 | -6.445 | +0.317 | -12.5 |
-| v2-p2-noms-de-pays-le-pays | +5.044 | +3.09 | +3.56 |
-| v3-p2 | +4.711 | +4.772 | +2.45 |
-| v7-p1-a-tansonville | -4.498 | -3.487 | -3.909 |
-| v4-p2 | -3.696 | -4.081 | -2.558 |
-
-## Albertine
-
-- Annotation units: `177`
-- Rank spread: `0`
-- Max score span: `+8.061`
-- Selected by: `volatility`
-
-| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- | --- |
-| advantage | -111.185 | 2nd | 61 | 177 | general_appraisal | +6.472 |
-| inclusion | -121.659 | 2nd | 61 | 177 | general_appraisal | +8.061 |
-| prestige | -79.975 | 2nd | 61 | 177 | general_appraisal | +5.631 |
-
-Top chapters:
-
-| Chapter | Advantage | Prestige | Inclusion |
-| --- | --- | --- | --- |
-| v5 | -52.445 | -39.637 | -50.831 |
-| v4-p2 | -9.586 | -6.832 | -11.146 |
-| v6-p1 | -6.735 | -4.456 | -9.115 |
-| v2-p2-noms-de-pays-le-pays | +8.108 | +8.273 | +4.777 |
-| v3-p2 | +5.837 | +5.712 | +2.695 |
+| v1-p2-un-amour-de-swann | -118.694 | -91.471 | -119.3 |
+| v4-p2 | -27.907 | -24.563 | -24.669 |
+| v2-p1-autour-de-mme-swann | -21.879 | -18.659 | -20.781 |
+| v6-p2 | -14.883 | -12.438 | -14.53 |
+| v3-p2 | -6.761 | -7.828 | -8.279 |
 
 ## duchesse de Guermantes
 
-- Annotation units: `143`
-- Rank spread: `0`
-- Max score span: `+5.627`
-- Selected by: `none`
+- Annotation units: `199`
+- Rank spread: `25`
+- Max score span: `+8.795`
+- Selected by: `rank_spread, volatility`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | +95.726 | 100th | 1 | 143 | social_status | +5.172 |
-| inclusion | +50.901 | 100th | 1 | 143 | social_status | +4.353 |
-| prestige | +102.284 | 100th | 1 | 143 | social_status | +5.627 |
+| advantage | -15.023 | 12th | 253 | 199 | rhetorical_position | +8.795 |
+| inclusion | -50.797 | 3rd | 278 | 199 | rhetorical_position | +6.655 |
+| prestige | -15.21 | 11th | 256 | 199 | rhetorical_position | +8.5 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p2 | +39.41 | +41.883 | +20.555 |
-| v3-p1 | +14.54 | +16.483 | +6.67 |
-| v5 | +5.937 | +4.906 | +4.484 |
-| v1-p1-combray | +2.614 | +3.561 | +0.947 |
-| v4-p2 | +1.627 | +2.644 | +0.089 |
+| v3-p2 | -7.398 | -8.668 | -22.046 |
+| v3-p1 | +16.047 | +15.503 | +0.106 |
+| v7-p4-le-bal-de-tetes | -15.564 | -14.032 | -13.791 |
+| v4-p2 | -5.667 | -4.669 | -7.309 |
+| v6-p2 | -3.92 | -3.6 | -4.14 |
 
-## baron de Charlus
+## Robert de Saint-Loup
 
-- Annotation units: `124`
-- Rank spread: `0`
-- Max score span: `+7.0`
+- Annotation units: `168`
+- Rank spread: `1`
+- Max score span: `+9.378`
 - Selected by: `volatility`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -95.347 | 3rd | 60 | 124 | general_appraisal | +7.0 |
-| inclusion | -86.557 | 3rd | 60 | 124 | general_appraisal | +6.854 |
-| prestige | -77.192 | 3rd | 60 | 124 | general_appraisal | +6.188 |
+| advantage | -101.126 | 2nd | 282 | 168 | emotional_position | +9.378 |
+| inclusion | -104.621 | 2nd | 282 | 168 | emotional_position | +8.558 |
+| prestige | -92.039 | 2nd | 283 | 168 | emotional_position | +9.167 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v5 | -16.961 | -15.05 | -13.732 |
-| v7-p2-m-de-charlus-pendant-la-guerre | -16.739 | -14.259 | -13.831 |
-| v3-p1 | -9.939 | -7.455 | -9.463 |
-| v4-p2 | -8.101 | -7.233 | -6.832 |
-| v2-p2-noms-de-pays-le-pays | +5.951 | +6.539 | +2.153 |
+| v3-p1 | -61.603 | -56.975 | -59.592 |
+| v3-p2 | -10.818 | -10.129 | -11.285 |
+| v7-p1-a-tansonville | -9.496 | -7.556 | -8.674 |
+| v4-p2 | -9.48 | -8.943 | -8.479 |
+| v2-p2-noms-de-pays-le-pays | -5.051 | -3.497 | -9.183 |
+
+## Albertine
+
+- Annotation units: `146`
+- Rank spread: `0`
+- Max score span: `+8.818`
+- Selected by: `volatility`
+
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -126.789 | 1st | 286 | 146 | general_appraisal | +8.818 |
+| inclusion | -129.528 | 1st | 286 | 146 | general_appraisal | +7.917 |
+| prestige | -113.52 | 1st | 286 | 146 | general_appraisal | +7.374 |
+
+Top chapters:
+
+| Chapter | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- |
+| v5 | -69.114 | -61.718 | -65.735 |
+| v4-p2 | -23.317 | -21.348 | -21.316 |
+| v6-p1 | -18.184 | -15.041 | -20.245 |
+| v3-p2 | -5.46 | -4.893 | -7.525 |
+| v6-p2 | -6.94 | -5.588 | -6.02 |
 
 ## Odette
 
-- Annotation units: `88`
-- Rank spread: `48`
-- Max score span: `+7.422`
-- Selected by: `rank_spread, volatility`
+- Annotation units: `142`
+- Rank spread: `1`
+- Max score span: `+11.148`
+- Selected by: `volatility`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -1.638 | 56th | 28 | 88 | social_status | +6.598 |
-| inclusion | -23.464 | 16th | 52 | 88 | social_status | +6.155 |
-| prestige | +15.86 | 95th | 4 | 88 | social_status | +7.422 |
+| advantage | -102.025 | 2nd | 283 | 142 | general_appraisal | +10.808 |
+| inclusion | -106.221 | 2nd | 283 | 142 | general_appraisal | +11.148 |
+| prestige | -88.736 | 2nd | 282 | 142 | general_appraisal | +8.153 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v1-p2-un-amour-de-swann | -17.815 | -14.352 | -15.39 |
-| v2-p1-autour-de-mme-swann | +11.425 | +13.717 | +4.402 |
-| v3-p1 | -8.417 | -4.614 | -11.461 |
-| v1-p3-noms-de-pays-le-nom | +6.212 | +6.736 | +3.52 |
-| v4-p2 | +5.218 | +5.84 | +3.094 |
+| v1-p2-un-amour-de-swann | -48.343 | -44.442 | -45.154 |
+| v2-p1-autour-de-mme-swann | -23.343 | -19.274 | -27.155 |
+| v3-p1 | -11.753 | -8.83 | -12.679 |
+| v7-p4-le-bal-de-tetes | -7.704 | -7.739 | -6.277 |
+| v2-p2-noms-de-pays-le-pays | -4.3 | -3.76 | -3.85 |
 
-## Mme de Villeparisis
+## baron de Charlus
 
-- Annotation units: `82`
-- Rank spread: `23`
-- Max score span: `+7.86`
-- Selected by: `rank_spread, volatility`
+- Annotation units: `119`
+- Rank spread: `0`
+- Max score span: `+9.217`
+- Selected by: `volatility`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -4.415 | 43rd | 36 | 82 | social_status | +6.624 |
-| inclusion | -11.403 | 33rd | 42 | 82 | social_status | +4.05 |
-| prestige | +1.839 | 70th | 19 | 82 | social_status | +7.86 |
+| advantage | -96.286 | 2nd | 281 | 119 | general_appraisal | +9.217 |
+| inclusion | -95.23 | 2nd | 281 | 119 | general_appraisal | +6.725 |
+| prestige | -86.021 | 2nd | 281 | 119 | general_appraisal | +9.063 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p2 | -4.917 | -3.918 | -4.085 |
-| v2-p2-noms-de-pays-le-pays | -1.866 | -1.476 | -3.031 |
-| v3-p1 | +2.811 | +2.885 | +0.895 |
-| v6-p3 | -2.459 | -1.507 | -2.572 |
-| v1-p2-un-amour-de-swann | -1.576 | -1.528 | -1.344 |
+| v7-p2-m-de-charlus-pendant-la-guerre | -23.577 | -21.321 | -19.324 |
+| v5 | -22.659 | -20.362 | -20.409 |
+| v4-p2 | -14.483 | -9.601 | -19.041 |
+| v3-p2 | -13.103 | -12.453 | -12.557 |
+| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle | -8.935 | -8.872 | -6.668 |
+
+## duc de Guermantes
+
+- Annotation units: `110`
+- Rank spread: `0`
+- Max score span: `+8.813`
+- Selected by: `volatility`
+
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -124.918 | 1st | 285 | 110 | general_appraisal | +8.19 |
+| inclusion | -114.591 | 1st | 285 | 110 | general_appraisal | +5.784 |
+| prestige | -108.339 | 1st | 285 | 110 | general_appraisal | +8.813 |
+
+Top chapters:
+
+| Chapter | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- |
+| v3-p2 | -68.256 | -57.846 | -63.98 |
+| v3-p1 | -21.512 | -16.865 | -20.968 |
+| v4-p2 | -12.73 | -11.132 | -11.494 |
+| v7-p4-le-bal-de-tetes | -10.18 | -10.56 | -7.578 |
+| v5 | -4.12 | -4.32 | -2.87 |
 
 ## Françoise
 
-- Annotation units: `70`
-- Rank spread: `10`
-- Max score span: `+5.58`
-- Selected by: `rank_spread`
-
-| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- | --- |
-| advantage | -12.462 | 26th | 46 | 70 | general_appraisal | +5.58 |
-| inclusion | -18.579 | 20th | 50 | 70 | general_appraisal | +4.739 |
-| prestige | -4.712 | 36th | 40 | 70 | general_appraisal | +4.556 |
-
-Top chapters:
-
-| Chapter | Advantage | Prestige | Inclusion |
-| --- | --- | --- | --- |
-| v1-p1-combray | -7.881 | -5.07 | -8.911 |
-| v2-p1-autour-de-mme-swann | +5.849 | +5.091 | +4.115 |
-| v3-p1 | -2.686 | -2.378 | -2.089 |
-| v6-p2 | -1.883 | -0.98 | -2.623 |
-| v5 | +0.93 | +1.879 | -0.1 |
-
-## Mme Verdurin
-
-- Annotation units: `68`
-- Rank spread: `6`
+- Annotation units: `82`
+- Rank spread: `5`
 - Max score span: `+6.53`
 - Selected by: `none`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -20.762 | 16th | 52 | 68 | general_appraisal | +6.53 |
-| inclusion | -25.921 | 11th | 55 | 68 | general_appraisal | +6.496 |
-| prestige | -12.093 | 21st | 49 | 68 | general_appraisal | +5.85 |
+| advantage | -21.294 | 8th | 265 | 82 | rhetorical_position | +6.53 |
+| inclusion | -30.262 | 6th | 270 | 82 | rhetorical_position | +5.745 |
+| prestige | -21.902 | 8th | 266 | 82 | rhetorical_position | +5.933 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v1-p2-un-amour-de-swann | -13.614 | -10.434 | -14.725 |
-| v5 | -3.29 | -1.692 | -4.606 |
-| v7-p4-le-bal-de-tetes | +2.87 | +3.288 | +1.665 |
-| v7-p2-m-de-charlus-pendant-la-guerre | -3.054 | -1.782 | -3.138 |
-| v4-p2 | -0.04 | +0.308 | -0.66 |
+| v3-p2 | -8.959 | -8.794 | -7.817 |
+| v5 | -5.834 | -5.696 | -7.202 |
+| v4-p2 | -6.327 | -5.501 | -6.499 |
+| v2-p1-autour-de-mme-swann | +6.33 | +5.067 | +4.167 |
+| v1-p1-combray | -3.765 | -3.505 | -5.364 |
 
-## Norpois
+## Mme Verdurin
 
-- Annotation units: `67`
-- Rank spread: `6`
-- Max score span: `+5.15`
-- Selected by: `none`
+- Annotation units: `82`
+- Rank spread: `0`
+- Max score span: `+8.855`
+- Selected by: `volatility`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | +14.145 | 95th | 4 | 67 | rhetorical_position | +5.15 |
-| inclusion | +4.56 | 85th | 10 | 67 | rhetorical_position | +3.735 |
-| prestige | +14.297 | 93rd | 5 | 67 | rhetorical_position | +5.077 |
+| advantage | -73.213 | 3rd | 280 | 82 | general_appraisal | +8.855 |
+| inclusion | -74.541 | 3rd | 280 | 82 | general_appraisal | +8.745 |
+| prestige | -60.504 | 3rd | 280 | 82 | general_appraisal | +7.485 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | +6.959 | +6.088 | +4.18 |
-| v2-p1-autour-de-mme-swann | +4.657 | +4.185 | +1.24 |
-| v6-p3 | -3.234 | -2.762 | -2.975 |
-| v3-p2 | -1.368 | -0.988 | -1.14 |
+| v1-p2-un-amour-de-swann | -40.335 | -34.671 | -37.677 |
+| v5 | -13.412 | -11.445 | -14.724 |
+| v4-p2 | -11.876 | -11.165 | -10.378 |
+| v2-p1-autour-de-mme-swann | -2.788 | -1.64 | -3.526 |
+| v7-p2-m-de-charlus-pendant-la-guerre | +0.919 | +2.543 | -1.413 |
 
 ## la grand-mère
 
-- Annotation units: `65`
+- Annotation units: `80`
 - Rank spread: `5`
-- Max score span: `+5.706`
+- Max score span: `+6.432`
 - Selected by: `none`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -24.753 | 11th | 55 | 65 | general_appraisal | +5.628 |
-| inclusion | -30.265 | 8th | 57 | 65 | general_appraisal | +5.706 |
-| prestige | -14.129 | 16th | 52 | 65 | general_appraisal | +4.884 |
+| advantage | -25.976 | 7th | 268 | 80 | general_appraisal | +6.428 |
+| inclusion | -35.487 | 5th | 273 | 80 | general_appraisal | +5.657 |
+| prestige | -23.201 | 7th | 268 | 80 | general_appraisal | +6.432 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p2 | -7.166 | -5.857 | -6.485 |
-| v3-p1 | -7.044 | -5.205 | -6.296 |
-| v2-p2-noms-de-pays-le-pays | -3.642 | -0.965 | -6.958 |
-| v1-p1-combray | -3.128 | -2.488 | -2.572 |
-| v4-p2 | -0.53 | -0.442 | -0.691 |
+| v2-p2-noms-de-pays-le-pays | -5.866 | -5.259 | -11.042 |
+| v3-p2 | -8.23 | -6.483 | -9.243 |
+| v3-p1 | -8.21 | -6.725 | -8.919 |
+| v1-p1-combray | -4.29 | -4.406 | -4.933 |
+| v4-p2 | +3.56 | +2.767 | +2.086 |
 
-## Bloch
+## Mme de Villeparisis
 
-- Annotation units: `61`
+- Annotation units: `79`
 - Rank spread: `0`
-- Max score span: `+6.817`
+- Max score span: `+8.917`
 - Selected by: `volatility`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -81.142 | 5th | 59 | 61 | general_appraisal | +6.315 |
-| inclusion | -82.66 | 5th | 59 | 61 | general_appraisal | +6.633 |
-| prestige | -56.308 | 5th | 59 | 61 | general_appraisal | +6.817 |
+| advantage | -57.389 | 3rd | 279 | 79 | general_appraisal | +8.268 |
+| inclusion | -59.184 | 3rd | 279 | 79 | general_appraisal | +6.276 |
+| prestige | -50.284 | 3rd | 279 | 79 | general_appraisal | +8.917 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v3-p1 | -23.723 | -15.478 | -25.915 |
-| v1-p1-combray | -6.368 | -4.228 | -6.861 |
-| v2-p2-noms-de-pays-le-pays | -4.847 | -3.072 | -5.444 |
-| v3-p2 | -3.24 | -3.6 | -2.07 |
-| v7-p4-le-bal-de-tetes | -3.04 | -1.541 | -2.828 |
-
-## duc de Guermantes
-
-- Annotation units: `61`
-- Rank spread: `0`
-- Max score span: `+7.073`
-- Selected by: `volatility`
-
-| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- | --- |
-| advantage | -59.531 | 7th | 58 | 61 | general_appraisal | +6.339 |
-| inclusion | -52.097 | 7th | 58 | 61 | general_appraisal | +4.055 |
-| prestige | -47.194 | 7th | 58 | 61 | general_appraisal | +7.073 |
-
-Top chapters:
-
-| Chapter | Advantage | Prestige | Inclusion |
-| --- | --- | --- | --- |
-| v3-p2 | -27.49 | -20.104 | -26.107 |
-| v7-p4-le-bal-de-tetes | -8.038 | -8.424 | -5.483 |
-| v5 | -3.096 | -3.44 | -1.978 |
-| v3-p1 | -1.559 | +0.219 | -1.966 |
-| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle | -1.8 | -1.44 | -1.53 |
+| v3-p1 | -18.197 | -17.133 | -20.168 |
+| v2-p2-noms-de-pays-le-pays | -14.413 | -10.672 | -17.362 |
+| v3-p2 | -11.113 | -10.544 | -9.49 |
+| v6-p3 | -8.798 | -7.419 | -7.319 |
+| v1-p1-combray | -1.775 | -1.738 | -1.5 |
 
 ## Gilberte
 
-- Annotation units: `44`
-- Rank spread: `28`
-- Max score span: `+6.239`
-- Selected by: `rank_spread`
+- Annotation units: `76`
+- Rank spread: `1`
+- Max score span: `+6.26`
+- Selected by: `none`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | +6.706 | 82nd | 12 | 44 | social_status | +6.239 |
-| inclusion | -5.8 | 46th | 34 | 44 | social_status | +6.197 |
-| prestige | +12.637 | 92nd | 6 | 44 | social_status | +5.954 |
+| advantage | -39.203 | 5th | 275 | 76 | social_status | +6.26 |
+| inclusion | -44.254 | 4th | 276 | 76 | social_status | +5.768 |
+| prestige | -34.714 | 5th | 275 | 76 | social_status | +5.978 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v2-p1-autour-de-mme-swann | +5.083 | +5.464 | +0.738 |
-| v6-p2 | -1.345 | +1.46 | -4.06 |
-| v7-p2-m-de-charlus-pendant-la-guerre | +3.054 | +3.4 | +1.746 |
-| v7-p4-le-bal-de-tetes | -2.986 | -3.035 | -2.199 |
-| v1-p3-noms-de-pays-le-nom | +2.6 | +2.647 | +0.284 |
+| v2-p1-autour-de-mme-swann | -18.341 | -17.288 | -18.143 |
+| v7-p4-le-bal-de-tetes | -9.004 | -8.832 | -7.608 |
+| v6-p2 | -7.634 | -5.469 | -8.413 |
+| v1-p1-combray | +6.052 | +5.987 | +3.542 |
+| v7-p1-a-tansonville | -5.206 | -4.384 | -4.795 |
+
+## Bloch
+
+- Annotation units: `71`
+- Rank spread: `0`
+- Max score span: `+7.72`
+- Selected by: `none`
+
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -120.771 | 1st | 284 | 71 | general_appraisal | +7.72 |
+| inclusion | -114.21 | 1st | 284 | 71 | general_appraisal | +7.446 |
+| prestige | -99.93 | 1st | 284 | 71 | general_appraisal | +7.204 |
+
+Top chapters:
+
+| Chapter | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- |
+| v3-p1 | -48.557 | -39.38 | -46.146 |
+| v2-p2-noms-de-pays-le-pays | -17.164 | -14.791 | -14.807 |
+| v1-p1-combray | -12.308 | -8.686 | -13.766 |
+| v4-p2 | -10.365 | -9.074 | -9.355 |
+| v3-p2 | -8.481 | -8.078 | -6.837 |
+
+## Norpois
+
+- Annotation units: `63`
+- Rank spread: `2`
+- Max score span: `+7.778`
+- Selected by: `none`
+
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -40.965 | 4th | 276 | 63 | general_appraisal | +7.778 |
+| inclusion | -41.516 | 5th | 275 | 63 | general_appraisal | +5.66 |
+| prestige | -37.285 | 4th | 277 | 63 | general_appraisal | +7.079 |
+
+Top chapters:
+
+| Chapter | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- |
+| v2-p1-autour-de-mme-swann | -12.34 | -10.994 | -13.927 |
+| v3-p1 | -12.075 | -11.947 | -13.315 |
+| v6-p3 | -10.44 | -9.136 | -8.901 |
+| v2-p2-noms-de-pays-le-pays | -2.64 | -2.112 | -2.202 |
+| v5 | -1.87 | -1.576 | -1.651 |
 
 ## docteur Cottard
 
-- Annotation units: `44`
+- Annotation units: `43`
 - Rank spread: `3`
-- Max score span: `+5.98`
+- Max score span: `+6.405`
 - Selected by: `none`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | -16.987 | 21st | 49 | 44 | general_appraisal | +5.98 |
-| inclusion | -18.415 | 23rd | 48 | 44 | general_appraisal | +4.342 |
-| prestige | -9.216 | 26th | 46 | 44 | general_appraisal | +5.882 |
+| advantage | -42.057 | 4th | 277 | 43 | rhetorical_position | +6.405 |
+| inclusion | -38.676 | 5th | 274 | 43 | rhetorical_position | +4.864 |
+| prestige | -37.188 | 4th | 276 | 43 | rhetorical_position | +5.637 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v1-p2-un-amour-de-swann | -19.283 | -14.988 | -16.662 |
-| v4-p2 | -5.34 | -4.272 | -4.54 |
-| v2-p1-autour-de-mme-swann | +3.626 | +3.092 | +2.744 |
-| v1-p3-noms-de-pays-le-nom | +2.652 | +2.043 | +1.919 |
-| v1-p1-combray | -2.482 | -1.985 | -2.088 |
+| v1-p2-un-amour-de-swann | -28.775 | -23.454 | -25.935 |
+| v4-p2 | -11.276 | -10.916 | -9.649 |
+| v3-p1 | -2.4 | -2.24 | -2.24 |
+| v3-p2 | +2.39 | +1.925 | +1.739 |
+| v7-p1-a-tansonville | -1.2 | -1.2 | -1.2 |
+
+## Rachel
+
+- Annotation units: `43`
+- Rank spread: `1`
+- Max score span: `+8.016`
+- Selected by: `none`
+
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -46.714 | 3rd | 278 | 43 | general_appraisal | +8.016 |
+| inclusion | -46.856 | 4th | 277 | 43 | general_appraisal | +7.752 |
+| prestige | -40.362 | 3rd | 278 | 43 | general_appraisal | +7.232 |
+
+Top chapters:
+
+| Chapter | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- |
+| v3-p1 | -33.993 | -30.125 | -32.203 |
+| v3-p2 | -6.579 | -6.319 | -5.682 |
+| v2-p2-noms-de-pays-le-pays | -4.1 | -3.44 | -3.53 |
+| v7-p4-le-bal-de-tetes | +2.182 | +3.962 | -1.073 |
+| v4-p2 | -2.4 | -2.4 | -2.4 |
 
 ## la mère du narrateur
 
-- Annotation units: `34`
+- Annotation units: `40`
 - Rank spread: `6`
-- Max score span: `+4.167`
+- Max score span: `+4.777`
 - Selected by: `none`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | +7.838 | 87th | 9 | 34 | rhetorical_position | +4.167 |
-| inclusion | +5.006 | 89th | 8 | 34 | rhetorical_position | +3.21 |
-| prestige | +6.219 | 79th | 14 | 34 | rhetorical_position | +3.3 |
+| advantage | -16.748 | 11th | 257 | 40 | general_appraisal | +4.777 |
+| inclusion | -19.086 | 9th | 263 | 40 | general_appraisal | +3.922 |
+| prestige | -16.854 | 9th | 261 | 40 | general_appraisal | +3.747 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v6-p3 | +5.05 | +4.034 | +3.794 |
-| v4-p2 | +1.72 | +1.462 | +1.29 |
-| v3-p2 | +1.68 | +1.428 | +1.26 |
-| v1-p1-combray | +1.642 | +1.191 | +0.976 |
-| v2-p1-autour-de-mme-swann | -1.557 | -1.23 | -1.23 |
+| v3-p2 | -3.737 | -3.715 | -4.312 |
+| v5 | -4.064 | -3.716 | -3.856 |
+| v2-p1-autour-de-mme-swann | -3.616 | -4.06 | -3.912 |
+| v4-p2 | -3.035 | -2.355 | -2.658 |
+| v3-p1 | -1.24 | -0.82 | -1.59 |
+
+## princesse de Parme
+
+- Annotation units: `38`
+- Rank spread: `2`
+- Max score span: `+7.09`
+- Selected by: `none`
+
+| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
+| --- | --- | --- | --- | --- | --- | --- |
+| advantage | -31.235 | 6th | 271 | 38 | rhetorical_position | +7.09 |
+| inclusion | -31.9 | 6th | 271 | 38 | rhetorical_position | +5.14 |
+| prestige | -24.995 | 7th | 269 | 38 | rhetorical_position | +6.85 |
+
+Top chapters:
+
+| Chapter | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- |
+| v3-p2 | -33.625 | -27.685 | -32.79 |
+| v4-p2 | +3.19 | +3.49 | +1.69 |
+| v3-p1 | -0.8 | -0.8 | -0.8 |
 
 ## Bergotte
 
-- Annotation units: `33`
-- Rank spread: `4`
-- Max score span: `+6.256`
-- Selected by: `none`
-
-| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- | --- |
-| advantage | +17.016 | 97th | 3 | 33 | general_appraisal | +6.001 |
-| inclusion | +5.239 | 90th | 7 | 33 | general_appraisal | +6.256 |
-| prestige | +18.336 | 97th | 3 | 33 | general_appraisal | +5.54 |
-
-Top chapters:
-
-| Chapter | Advantage | Prestige | Inclusion |
-| --- | --- | --- | --- |
-| v1-p1-combray | +5.497 | +4.473 | +4.192 |
-| v2-p1-autour-de-mme-swann | -0.27 | +1.215 | -5.364 |
-| v3-p1 | +3.036 | +3.423 | +1.655 |
-| v5 | +2.7 | +2.25 | +2.07 |
-| v3-p2 | -0.2 | +0.938 | -1.034 |
-
-## Legrandin
-
-- Annotation units: `23`
-- Rank spread: `8`
-- Max score span: `+6.018`
-- Selected by: `none`
-
-| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- | --- |
-| advantage | -20.948 | 15th | 53 | 23 | general_appraisal | +6.018 |
-| inclusion | -17.656 | 25th | 47 | 23 | general_appraisal | +4.221 |
-| prestige | -17.293 | 11th | 55 | 23 | general_appraisal | +5.89 |
-
-Top chapters:
-
-| Chapter | Advantage | Prestige | Inclusion |
-| --- | --- | --- | --- |
-| v1-p1-combray | -12.443 | -9.921 | -10.526 |
-| v3-p1 | -5.568 | -4.936 | -4.431 |
-| v6-p4 | +3.188 | +3.626 | +1.862 |
-| v7-p4-le-bal-de-tetes | -2.66 | -2.128 | -2.218 |
-| v3-p2 | +1.302 | +0.874 | +1.445 |
-
-## Mme de Cambremer
-
-- Annotation units: `21`
-- Rank spread: `1`
-- Max score span: `+5.938`
-- Selected by: `none`
-
-| Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
-| --- | --- | --- | --- | --- | --- | --- |
-| advantage | -22.629 | 13th | 54 | 21 | general_appraisal | +5.392 |
-| inclusion | -24.435 | 15th | 53 | 21 | general_appraisal | +5.159 |
-| prestige | -15.493 | 15th | 53 | 21 | general_appraisal | +5.938 |
-
-Top chapters:
-
-| Chapter | Advantage | Prestige | Inclusion |
-| --- | --- | --- | --- |
-| v3-p1 | -7.964 | -6.666 | -7.438 |
-| v4-p2 | -2.84 | -1.573 | -2.882 |
-| v1-p2-un-amour-de-swann | -0.378 | +1.01 | -2.629 |
-| v2-p2-noms-de-pays-le-pays | +0.604 | +0.455 | +0.31 |
-
-## M. Vinteuil
-
-- Annotation units: `19`
-- Rank spread: `10`
-- Max score span: `+6.21`
+- Annotation units: `36`
+- Rank spread: `56`
+- Max score span: `+6.715`
 - Selected by: `rank_spread`
 
 | Lens | Net Score | Percentile | Rank | Units | Dominant Dimension | Score Span |
 | --- | --- | --- | --- | --- | --- | --- |
-| advantage | +9.671 | 90th | 7 | 19 | general_appraisal | +6.21 |
-| inclusion | +6.652 | 97th | 3 | 19 | general_appraisal | +4.324 |
-| prestige | +6.24 | 80th | 13 | 19 | general_appraisal | +6.125 |
+| advantage | -2.249 | 38th | 180 | 36 | rhetorical_position | +6.715 |
+| inclusion | -7.174 | 18th | 236 | 36 | rhetorical_position | +5.191 |
+| prestige | -3.399 | 28th | 209 | 36 | rhetorical_position | +5.965 |
 
 Top chapters:
 
 | Chapter | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- |
-| v5 | +8.18 | +6.818 | +6.27 |
-| v1-p1-combray | -5.673 | -6.43 | -4.322 |
-| v1-p2-un-amour-de-swann | +5.454 | +4.502 | +3.444 |
-| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle | +1.71 | +1.35 | +1.26 |
+| v2-p1-autour-de-mme-swann | -6.485 | -6.157 | -7.171 |
+| v5 | +4.39 | +3.67 | +3.239 |
+| v3-p1 | +2.63 | +1.71 | +1.534 |
+| v3-p2 | -0.832 | +0.25 | -1.676 |
+| v1-p1-combray | +1.068 | +0.516 | +0.424 |
 
-_Showing first 20 of 62 cards._
+_Showing first 20 of 288 cards._

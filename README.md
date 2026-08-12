@@ -41,10 +41,21 @@ The project is in post-production canonicalized corpus analysis:
 
 ## Main Output Families
 
+Every `-current` aggregate below is built from the FOUNDATION corpus
+(`outputs/foundation-run-*`: 963 units, prompt v2, open world, annotated on the
+authoritative Wikisource text). The legacy `outputs/run-*` and
+`outputs/supplement-run-*` families are history: they are still on disk and
+still buildable, but nothing current is built from them, and the superseded
+`-supplemented-current` artifacts are kept only as the before picture. Pass
+`--foundation` to any aggregate command to build the current surfaces; without
+it the commands behave exactly as they always did.
+
 The most important artifact families under `outputs/` are:
 
-- `run-*`
-  - granular source/output run directories with units, prompts, raw model output, and reduced annotations
+- `foundation-run-*`
+  - the current corpus: run directories with units, prompt v2 prompts, raw model output, annotations, and resolution sidecars
+- `run-*`, `supplement-run-*`
+  - the superseded corpora, kept for history
 - `corpus-review-current.*`
   - default corpus-wide aggregate review surface
 - `character-cross-lens-current.*`
@@ -63,6 +74,10 @@ The most important artifact families under `outputs/` are:
   - corpus-wide `advantage`-lens character ELO
 - `character-elo-advantage-timeline-current.*`
   - sparse per-unit ELO timeline points for tracked characters
+- `character-glicko2-<lens>-current.*`, `character-whr-<lens>-current.*`, `character-whr-<lens>-timeline-current.*`
+  - the Glicko-2 and Whole-History Rating surfaces for each lens
+- `foundation-unresolved-triage.*`, `foundation-editorial-discrepancies.*`
+  - the two cutover reports: names prompt v2 could not resolve against the registry, and the pilot editorial claims the new numbers no longer support
 
 For the full map, see [proust/docs/outputs_guide.md](proust/docs/outputs_guide.md).
 
@@ -88,16 +103,24 @@ The most important current commands are:
 ```bash
 python -m proust prepare --output outputs/run-999
 python -m proust automate --source-run outputs/run-999 --output outputs/run-1000
-python -m proust corpus-review --discover-runs outputs
-python -m proust character-analysis --discover-runs outputs
-python -m proust character-chapter-analysis --discover-runs outputs
-python -m proust character-profile-cards --discover-runs outputs
-python -m proust character-pages --discover-runs outputs
-python -m proust chapter-overlays --discover-runs outputs --output-dir outputs/chapter-overlays-current
-python -m proust chapter-summaries --discover-runs outputs
-python -m proust character-elo --discover-runs outputs
-python -m proust character-elo-timeline --discover-runs outputs
+python -m proust corpus-review --foundation
+python -m proust character-analysis --foundation
+python -m proust character-chapter-analysis --foundation
+python -m proust character-profile-cards --foundation
+python -m proust character-pages --foundation
+python -m proust chapter-overlays --foundation --output-dir outputs/chapter-overlays-current
+python -m proust chapter-summaries --foundation
+python -m proust character-elo --foundation
+python -m proust character-elo-timeline --foundation
+python -m proust character-glicko2 --foundation --lens advantage
+python -m proust character-whr --foundation --lens advantage
+python -m proust character-whr-timeline --foundation --lens advantage
+python -m proust foundation-unresolved-triage
+python -m proust foundation-editorial-discrepancies
 ```
+
+Swap `--foundation` for `--discover-runs outputs` to rebuild the same surface
+from the superseded legacy corpus instead; the two never mix in one build.
 
 Operational note:
 

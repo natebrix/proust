@@ -41,6 +41,7 @@ from .app_exports import (
     _elo_expected_score,
     _require_known_scoring_lens,
     build_chapter_overlay_data,
+    foundation_corpus_label,
     iter_character_lens_matches,
 )
 from .editorial import CHARACTER_PAGE_PILOT_EDITORIAL
@@ -620,6 +621,10 @@ def build_character_whr(
         "characters": characters,
     }
 
+    corpus = foundation_corpus_label(run_dirs)
+    if corpus:
+        result["corpus"] = corpus
+
     if supplement_run_dirs:
         result["supplemented"] = True
         result["supplement_runs"] = overlay_dataset.get("supplement_runs", [])
@@ -802,6 +807,10 @@ def build_character_whr_timeline(
         "characters": characters,
         "points": points,
     }
+
+    corpus = foundation_corpus_label(run_dirs)
+    if corpus:
+        result["corpus"] = corpus
 
     if supplement_run_dirs:
         result["supplemented"] = True
