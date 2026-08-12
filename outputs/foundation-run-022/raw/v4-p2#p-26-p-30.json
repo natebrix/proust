@@ -1,0 +1,130 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "baron de Charlus",
+      "surface_forms": ["M. de Charlus", "le baron", "Palamède"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "princesse de Guermantes",
+      "surface_forms": ["la princesse", "Marie Gilbert", "elle"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "prince de Guermantes",
+      "surface_forms": ["le prince", "M. de Guermantes", "le maître de maison"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.8
+    },
+    {
+      "canonical_name": "Mme de Souvré",
+      "surface_forms": ["Mme de Souvré", "Madame de Souvré"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Mme d'Arpajon",
+      "surface_forms": ["Mme d'Arpajon", "Madame d'Arpajon"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "duc de Guermantes",
+      "surface_forms": ["le duc de Guermantes", "Basin de Guermantes", "Basin"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "Mme de Surgis",
+      "surface_forms": ["la duchesse de Surgis-le-Duc"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": ["je", "me", "moi"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "baron de Charlus",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.85,
+      "evidence": "M. de Charlus savait qu'il était un Guermantes occupant une place prépondérante dans cette fête... les invités... étaient forcés de venir lui dire bonsoir; sa crainte de mécontenter « Palamède » qui les avait excommuniés.",
+      "explanation": "The narrator directly states Charlus's preeminent position at the fête: all guests are obliged to greet him individually, and even the princesse defers to his likes and dislikes in extending invitations, marking him as dominant in this social space."
+    },
+    {
+      "event_id": "E2",
+      "source": "narrator",
+      "target": "Mme d'Arpajon",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.85,
+      "evidence": "Mme d'Arpajon fut plus lâche encore que Mme de Souvré... Ce pouvoir avait été encore affaibli par la liaison qu'elle avait eue avec le duc de Guermantes; l'abandon de celui-ci y porta le dernier coup. ... la magnifique duchesse de Surgis-le-Duc, celle qui venait de succéder à Mme d'Arpajon dans le cœur de Basin de Guermantes.",
+      "explanation": "The narrator presents Mme d'Arpajon as even more socially timid than Mme de Souvré, her already weak social power further eroded by the end of her affair with the duc de Guermantes, and she is shown visibly pained at seeing the woman who has publicly supplanted her in his affections."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "baron de Charlus",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.85,
+      "explanation": "Charlus is shown commanding deference from all guests, who must individually greet him, and even shaping the princesse's guest list through his likes and dislikes."
+    },
+    {
+      "character": "Mme d'Arpajon",
+      "dimension": "social_status",
+      "delta": -2,
+      "based_on_events": ["E2"],
+      "confidence": 0.85,
+      "explanation": "Her social power is explicitly described as already weak and further diminished by the end of her liaison with the duc de Guermantes."
+    },
+    {
+      "character": "Mme d'Arpajon",
+      "dimension": "emotional_position",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.75,
+      "explanation": "She is described as fort contrariée at the public sight of the woman who has just replaced her in the duc de Guermantes's affections."
+    },
+    {
+      "character": "Mme de Souvré",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.6,
+      "explanation": "She is the comparative baseline for Mme d'Arpajon's greater cowardice; her own feigned assistance to the narrator, which the narrator judges as \"la lâcheté des gens du monde,\" is likewise exposed as hollow."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "inclusion_exclusion",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.6,
+      "explanation": "He is left without the desired introduction to the prince, stranded by the successive evasions of Mme de Souvré and Mme d'Arpajon."
+    },
+    {
+      "character": "Mme de Surgis",
+      "dimension": "social_status",
+      "delta": 1,
+      "based_on_events": ["E2"],
+      "confidence": 0.6,
+      "explanation": "She is described in admiring, statuesque terms and is identified as having supplanted Mme d'Arpajon in the duc de Guermantes's affections, elevating her by contrast."
+    }
+  ],
+  "ambiguities": [
+    "The surface form \"M. de Guermantes\" could denote either the prince de Guermantes (host of the fête, per the reference sheet's own alias list) or the duc de Guermantes; the passage's own coreference (\"le maître de maison\", \"la figure détournée du prince\") clarifies this instance as the prince.",
+    "Charlus's portrait mixes genuine narrator-endorsed social dominance with a mock-heroic, faintly ironic register (the Tannhäuser/Margrave comparison, the \"glapissement continu\" of his greetings), so the elevation is real but not unqualified admiration."
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "prince de Guermantes",
+      "surface_forms": ["le prince de Guermantes", "le Prince", "Gilbert"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "princesse de Guermantes",
+      "surface_forms": ["la Princesse", "la princesse de Guermantes", "Marie"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.85,
+      "evidence": "\"Swann oubliait que, dans l'après-midi, il m'avait dit au contraire que les opinions en cette affaire Dreyfus étaient commandées par l'atavisme\"; the narrator then generalizes that we always retroactively invent flattering reasons (intelligence or rectitude) for why people who agree with us do so.",
+      "explanation": "The narrator directly exposes a contradiction in Swann's reasoning, showing that his praise for the prince's moral rectitude is an inconsistent, self-serving rationalization rather than principled judgment."
+    },
+    {
+      "event_id": "E2",
+      "source": "Swann",
+      "target": "prince de Guermantes",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.75,
+      "evidence": "\"Je vous avoue que ces paroles du prince de Guermantes m'ont profondément ému... vous auriez de l'admiration pour lui, et il en mérite... c'est une nature si droite!\"",
+      "explanation": "Swann is deeply moved by the prince's recounted moral journey toward Dreyfusism (including the discovery that his own wife, the princesse de Guermantes, held the conviction even earlier and more discreetly) and explicitly praises the prince's integrity."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.8,
+      "explanation": "Swann's credibility is locally weakened when the narrator exposes that his current explanation for admiring the prince contradicts what he said earlier the same afternoon."
+    },
+    {
+      "character": "Swann",
+      "dimension": "rhetorical_position",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.75,
+      "explanation": "The narrator's meta-commentary undercuts the reliability of Swann's argumentative framework, showing he swaps criteria (intelligence vs. rectitude) to suit whoever currently agrees with him."
+    },
+    {
+      "character": "prince de Guermantes",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E2"],
+      "confidence": 0.7,
+      "explanation": "The prince is locally elevated by his self-narrated moral conversion and by Swann's explicit admiration, though the narrator's immediately following irony tempers how strongly this elevation should be read."
+    }
+  ],
+  "ambiguities": [
+    "Swann's admiration for the prince de Guermantes is reported through several layers of nested quotation (narrator quoting Swann quoting the prince), and the narrator's closing paragraph casts doubt on the reliability of Swann's moral reasoning, so the degree to which this admiration is narratively endorsed is uncertain.",
+    "The princesse de Guermantes is revealed within the prince's account to have held her Dreyfusist conviction earlier and more discreetly than her husband, which colors her positively, but the passage's explicit admiration is directed at the prince himself, so no independent status effect is recorded for her."
+  ]
+}
