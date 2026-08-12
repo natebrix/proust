@@ -19,7 +19,17 @@
     {
       "canonical_name": "duchesse de Guermantes",
       "surface_forms": [
-        "la duchesse de Guermantes"
+        "la duchesse de Guermantes",
+        "la duchesse"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "le roi Théodose",
+      "surface_forms": [
+        "le roi Théodose",
+        "le Roi"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.95
@@ -29,8 +39,17 @@
       "surface_forms": [
         "D'Annunzio"
       ],
-      "presence_type": "implicit",
-      "presence_confidence": 0.7
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "je",
+        "moi"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
     }
   ],
   "appraisal_events": [
@@ -40,10 +59,10 @@
       "target": "M. de Vaugoubert",
       "type": "narrated_diminishment",
       "polarity": "negative",
-      "narrative_stance": "ironized",
-      "confidence": 0.85,
-      "evidence": "Vaugoubert's flustered, self-betraying defense of the king ('Je n'ai jamais été si ému', 'Oh ! mon Dieu, quelle horreur, s'il avait seulement un soupçon !') is capped by the narrator's silent recitation of Racine's Esther: 'Le Roi jusqu'à ce jour ignore qui je suis, / Et ce secret toujours tient ma langue enchaînée.'",
-      "explanation": "Charlus's teasing insinuations about the king draw out Vaugoubert's naive, over-eager attachment and near self-exposure, and the narrator's ironic literary allusion casts him as a figure anxiously concealing his true self."
+      "narrative_stance": "endorsed",
+      "confidence": 0.88,
+      "evidence": "Vaugoubert protests « Oh ! mon Dieu, quelle horreur, s’il avait seulement un soupçon ! Mais je n’ai pas de crainte à cet égard », after which the narrator silently recites « Le Roi jusqu’à ce jour ignore qui je suis, / Et ce secret toujours tient ma langue enchaînée ».",
+      "explanation": "Charlus's sardonic thrust (« C’était le moment de lui dire ce que vous désiriez ») and the narrator's Racine tag together expose Vaugoubert's belief in his own secrecy as self-deception, so the ambassador is lowered by the very defence he mounts."
     },
     {
       "event_id": "E2",
@@ -51,46 +70,46 @@
       "target": "duchesse de Guermantes",
       "type": "admiration",
       "polarity": "positive",
-      "narrative_stance": "uncertain",
-      "confidence": 0.5,
-      "evidence": "'D'Annunzio vous a aperçue d'une loge... il n'a jamais rien vu de si beau. Il donnerait toute sa vie pour dix minutes d'entretien avec vous.'",
-      "explanation": "An unnamed society lady reports extravagant admiration of the duchesse from D'Annunzio, though her own credibility is undercut moments later when the narrator notes she falsely claims to have met him at the princesse de Parme's, leaving the claim's reliability uncertain."
+      "narrative_stance": "ironized",
+      "confidence": 0.76,
+      "evidence": "« D’Annunzio vous a aperçue d’une loge, il a écrit à la princesse de T… une lettre où il dit qu’il n’a jamais rien vu de si beau. Il donnerait toute sa vie pour dix minutes d’entretien avec vous. »",
+      "explanation": "The duchesse is publicly courted with extravagant literary homage and an offer of Ibsen manuscripts, but the narrator's parenthesis about the reporter — « chez qui je n’étais jamais allé » — marks her as a fabulist and puts the whole tribute in an ironic frame."
     }
   ],
   "status_effects": [
     {
       "character": "M. de Vaugoubert",
-      "dimension": "emotional_position",
+      "dimension": "general_appraisal",
       "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.88,
+      "explanation": "He comes off worse because his confident denial and his fear of suspicion are staged as transparent to Charlus and to the narrator."
+    },
+    {
+      "character": "baron de Charlus",
+      "dimension": "rhetorical_position",
+      "delta": 1,
       "based_on_events": [
         "E1"
       ],
       "confidence": 0.8,
-      "explanation": "Vaugoubert's melancholic longing and panicked self-protection ('quelle horreur, s'il avait seulement un soupçon') reveal an anxious, exposed emotional state."
-    },
-    {
-      "character": "M. de Vaugoubert",
-      "dimension": "rhetorical_position",
-      "delta": -1,
-      "based_on_events": [
-        "E1"
-      ],
-      "confidence": 0.75,
-      "explanation": "Vaugoubert is repeatedly outmaneuvered in the exchange, pushed onto the defensive and led into compromising admissions by Charlus's needling."
+      "explanation": "Charlus holds the initiative in the exchange: his verdicts are delivered with authority, his sarcasm lands, and Vaugoubert's panicked reply confirms rather than refutes his reading."
     },
     {
       "character": "duchesse de Guermantes",
-      "dimension": "general_appraisal",
+      "dimension": "social_status",
       "delta": 1,
       "based_on_events": [
         "E2"
       ],
-      "confidence": 0.5,
-      "explanation": "The reported praise mildly elevates the duchesse's local standing as an object of admiration, tempered by the questionable reliability of the messenger relaying it."
+      "confidence": 0.75,
+      "explanation": "She is stopped, flattered, and solicited as an object of famous men's desire and of exclusive gifts; the local elevation is real though tempered by the reporter's unreliability."
     }
   ],
   "ambiguities": [
-    "The praise of the duchesse de Guermantes is relayed by an unnamed society lady whose own reliability is undercut by the narrator's aside that she falsely claims a prior acquaintance ('chez qui je n'étais jamais allé'), making the D'Annunzio anecdote's sincerity and accuracy uncertain."
+    "The stance toward the D'Annunzio homage is layered: the narrator discredits the little dark lady on one point only (« chez qui je n’étais jamais allé »), so it is not settled whether the letter and manuscripts are inventions or genuine tributes she is trading on."
   ],
   "unit_id": "v4-p2#p-56-p-60"
 }

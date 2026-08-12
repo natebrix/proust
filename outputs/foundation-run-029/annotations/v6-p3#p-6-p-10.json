@@ -8,7 +8,34 @@
         "la vieille dame"
       ],
       "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Norpois",
+      "surface_forms": [
+        "M. de Norpois",
+        "M. de Villeparisis",
+        "son vieil amant"
+      ],
+      "presence_type": "explicit",
       "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "je",
+        "moi"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Mme Sazerat",
+      "surface_forms": [
+        "Mme Sazerat"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
     }
   ],
   "appraisal_events": [
@@ -16,24 +43,35 @@
       "event_id": "E1",
       "source": "narrator",
       "target": "Mme de Villeparisis",
-      "type": "narrated_elevation",
-      "polarity": "mixed",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
       "narrative_stance": "endorsed",
-      "confidence": 0.75,
-      "evidence": "Malgré l'air de tristesse et de fatigue... et malgré une sorte d'eczéma, de lèpre rouge qui couvrait sa figure... pareille à celle d'une vieille concierge, [je reconnus] la marquise de Villeparisis.",
-      "explanation": "The narrator states that despite her aged, disease-marked appearance, which to the uninitiated would look like a common concierge, he recognizes her as the marquise de Villeparisis, affirming her real aristocratic rank even as her physical description is unflattering."
+      "confidence": 0.93,
+      "evidence": "Les garçons parlent d'elle comme des « vieux » qui « ne préviennent jamais », des « forestieri » : « Je ne comprends pas qu'on reçoive des forestieri comme ça dans un hôtel aussi chic. C'est pas le monde d'ici. » ; le narrateur la reconnaît « malgré l'air de tristesse et de fatigue que donne l'appesantissement des années et malgré une sorte d'eczéma, de lèpre rouge qui couvrait sa figure », dans « sa cotte noire faite chez W…, mais, pour les profanes, pareille à celle d'une vieille concierge ».",
+      "explanation": "The passage stages the marquise's fall: hotel servants treat her as an unwelcome, unclassifiable outsider beneath the establishment's tone, and the narrator's portrait of physical decay and of couture mistaken for a concierge's dress confirms that her rank has become invisible to everyone but him."
+    },
+    {
+      "event_id": "E2",
+      "source": "narrator",
+      "target": "Norpois",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.82,
+      "evidence": "« Alors M. de Villeparisis ne va pas tarder à descendre. Depuis un mois qu'ils sont ici ils n'ont mangé qu'une fois l'un sans l'autre » ; puis « s'avancer vers la table et s'asseoir à côté d'elle son vieil amant, M. de Norpois ».",
+      "explanation": "The closing revelation deflates the former ambassador: he has lost his own name to hotel usage, is folded into the disdained pair of « les vieux », and is named only as her aged lover in a domesticated, irregular household."
     }
   ],
   "status_effects": [
     {
       "character": "Mme de Villeparisis",
       "dimension": "social_status",
-      "delta": 1,
+      "delta": -2,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.7,
-      "explanation": "Her identity as marquise is explicitly confirmed by the narrator despite an appearance that would mislead an uninitiated observer into taking her for a servant, locally affirming her elevated rank."
+      "confidence": 0.93,
+      "explanation": "Her aristocratic standing is locally erased: servants classify her as a tiresome foreigner unfit for a smart hotel, and her rank is legible only to the narrator."
     },
     {
       "character": "Mme de Villeparisis",
@@ -42,13 +80,23 @@
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.6,
-      "explanation": "The passage dwells at some length on her tired, aged, disease-marked appearance and its resemblance to a concierge's, which locally diminishes her personal/physical impression even as her title is confirmed."
+      "confidence": 0.85,
+      "explanation": "The narrator's insistence on age, sadness, and the red leprous eczema on her face lowers her as a figure quite apart from the servants' social verdict."
+    },
+    {
+      "character": "Norpois",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.8,
+      "explanation": "The eminent diplomat appears here only as an old man known to the staff under his mistress's name and included in their contempt for the pair."
     }
   ],
   "ambiguities": [
-    "The waiters' earlier disdainful remarks about troublesome, non-local 'vieux' guests appear, by narrative juxtaposition, to concern Mme de Villeparisis herself, but the passage never states this connection explicitly, so it is not annotated as a separate snub event.",
-    "The waiter's phrase 'M. de Villeparisis' initially seems to name a travel companion assumed to be her husband, but is revealed to refer to M. de Norpois, her longtime lover; this reference-resolution twist does not itself carry a separate appraisal event in this passage."
+    "The name « M. de Villeparisis » used by the waiter denotes Norpois; the text leaves open whether he travels under that name by design or whether the staff simply assume he is her husband, which changes how far the diminishment implies deliberate concealment of an irregular liaison.",
+    "The servants' snub is double-edged: their criterion (« C'est pas le monde d'ici ») is itself ridiculed by being applied to a marquise, and the narrator's « pour les profanes » marks their ignorance; the annotation reads the dominant movement as genuine diminishment because the narrator's own portrait of decay confirms the fall rather than merely reporting servant snobbery."
   ],
   "unit_id": "v6-p3#p-6-p-10"
 }

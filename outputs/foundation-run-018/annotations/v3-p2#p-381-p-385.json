@@ -11,19 +11,35 @@
       "presence_confidence": 0.99
     },
     {
-      "canonical_name": "princesse de Guermantes",
+      "canonical_name": "princesse de Parme",
       "surface_forms": [
-        "la princesse",
-        "Zénaïde"
+        "la princesse"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.75
+      "presence_confidence": 0.9
     },
     {
       "canonical_name": "duc de Guermantes",
       "surface_forms": [
         "M. de Guermantes",
         "Basin"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "Mme d'Arpajon",
+      "surface_forms": [
+        "la comtesse d'Arpajon"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Mme d'Heudicourt",
+      "surface_forms": [
+        "Mme d'Heudicourt",
+        "Zénaïde"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.9
@@ -42,62 +58,73 @@
   "appraisal_events": [
     {
       "event_id": "E1",
-      "source": "duchesse de Guermantes",
-      "target": "princesse de Guermantes",
-      "type": "narrated_diminishment",
-      "polarity": "negative",
-      "narrative_stance": "uncertain",
-      "confidence": 0.6,
-      "evidence": "\"Elle a dû le rêver, je crois qu'elle ne le connaissait même pas\"; and later, of the person whose house the dinner supposedly was not at: \"qui n'a pas vu Bornier de sa vie et qui doit croire, si on lui parle de la Fille de Roland, qu'il s'agit d'une princesse Bonaparte\"",
-      "explanation": "The duchesse repeatedly casts doubt on the claims and literary knowledge attached to the princesse, first dismissing the story about Mme d'Heudicourt as invented and then mocking the ignorance of the person she calls Zénaïde regarding Bornier's work."
+      "source": "narrator",
+      "target": "duchesse de Guermantes",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.8,
+      "evidence": "\"Elle a dû le rêver, je crois qu'elle ne le connaissait même pas, dit la duchesse\"; \"Mais si, Oriane, dit M. de Guermantes non sans intention\"; \"j'aurais été obligée chaque fois de faire désinfecter au formol\"; \"cet académicien empesté... je n'ai osé respirer qu'au gruyère !\"",
+      "explanation": "Oriane overrides the princesse de Parme's defense of Mme d'Heudicourt, corrects her husband on the facts of the dinner, and then holds the table alone with a sustained comic tirade; the duc's prompting \"non sans intention\" frames her performance as the display the salon exists to elicit, and no one contests it."
     },
     {
       "event_id": "E2",
-      "source": "duchesse de Guermantes",
-      "target": "M. de Bornier",
+      "source": "narrator",
+      "target": "Mme d'Arpajon",
       "type": "narrated_diminishment",
       "polarity": "negative",
-      "narrative_stance": "endorsed",
-      "confidence": 0.92,
-      "evidence": "\"j'aurais été obligée chaque fois de faire désinfecter au formol\"; \"Je croyais avoir pour voisin un escadron de gendarmes\"; \"je n'ai osé respirer qu'au gruyère\"",
-      "explanation": "Through an extended, vividly comic account, the duchesse portrays Bornier as physically repellent and unbearable company, thoroughly deflating the prestige his academic reputation might otherwise carry."
+      "narrative_stance": "ironized",
+      "confidence": 0.9,
+      "evidence": "\"continua la comtesse d'Arpajon qui, alliée aux principales maisons ducales et même souveraines de l'Europe, était heureuse de le rappeler\"",
+      "explanation": "The narrator exposes her remark about foreign correspondence as a pretext for advertising her own princely alliances, and the conversation passes over her without reply."
     }
   ],
   "status_effects": [
-    {
-      "character": "M. de Bornier",
-      "dimension": "general_appraisal",
-      "delta": -2,
-      "based_on_events": [
-        "E2"
-      ],
-      "confidence": 0.9,
-      "explanation": "Bornier is comically and thoroughly deflated by the duchesse's sensory-laden mockery of his person."
-    },
     {
       "character": "duchesse de Guermantes",
       "dimension": "rhetorical_position",
       "delta": 2,
       "based_on_events": [
-        "E1",
-        "E2"
+        "E1"
       ],
       "confidence": 0.85,
-      "explanation": "Across both exchanges the duchesse displays commanding wit and narrative control, dominating the conversation with detailed, cutting comic set-pieces."
+      "explanation": "She wins the exchange outright: she contradicts both an Altesse and her husband on points of fact and closes the passage with an uninterrupted comic aria that nobody answers."
     },
     {
-      "character": "princesse de Guermantes",
+      "character": "princesse de Parme",
+      "dimension": "rhetorical_position",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.8,
+      "explanation": "Her attempt to justify her friendship with Mme d'Heudicourt is flatly denied (\"Elle a dû le rêver\") and then buried under Oriane's correction that Zénaïde never laid eyes on Bornier; she does not recover the floor."
+    },
+    {
+      "character": "Mme d'Heudicourt",
       "dimension": "general_appraisal",
       "delta": -1,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.55,
-      "explanation": "Her claim about Mme d'Heudicourt's acquaintance with Bornier is dismissed as invented, and the ignorance attributed to 'Zénaïde' further undercuts her credibility, though the identity of Zénaïde is not fully certain."
+      "confidence": 0.82,
+      "explanation": "The literary prestige claimed for her is denied as an invention, and she is pictured as ignorant enough to take la Fille de Roland for a Bonaparte princess."
+    },
+    {
+      "character": "Mme d'Arpajon",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.88,
+      "explanation": "The narrator's aside reduces her contribution to vanity about her own ducal and sovereign connections."
     }
   ],
   "ambiguities": [
-    "The identity of 'Zénaïde' is uncertain: she may be the same person as 'la princesse' (princesse de Guermantes) referred to by her first name, or a distinct, unlisted hostess. This affects whether the duchesse's mockery of ignorance about Bornier targets the princesse directly or a different, unresolved figure."
+    "Stance on Oriane's tirade is the hard point: the material is snobbish cruelty toward a dead academician, so it could be read as self-exposure. Within this passage, however, the narrator attaches no deflating gloss to her (the ironic glosses fall on the princesse's motive and on Mme d'Arpajon's vanity), and her husband stages the performance approvingly, so the local movement is read as elevation rather than irony at her expense.",
+    "\"la princesse\" is listed on the reference sheet as a form of princesse de Guermantes, but the surrounding scene fixes her as the princesse de Parme, the Altesse being entertained at the Guermantes dinner; resolved accordingly.",
+    "\"Zénaïde\" is taken to be Mme d'Heudicourt, Oriane's cousin, on the strength of the immediately preceding conversation; if they were distinct, the diminishment recorded for Mme d'Heudicourt would be split between two figures."
   ],
   "unit_id": "v3-p2#p-381-p-385"
 }

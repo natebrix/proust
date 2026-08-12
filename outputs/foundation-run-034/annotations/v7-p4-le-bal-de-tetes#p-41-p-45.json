@@ -3,7 +3,8 @@
     {
       "canonical_name": "Morel",
       "surface_forms": [
-        "Morel"
+        "Morel",
+        "un homme considérable"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
@@ -15,6 +16,83 @@
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "baron de Charlus",
+      "surface_forms": [
+        "M. de Charlus"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.96
+    },
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": [
+        "Saint-Loup"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.96
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "je",
+        "moi",
+        "me"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Swann",
+      "surface_forms": [
+        "Swann",
+        "un aventurier du nom de Swann"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "comte de Forcheville",
+      "surface_forms": [
+        "le comte de Forcheville",
+        "ce Forcheville"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Gilberte",
+      "surface_forms": [
+        "Gilberte"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.94
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": [
+        "la mère de Gilberte",
+        "elle"
+      ],
+      "presence_type": "implicit",
+      "presence_confidence": 0.86
+    },
+    {
+      "canonical_name": "duchesse de Guermantes",
+      "surface_forms": [
+        "la duchesse de Guermantes"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "princesse de Guermantes",
+      "surface_forms": [
+        "la princesse de Guermantes"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.8
     }
   ],
   "appraisal_events": [
@@ -25,9 +103,9 @@
       "type": "narrated_elevation",
       "polarity": "positive",
       "narrative_stance": "ironized",
-      "confidence": 0.85,
-      "evidence": "il y eut un mouvement de curiosité et de déférence quand il entra... j'étais peut-être seul à savoir qu'il avait été entretenu par M. de Charlus, puis par Saint-Loup et en même temps par un ami de Saint-Loup",
-      "explanation": "Society greets Morel with curiosity and deference because of his morally weighty courtroom testimony, but the narrator's exclusive private knowledge that Morel had been a kept man undercuts this esteem, making the elevation ironic rather than narrator-endorsed."
+      "confidence": 0.93,
+      "evidence": "\"un homme considérable qui venait, dans un procès fameux, de donner un témoignage dont la seule valeur résidait dans sa haute moralité devant laquelle les juges et les avocats s'étaient unanimement inclinés\"; \"il y eut un mouvement de curiosité et de déférence quand il entra. C'était Morel. J'étais peut-être seul à savoir qu'il avait été entretenu par M. de Charlus, puis par Saint-Loup\".",
+      "explanation": "The assembled company receives Morel with curiosity and deference as a public paragon of moral authority, and the delayed naming (\"C'était Morel\") plus the narrator's private knowledge that he was a kept man turns that collective elevation into open irony rather than endorsement."
     },
     {
       "event_id": "E2",
@@ -36,21 +114,31 @@
       "type": "narrated_elevation",
       "polarity": "positive",
       "narrative_stance": "ironized",
-      "confidence": 0.85,
-      "evidence": "il avait fait... une apparition de grand homme... [ses ouvrages] donnaient aux jeunes gens et à beaucoup de femmes du monde l'impression d'une hauteur intellectuelle peu commune, d'une sorte de génie... ouvrages sans originalité",
-      "explanation": "Having broken cleanly with the declining circle where he once cut a poor figure, Bloch reappears in a new society celebrated as a man of genius; the narrator immediately qualifies this reputation as resting on unoriginal, sophistical work, marking the elevation as ironic."
+      "confidence": 0.94,
+      "evidence": "\"ouvrages sans originalité, mais qui donnaient aux jeunes gens et à beaucoup de femmes du monde l'impression d'une hauteur intellectuelle peu commune, d'une sorte de génie\"; \"il avait fait, pour une phase nouvelle de sa vie, honorée, glorieuse, une apparition de grand homme\"; \"on ne pensait pas qu'il eût jamais vécu ailleurs\".",
+      "explanation": "In the reconstituted salon Bloch is received as a great man of established standing, the amnesia of the new society erasing his earlier \"piètre figure\"; the narrator undercuts the acclaim by calling his books unoriginal and their reasoning an \"absurde sophistique\"."
     }
   ],
   "status_effects": [
     {
       "character": "Morel",
       "dimension": "social_status",
-      "delta": 1,
+      "delta": 2,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.75,
-      "explanation": "Within the scene Morel visibly gains curiosity and deference from the assembled company, a real if hollow elevation given what the narrator alone knows about his past dependence on Charlus and Saint-Loup."
+      "confidence": 0.92,
+      "explanation": "Morel's local standing rises sharply: judges, lawyers and now the salon bow before his supposed moral authority, and his entrance produces a movement of deference."
+    },
+    {
+      "character": "Morel",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.88,
+      "explanation": "The narrator's disclosure that this paragon of \"haute moralité\" was kept successively by Charlus and Saint-Loup deflates him in the reader's estimation even as society honors him."
     },
     {
       "character": "Bloch",
@@ -59,13 +147,22 @@
       "based_on_events": [
         "E2"
       ],
-      "confidence": 0.8,
-      "explanation": "Bloch's local standing rises sharply as he is received in his new milieu as a man of talent and near-genius, his earlier mediocre social position forgotten by those who never knew it."
+      "confidence": 0.93,
+      "explanation": "Bloch passes from the man who cut a poor figure in his old milieux to a glorious, honored presence taken for a lifelong fixture of the great world."
+    },
+    {
+      "character": "Bloch",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.87,
+      "explanation": "The narrator qualifies the acclaim by judging his books unoriginal and their sophistry absurd, and by noting his prestige is backdated on a few names picked up through Saint-Loup."
     }
   ],
   "ambiguities": [
-    "Both elevations (Morel, Bloch) are staged as sincere social esteem on the surface but are immediately reframed by the narrator's privileged knowledge or judgment as unfounded, so the positive polarity should be read as socially real but epistemically hollow rather than narrator-endorsed.",
-    "The passage also sketches a parallel case of social forgetting distorting reputations (a young lord's account inverting Swann's and Forcheville's relative standing, contested by the duchesse de Guermantes and others), but this thread is more diffuse and secondary to the two focal, sustained reputational reversals (Morel, Bloch) selected here."
+    "\"La princesse de Guermantes\" occurs twice with plausibly different referents: in the retrospective sentence about the old dinners it points to Marie-Gilbert, whereas the present hostess whose salon the newcomers invade, and who the young believe \"avait toujours eu la plus grande situation\", fits the remarried Mme Verdurin now bearing the title. The passage does not disambiguate."
   ],
   "unit_id": "v7-p4-le-bal-de-tetes#p-41-p-45"
 }

@@ -1,12 +1,13 @@
 {
   "characters_present": [
     {
-      "canonical_name": "Robert de Saint-Loup",
+      "canonical_name": "baron de Charlus",
       "surface_forms": [
-        "Saint-Loup"
+        "M. de Charlus",
+        "le baron"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.9
+      "presence_confidence": 0.99
     },
     {
       "canonical_name": "Morel",
@@ -17,10 +18,9 @@
       "presence_confidence": 0.99
     },
     {
-      "canonical_name": "baron de Charlus",
+      "canonical_name": "Robert de Saint-Loup",
       "surface_forms": [
-        "M. de Charlus",
-        "le baron"
+        "Saint-Loup"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
@@ -32,77 +32,101 @@
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "duchesse de Guermantes",
+      "surface_forms": [
+        "la duchesse"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.85
+    },
+    {
+      "canonical_name": "Jupien",
+      "surface_forms": [
+        "Jupien"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "M. Arthur Meyer",
+      "surface_forms": [
+        "M. Arthur Meyer"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.8
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
-      "source": "Morel",
+      "source": "narrator",
       "target": "baron de Charlus",
       "type": "narrated_diminishment",
       "polarity": "negative",
-      "narrative_stance": "ironized",
-      "confidence": 0.85,
-      "evidence": "Morel raconta sur M. de Charlus et sur M. d'Argencourt ... des histoires ... ce qui fit arrêter à la fois M. de Charlus et M. d'Argencourt ... l'instruction révéla qu'ils en avaient énormément d'obscurs, de quotidiens, ramassés dans la rue.",
-      "explanation": "Believing his arrest was Charlus's revenge, Morel denounces him (and d'Argencourt), triggering their arrest and exposing their secret rivalry over casual affairs, a public diminishment the narrator frames with ironic distance ('la double expansion des amants et des invertis')."
+      "narrative_stance": "endorsed",
+      "confidence": 0.93,
+      "evidence": "Morel « demanda à faire des révélations » et raconta des histoires « ce qui fit arrêter à la fois M. de Charlus et M. d'Argencourt » ; « l'instruction révéla qu'ils en avaient énormément d'obscurs, de quotidiens, ramassés dans la rue » ; Morel revient décoré « avec la croix que M. de Charlus avait jadis vainement sollicitée pour lui ».",
+      "explanation": "Charlus is locally brought down by his own protégé: denounced, arrested, and exposed by judicial inquiry as one of a pair of rivals with countless squalid street liaisons, while Morel obtains without him the very decoration Charlus had begged for in vain."
     },
     {
       "event_id": "E2",
       "source": "narrator",
-      "target": "Morel",
+      "target": "Robert de Saint-Loup",
       "type": "narrated_elevation",
-      "polarity": "mixed",
-      "narrative_stance": "ironized",
-      "confidence": 0.75,
-      "evidence": "Morel ... revint, la guerre finie, avec la croix que M. de Charlus avait jadis vainement sollicitée pour lui et que lui valut indirectement la mort de Saint-Loup.",
-      "explanation": "Morel is spared punishment and eventually decorated with the croix de guerre Charlus had vainly sought for him, an elevation the narrator undercuts by noting it comes indirectly through Saint-Loup's death rather than through Morel's own merit."
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.82,
+      "evidence": "« peut-être aimait-il trop sincèrement le peuple pour arriver à conquérir les suffrages du peuple » ; « Certes, ces héros l'auraient compris, ainsi que quelques très rares hauts esprits » ; contre « les vieilles canailles de la politique, qui sont toujours réélues » et « cet autre habitué de Jupien, ce député de l'Action Libérale qui fut réélu sans concurrent ».",
+      "explanation": "In the counterfactual meditation on the postwar elections the narrator credits the dead Saint-Loup with sincere democratic conviction and sets him above the recycled political scoundrels and the sham-uniformed deputy whom the era actually rewards; the satire falls on the electorate and the Bloc national, not on him."
     }
   ],
   "status_effects": [
     {
       "character": "baron de Charlus",
       "dimension": "social_status",
+      "delta": -2,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.93,
+      "explanation": "Arrest, criminal investigation, and the public exposure of his obscure daily encounters collapse his local standing, the more so since the denunciation comes from the man he had protected."
+    },
+    {
+      "character": "Morel",
+      "dimension": "social_status",
+      "delta": 1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.72,
+      "explanation": "Morel comes out of the affair ahead: released, sent to the front, unharmed, and decorated with the croix de guerre that Charlus could never obtain for him, so he gains leverage over his former protector even though the narrator's framing is caustic."
+    },
+    {
+      "character": "M. d'Argencourt",
+      "dimension": "social_status",
       "delta": -1,
       "based_on_events": [
         "E1"
       ],
       "confidence": 0.8,
-      "explanation": "Charlus is arrested and has his private liaisons and rivalries exposed by the investigation, a public scandal, though he is soon released."
+      "explanation": "He is arrested and exposed alongside Charlus by the same denunciation, sharing the discredit though the passage keeps him secondary."
     },
     {
-      "character": "baron de Charlus",
-      "dimension": "emotional_position",
-      "delta": -1,
-      "based_on_events": [
-        "E1"
-      ],
-      "confidence": 0.75,
-      "explanation": "Discovering that d'Argencourt was his secret rival causes Charlus more distress than the arrest itself."
-    },
-    {
-      "character": "M. d'Argencourt",
-      "dimension": "emotional_position",
-      "delta": -1,
-      "based_on_events": [
-        "E1"
-      ],
-      "confidence": 0.7,
-      "explanation": "d'Argencourt suffers a parallel blow on learning that Charlus was his rival, alongside the shared arrest and exposure."
-    },
-    {
-      "character": "Morel",
+      "character": "Robert de Saint-Loup",
       "dimension": "general_appraisal",
       "delta": 1,
       "based_on_events": [
         "E2"
       ],
-      "confidence": 0.7,
-      "explanation": "Morel materially benefits, escaping punishment and gaining a prestigious decoration, though the narrator's framing undercuts any sense that he earned it."
+      "confidence": 0.8,
+      "explanation": "Posthumously the narrator raises Saint-Loup by contrast with the postwar political mediocrity, granting him a sincerity of feeling for the people that would in fact have disqualified him."
     }
   ],
   "ambiguities": [
-    "E1 formally targets Charlus, but the passage treats Charlus and d'Argencourt as symmetrically affected co-targets of the same denunciation and arrest.",
-    "E2's positive material outcome for Morel is narrated with irony (obtained indirectly through Saint-Loup's death, and elsewhere the medal is described as later mislaid), so the elevation should be read as qualified rather than clean."
+    "Morel's outcome is materially a success (freedom, bravery at the front, the croix de guerre) but the narrator frames it corrosively — the cross is first seen mislaid in Jupien's brothel and is owed to Saint-Loup's death — so the +1 registers position gained, not esteem gained.",
+    "Saint-Loup is simultaneously the causal origin of the disaster (his démarches to find Morel trigger the arrests and « des chagrins plus grands que celui de la duchesse ») and the object of the closing elevation; the passage does not blame him for the chain, so the dominant reading for him is taken as elevation rather than mixed."
   ],
   "unit_id": "v7-p2-m-de-charlus-pendant-la-guerre#p-66"
 }

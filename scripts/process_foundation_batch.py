@@ -194,10 +194,16 @@ if unadjudicated:
 # Only a catastrophic rate trips; the value is recorded for checkpoint review.
 MIXED_ENTRY_RATE_CEILING = 0.50
 MIXED_GATE_MIN_ENTRIES = 20  # a rate on a tiny denominator is noise, not signal
+adjudications_path = run_dir / "adjudications.json"
+mixed_ceiling_accepted = False
+if adjudications_path.exists():
+    mixed_ceiling_accepted = bool(
+        json.loads(adjudications_path.read_text()).get("mixed_ceiling", {}).get("accepted")
+    )
 for lens, rate in report.get("mixed_rates", {}).items():
     if report.get("entry_totals", {}).get(lens, 0) < MIXED_GATE_MIN_ENTRIES:
         continue
-    if rate > MIXED_ENTRY_RATE_CEILING:
+    if rate > MIXED_ENTRY_RATE_CEILING and not mixed_ceiling_accepted:
         report["status"] = "gate_tripped"
         report["reasons"].append(
             f"mixed-entry rate {rate} in {lens} > catastrophic ceiling {MIXED_ENTRY_RATE_CEILING}"

@@ -11,20 +11,24 @@
       "presence_confidence": 0.99
     },
     {
-      "canonical_name": "duc de Guermantes",
-      "surface_forms": [
-        "M. de Guermantes",
-        "le duc"
-      ],
-      "presence_type": "explicit",
-      "presence_confidence": 0.97
-    },
-    {
       "canonical_name": "baron de Charlus",
       "surface_forms": [
         "Mémé",
+        "M. de Charlus",
         "Palamède",
-        "votre beau-frère Palamède"
+        "votre beau-frère Palamède",
+        "mon beau-frère",
+        "son frère"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "duc de Guermantes",
+      "surface_forms": [
+        "M. de Guermantes",
+        "le duc",
+        "son mari"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.97
@@ -32,45 +36,93 @@
     {
       "canonical_name": "Mme de Villeparisis",
       "surface_forms": [
-        "ma tante"
+        "ma tante",
+        "Ma pauvre tante"
       ],
       "presence_type": "implicit",
-      "presence_confidence": 0.75
+      "presence_confidence": 0.82
     },
     {
-      "canonical_name": "Votre Altesse",
+      "canonical_name": "princesse de Parme",
       "surface_forms": [
         "Votre Altesse"
       ],
+      "presence_type": "implicit",
+      "presence_confidence": 0.68
+    },
+    {
+      "canonical_name": "marquis de Bréauté",
+      "surface_forms": [
+        "M. de Bréauté"
+      ],
       "presence_type": "explicit",
-      "presence_confidence": 0.55
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "Mme de Charlus",
+      "surface_forms": [
+        "Mme de Charlus",
+        "cette pauvre Mme de Charlus"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "je",
+        "moi"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
-      "source": "duc de Guermantes",
+      "source": "duchesse de Guermantes",
       "target": "Mme de Villeparisis",
       "type": "narrated_diminishment",
       "polarity": "mixed",
       "narrative_stance": "neutral_report",
-      "confidence": 0.65,
-      "evidence": "\"Il n'y a pas d'intelligence plus bourgeoise, plus sérieuse, plus terne\" than the aunt's, whose legendary reputation for dazzling wit and scandalous conduct is declared 'très fausse'; he grants only that she was excessively, earnestly conjugal in her attachments.",
-      "explanation": "The duc deflates his aunt's glamorous public legend into a dull, bourgeois reality, though he softens this by crediting her with unusual sincerity in love; the net movement is a debunking of her mythic standing."
+      "confidence": 0.82,
+      "evidence": "« Ma pauvre tante ! elle gardera la réputation d'une personne de l'ancien régime, d'un esprit éblouissant et d'un dévergondage effréné. Il n'y a pas d'intelligence plus bourgeoise, plus sérieuse, plus terne ; elle passera pour une protectrice des arts, ce qui veut dire qu'elle a été la maîtresse d'un grand peintre, mais il n'a jamais pu lui faire comprendre ce que c'était qu'un tableau »",
+      "explanation": "The duchesse dismantles her aunt's legend of ancien-régime brilliance, artistic patronage and libertinage, reducing her to the dullest of bourgeois minds; the partial credit she grants her (a conjugal seriousness in every liaison) softens but does not reverse the deflation."
     },
     {
       "event_id": "E2",
       "source": "duchesse de Guermantes",
       "target": "baron de Charlus",
       "type": "narrated_diminishment",
-      "polarity": "mixed",
-      "narrative_stance": "ironized",
-      "confidence": 0.75,
-      "evidence": "Against Votre Altesse's claim that no mistress was ever mourned as devotedly as Mme de Charlus, the duchesse jokes 'ce n'est pas un deuil de mari' and compares his grief to that for 'une cousine, une grand'mère, une sœur', before conceding 'il est bon comme personne... c'est un cœur de femme, Mémé!'",
-      "explanation": "The duchesse, in an explicitly bantering ('gouailleuse') tone that her husband visibly resents, undercuts the sincerity/category of Charlus's widower's grief even as she closes with genuine, if double-edged, praise of his exceptional personal delicacy."
+      "polarity": "negative",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.86,
+      "evidence": "« il va tous les jours au cimetière lui raconter combien de personnes il a eues à déjeuner, il la regrette énormément, mais comme une cousine, comme une grand'mère, comme une sœur. Ce n'est pas un deuil de mari. Il est vrai que c'était deux saints, ce qui rend le deuil un peu spécial. » ... « C'est un cœur de femme, Mémé ! »",
+      "explanation": "Against the Altesse's claim that no woman was ever mourned like Mme de Charlus and against her husband's rebuke that « Son regret a édifié tout le monde », the duchesse empties Charlus's celebrated widowhood of its conjugal content and closes with insinuations (« deux saints », « un cœur de femme ») whose apparent praise prolongs the deflation rather than repairing it."
     }
   ],
   "status_effects": [
+    {
+      "character": "baron de Charlus",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.83,
+      "explanation": "His publicly edifying grief is reclassified as cousinly rather than a husband's, and the closing compliments carry an insinuation about the marriage, so his local standing falls even though two speakers defend him."
+    },
+    {
+      "character": "duchesse de Guermantes",
+      "dimension": "rhetorical_position",
+      "delta": 2,
+      "based_on_events": [
+        "E1",
+        "E2"
+      ],
+      "confidence": 0.85,
+      "explanation": "She holds the floor with epigrams (« on va à leur enterrement, ce qu'on ne fait jamais pour les vivants ! »), politely overrides a royal contradiction, and presses on through her husband's loaded stare with what the narrator calls « cette espèce de hardiesse des dompteurs »; the duc even signals Bréauté to enjoy « l'esprit de la duchesse »."
+    },
     {
       "character": "Mme de Villeparisis",
       "dimension": "general_appraisal",
@@ -78,23 +130,23 @@
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.65,
-      "explanation": "Her reputation as brilliant and scandalous is corrected into something dull and bourgeois, lowering her local standing despite the partial redemption of being called sincere in love."
+      "confidence": 0.78,
+      "explanation": "Her reputation for dazzling wit, artistic patronage and scandal is declared « très fausse » and replaced by dullness and inadvertent respectability."
     },
     {
-      "character": "baron de Charlus",
-      "dimension": "general_appraisal",
-      "delta": 0,
+      "character": "duc de Guermantes",
+      "dimension": "rhetorical_position",
+      "delta": -1,
       "based_on_events": [
         "E2"
       ],
-      "confidence": 0.6,
-      "explanation": "The duchesse's ironic account questions whether his mourning is truly that of a husband, but she ends by affirming his rare personal kindness and delicacy, leaving a mixed net local movement."
+      "confidence": 0.72,
+      "explanation": "His sullen attempt to shut his wife down (« Vous êtes difficile. Son regret a édifié tout le monde », « d'un ton rogue », the « immobilité terrible » of his stare) fails to stop her, and the narrator's simile likens him to a beast to be tamed or a madman to be humoured."
     }
   ],
   "ambiguities": [
-    "The attribution of the extended quoted portrait of 'ma tante' (\"Ma pauvre tante ! elle gardera la réputation...\") is unclear: it may be the duc's own words or the duchesse quoting what Charlus ('Mémé') told her the day before; the annotation treats it as the duc's speech but the layering is genuinely uncertain.",
-    "The interlocutor addressed as 'Votre Altesse' is never named in the passage; she is plausibly the princesse de Parme based on the familiar use of 'Oriane' and the dinner setting, but this identification is not confirmed by the passage itself."
+    "The long portrait of « ma tante » is attributed here to the duchesse, on the strength of the reply « Pourtant, Oriane, regardez justement votre beau-frère Palamède dont vous êtes en train de parler » and of the maxim about inconsolable lovers that it answers; because she has just said « C'est justement ce que me disait Mémé pas plus tard qu'hier », the speech could alternatively be read as her relaying Charlus's judgment, which would shift E1's source to him.",
+    "The interlocutor addressed as « Votre Altesse » is never named; she is read as the princesse de Parme from the Guermantes-dinner setting and her familiar « Oriane », but the passage alone does not fix the identity, and her contradicted defence of Charlus's mourning would attach to whoever she is."
   ],
   "unit_id": "v3-p2#p-441-p-445"
 }

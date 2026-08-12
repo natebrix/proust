@@ -1,12 +1,81 @@
 {
   "characters_present": [
     {
-      "canonical_name": "Albertine",
+      "canonical_name": "le narrateur",
       "surface_forms": [
-        "Albertine"
+        "je",
+        "moi",
+        "son ami"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Albertine",
+      "surface_forms": [
+        "Albertine",
+        "elle",
+        "mon amie",
+        "Pauvre petite"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Gilberte",
+      "surface_forms": [
+        "Gilberte"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "l'amie de Mlle Vinteuil",
+      "surface_forms": [
+        "l’amie de Mlle Vinteuil"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "Mlle Vinteuil",
+      "surface_forms": [
+        "Mlle Vinteuil"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.88
+    },
+    {
+      "canonical_name": "Aimé",
+      "surface_forms": [
+        "Aimé"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.93
+    },
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": [
+        "Saint-Loup"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "la grand-mère",
+      "surface_forms": [
+        "ma grand’mère"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "Mme de Charlus",
+      "surface_forms": [
+        "cette Mme de Charlus"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.75
     }
   ],
   "appraisal_events": [
@@ -14,26 +83,36 @@
       "event_id": "E1",
       "source": "narrator",
       "target": "Albertine",
-      "type": "blame",
-      "polarity": "mixed",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
       "narrative_stance": "endorsed",
-      "confidence": 0.78,
-      "evidence": "\"elle m'avait ainsi menti en me jurant... qu'elle n'avait jamais eu avec l'amie de Mlle Vinteuil ces relations qu'au moment où Albertine me le jurait sa rougeur avait confessées. Pauvre petite, elle avait eu du moins l'honnêteté de ne pas vouloir jurer que le plaisir de revoir Mlle Vinteuil n'entrait pour rien dans son désir d'aller ce jour-là chez les Verdurin.\"",
-      "explanation": "The narrator recalls that Albertine lied to him under oath about her relations, which locally casts her as dishonest, but he immediately tempers this with sympathy, crediting her with a partial, more limited honesty."
+      "confidence": 0.9,
+      "evidence": "« elle m’avait ainsi menti en me jurant... qu’elle n’avait jamais eu avec l’amie de Mlle Vinteuil ces relations qu’au moment où Albertine me le jurait sa rougeur avait confessées » ; « Elle n’était plus qu’un nom, comme cette Mme de Charlus dont disaient avec indifférence : « Elle était délicieuse » ceux qui l’avaient connue » ; « Si la vie d’Albertine avait été vraiment coupable ».",
+      "explanation": "The narrator both convicts the dead Albertine of lying about her tastes — her blush treated as confession — and narrates her ontological erasure into a mere name, with her life kept under retrospective suspicion and investigation. The pitying tone (« Pauvre petite », her partial honesty) softens but does not reverse a dominant movement of exposure and effacement."
     },
     {
       "event_id": "E2",
       "source": "narrator",
-      "target": "Albertine",
+      "target": "le narrateur",
       "type": "narrated_diminishment",
       "polarity": "negative",
       "narrative_stance": "endorsed",
-      "confidence": 0.7,
-      "evidence": "\"Elle n'était plus qu'un nom, comme cette Mme de Charlus dont disaient avec indifférence : « Elle était délicieuse » ceux qui l'avaient connue.\"",
-      "explanation": "Death is described as having erased Albertine from external reality, reducing her for others to a bare name recalled with indifference, even though the narrator insists she remains intensely present within his own mind."
+      "confidence": 0.86,
+      "evidence": "« J’achetai combien de femmes qui ne m’apprirent rien » ; « je me mis à lire des livres sur les tables tournantes » ; « Avec la naïveté des théologiens antiques » ; « certaines folies douces de personnes qui par ailleurs semblent raisonnables » ; « ma santé, mon indécision, ma « procrastination », comme disait Saint-Loup ».",
+      "explanation": "The retrospective narrator diminishes his own past self, presenting his posthumous jealousy as futile and arbitrary, his consolations as absurd (« une telle supposition était absurde »), his beliefs as credulous, and his character as indecisive — a self-indictment reinforced by his admitted forgetting of his grandmother."
     }
   ],
   "status_effects": [
+    {
+      "character": "Albertine",
+      "dimension": "inclusion_exclusion",
+      "delta": -2,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.9,
+      "explanation": "She is narrated out of existence — reality closes over her, her trace is effaced, and she survives only as an indifferent name like Mme de Charlus."
+    },
     {
       "character": "Albertine",
       "dimension": "general_appraisal",
@@ -41,23 +120,33 @@
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.75,
-      "explanation": "Albertine's standing is mildly lowered by the revealed lie about her relations, though the blame is softened by the narrator's acknowledgment of her partial honesty."
+      "confidence": 0.84,
+      "explanation": "Her word is retrospectively convicted of falsehood and her life is treated as presumptively « coupable » and worth investigating, though the narrator credits her with partial honesty and takes some blame himself."
     },
     {
-      "character": "Albertine",
-      "dimension": "inclusion_exclusion",
+      "character": "le narrateur",
+      "dimension": "emotional_position",
       "delta": -2,
       "based_on_events": [
         "E2"
       ],
-      "confidence": 0.7,
-      "explanation": "Albertine is described as effaced from the world of the living, reduced to an indifferently-recalled name for others, marking a clear local exclusion even as the narrator alone resists this erasure."
+      "confidence": 0.88,
+      "explanation": "He is locally at his weakest: grieving, jealous of a dead woman, buying women who teach him nothing, and sustaining a delusion that Albertine may walk back in."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.8,
+      "explanation": "The narration presents his credulity, arbitrary inquiry, and chronic « procrastination » — a label borrowed from Saint-Loup — as failings he himself concedes."
     }
   ],
   "ambiguities": [
-    "The blame for Albertine's lie is explicitly softened by the narrator's sympathetic 'Pauvre petite' and by his own self-doubt about whether his earlier reaction discouraged her confession, so the event is read as mixed rather than purely negative.",
-    "The narrated diminishment of Albertine into 'just a name' describes how she now appears to others and to impersonal reality, while the passage simultaneously insists the narrator himself still holds her vividly present; this tension qualifies but does not reverse the diminishment."
+    "The passage stages blame for Albertine's concealment twice over: she lied and never went « jusqu'au bout de son aveu », yet the narrator twice concedes « c'était peut-être un peu ma faute » for having condemned such tastes too violently at Balbec. The text does not settle where the fault finally lands, so the diminishment of Albertine and the self-diminishment of the narrator are partly the same movement seen from two ends.",
+    "« cette Mme de Charlus » is not otherwise present in the local context and does not match the reference sheet's baron de Charlus; she is treated here as the baron's late wife, invoked only as an emblem of posthumous reduction to a name, so her identification is left unresolved."
   ],
   "unit_id": "v6-p1#p-81-p-85"
 }

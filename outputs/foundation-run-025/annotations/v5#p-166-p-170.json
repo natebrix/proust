@@ -4,7 +4,9 @@
       "canonical_name": "Albertine",
       "surface_forms": [
         "Albertine",
-        "Albertine-Esther"
+        "Albertine-Esther",
+        "la pauvre captive",
+        "elle"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
@@ -12,49 +14,99 @@
     {
       "canonical_name": "Françoise",
       "surface_forms": [
-        "Françoise"
+        "Françoise",
+        "notre vieille servante"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "je",
+        "moi",
+        "me"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Gilberte",
+      "surface_forms": [
+        "Gilberte"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "Eulalie",
+      "surface_forms": [
+        "Eulalie"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.85
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
+      "source": "narrator",
+      "target": "Albertine",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.88,
+      "evidence": "« c'est la vérité que vous ne l'êtes pas » ; « par nature elle était, en dehors de cela, menteuse, et si changeante » ; « ce n'était pas que sur des points particuliers, c'était sur tout un ensemble qu'Albertine me mentait »",
+      "explanation": "The narrator's settled retrospective judgment constitutes Albertine as a liar by nature rather than by circumstance, and generalizes it into a maxim about women who have something to hide; the diminishment is stated in the narrator's own analytic voice, not merely reported."
+    },
+    {
+      "event_id": "E2",
       "source": "Françoise",
       "target": "Albertine",
       "type": "blame",
       "polarity": "negative",
-      "narrative_stance": "uncertain",
-      "confidence": 0.75,
-      "evidence": "Françoise's tirade: \"la maison est empestée depuis que la gentillesse a installé ici la fourberie, que l'intelligence protège la personne la plus bête qu'on ait jamais vue... par le vice, par ce qu'il y a de plus vulgaire et de plus bas\"; and her stated wish that \"Albertine-Esther fût bannie.\"",
-      "explanation": "Françoise directly and repeatedly blames Albertine as vulgar, base, and vice-ridden, and wishes her banished from the household, but the narrator frames this hostility as arising partly from Françoise's jealousy and physical exhaustion rather than confirming the blame as objectively true."
+      "narrative_stance": "ironized",
+      "confidence": 0.86,
+      "evidence": "« la maison est empestée depuis que la gentillesse a installé ici la fourberie... me faire humilier, moi qui suis depuis quarante ans dans la famille, par le vice, par ce qu'il y a de plus vulgaire et de plus bas » ; « il semblait bien que c'était surtout la haine qui faisait parler Françoise » ; « Françoise avait besoin de sommeil »",
+      "explanation": "Françoise denounces Albertine in the loftiest moral idiom, but the narrator immediately reassigns her invective to household jealousy, extra work and an overtaxed body, so the accusation recoils on the accuser."
     }
   ],
   "status_effects": [
     {
       "character": "Albertine",
       "dimension": "general_appraisal",
-      "delta": -1,
+      "delta": -2,
       "based_on_events": [
-        "E1"
+        "E1",
+        "E2"
       ],
-      "confidence": 0.7,
-      "explanation": "Françoise's tirade directly denigrates Albertine's character as vulgar and vice-ridden, though the narrator's framing of Françoise's motives (jealousy, exhaustion) tempers full endorsement of that blame."
+      "confidence": 0.88,
+      "explanation": "Both the narrator's analysis and Françoise's tirade fix Albertine locally as constitutionally mendacious and socially degrading to the household."
     },
     {
-      "character": "Albertine",
-      "dimension": "inclusion_exclusion",
+      "character": "Françoise",
+      "dimension": "rhetorical_position",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.85,
+      "explanation": "Her grand moral denunciation is stripped of authority by being explained away as hatred, jealousy and fatigue — the passage ends by prescribing sleep rather than deference."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "emotional_position",
       "delta": -1,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.65,
-      "explanation": "Françoise explicitly wishes Albertine banished from the household, positioning her as an unwelcome, resented presence within the domestic space."
+      "confidence": 0.82,
+      "explanation": "He is shown captive to an inquiry he himself judges arbitrary (the same craving about Gilberte is now indifferent), unable to establish any truth, reduced to interpreting a servant's insinuations and not daring to question her."
     }
   ],
   "ambiguities": [
-    "The narrator explicitly questions whether Françoise's hostile judgment of Albertine reflects the truth or is instead driven by jealousy and physical exhaustion, leaving the reliability of the blame uncertain rather than narrator-endorsed."
+    "The narrator's condemnation of Albertine is voiced with maxim-like authority, yet the same passage undermines its evaluator: his need to know is called strange and is shown to be habit, self-interest and a duty owed only to himself, and he calls Albertine « la pauvre captive ». The diminishment of Albertine is the stronger local movement, but the text leaves genuinely open how far it endorses him as judge.",
+    "Françoise's specific insinuation (that Albertine « préférait un mariage avec quelqu'un qui ne semblait pas tout à fait être moi ») is reported and simultaneously called « bien invraisemblable », so it is unclear whether any of its content is meant to stand."
   ],
   "unit_id": "v5#p-166-p-170"
 }

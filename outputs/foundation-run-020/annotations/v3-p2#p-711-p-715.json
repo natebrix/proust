@@ -10,6 +10,17 @@
       "presence_confidence": 0.99
     },
     {
+      "canonical_name": "duchesse de Guermantes",
+      "surface_forms": [
+        "la duchesse",
+        "Mme de Guermantes",
+        "Oriane",
+        "Mme la duchesse"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
       "canonical_name": "duc de Guermantes",
       "surface_forms": [
         "le duc",
@@ -19,39 +30,80 @@
       "presence_confidence": 0.99
     },
     {
-      "canonical_name": "duchesse de Guermantes",
+      "canonical_name": "marquise de Saint-Euverte",
       "surface_forms": [
-        "la duchesse",
-        "Mme de Guermantes",
-        "Oriane"
+        "Mme de Saint-Euverte",
+        "la mère Saint-Euverte"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.99
+      "presence_confidence": 0.85
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "moi",
+        "nous"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
+      "source": "duc de Guermantes",
+      "target": "Swann",
+      "type": "snub",
+      "polarity": "negative",
+      "narrative_stance": "ironized",
+      "confidence": 0.94,
+      "evidence": "Swann annonce qu'il « peut mourir d'un jour à l'autre » ; le duc coupe court : « Voyons, Oriane, ne restez pas à bavarder comme cela et à échanger vos jérémiades avec Swann… il est huit heures moins dix », et la duchesse, tout en continuant son chemin vers la voiture, se contente de baisser les épaules : « Ne vous occupez pas de ce dîner. Il n'a aucune importance ! »",
+      "explanation": "Swann's announcement of his imminent death is set aside by the Guermantes couple in favor of a dinner engagement, his news reclassified as 'jérémiades' and answered with a shrug and a postponed lunch. The narrator stages this dismissal critically rather than endorsing the social code that makes it possible."
+    },
+    {
+      "event_id": "E2",
       "source": "narrator",
       "target": "duc de Guermantes",
       "type": "narrated_diminishment",
       "polarity": "negative",
       "narrative_stance": "endorsed",
-      "confidence": 0.9,
-      "evidence": "Le duc dismisses the conversation about Swann's fatal illness as \"vos jérémiades avec Swann\" and immediately erupts with far greater vehemence over Oriane's black shoes not matching her red dress (\"Oriane, qu'est-ce que vous alliez faire, malheureuse... Remontez vite mettre vos souliers rouges\"), while the narrator states plainly that for people like him worldly obligations outweigh a friend's death.",
-      "explanation": "The duc's priorities are exposed by direct contrast: he cuts off talk of Swann's impending death as tiresome complaining but explodes with genuine alarm over a footwear mismatch, and the narrator explicitly frames this as typical of how mondain obligations trump a dying friend for such people."
+      "confidence": 0.93,
+      "evidence": "« Oriane, qu'est-ce que vous alliez faire, malheureuse. Vous avez gardé vos souliers noirs ! Avec une toilette rouge ! » puis, après avoir renvoyé sa femme se changer : « Hein, les pauvres maris, on se moque bien d'eux, mais ils ont du bon tout de même. Sans moi, Oriane allait dîner en souliers noirs. »",
+      "explanation": "Placed immediately after a dying friend has been hurried off the doorstep, the duc's shoe crisis and his self-congratulation expose a grotesque scale of values; the narrative arrangement plainly condemns him."
     }
   ],
   "status_effects": [
+    {
+      "character": "Swann",
+      "dimension": "inclusion_exclusion",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.9,
+      "explanation": "Swann is locally pushed out of serious consideration: his death is disbelieved, deferred to a future lunch, and ranked below a dinner hour and a pair of shoes by the people he has just confided in."
+    },
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": [
+        "E1",
+        "E2"
+      ],
+      "confidence": 0.85,
+      "explanation": "The same scene raises Swann in the narrator's reckoning: his irony (« Ce serait une plaisanterie d'un goût charmant »), his politeness which lets him fully enter into others' priorities where the duchesse's lets her perceive his only « confusément », and his final magnanimity about the black shoes set his delicacy above the couple's."
+    },
     {
       "character": "duc de Guermantes",
       "dimension": "general_appraisal",
       "delta": -2,
       "based_on_events": [
+        "E2",
         "E1"
       ],
-      "confidence": 0.9,
-      "explanation": "The duc is locally diminished as petty and self-absorbed: he treats Swann's revelation of mortal illness as an irritant to be hurried past while reacting with real urgency to a shoe-color mistake."
+      "confidence": 0.93,
+      "explanation": "The duc is clearly diminished: he silences a dying friend for punctuality, then treats mismatched shoes as the evening's real emergency and preens over having averted it."
     },
     {
       "character": "duchesse de Guermantes",
@@ -60,13 +112,13 @@
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.7,
-      "explanation": "Though she shows more warmth toward Swann than her husband (offering to talk further, inviting him to lunch) and has a flicker of intuition that the dinner matters less than Swann's death, she nonetheless yields to her husband's imperatives and returns for the red shoes, so the passage folds her back into the same worldly priorities, mildly lowering her local standing."
+      "confidence": 0.83,
+      "explanation": "She is somewhat lowered by the narrator's dry aside that for her « tout se résolvait toujours en déjeuners » and by her yielding at once to her husband and going back upstairs to change her shoes, though her shrugged disclaimer registers a flicker of concern for Swann."
     }
   ],
   "ambiguities": [
-    "Swann's closing remark ('Ce n'est pas laid... qui ne m'avaient nullement choqué') is ironically underplayed and could be read either as graceful, self-possessed composure that quietly outshines the couple's triviality, or as a poignant sign of his own gravely serious concern being smoothed over and absorbed into their trivial dispute; the passage does not resolve this, so it is treated as coloring E1 rather than scored as a separate event or status effect.",
-    "The duchesse's momentary, confused intuition that the dinner should matter less to Swann than his own death is reported through indirect, layered narration and is not fully acted upon, making her local appraisal softer and less certain than the duc's."
+    "The duchesse's « Ne vous occupez pas de ce dîner. Il n'a aucune importance ! » is genuinely double-edged: the narrator credits her politeness with dimly perceiving what Swann's death means to him, yet she delivers the line while walking to the carriage and immediately reverts to disbelief and to lunch invitations. Read here as a token gesture that qualifies but does not reverse the snub.",
+    "Swann's closing « Ce n'est pas laid… j'avais remarqué les souliers noirs, qui ne m'avaient nullement choqué » may be plain courtesy or a last controlled irony; either reading supports his elevation in appraisal, but the degree of edge in it is undetermined by the text."
   ],
   "unit_id": "v3-p2#p-711-p-715"
 }

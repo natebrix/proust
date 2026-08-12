@@ -14,7 +14,15 @@
         "la princesse de Parme"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.95
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "marquis de Bréauté",
+      "surface_forms": [
+        "M. de Bréauté"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
     },
     {
       "canonical_name": "prince de Guermantes",
@@ -22,7 +30,7 @@
         "le prince de Guermantes"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.97
+      "presence_confidence": 0.95
     },
     {
       "canonical_name": "Mme Iéna",
@@ -30,34 +38,52 @@
         "Mme Iéna"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.6
+      "presence_confidence": 0.85
+    },
+    {
+      "canonical_name": "Swann",
+      "surface_forms": [
+        "Swann"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
-      "source": "narrator",
-      "target": "duchesse de Guermantes",
-      "type": "narrated_elevation",
-      "polarity": "positive",
+      "source": "duchesse de Guermantes",
+      "target": "Mme Iéna",
+      "type": "snub",
+      "polarity": "negative",
       "narrative_stance": "ironized",
-      "confidence": 0.72,
-      "evidence": "Mme de Guermantes delivers an extended, deliberately comic disparagement of the young duke's looks and deflects Bréauté's pointed 'snob' question with confident verdicts ('il est intelligent... il est fin, je l'ai vu drôle'), narrated with close attention to her calculated comic timing.",
-      "explanation": "The passage stages Mme de Guermantes's celebrated wit and conversational authority as she controls the room's judgments, though the narrator gently ironizes the specious logic behind her reasoning ('comme s'il y eût eu... incompatibilité absolue entre le snobisme et l'intelligence')."
+      "confidence": 0.88,
+      "evidence": "« Non, car il a l’air d’un tapir… cela se perd dans des joues encaustiquées qui lui donnent un air assez mameluck. On sent que le frotteur doit passer tous les matins. » … « Du reste, comme il n’est pas reçu, ce snobisme n’aurait pas à s’exercer. »",
+      "explanation": "Mme de Guermantes turns the Iéna household into salon amusement — grotesque physical caricature of the son, then a mock-indulgent defense that ends in the flat verdict that the family is not received; the narrator ironizes her delivery ('comme s’il y eût eu à son avis incompatibilité absolue entre le snobisme et l’intelligence') without softening the exclusion it pronounces."
     },
     {
       "event_id": "E2",
-      "source": "duchesse de Guermantes",
+      "source": "narrator",
       "target": "princesse de Parme",
-      "type": "discredit_association",
+      "type": "narrated_diminishment",
       "polarity": "negative",
       "narrative_stance": "endorsed",
       "confidence": 0.82,
-      "evidence": "\"Du reste, comme il n'est pas reçu, ce snobisme n'aurait pas à s'exercer,\" reprit-elle sans songer qu'elle n'encourageait pas beaucoup de la sorte la princesse de Parme; the passage closes with an anxious question about what the prince de Guermantes, who mockingly calls the family 'Mme Iéna,' will say if he learns of the visit.",
-      "explanation": "The narrator explicitly flags that Mme de Guermantes's remark that the young man is not received in society inadvertently discourages princesse de Parme, whose own association with this not-fully-accepted family is further threatened by prince de Guermantes's derisive nickname for its mistress."
+      "evidence": "« reprit-elle sans songer qu’elle n’encourageait pas beaucoup de la sorte la princesse de Parme » ; « Je me demande ce que dira le prince de Guermantes, qui l’appelle Mme Iéna, s’il apprend que je suis allée chez elle. »",
+      "explanation": "The narrator marks the princesse de Parme as the unregarded casualty of the duchesse's wit: urged toward the Iénas and then told they are unreceivable, she is left anxiously anticipating the prince de Guermantes's contempt for a visit she has already made."
     }
   ],
   "status_effects": [
+    {
+      "character": "Mme Iéna",
+      "dimension": "inclusion_exclusion",
+      "delta": -2,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.88,
+      "explanation": "The household is placed outside valued social space by explicit verdict ('il n’est pas reçu') and by the prince's title-stripping nickname 'Mme Iéna'."
+    },
     {
       "character": "duchesse de Guermantes",
       "dimension": "rhetorical_position",
@@ -65,23 +91,23 @@
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.75,
-      "explanation": "She dominates the exchange through confident, decisive social verdicts, though the narrator's irony about her reasoning tempers the elevation."
+      "confidence": 0.8,
+      "explanation": "She holds the floor and dispenses verdicts that both the princesse de Parme and M. de Bréauté solicit; the narrator's irony about her mannered performance qualifies but does not cancel her local command of the exchange."
     },
     {
       "character": "princesse de Parme",
-      "dimension": "inclusion_exclusion",
+      "dimension": "emotional_position",
       "delta": -1,
       "based_on_events": [
         "E2"
       ],
       "confidence": 0.8,
-      "explanation": "Her association with a family not fully received in society is exposed as a liability, leaving her anxious about the disapproval of the more exacting prince de Guermantes."
+      "explanation": "She ends the exchange exposed and apprehensive, dependent on how a social superior will judge a visit the duchesse encouraged and then discredited."
     }
   ],
   "ambiguities": [
-    "The identity of 'Mme Iéna' (the woman prince de Guermantes mockingly nicknames) does not match any reference-sheet entity; she is recorded as an unresolved named figure.",
-    "The speaker of the passage's opening and closing lines is not explicitly tagged; she is inferred to be princesse de Parme based on continuity with the surrounding context."
+    "The body of the mockery targets the unnamed 'jeune duc' (the Iéna son), who is descriptor-identified and not on the reference sheet; the only named surface form for that household in the passage is 'Mme Iéna', the prince de Guermantes's title-stripping truncation, which denotes the mother. The snub is therefore recorded against 'Mme Iéna' as the passage's named stand-in for the excluded family.",
+    "The narration is double-edged toward Mme de Guermantes: her wit is socially dominant, yet the narrator flags her equation of intelligence with non-snobbery and her heedlessness of the princesse de Parme. The reading committed to here keeps her rhetorical gain but only at +1, since the same sentences that display her mastery also expose its thoughtlessness."
   ],
   "unit_id": "v3-p2#p-511-p-515"
 }

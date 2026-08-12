@@ -1,0 +1,109 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": ["Robert", "le petit Saint-Loup"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "duchesse de Guermantes",
+      "surface_forms": ["Oriane", "la duchesse"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "duc de Guermantes",
+      "surface_forms": ["j'"],
+      "presence_type": "implicit",
+      "presence_confidence": 0.7
+    },
+    {
+      "canonical_name": "princesse de Parme",
+      "surface_forms": ["la princesse", "Votre Altesse", "Madame", "madame"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.85
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": ["me", "vous"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.93
+    },
+    {
+      "canonical_name": "Rachel",
+      "surface_forms": ["Cette Rachel"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "le prince Von",
+      "surface_forms": ["le prince Von"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95,
+      "resolution": "unresolved"
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "duchesse de Guermantes",
+      "target": "Robert de Saint-Loup",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.85,
+      "evidence": "« Robert a jeté cela sans reprendre haleine, on pouvait à peine distinguer qu'il y avait du latin là dedans, il avait l'air d'un personnage du Malade imaginaire ! »",
+      "explanation": "Prompted by the duc's challenge (« que Madame demande à Oriane si j'exagère »), the duchesse entertains the princesse de Parme by turning Saint-Loup's Latin epigram into a joke: it took twenty questions and linguists to reconstitute what he gabbled, and he sounded like a Molière quack. The absent Saint-Loup is made comically ridiculous while the duchesse scores as the table's wit."
+    },
+    {
+      "event_id": "E2",
+      "source": "Robert de Saint-Loup",
+      "target": "le narrateur",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.85,
+      "evidence": "« Cette Rachel m'a parlé de vous, elle m'a dit que le petit Saint-Loup vous adorait, vous préférait même à elle », me dit le prince Von",
+      "explanation": "The prince Von relays to the narrator Rachel's report that Saint-Loup adores him and prefers him even to his own mistress, an explicitly comparative preference that raises the narrator over Rachel in Saint-Loup's affections. The narrator reports the compliment without endorsing it."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Robert de Saint-Loup",
+      "dimension": "rhetorical_position",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.85,
+      "explanation": "His learned Latin is recounted as unintelligible gabble, so his standing as a speaker is locally deflated before the assembled guests."
+    },
+    {
+      "character": "duchesse de Guermantes",
+      "dimension": "rhetorical_position",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.8,
+      "explanation": "She holds the table and the Highness's attention, supplying the reconstructed phrase and the Molière comparison that make the anecdote land."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "emotional_position",
+      "delta": 1,
+      "based_on_events": ["E2"],
+      "confidence": 0.82,
+      "explanation": "He is reported as adored by Saint-Loup and preferred to Saint-Loup's mistress, which locally puts him ahead in that attachment."
+    },
+    {
+      "character": "Rachel",
+      "dimension": "emotional_position",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.6,
+      "explanation": "By her own reported words she is ranked below the narrator in Saint-Loup's preference."
+    }
+  ],
+  "ambiguities": [
+    "The speaker of the Latin anecdote is not tagged: the duc has just said « Il parle latin » and invites « que Madame demande à Oriane si j'exagère », so the following « Mais comment, madame… » is read here as Oriane confirming him; if it is instead the duc continuing, the source of E1 shifts to him and the duchesse's rhetorical gain disappears.",
+    "The mockery of Saint-Loup is affectionate salon banter and does credit him with an actual Latin epigram, so it could be read as backhanded admiration rather than diminishment; the emphasis on unintelligibility and the Malade imaginaire comparison makes diminishment the stronger reading."
+  ]
+}

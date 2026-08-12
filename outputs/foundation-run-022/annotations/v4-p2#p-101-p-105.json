@@ -1,10 +1,20 @@
 {
   "characters_present": [
     {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": [
+        "Robert",
+        "Robert, homme d'une autre race"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
       "canonical_name": "baron de Charlus",
       "surface_forms": [
         "M. de Charlus",
-        "le baron"
+        "le baron",
+        "Les Messieurs de Charlus"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
@@ -16,84 +26,97 @@
         "marquise"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.96
-    },
-    {
-      "canonical_name": "Robert de Saint-Loup",
-      "surface_forms": [
-        "Robert"
-      ],
-      "presence_type": "explicit",
-      "presence_confidence": 0.97
+      "presence_confidence": 0.99
     },
     {
       "canonical_name": "Rachel",
       "surface_forms": [
-        "Rachel"
+        "Rachel",
+        "elle"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.85
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "Je",
+        "me",
+        "j'"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
       "source": "narrator",
-      "target": "baron de Charlus",
-      "type": "narrated_diminishment",
-      "polarity": "negative",
-      "narrative_stance": "endorsed",
-      "confidence": 0.85,
-      "evidence": "Charlus feigns not to know Mme de Surgis's sons, calling them 'Orientaux' or 'Turcs' to mask his interest; the narrator explains he does this 'pour se divertir aux dépens de Mme de Surgis' like Scapin beating his master in disguise, and that his particular gaze toward young men, 'venu des profondeurs,' betrays what his flattery of women conceals.",
-      "explanation": "The narrator strips away Charlus's performed indifference and social flattery, exposing both as insincere theater that disguises his real, involuntary desire for young men."
-    },
-    {
-      "event_id": "E2",
-      "source": "narrator",
       "target": "Robert de Saint-Loup",
       "type": "narrated_diminishment",
       "polarity": "negative",
       "narrative_stance": "endorsed",
-      "confidence": 0.85,
-      "evidence": "\"l'amour de Robert pour les Lettres n'avait rien de profond, n'émanait pas de sa vraie nature, il n'était qu'un dérivé de son amour pour Rachel, et il s'était effacé de celui-ci, en même temps que son horreur des gens de plaisir et que son respect religieux pour la vertu des femmes.\"",
-      "explanation": "The narrator reveals that Robert's earlier idealism about literature and virtue was never genuine but merely a by-product of his passion for Rachel, and that it has dissolved along with that passion, exposing his prior high-mindedness as shallow."
+      "confidence": 0.93,
+      "evidence": "« l'amour, vois-tu, c'est une bonne blague, j'en suis bien revenu » ; puis : « l'amour de Robert pour les Lettres n'avait rien de profond, n'émanait pas de sa vraie nature, il n'était qu'un dérivé de son amour pour Rachel », et le rappel que les amis de Rachel « avec elle se moquaient de lui, devant lui, dans les dîners qu'il leur donnait ».",
+      "explanation": "The narrator strips Saint-Loup's worldly disabusement of any depth, reducing his literary and moral convictions to borrowed effects of a vanished passion, and recalls that he was mocked to his face at his own table. Both the cynical talk about the chambermaid and the retrospective analysis push the same single downward movement."
+    },
+    {
+      "event_id": "E2",
+      "source": "baron de Charlus",
+      "target": "Mme de Surgis",
+      "type": "snub",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.9,
+      "evidence": "« ce doivent être deux Orientaux [...] ce sont peut-être des Turcs », dit-il de ses fils « comme s'il ignorait absolument qui ils étaient », pour « se divertir aux dépens de Mme de Surgis » ; elle répond « avec une rougeur qu'elle n'aurait pas eue si elle avait été plus fine sans être plus vertueuse ».",
+      "explanation": "Charlus exploits a minute of feigned ignorance to mock the marquise's sons in her presence, and the narrator ratifies her defeat by attributing her blush to a lack of finesse rather than to virtue. He commands the exchange while she is caught out."
     }
   ],
   "status_effects": [
     {
-      "character": "baron de Charlus",
+      "character": "Robert de Saint-Loup",
       "dimension": "general_appraisal",
+      "delta": -2,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.92,
+      "explanation": "The narrator explicitly denies depth or authenticity to Saint-Loup's convictions about love, literature and female virtue, presenting them as derivative and now evaporated."
+    },
+    {
+      "character": "Robert de Saint-Loup",
+      "dimension": "social_status",
       "delta": -1,
       "based_on_events": [
         "E1"
       ],
       "confidence": 0.82,
-      "explanation": "Charlus's social performance (feigned ignorance, mockery, superficial gallantry toward women) is exposed by the narrator as calculated insincerity masking his real desire."
+      "explanation": "The recalled scene of Rachel's friends ridiculing him to his face at dinners he paid for lowers his local standing as a dupe of the company he entertained."
     },
     {
       "character": "Mme de Surgis",
       "dimension": "general_appraisal",
       "delta": -1,
       "based_on_events": [
-        "E1"
+        "E2"
       ],
-      "confidence": 0.5,
-      "explanation": "The narrator notes she blushes only because she lacks the finesse to see through Charlus's game, a mild dig at her perceptiveness even as her virtue is acknowledged."
+      "confidence": 0.88,
+      "explanation": "She is locally lowered twice over: made the butt of Charlus's pretended ignorance, and judged by the narrator to lack the finesse that would have let her read him."
     },
     {
-      "character": "Robert de Saint-Loup",
-      "dimension": "general_appraisal",
-      "delta": -1,
+      "character": "baron de Charlus",
+      "dimension": "rhetorical_position",
+      "delta": 1,
       "based_on_events": [
         "E2"
       ],
-      "confidence": 0.82,
-      "explanation": "His earlier devotion to literature and to feminine virtue is revealed as derivative and hollow, and has now faded along with his infatuation with Rachel."
+      "confidence": 0.83,
+      "explanation": "Charlus controls the exchange through calculated insolence, called « un don de nature » and likened to Scapin beating his disguised master with impunity; the marquise can only blush and confess the boys are hers."
     }
   ],
   "ambiguities": [
-    "The narrator's account of Charlus's motive is partly hedged ('Peut-être aussi...'), and the Scapin comparison lends his insincerity an admiring, theatrical quality rather than pure condemnation, softening the diminishment.",
-    "Mme de Surgis's characterization is double-edged: she is credited with virtue ('sans être plus vertueuse') even as her lack of finesse is noted, so the movement against her is mixed rather than a clean diminishment."
+    "The narrator's stance toward Charlus is doubly layered: the same paragraphs that credit his insolence as a natural gift close by exposing the involuntary gaze that betrays him « naïvement », like a couturier's eye for clothes. The strongest reading keeps his local rhetorical dominance as the dominant movement, with the exposure qualifying rather than reversing it.",
+    "In the opening digression « Les Messieurs de Charlus » is used as a generic type-name for a class of uncles rather than as a reference to the baron in the scene, so the passage's theory of Charlus-marriages is not scored as an appraisal of him individually."
   ],
   "unit_id": "v4-p2#p-101-p-105"
 }

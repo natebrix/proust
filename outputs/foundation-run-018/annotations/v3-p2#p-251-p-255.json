@@ -5,18 +5,30 @@
       "surface_forms": [
         "le duc de Guermantes",
         "M. de Guermantes",
-        "le duc"
+        "le duc",
+        "leur maître"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
     },
     {
-      "canonical_name": "baron de Charlus",
+      "canonical_name": "le narrateur",
       "surface_forms": [
-        "M. de Charlus"
+        "je",
+        "moi",
+        "m'"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.85
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": [
+        "Robert",
+        "Saint-Loup"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
     },
     {
       "canonical_name": "duchesse de Guermantes",
@@ -26,17 +38,40 @@
         "ma femme"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.85
+      "presence_confidence": 0.96
     },
     {
-      "canonical_name": "le narrateur",
+      "canonical_name": "baron de Charlus",
       "surface_forms": [
-        "je",
-        "moi",
-        "me"
+        "M. de Charlus"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "la grand-mère",
+      "surface_forms": [
+        "ma grand'mère"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.93
+    },
+    {
+      "canonical_name": "la Berma",
+      "surface_forms": [
+        "la Berma",
+        "celle-ci"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "Sainte-Beuve",
+      "surface_forms": [
+        "Sainte-Beuve"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.88
     }
   ],
   "appraisal_events": [
@@ -47,32 +82,42 @@
       "type": "narrated_diminishment",
       "polarity": "negative",
       "narrative_stance": "endorsed",
-      "confidence": 0.82,
-      "evidence": "la familiarité d'un Guermantes ... eût décelé de morgue vulgaire ... non en M. de Charlus ... mais chez le duc de Guermantes; et le duc était si mauvais mari, si brutal même, disait-on, qu'on lui savait gré ... comme on sait gré de leur douceur aux méchants.",
-      "explanation": "The narrator locates a coarse, vulgar arrogance specifically in the duc de Guermantes rather than in Charlus, and later undercuts the duc's charming, protective manner toward his wife by revealing his reputation as a brutal husband, comparing the gratitude he receives to the gratitude one feels for a wicked man's rare gentleness."
+      "confidence": 0.9,
+      "evidence": "\"Ce que la familiarité d'un Guermantes — au lieu de la distinction qu'elle avait chez Robert [...] d'une réelle humilité morale — eût décelé de morgue vulgaire, j'avais pu en prendre conscience [...] chez le duc de Guermantes\"; \"l'ensemble commun qui avait tant déplu à ma grand'mère\"; \"le duc était si mauvais mari, si brutal même, disait-on\".",
+      "explanation": "The narrator names the duc explicitly as the man in whom aristocratic familiarity turns into vulgar arrogance, setting him below Saint-Loup, whose identical inherited manner covers real moral humility, and reinforcing the judgment with the grandmother's old distaste and the duc's reputed brutality as a husband."
     },
     {
       "event_id": "E2",
       "source": "duc de Guermantes",
       "target": "le narrateur",
-      "type": "narrated_elevation",
+      "type": "admiration",
       "polarity": "positive",
       "narrative_stance": "endorsed",
-      "confidence": 0.85,
-      "evidence": "je vis se glisser M. de Guermantes qui guettait mon arrivée pour me recevoir sur le seuil et m'ôter lui-même mon pardessus... Mme de Guermantes va être tout ce qu'il y a de plus heureuse... Vous n'êtes pas un homme commode à avoir.",
-      "explanation": "The duc personally awaits and welcomes the narrator, removing his coat himself and speaking with flattering, persuasive warmth, elevating the narrator's inclusion into aristocratic favor well beyond what the household staff had assumed was warranted."
+      "confidence": 0.9,
+      "evidence": "\"je vis se glisser M. de Guermantes qui guettait mon arrivée pour me recevoir sur le seuil et m'ôter lui-même mon pardessus\"; \"Vous n'êtes pas un homme commode à avoir\"; the footmen who had thought him \"incapable d'être reçu\" must now \"chercher la cause de cette révolution\"; \"cette politesse de M. de Guermantes [...] me charma\".",
+      "explanation": "The duc singles the narrator out with an unusual personal welcome, flattering insistence that he was awaited and hard to secure, and sustained eighteenth-century courtesy, an honoring act the household registers as a revolution in the narrator's standing."
     }
   ],
   "status_effects": [
     {
       "character": "duc de Guermantes",
       "dimension": "general_appraisal",
-      "delta": -2,
+      "delta": -1,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.82,
-      "explanation": "The duc's aristocratic charm is locally undercut by the narrator's exposure of an underlying vulgar arrogance and a reputation for marital brutality."
+      "confidence": 0.87,
+      "explanation": "He is locally lowered as the designated instance of common, vulgar hauteur and as a reputedly brutal husband, even though the passage concedes him surviving fragments of ancient grandeur."
+    },
+    {
+      "character": "Robert de Saint-Loup",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.85,
+      "explanation": "He gains by the comparison that grounds the event: in him the same hereditary disdain is only the outer garment of a real moral humility, which is what the duc lacks."
     },
     {
       "character": "le narrateur",
@@ -81,13 +126,23 @@
       "based_on_events": [
         "E2"
       ],
-      "confidence": 0.83,
-      "explanation": "The narrator is personally and visibly welcomed by the duc himself, a mark of special favor exceeding what the servants had assumed he merited."
+      "confidence": 0.92,
+      "explanation": "He crosses into the Guermantes house as an awaited dinner guest, met on the threshold by the master himself rather than left to the servants."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "social_status",
+      "delta": 1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.85,
+      "explanation": "The footmen, who had ranked him with the cabinetmaker's children and beneath reception, must revise their estimate of him, a shift the text itself calls a revolution."
     }
   ],
   "ambiguities": [
-    "The claim that the duc is a brutal husband is introduced with 'disait-on' (social hearsay) rather than as directly witnessed fact, which somewhat qualifies how fully the narrator endorses the diminishment versus merely reporting common opinion.",
-    "The comparison distinguishing Charlus from the duc regarding 'morgue vulgaire' is not straightforwardly favorable to Charlus, since the same sentence also notes Charlus's own poorly understood character flaws superimposed on his aristocratic habits."
+    "The duc's courtesy is simultaneously felt as genuinely charming (a survival of centuries-old, specifically eighteenth-century habits) and framed ironically: gratitude toward him is compared to the gratitude one feels for gentleness in wicked men, and the closing reflection presents such politeness as a socially inherited obligation to feign certain sentiments. This bears directly on whether E2 should be read as endorsed or ironized; I read the honoring act as endorsed because the narrator states that it charmed him and lasted the whole evening.",
+    "The duc's negatives are reported at second hand or from memory (\"disait-on\", the grandmother's earlier dislike at Mme de Villeparisis's), whereas the positives (\"des parties de grandeur ancienne\", the charming politeness) are the narrator's present experience, so the net local direction for the duc is underdetermined; I take the diminishment as dominant because the passage's opening explicitly designates him, and not Charlus, as the site of \"morgue vulgaire\"."
   ],
   "unit_id": "v3-p2#p-251-p-255"
 }
