@@ -454,10 +454,12 @@ def test_reconcile_foundation_names_unifies_registry_variants():
     result = reconcile_foundation_names(annotation, chapter_id="v2-p2-noms-de-pays-le-pays")
 
     assert result["appraisal_events"][0]["source"] == "marquis de Cambremer"
-    # unresolved open-world names pass through untouched
+    # an unresolvable source NOT listed in characters_present maps to
+    # "unknown" (descriptor-source rule); targets and listed names are the
+    # open-world pass-through cases, covered elsewhere
     annotation["appraisal_events"][0]["source"] = "la dame inconnue de Trouville"
     result = reconcile_foundation_names(annotation, chapter_id="v2-p2-noms-de-pays-le-pays")
-    assert result["appraisal_events"][0]["source"] == "la dame inconnue de Trouville"
+    assert result["appraisal_events"][0]["source"] == "unknown"
 
 
 def test_reconcile_maps_descriptor_sources_to_unknown():
