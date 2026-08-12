@@ -1,0 +1,73 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "Swann",
+      "surface_forms": ["Swann"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "M. Vinteuil",
+      "surface_forms": ["l'auteur de la sonate", "Vinteuil"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "le peintre",
+      "surface_forms": ["le peintre"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "Swann",
+      "target": "M. Vinteuil",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.85,
+      "evidence": "un homme de génie peut être le cousin d'une vieille bête... il n'y a pas de supplice que je ne m'imposerais pour que la vieille bête me présentât à l'auteur de la sonate",
+      "explanation": "Swann declares he would endure any torment to be introduced to the composer of the sonata, expressing intense reverence for the genius he takes him to be."
+    },
+    {
+      "event_id": "E2",
+      "source": "le peintre",
+      "target": "M. Vinteuil",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.78,
+      "evidence": "Le peintre avait entendu dire que Vinteuil était menacé d'aliénation mentale. Et il assurait qu'on pouvait s'en apercevoir à certains passages de sa sonate.",
+      "explanation": "The painter relays hearsay that Vinteuil is threatened with mental derangement and claims signs of it are audible in his sonata, casting a troubling shadow over the very genius Swann has just praised."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "M. Vinteuil",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.8,
+      "explanation": "Swann's declared willingness to suffer any torment to meet him casts Vinteuil as a revered genius."
+    },
+    {
+      "character": "M. Vinteuil",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.75,
+      "explanation": "The reported threat of mental derangement, allegedly perceptible in his sonata, locally tarnishes the image of the admired composer."
+    },
+    {
+      "character": "Swann",
+      "dimension": "emotional_position",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.75,
+      "explanation": "Swann is troubled by the painter's remark rather than dismissing it, showing it unsettles his esteem for the composer he reveres."
+    }
+  ],
+  "ambiguities": []
+}

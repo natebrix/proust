@@ -1,0 +1,75 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "oncle Adolphe",
+      "surface_forms": ["mon oncle"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": ["la dame en rose"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": ["il", "Ce petit jeune homme"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.85
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "Odette",
+      "target": "le narrateur",
+      "type": "admiration",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.85,
+      "evidence": "« Comme il ressemble à sa mère » ... « Ce petit jeune homme a ses beaux yeux et aussi ça », dit-elle, en traçant avec son doigt une ligne sur le bas de son front.",
+      "explanation": "La dame en rose (Odette) warmly admires the boy, remarking on his resemblance to his parents and praising his eyes, directing affectionate attention toward him."
+    },
+    {
+      "event_id": "E2",
+      "source": "narrator",
+      "target": "oncle Adolphe",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.72,
+      "evidence": "« ...dit vivement mon oncle d'un ton bourru » ; « ...grogna mon oncle qui ne se souciait pas plus de faire des présentations à distance en disant le nom de maman que d'en faire de près. »",
+      "explanation": "The narrator's characterization of the uncle's brusque tone, growled replies, and reluctance to make even a distant introduction exposes his social discomfort and evasiveness in this exchange."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "le narrateur",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.8,
+      "explanation": "The boy is admired for his appearance and resemblance to his parents, a mild positive local appraisal."
+    },
+    {
+      "character": "oncle Adolphe",
+      "dimension": "rhetorical_position",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.7,
+      "explanation": "His gruff, growled responses and reluctance to make formal introductions position him as evasive and ill at ease in the conversation."
+    },
+    {
+      "character": "Odette",
+      "dimension": "rhetorical_position",
+      "delta": 1,
+      "based_on_events": ["E1", "E2"],
+      "confidence": 0.6,
+      "explanation": "By contrast with the uncle's brusqueness, Odette's precise, gracious corrections and warm attention give her the more composed and assured position in the exchange."
+    }
+  ],
+  "ambiguities": [
+    "The narrator's description of the uncle's gruff, growling manner ('grogna', 'd'un ton bourru') could be read either as narrator-endorsed characterization or as comparatively neutral reporting of dialogue tags, affecting how strongly the diminishment should be weighted."
+  ]
+}

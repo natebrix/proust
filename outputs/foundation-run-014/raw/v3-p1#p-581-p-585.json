@@ -1,0 +1,83 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "duchesse de Guermantes",
+      "surface_forms": ["la duchesse"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "M. d'Argencourt",
+      "surface_forms": ["M. d'Argencourt"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": ["Robert"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "la demoiselle de Robert",
+      "surface_forms": ["la demoiselle de Robert", "elle"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.85,
+      "resolution": "unresolved"
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "duchesse de Guermantes",
+      "target": "la demoiselle de Robert",
+      "type": "blame",
+      "polarity": "negative",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.85,
+      "evidence": "elle est à mourir de rire ... il n'a vraiment pas fait preuve de goût dans le choix du flacon ... elle avait la prétention que je fisse dresser un escalier au beau milieu de mon salon",
+      "explanation": "The duchess extensively mocks Robert's mistress's pretentious demands and bad theatrical taste, extending mild blame to Robert himself for his poor judgment in choosing her."
+    },
+    {
+      "event_id": "E2",
+      "source": "duchesse de Guermantes",
+      "target": "M. d'Argencourt",
+      "type": "praise",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.8,
+      "evidence": "Ah ! vous connaissez les Sept Princesses ? ... Tous mes compliments !",
+      "explanation": "The duchess directly compliments d'Argencourt on his unexpected familiarity with the obscure play, locally elevating him as a knowledgeable, appreciated interlocutor."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "la demoiselle de Robert",
+      "dimension": "general_appraisal",
+      "delta": -2,
+      "based_on_events": ["E1"],
+      "confidence": 0.85,
+      "explanation": "She is extensively ridiculed for pretentious demands and bad taste in her theatrical choice."
+    },
+    {
+      "character": "Robert de Saint-Loup",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.6,
+      "explanation": "He is mildly implicated for lacking taste in his choice of mistress, though the primary target of the mockery is she herself."
+    },
+    {
+      "character": "M. d'Argencourt",
+      "dimension": "rhetorical_position",
+      "delta": 1,
+      "based_on_events": ["E2"],
+      "confidence": 0.75,
+      "explanation": "He displays unexpected literary knowledge and receives explicit compliments from the duchess, raising his standing in the exchange."
+    }
+  ],
+  "ambiguities": [
+    "'La demoiselle de Robert' is very likely the same figure elsewhere identified as Rachel (Robert's actress mistress), but she is not named as such in this passage, so her identity is left unresolved rather than merged with a reference-sheet entity.",
+    "The narrator's private thought 'Quelle buse!' about the duchess is explicitly described as insincere, contrary to his real thought, and offered only as idle inner conversation; it is therefore not treated as a genuine evaluative event."
+  ]
+}

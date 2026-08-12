@@ -1,0 +1,89 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "baron de Charlus",
+      "surface_forms": ["M. de Charlus"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": ["je", "me", "vous", "mon esprit"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "duchesse de Guermantes",
+      "surface_forms": ["La duchesse de Guermantes", "elle", "Ma belle-sœur"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "Mme de Villeparisis",
+      "surface_forms": ["Mme de Villeparisis", "ma tante", "la famille Villeparisis"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "baron de Charlus",
+      "target": "baron de Charlus",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.75,
+      "evidence": "\"Elle n'en a aucune... Ma belle-sœur est une femme charmante qui s'imagine être encore au temps des romans de Balzac\"; \"Le « Sésame » de l'hôtel Guermantes et de tous ceux qui valent la peine que la porte s'ouvre grande devant vous, c'est moi qui le détiens. Je serai juge et entends rester maître de l'heure.\"",
+      "explanation": "Charlus curtly dismisses the duchesse de Guermantes's claimed political insight and demands that the narrator sacrifice ordinary social life, casting himself as the sole gatekeeper and indispensable authority over the narrator's entry into society."
+    },
+    {
+      "event_id": "E2",
+      "source": "le narrateur",
+      "target": "Mme de Villeparisis",
+      "type": "narrated_diminishment",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.92,
+      "evidence": "\"Mme de Villeparisis, n'étant que Mme Thirion, acheva la chute qu'elle avait commencée dans mon esprit... Mme de Villeparisis redevenant ce qu'elle m'avait paru être dans mon enfance, une personne qui n'avait rien d'aristocratique.\"",
+      "explanation": "Learning from Charlus that Mme de Villeparisis's title was recently and irregularly assumed (née Thirion) completes the narrator's declining opinion of her, stripping away the aristocratic aura her salon and royal friendships had seemed to confer."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "baron de Charlus",
+      "dimension": "social_status",
+      "delta": 2,
+      "based_on_events": ["E1"],
+      "confidence": 0.78,
+      "explanation": "Charlus positions himself as the unique key to worthwhile society, elevating his own local authority and indispensability over any other social connection, including his own sister-in-law."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "inclusion_exclusion",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.75,
+      "explanation": "The narrator is told to renounce worldly society and depend entirely on Charlus's timing and favor, placing him in a subordinate, dependent position within this exchange."
+    },
+    {
+      "character": "duchesse de Guermantes",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.7,
+      "explanation": "Charlus flatly denies her any real political discernment and frames her as merely a charming woman living in an outdated illusion, overriding the narrator's opening remark that she seemed intelligent."
+    },
+    {
+      "character": "Mme de Villeparisis",
+      "dimension": "social_status",
+      "delta": -2,
+      "based_on_events": ["E2"],
+      "confidence": 0.9,
+      "explanation": "The exposure of her recently and irregularly assumed title strips away the aristocratic prestige the narrator had previously attributed to her despite her grand connections."
+    }
+  ],
+  "ambiguities": [
+    "Charlus's self-portrayal as sole social gatekeeper and his dismissal of the duchesse de Guermantes are delivered as his own self-interested quoted speech, with no independent narratorial confirmation in this passage; the narrator does not clearly endorse or undercut Charlus's claims here."
+  ]
+}

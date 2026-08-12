@@ -1,0 +1,96 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "duc de Guermantes",
+      "surface_forms": ["le duc", "duc"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": ["monsieur mon neveu", "mon neveu"],
+      "presence_type": "implicit",
+      "presence_confidence": 0.85
+    },
+    {
+      "canonical_name": "Bloch",
+      "surface_forms": ["Bloch"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "Norpois",
+      "surface_forms": ["M. de Norpois"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "colonel Picquart",
+      "surface_forms": ["le colonel Picquart", "l'officier"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95,
+      "resolution": "unresolved"
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "duc de Guermantes",
+      "target": "Robert de Saint-Loup",
+      "type": "blame",
+      "polarity": "negative",
+      "narrative_stance": "ironized",
+      "confidence": 0.78,
+      "evidence": "il est bien certain que les charmantes opinions de monsieur mon neveu peuvent faire assez de bruit dans Landerneau",
+      "explanation": "The duc continues (from the prior context) to criticize Saint-Loup's 'intellectual'/Dreyfusard-adjacent opinions as scandalous, but the narrator immediately undercuts the duc's authority by noting he does not actually know the meaning of the words he uses, casting an ironic shadow over his judgment."
+    },
+    {
+      "event_id": "E2",
+      "source": "narrator",
+      "target": "colonel Picquart",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.85,
+      "evidence": "cette déposition produisit à la première audience une impression des plus favorables... il n'y a pas à nier que l'impression a été profonde",
+      "explanation": "Picquart's composed, honorable testimony ('Sur mon honneur de soldat... telle est ma conviction') is described, via Norpois's account and the narrator's own confirming aside, as making a deep and favorable impression, locally elevating him."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "Robert de Saint-Loup",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.75,
+      "explanation": "Saint-Loup's opinions are framed by his uncle as likely to cause local scandal or gossip ('faire du bruit dans Landerneau'), somewhat lowering his standing within this family conversation."
+    },
+    {
+      "character": "duc de Guermantes",
+      "dimension": "rhetorical_position",
+      "delta": -1,
+      "based_on_events": ["E1"],
+      "confidence": 0.78,
+      "explanation": "The narrator undercuts the duc's authority as a critic by pointing out he misuses words ('faire des embarras') whose precise meaning he never grasped, mildly deflating his pose of judgment."
+    },
+    {
+      "character": "colonel Picquart",
+      "dimension": "general_appraisal",
+      "delta": 2,
+      "based_on_events": ["E2"],
+      "confidence": 0.85,
+      "explanation": "Picquart's testimony is portrayed as dignified and deeply moving, clearly raising how he is regarded within the passage."
+    },
+    {
+      "character": "Norpois",
+      "dimension": "rhetorical_position",
+      "delta": 1,
+      "based_on_events": ["E2"],
+      "confidence": 0.65,
+      "explanation": "Norpois presents himself as holding an independent, somewhat unpopular position among his colleagues in defending the necessity of Picquart's deposition, giving him local rhetorical standing as a considered, self-assured speaker."
+    }
+  ],
+  "ambiguities": [
+    "Bloch's closing thought that Norpois 'est dreyfusard, il n'y a plus l'ombre d'un doute' is presented as Bloch's own confident inference rather than a narratorial verdict; given Norpois's characteristic evasiveness elsewhere, the passage leaves open whether this reading is naive, so it is noted here rather than promoted into a separate appraisal event."
+  ]
+}
