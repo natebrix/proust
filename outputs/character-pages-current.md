@@ -75,14 +75,15 @@ Notable units:
 - Archetype signs: `advantage -1, prestige -1, inclusion -1`
 - Pattern: `broad_negative`
 
-The most-scored figure in the novel, overwhelmingly shaped by repeated immediate, social, and emotional losses.
+The most heavily measured man in the novel after the narrator and the duchesse: his scenes run relentlessly negative, but his standing in advantage still holds in the upper third.
 
-Swann dominates the novel by sheer presence, and his overall pattern remains broadly and repeatedly negative across all three lenses.
+Swann is staged constantly — 202 scenes, more than all but the narrator and the duchesse — and scene by scene the losses pile up: 81 negative outcomes against 42 positive in advantage alone, a real negative pull with real intensity. Yet his overall standing there is not a collapse: he ranks 13th of the 35 characters substantial enough to size, solidly in the upper third — presence and volume outweighing any run of bad scenes. Belonging is a cleaner loss, 7th of the 9 characters the novel stages enough to size there. Prestige is where the evidence runs thinnest: his scenes trend only faintly negative, and the novel does not stage him in high-status contests often enough to rank him there at all.
 
 Why interesting:
 
-- He is both the most-scored character and one of the clearest broad negative cases.
-- His profile is not a narrow anomaly but a book-wide social pattern, especially in Un amour de Swann.
+- He is the most heavily measured man in the pilot set — more scenes than anyone but the narrator and the duchesse — so his readings carry unusual weight.
+- His advantage story splits: relentlessly negative scene by scene (81 losses to 42 gains), yet his standing still lands in the upper third (13th of 35).
+- Belonging is where he loses cleanly — 7th of the 9 characters ranked there — while prestige stays too thin to size.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -165,14 +166,15 @@ Notable units:
 - Archetype signs: `advantage -1, prestige +1, inclusion -1`
 - Pattern: `prestige_positive_inclusion_negative`
 
-An ever-present aristocratic figure whose prestige often holds even where belonging and immediate advantage give way.
+One of the few figures ranked in all three registers at once — solid in scene-level advantage and belonging, but near the bottom of the small circle the novel sizes in prestige.
 
-Robert de Saint-Loup appears throughout the book and shows one of the largest lens spreads in the novel, especially where aristocratic polish and emotional belonging pull apart.
+Saint-Loup is one of the few characters the novel stages enough to rank in advantage, prestige, and belonging all at once. His footing is comfortably above the middle in scene-level advantage (15th of 35, a mild pull across 168 appearances split 57 losses to 39 gains) and solid in belonging (4th of 9). But in prestige — the register his aristocratic bearing would predict he'd own — he ranks next to last of the eight characters substantial enough to size there (7th of 8), his scene-by-scene movement essentially flat rather than commanding. He is present and accepted more than he is deferred to.
 
 Why interesting:
 
-- He is central enough to matter structurally, not just as a curiosity of one chapter.
-- His strongest divergence is chapter-shaped rather than flat across the book, especially in the Guermantes material.
+- He is one of the only figures ranked in all three lenses at once, a completeness the novel affords barely a handful of its cast.
+- His prestige position inverts what his rank and bearing would suggest: 7th of the 8 characters substantial enough to size there, essentially flat scene by scene.
+- His advantage losses outnumber his gains (57 to 39 across 168 scenes) yet he still lands comfortably above the midpoint of the ranked set (15th of 35) — breadth of presence outweighing any single bad run.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -208,16 +210,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/albertine-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `146`
 - Archetype signs: `advantage -1, prestige -1, inclusion -1`
-- Pattern: `broad_negative`
+- Pattern: `broad_negative_advantage_standing_holds`
 
-A constant presence across the book whose strongest shaping comes from imprisonment, suspicion, disappearance, and loss.
+Her scenes run negative and volatile — more internally conflicted than any other figure in the pilot set — yet her standing in advantage holds near the top quarter; belonging is where she is dead last.
 
-Albertine is one of the largest and most persistently negative figures in the novel, with her strongest shaping concentrated in the prison and disappearance chapters.
+Albertine's scenes are the most volatile of anyone examined here: 40 positive outcomes, 56 negative, and 10 explicitly mixed — passages where the text registers gain and loss in the same breath — more internal conflict than any other pilot figure. That volatility pulls her mean movement in advantage negative, yet her standing there remains strong: 9th of the 35 characters substantial enough to rank, solidly in the top quarter. Belonging tells a starker story: she is last of the nine characters the novel stages enough to size there, the clearest exclusion in the set. Prestige carries almost no signal at all, and the novel does not stage her in that register often enough to rank her.
 
 Why interesting:
 
-- Her presence is both extensive and highly concentrated in a few major late narrative blocks.
-- She helps distinguish broad negative centrality from the more split prestige/inclusion cases.
+- She has more mixed-outcome scenes than any other pilot figure — 10 of 146 appearances register gain and loss simultaneously, a genuine internal split rather than a one-directional slide.
+- Her advantage standing (9th of 35) sits well above what her negative mean movement alone would suggest — volatility, not collapse.
+- In belonging she is dead last of the nine ranked characters — the clean, unambiguous loss in her profile.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -255,14 +258,15 @@ Notable units:
 - Archetype signs: `advantage -1, prestige +1, inclusion -1`
 - Pattern: `prestige_positive_inclusion_negative`
 
-Prestige-positive but inclusion-negative, with her sharpest gains and reversals concentrated in a few high-pressure chapters.
+One of the few women the novel ranks in two registers at once — mid-table in scene-level advantage and in belonging alike — with a lean toward prestige too thinly staged to size.
 
-Odette is one of the clearest cross-lens split figures in the novel: she rises strongly in prestige while remaining far more unstable in belonging and immediate advantage.
+Odette is substantial enough for the novel to rank in two separate registers: 22nd of 35 in scene-level advantage, 5th of 9 in belonging, each direction mildly negative rather than sharply so. Her clearest lean is toward prestige, where her scenes trend positive, but the novel does not stage her in enough high-status scenes to size that claim. The picture is not a dramatic split so much as steady, unglamorous footing in the rooms the book lets us measure, with prestige left an open question.
 
 Why interesting:
 
-- Her prestige and inclusion readings diverge much more sharply than how often she appears would predict.
-- Her profile is driven by a few concentrated chapter zones rather than a flat, book-wide pattern.
+- She is one of only nine characters the novel stages enough to rank in belonging at all, and she sits mid-table there (5th of 9), ahead of Swann, Mme Verdurin, and Albertine.
+- Her prestige movement leans positive, but it is the one register the novel doesn't stage enough to rank — the reverse of where the old reading placed her strength.
+- In scene-level advantage, negative scenes outnumber positive ones only modestly (36 to 23 across 142 appearances), landing her 22nd of 35 — a mild pull, not a severe one.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -282,7 +286,7 @@ Top chapters (by absolute movement):
 
 Reading path:
 
-- Prestige ascent around Mme Swann: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Mild prestige lean around Mme Swann: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
 - Negative counterweight in Swann's love: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
 - Later reversals in Guermantes-adjacent society: `/projects/islt/fr-original/v3-p1`
 
@@ -298,16 +302,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/charlus-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `119`
 - Archetype signs: `advantage -1, prestige -1, inclusion +1`
-- Pattern: `volatile_broad_negative`
+- Pattern: `prestige_declining_advantage_negative`
 
-A highly volatile major figure whose negative scores are spread across salon, sexual, and wartime terrains.
+Last of the eight ranked in prestige despite scenes that lean mildly positive — a standing that erodes late in the book even as day-to-day encounters do not; lower-third in scene-level advantage, and belonging too faint to size.
 
-baron de Charlus is a constant presence and a highly volatile figure, his negative scores spread across salon, sexual, and wartime configurations rather than one single narrative block.
+Charlus's prestige is the clearest case of standing pulling against direction in the pilot set: his individual scenes trend mildly positive on balance, yet he ends last of the eight characters substantial enough to rank in that register — a decline concentrated in the book's later volumes (his prestige rating falls sharply across the wartime chapter) rather than visible scene by scene. His scene-level advantage is more straightforwardly negative: intensely volatile, among the largest swing patterns examined here, and ranked in the lower third, 23rd of 35. Belonging, by contrast, is barely touched — the novel does not stage him there often enough to size a claim, and what little there is sits essentially flat.
 
 Why interesting:
 
-- He is too frequent and too spread out to read as a one-zone anomaly.
-- His profile shows how a major character can be broadly negative without collapsing into a single repeated scene type.
+- He is the sharpest case where a mildly positive day-to-day trend and a last-place standing coexist — his overall prestige position erodes late, not scene by scene.
+- His advantage volatility is among the highest measured: swings between gain and loss are large and frequent, even though his overall standing (23rd of 35) is merely lower-third, not catastrophic.
+- Belonging carries almost no signal — the quietest of his three readings.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -343,16 +348,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/duc-de-guermantes-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `110`
 - Archetype signs: `advantage -1, prestige -1, inclusion -1`
-- Pattern: `prestige_expectation_reversed`
+- Pattern: `advantage_reversed_high_title`
 
-A revealing reversal-of-expectation figure: high rank without correspondingly positive scores.
+The formal title promises status the numbers don't deliver: one of the most lopsided negative scene-level readings measured, while prestige and belonging register almost no movement at all.
 
-duc de Guermantes is one of the novel's most revealing reversals of expectation: despite formal rank, his scores are broadly negative across all three lenses.
+duc de Guermantes carries the book's most prestigious hereditary title, but his measured standing does not follow it: in scene-level advantage he ranks 27th of 35, with one of the most lopsided negative records examined here — 48 losing outcomes against just 5 positive ones across 110 appearances. Prestige and belonging tell a different, quieter story: the novel simply does not stage him often enough in either register to size a claim, and what little is there sits essentially flat rather than negative. The reversal is real, but it belongs to advantage alone — his title does not protect him in the room, even as the more rarefied registers stay nearly silent on him.
 
 Why interesting:
 
-- He demonstrates that aristocratic title alone does not guarantee a positive reading in the novel.
-- His profile sharpens the distinction between formal status and actual advantage or belonging.
+- His advantage record is one of the most lopsided negative readings in the pilot set: 48 losses to just 5 gains, landing him 27th of 35 despite his formal rank.
+- Prestige and belonging are not negative so much as nearly empty — mean movement close to zero in both, the novel giving him too little space there to size any claim.
+- He sharpens the distinction between inherited title and measured standing: the numbers separate the two cleanly.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -388,16 +394,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/francoise-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `82`
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
-- Pattern: `broad_negative_with_reversals`
+- Pattern: `advantage_top_ranked_positive`
 
-A frequent recurring figure whose overall downward pull includes a few brief local reversals.
+The single highest standing in scene-level advantage of anyone the novel measures — first of 35 — even though her day-to-day scenes are close to an even split of gain and loss.
 
-Françoise accumulates as a broadly negative figure across the book, though her profile is not flat: a small number of chapters briefly reverse the trend before the longer downward pull returns.
+Françoise holds the highest standing in scene-level advantage of any character substantial enough to rank — first of 35. It is not a story of one-sided triumph: her scenes split nearly evenly, 20 positive against 18 negative across 82 appearances, and her mean movement is only mildly positive. Her standing comes from consistency and breadth rather than a run of decisive wins. In prestige and belonging the novel does not stage her often enough to rank her, though what evidence exists leans mildly positive in prestige and essentially flat in belonging.
 
 Why interesting:
 
-- She is frequent enough to matter, but not in the same aristocratic pattern as Swann or Charlus.
-- Her profile is useful for distinguishing domestic/local authority from broader belonging and valuation.
+- She ranks first of the 35 characters substantial enough to size in scene-level advantage — the single highest standing in the register the novel measures most, ahead of every aristocrat, artist, and lover in the set.
+- That standing is not built on one-sided scenes: her outcomes split almost evenly (20 positive, 18 negative), so the ranking reflects sustained, durable footing rather than a hot streak.
+- Prestige and belonging stay unranked — too little is staged there to size a claim, though both lean toward positive or flat rather than negative.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -418,8 +425,8 @@ Top chapters (by absolute movement):
 Reading path:
 
 - Early domestic concentration: `/projects/islt/fr-original/v1-p1-combray`
-- Late negative reinforcement: `/projects/islt/fr-original/v5`
-- Brief local reversal: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Strongest positive concentration, in Balbec: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
+- The rare negative pocket in an otherwise positive record: `/projects/islt/fr-original/v4-p2`
 
 Notable units:
 
@@ -433,16 +440,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/mme-verdurin-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `82`
 - Archetype signs: `advantage -1, prestige +1, inclusion -1`
-- Pattern: `broad_negative`
+- Pattern: `prestige_positive_inclusion_negative`
 
-A salon figure whose overall reading is broadly negative across all three lenses.
+Ranked in all three registers — rare completeness — with prestige alone bucking the trend: mid-table and positive there while advantage and belonging pull down.
 
-Mme Verdurin is one of the clearest broadly negative salon figures in the novel, with losses in advantage, prestige, and inclusion all reinforcing rather than offsetting one another.
+Mme Verdurin is one of the few figures the novel stages enough to rank in advantage, prestige, and belonging all at once. Prestige is where she holds real ground: 5th of the eight characters substantial enough to size there, with a genuinely positive scene-by-scene trend. Advantage tells a harsher story in the moment — scenes run heavily negative, 28 losses against only 5 gains — yet her overall standing still lands in the top third (12th of 35), presence and consistency outweighing the lopsided texture. Belonging is her clearest weak point: 8th of 9, near the bottom of the small ranked circle.
 
 Why interesting:
 
-- She is central enough to shape multiple social zones without becoming a prestige split case.
-- Her pattern helps define the novel's recurrent salon-world negativity.
+- She is ranked in all three registers, a completeness only a handful of characters in the pilot set achieve.
+- Prestige runs counter to her salon-world reputation: she holds a genuinely positive, mid-table standing there (5th of 8) even as her other two readings run negative.
+- Her advantage scenes are lopsidedly negative (28 to 5) yet her standing still holds in the top third — volume and durability outweighing the texture of individual encounters.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -478,16 +486,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/la-grand-mere-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `80`
 - Archetype signs: `advantage +1, prestige -1, inclusion +1`
-- Pattern: `inclusion_negative`
+- Pattern: `advantage_strongly_positive`
 
-A recurring family figure whose harshest pressure falls on belonging and broader valuation.
+Second of 35 in scene-level advantage — one of the highest standings in the pilot set — built on genuinely positive scenes; prestige and belonging stay too thin to rank, belonging leaning mildly negative.
 
-la grand-mère accumulates as one of the book's more strongly negative recurring figures, with the harshest pressure falling on inclusion and broad valuation rather than on a narrow prestige story alone.
+la grand-mère holds one of the highest standings measured in scene-level advantage: 2nd of the 35 characters substantial enough to rank, behind only Françoise. Unlike several of the book's other high-standing figures, this position is not a story of standing surviving bad scenes: her outcomes are genuinely positive, 25 gains against 17 losses across 80 appearances. Prestige and belonging are both too thinly staged to rank: prestige reads essentially flat, and belonging leans mildly negative, though neither rests on enough evidence to call a real standing.
 
 Why interesting:
 
-- She is a strongly negative recurring figure outside the main salon/aristocratic pattern.
-- Her profile is useful for showing how intimate and familial figures can be damaged without being prestige-centered.
+- She ranks 2nd of 35 in scene-level advantage — one of only two figures in the pilot set, with Françoise, whose standing there is this high.
+- Unlike Swann, Norpois, or Albertine, her high standing is matched by genuinely positive scenes rather than surviving a negative-leaning texture (25 gains to 17 losses).
+- Belonging leans mildly negative in direction, but the novel does not stage her there often enough to rank the claim.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -507,9 +516,9 @@ Top chapters (by absolute movement):
 
 Reading path:
 
-- Early family-world pressure: `/projects/islt/fr-original/v1-p1-combray`
+- Main positive concentration, in Balbec: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
+- Early family-world footing: `/projects/islt/fr-original/v1-p1-combray`
 - Guermantes-world counterweight: `/projects/islt/fr-original/v3-p1`
-- Main split concentration: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
 
 Notable units:
 
@@ -523,16 +532,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/mme-de-villeparisis-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `79`
 - Archetype signs: `advantage -1, prestige -1, inclusion +1`
-- Pattern: `prestige_positive_inclusion_negative`
+- Pattern: `advantage_midtable_thin_elsewhere`
 
-A moderate but revealing split figure, relatively strong in prestige while advantage and inclusion drift downward.
+A mid-table figure in scene-level advantage (19th of 35); the novel stages her too rarely in prestige and belonging to rank her in either, though her scenes lean mildly opposite ways there.
 
-Mme de Villeparisis is one of the clearest moderate split figures in the novel: she remains comparatively strong in prestige while advantage and inclusion drift downward or oscillate by chapter.
+Mme de Villeparisis is substantial enough to rank in scene-level advantage, where she lands almost exactly at the middle of the measured cast (19th of 35), a mild negative pull across 79 appearances. In prestige and belonging the novel simply doesn't stage her often enough to size a standing: what evidence exists tilts in opposite directions, mildly positive in prestige and mildly negative in belonging, but neither claim can be made with confidence. She reads less as a split figure than as a moderate, largely unremarkable presence whose one measurable register places her squarely in the pack.
 
 Why interesting:
 
-- She shows the lens split in a quieter register than Odette or Saint-Loup.
-- Her chapter distribution helps distinguish sustained social authority from weaker interpersonal footing.
+- She is ranked in advantage while going unranked in both other registers — a genuinely partial picture rather than a clean split.
+- Her prestige and belonging readings point in opposite directions, but both rest on too little staged evidence to call either a real standing.
+- Her advantage placement (19th of 35) is almost exactly the median of the ranked cast — a useful baseline case of moderate, unremarkable footing.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -553,7 +563,7 @@ Top chapters (by absolute movement):
 Reading path:
 
 - Main split concentration: `/projects/islt/fr-original/v3-p1`
-- Prestige support zone: `/projects/islt/fr-original/v3-p2`
+- Brief positive lean in Balbec prestige: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
 - Late negative counterweight: `/projects/islt/fr-original/v6-p3`
 
 Notable units:
@@ -568,16 +578,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/gilberte-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `76`
 - Archetype signs: `advantage -1, prestige +1, inclusion +1`
-- Pattern: `advantage_positive_prestige_positive_inclusion_negative`
+- Pattern: `inclusion_positive_prestige_positive_advantage_negative`
 
-A compact but telling figure whose strength in prestige and immediate advantage does not translate into equal belonging.
+Second only to the narrator in belonging (2nd of 9) and comfortably placed in prestige (4th of 8) — her weakest register is scene-level advantage, where she sits below the middle of the ranked cast.
 
-Gilberte is a compact but revealing cross-lens figure: she scores very well in prestige and immediate advantage, yet her inclusion profile remains markedly less secure.
+Gilberte's strongest reading is belonging: she ranks 2nd of the nine characters substantial enough to size there, behind only the narrator himself, with a scene-by-scene trend that's essentially flat but tilted positive. Prestige is comfortably positive too, 4th of the eight characters ranked in that register. Scene-level advantage is where she is weakest — 21st of 35, a mild negative pull across 76 appearances (19 negative outcomes to 11 positive). The overall shape is a young woman more secure in standing and welcome than she is in any single encounter.
 
 Why interesting:
 
-- She is a smaller but especially clear example of lens divergence.
-- Her divergence is visible in just a few chapters, without needing a large presence in the book to make the case.
+- She ranks 2nd of 9 in belonging, second only to the narrator himself — an unusually high position for a figure this compact.
+- She is one of the few characters ranked in all three registers at once, and the pattern runs opposite to what her salon polish might suggest: belonging and prestige are her strengths, scene-level advantage her weak point.
+- Her advantage losses outnumber her gains (19 to 11), though the pull is mild rather than severe (21st of 35).
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -613,16 +624,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/bloch-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `71`
 - Archetype signs: `advantage -1, prestige +1, inclusion -1`
-- Pattern: `broad_negative`
+- Pattern: `prestige_positive_inclusion_negative`
 
-A strongly negative recurring figure whose losses reinforce each other across all three lenses.
+Near the bottom of the ranked cast in scene-level advantage (32nd of 35, his clearest weak point) — yet third of the eight characters ranked in prestige, a standing that holds despite scenes that lean mildly negative there too.
 
-Bloch is one of the clearest cases of consistent negative treatment in the novel, with repeated losses in advantage, prestige, and inclusion reinforcing each other rather than splitting apart.
+Bloch's advantage reading is one of the harshest in the pilot set: 32nd of 35, with a heavily lopsided scene record (37 negative outcomes against 6 positive) across 71 appearances. Belonging is also a genuine loss, 6th of the nine characters ranked there, moderately negative in direction. But prestige breaks the pattern entirely: he ranks 3rd of the eight characters substantial enough to size there, a real standing, even though his individual prestige scenes lean mildly negative on balance. He is cut down constantly in the room, and still commands more prestige-standing than all but two of the book's most-measured figures.
 
 Why interesting:
 
-- He is one of the cleanest examples of consistent multi-lens damage.
-- His profile helps clarify the difference between broad negative treatment and more prestige-divergent cases.
+- His advantage reading is among the harshest measured — 32nd of 35, with negative scenes outnumbering positive ones better than six to one.
+- Prestige inverts the expectation his advantage reading sets up: he ranks 3rd of 8, ahead of every pilot figure but Gilberte and Mme Verdurin in that register, even though the scenes themselves skew mildly negative.
+- Belonging sits in between — a real, ranked loss (6th of 9) but not the worst in the small circle.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -660,14 +672,15 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `authority_positive`
 
-A strongly positive figure whose main force comes from durable rhetorical and social authority rather than intimacy.
+Seventh of 35 in scene-level advantage — a genuinely high standing — even though his individual scenes run mildly negative more often than not; prestige and belonging lean positive too, but too rarely staged to rank.
 
-Norpois is a strongly positive figure across all three lenses, driven less by intimacy than by durable rhetorical authority and socially legible judgment.
+Norpois holds one of the highest standings in scene-level advantage of any figure examined here — 7th of 35 — a mark of durable authority across the book. That standing does not mean his scenes are one-sided wins: taken individually they skew mildly negative, 18 losses against 14 gains across 63 appearances, so the high standing reflects sustained position more than a run of triumphs. In prestige and belonging the evidence runs too thin to rank him, though both lean toward positive or flat rather than negative. He reads as a man whose authority is bigger than any single room he stands in.
 
 Why interesting:
 
-- He helps separate prestige-positive authority from the more emotionally charged positive figures.
-- His positivity is anchored in repeated interpretive command rather than one dramatic narrative reversal.
+- His standing in advantage (7th of 35) is one of the highest in the pilot set, yet his individual scenes lean mildly negative (18 losses to 14 gains) — authority that outlasts any given encounter.
+- Prestige and belonging both lean positive-to-flat in direction, but the novel simply doesn't stage him often enough in either to rank him there.
+- He is a clean example of standing decoupled from scene-by-scene texture — durable position built on more than winning individual exchanges.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -703,16 +716,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/docteur-cottard-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `43`
 - Archetype signs: `advantage -1, prestige -1, inclusion -1`
-- Pattern: `swann_world_negative`
+- Pattern: `advantage_negative_lower_tier`
 
-A mid-tier negative figure shaped by a strong Swann-world concentration and then smaller, uneven later reversals.
+A lower-third standing in scene-level advantage (25th of 35), driven by real negative intensity rather than mere frequency; prestige and belonging are both too thinly staged to rank, and lean mildly negative-to-flat.
 
-docteur Cottard is a mid-tier negative figure whose profile is shaped by one strong Swann-world concentration, then complicated by smaller later recoveries and uneven prestige moments.
+Cottard's clearest measured trait is scene-level advantage: 25th of 35, a genuinely negative record — 19 losing outcomes against 7 positive across 43 appearances, with real intensity behind the pull rather than a flat accumulation. Prestige and belonging are both too rarely staged to size a standing: prestige leans mildly negative, belonging registers almost no movement at all. He reads as a moderate, real loser in the room rather than a broadly damaged figure across every register.
 
 Why interesting:
 
-- He is a useful moderate case rather than an extreme outlier in the novel.
-- His chapter pattern helps show how one major concentration can dominate an otherwise mixed profile.
+- His advantage losses substantially outnumber his gains (19 to 7), giving him real negative intensity rather than a flat accumulation, though his standing (25th of 35) stops short of the book's worst cases.
+- Prestige and belonging stay unranked — the novel simply doesn't stage him often enough in either for a standing to form.
+- He is a useful moderate case: genuinely negative where measured, silent where not, without the volatility of figures like Charlus or Bloch.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -733,8 +747,8 @@ Top chapters (by absolute movement):
 Reading path:
 
 - Primary negative concentration: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
-- Brief positive counterweight: `/projects/islt/fr-original/v1-p3-noms-de-pays-le-nom`
-- Later positive echo: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Continued negative pressure: `/projects/islt/fr-original/v4-p2`
+- Positive counterweight in the Mme Swann circle: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
 
 Notable units:
 
@@ -750,14 +764,15 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `familial_positive`
 
-A quiet but high-performing recurring figure, especially strong in advantage and inclusion.
+Sixth of 35 in scene-level advantage — one of the highest standings among family and household figures — built on real positive scenes; prestige and belonging stay too thin to size, belonging leaning mildly negative.
 
-la mère du narrateur is a quietly high-performing figure across all three lenses, with especially strong advantage and inclusion values driven by stable interpretive and familial force.
+la mère du narrateur holds one of the strongest advantage standings measured: 6th of the 35 characters substantial enough to rank, with genuinely positive scenes behind it — 10 gains against 6 losses across 40 appearances. Prestige and belonging are both too rarely staged to size a standing: prestige registers almost no movement at all, and belonging leans mildly negative in direction, though neither rests on enough evidence for a real claim. Where the novel measures her, she is quietly but genuinely strong; elsewhere it simply does not measure her enough to say.
 
 Why interesting:
 
-- She offers a positive familial counterpoint to the more socially competitive figures.
-- Her profile shows how recurring emotional authority can register positively without requiring prestige spectacle.
+- She ranks 6th of 35 in scene-level advantage — among the highest standings in the pilot set, and built on genuinely more gains than losses (10 to 6).
+- Belonging leans mildly negative in direction, a small but real complication in what is otherwise a clean positive profile, though far too little is staged there to rank the claim.
+- Prestige is essentially untouched: the novel gives her almost no scenes in that register at all.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -777,9 +792,9 @@ Top chapters (by absolute movement):
 
 Reading path:
 
-- Main positive family-world concentration: `/projects/islt/fr-original/v6-p3`
-- Earlier positive presence: `/projects/islt/fr-original/v1-p3-noms-de-pays-le-nom`
-- Foundational domestic context: `/projects/islt/fr-original/v1-p1-combray`
+- Foundational domestic context, and her strongest positive concentration: `/projects/islt/fr-original/v1-p1-combray`
+- Largest positive presence, in the Mme Swann circle: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Continued positive presence in Guermantes-adjacent scenes: `/projects/islt/fr-original/v3-p2`
 
 Notable units:
 
@@ -793,16 +808,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/bergotte-default-vermeer-proustian-20260425-1923.png`
 - Annotation units: `36`
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
-- Pattern: `rehabilitated_positive`
+- Pattern: `advantage_positive_high_standing`
 
-A symbolic positive figure whose literary authority carries strongly across advantage and prestige.
+Third of 35 in scene-level advantage — one of the very highest standings in the pilot set — with real positive scenes behind it; prestige leans positive too, but the novel does not stage him there often enough to rank it.
 
-Bergotte is one of the novel's clearest positive symbolic figures, with his literary authority translating into very high advantage and prestige across several distinct narrative zones.
+Bergotte holds one of the highest standings measured in scene-level advantage: 3rd of 35, behind only Françoise and la grand-mère, with genuinely positive scenes underwriting it — 12 gains against 8 losses across 36 appearances, and real intensity in the swings. Prestige leans the same direction, but the novel simply doesn't stage him in enough high-status scenes to rank him there; belonging is almost entirely untouched. His authority, where it is measured at all, is one of the clearest and highest-standing positives in the book.
 
 Why interesting:
 
-- He is strongly positive without being primarily a belonging-driven figure.
-- His profile is sharply chapter-shaped, which makes him useful for showing how strongly positive scores can arise from uneven terrain.
+- He ranks 3rd of 35 in scene-level advantage — one of the highest standings of any figure examined here, ahead of every aristocrat in the pilot set.
+- His positive standing is matched by genuinely positive scenes (12 gains to 8 losses), not just a favorable reading on thin evidence.
+- Prestige and belonging both go unranked — the novel simply doesn't stage him in those registers often enough, even though the little evidence there leans positive or flat.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -822,9 +838,9 @@ Top chapters (by absolute movement):
 
 Reading path:
 
-- Main late positive recovery: `/projects/islt/fr-original/v5`
-- Early negative counterweight: `/projects/islt/fr-original/v1-p1-combray`
-- Intermediate positive reinforcement: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
+- Largest positive presence, in the Mme Swann circle: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
+- Strong positive concentration in Guermantes-world scenes: `/projects/islt/fr-original/v3-p1`
+- Early positive footing: `/projects/islt/fr-original/v1-p1-combray`
 
 Notable units:
 
@@ -838,16 +854,17 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/legrandin-default-vermeer-proustian-20260425-1923.png`
 - Annotation units: `24`
 - Archetype signs: `advantage -1, prestige +1, inclusion -1`
-- Pattern: `awkward_negative`
+- Pattern: `advantage_negative_too_thin_to_rank`
 
-A broadly negative recurring figure marked by repeated self-positioning failures and social discredit.
+The novel doesn't stage him often enough to rank him in any register, but where it does, scene-level advantage is nearly one-directional — the steepest negative lean of any figure in the pilot set.
 
-Legrandin is a broadly negative figure whose profile is shaped by repeated discredit and awkward self-positioning, even though a few isolated passages briefly interrupt the downward pattern.
+Legrandin is not substantial enough for the novel to rank in any register — advantage, prestige, or belonging all fall short of the evidence needed. But where he is staged, the direction is stark: in scene-level advantage his 24 appearances split 15 negative to just 1 positive, the steepest negative lean of any figure in this set, with real intensity behind it. Prestige and belonging carry almost no signal at all, essentially flat. He is a case of a real, sharp negative pattern that the novel simply doesn't stage often enough to certify with a standing.
 
 Why interesting:
 
-- He is a clear recurring loser without depending on a single chapter block.
-- His profile sharpens the category of embarrassment-driven negative treatment.
+- His advantage scenes are the most lopsided in the pilot set — 15 negative to 1 positive — yet even this is not enough appearances for the novel to rank him.
+- He is a clean illustration of the gap between a strong signal and a certified standing: intensity without enough staged evidence to rank.
+- Prestige and belonging are essentially silent for him — flat, thin, and unranked.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -867,9 +884,9 @@ Top chapters (by absolute movement):
 
 Reading path:
 
-- Primary negative concentration: `/projects/islt/fr-original/v1-p1-combray`
-- Late positive interruption: `/projects/islt/fr-original/v6-p4`
-- Final return in diminished society: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes`
+- Primary negative concentration, in Guermantes-adjacent society: `/projects/islt/fr-original/v3-p1`
+- Early negative concentration: `/projects/islt/fr-original/v1-p1-combray`
+- Final, sharpest negative return in diminished society: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes`
 
 Notable units:
 
@@ -885,14 +902,15 @@ Notable units:
 - Archetype signs: `advantage -1, prestige -1, inclusion -1`
 - Pattern: `compact_negative`
 
-A compact but stable negative case: rare in the novel, but strongly downward wherever she appears.
+Near the very bottom of the ranked cast in scene-level advantage (33rd of 35) — one of the most severe standings measured — with prestige and belonging both leaning negative too, though too thinly staged in either to rank.
 
-Mme de Cambremer is a compact but stable negative case: she doesn't appear as often as the novel's biggest characters, but what is there reads overwhelmingly downward in advantage, prestige, and inclusion.
+Mme de Cambremer appears rarely, only 20 times across the book, but wherever she is staged, the reading is severe: 33rd of the 35 characters substantial enough to rank in scene-level advantage, near the very bottom, with 9 negative outcomes against just 2 positive. Prestige and belonging are both too thin to rank, but neither offers relief: prestige leans substantially negative in direction, belonging mildly so. She is a small, sharply negative presence rather than a broadly damaged one, rare enough to stay legible, consistent enough to matter.
 
 Why interesting:
 
-- She is useful as a smaller-scale confirmation that consistent multi-lens negativity is not limited to the biggest characters.
-- Her appearances are sparse enough to stay legible but numerous enough to matter.
+- She ranks 33rd of 35 in scene-level advantage — one of the most severe standings measured in the entire pilot set, third from the bottom.
+- Her rarity does not soften the reading: prestige, though too thin to rank, leans substantially negative in direction, reinforcing rather than complicating the advantage picture.
+- She is useful as a small-scale confirmation that severe negative standing is not limited to the book's most frequent figures.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -912,9 +930,9 @@ Top chapters (by absolute movement):
 
 Reading path:
 
-- Primary negative concentration: `/projects/islt/fr-original/v3-p1`
+- Primary negative concentration: `/projects/islt/fr-original/v4-p2`
+- Sharpest negative intensity, in Guermantes-adjacent scenes: `/projects/islt/fr-original/v3-p1`
 - Supporting negative evidence: `/projects/islt/fr-original/v1-p2-un-amour-de-swann`
-- Prestige-world reinforcement: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
 
 Notable units:
 
@@ -930,14 +948,15 @@ Notable units:
 - Archetype signs: `advantage +1, prestige -1, inclusion +1`
 - Pattern: `rehabilitated_positive`
 
-A surprising overall positive whose late recoveries outweigh strongly negative early material.
+A genuine reversal within a small set of scenes: strongly negative early, strongly positive late — the novel doesn't stage him often enough to rank the outcome, but the arc itself is among the most dramatic swings measured.
 
-M. Vinteuil is one of the more surprising positive figures in the novel: despite some strongly negative early material, his scores end up decisively positive, especially in inclusion.
+M. Vinteuil's appearances are few, only 15 across the book, but they trace one of the most dramatic arcs in the pilot set: strongly negative early, concentrated in Combray, and strongly positive later, in the La Prisonnière material, with his overall mean movement in scene-level advantage ending up mildly positive despite the rough start. The swings are among the largest measured here — his individual scenes move more, on average, than almost any other figure's — but there are simply too few of them for the novel to certify a standing. Prestige leans mildly negative and belonging is essentially untouched, both far too thin to size. He is a genuine reversal case, not a stable positive one, even if the evidence stays too sparse to rank.
 
 Why interesting:
 
-- He is a genuine reversal case rather than a merely stable positive.
-- His profile is sharply chapter-shaped, which makes him useful for showing how an overall positive reading can arise from uneven terrain.
+- His scenes swing more dramatically than almost any other figure examined here — strongly negative early, strongly positive late — even though the total appearances are too few to rank the outcome.
+- The reversal is chapter-shaped, not incidental: the early material (Combray) is where the negative concentrates, and the later material (La Prisonnière) is where the recovery happens.
+- He is a genuine case of an arc rather than a static reading, best understood by following the sequence rather than a single number.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
