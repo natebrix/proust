@@ -489,3 +489,30 @@ def test_reconcile_maps_descriptor_sources_to_unknown():
     annotation["appraisal_events"][0]["source"] = "M. Pierre"
     result = reconcile_foundation_names(annotation, chapter_id="v3-p2")
     assert result["appraisal_events"][0]["source"] == "M. Pierre"
+
+
+def test_reconcile_maps_narrator_targets_to_le_narrateur():
+    from proust.foundation import reconcile_foundation_names
+
+    annotation = {
+        "unit_id": "v5#p-1-p-5",
+        "characters_present": [
+            {"canonical_name": "le narrateur", "surface_forms": ["je"],
+             "presence_type": "explicit", "presence_confidence": 0.9},
+        ],
+        "appraisal_events": [
+            {"event_id": "E1", "source": "narrator", "target": "narrator",
+             "type": "narrated_elevation", "polarity": "positive", "narrative_stance": "endorsed",
+             "confidence": 0.8, "evidence": "x", "explanation": "x"},
+        ],
+        "status_effects": [
+            {"character": "narrator", "dimension": "emotional_position", "delta": 1,
+             "based_on_events": ["E1"], "confidence": 0.8, "explanation": "x"},
+        ],
+        "ambiguities": [],
+    }
+
+    result = reconcile_foundation_names(annotation, chapter_id="v5")
+    assert result["appraisal_events"][0]["source"] == "narrator"  # voice stays
+    assert result["appraisal_events"][0]["target"] == "le narrateur"
+    assert result["status_effects"][0]["character"] == "le narrateur"

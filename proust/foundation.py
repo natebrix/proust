@@ -516,10 +516,14 @@ def reconcile_foundation_names(annotation, chapter_id=None):
                     unified_source = "unknown"
                 event["source"] = unified_source
             if isinstance(event.get("target"), str):
-                event["target"] = unify(event["target"])
+                # "narrator" is a legal SOURCE (the narrating voice) but as a
+                # target it can only mean the in-scene self
+                target = "le narrateur" if event["target"] == "narrator" else event["target"]
+                event["target"] = unify(target)
     for effect in result.get("status_effects") or []:
         if isinstance(effect, dict) and isinstance(effect.get("character"), str):
-            effect["character"] = unify(effect["character"])
+            character = "le narrateur" if effect["character"] == "narrator" else effect["character"]
+            effect["character"] = unify(character)
     return result
 
 
