@@ -458,3 +458,32 @@ def test_reconcile_foundation_names_unifies_registry_variants():
     annotation["appraisal_events"][0]["source"] = "la dame inconnue de Trouville"
     result = reconcile_foundation_names(annotation, chapter_id="v2-p2-noms-de-pays-le-pays")
     assert result["appraisal_events"][0]["source"] == "la dame inconnue de Trouville"
+
+
+def test_reconcile_maps_descriptor_sources_to_unknown():
+    from proust.foundation import reconcile_foundation_names
+
+    annotation = {
+        "unit_id": "v3-p2#p-231-p-235",
+        "characters_present": [
+            {"canonical_name": "le narrateur", "surface_forms": ["je"],
+             "presence_type": "explicit", "presence_confidence": 0.9},
+        ],
+        "appraisal_events": [
+            {"event_id": "E1", "source": "le patron", "target": "le narrateur",
+             "type": "praise", "polarity": "positive", "narrative_stance": "neutral_report",
+             "confidence": 0.8, "evidence": "x", "explanation": "x"},
+        ],
+        "status_effects": [],
+        "ambiguities": [],
+    }
+
+    result = reconcile_foundation_names(annotation, chapter_id="v3-p2")
+    assert result["appraisal_events"][0]["source"] == "unknown"
+    # listed open-world sources stay verbatim
+    annotation["characters_present"].append(
+        {"canonical_name": "M. Pierre", "surface_forms": ["M. Pierre"],
+         "presence_type": "explicit", "presence_confidence": 0.9, "resolution": "unresolved"})
+    annotation["appraisal_events"][0]["source"] = "M. Pierre"
+    result = reconcile_foundation_names(annotation, chapter_id="v3-p2")
+    assert result["appraisal_events"][0]["source"] == "M. Pierre"

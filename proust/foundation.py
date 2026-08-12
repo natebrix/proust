@@ -495,10 +495,26 @@ def reconcile_foundation_names(annotation, chapter_id=None):
                 registry.resolve(row["canonical_name"], chapter_id=chapter_id).status == "resolved"
             ):
                 row["resolution"] = "resolved"
+    present_names = {
+        row.get("canonical_name")
+        for row in result.get("characters_present") or []
+        if isinstance(row, dict)
+    }
     for event in result.get("appraisal_events") or []:
         if isinstance(event, dict):
             if isinstance(event.get("source"), str):
-                event["source"] = unify(event["source"])
+                unified_source = unify(event["source"])
+                # An event source that is neither a listed character nor a
+                # special value cannot validate. Named open-world sources are
+                # listed in characters_present by the prompt's own rules, so
+                # what reaches this branch is descriptor sources ("le patron")
+                # and stray unresolvables: the schema's bucket for those is
+                # "unknown", with the evidence text preserving the attribution.
+                if unified_source not in present_names and unified_source not in (
+                    "narrator", "collective_social_voice", "unknown"
+                ):
+                    unified_source = "unknown"
+                event["source"] = unified_source
             if isinstance(event.get("target"), str):
                 event["target"] = unify(event["target"])
     for effect in result.get("status_effects") or []:
