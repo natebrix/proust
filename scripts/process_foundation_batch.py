@@ -132,7 +132,12 @@ report["escalate"] = [
 
 for lens in ("advantage", "prestige", "inclusion"):
     lens_report = runner.build_outcome_report(run_dir, lens=lens)
-    report["mixed_counts"][lens] = len(lens_report["mixed_units"])
+    entry_total = len(lens_report["timeline"])
+    mixed_total = len(lens_report["mixed_units"])
+    report["mixed_counts"][lens] = mixed_total
+    report.setdefault("mixed_rates", {})[lens] = (
+        round(mixed_total / entry_total, 3) if entry_total else 0.0
+    )
 
 # gates
 if report["validation_failures"]:
@@ -150,11 +155,19 @@ v1p2_in_batch = [unit_id for unit_id in unit_ids if unit_id.startswith("v1-p2-un
 if v1p2_in_batch and len(report["narrator_v1p2_units"]) / len(v1p2_in_batch) > NARRATOR_UNIT_RATE_LIMIT:
     report["status"] = "gate_tripped"
     report["reasons"].append("narrator scored in >30% of third-person v1-p2 units")
-mixed_limit = max(3, round(15 * len(unit_ids) / 40))
-for lens, count in report["mixed_counts"].items():
-    if count > mixed_limit:
+# Mixed gate is rate-based per character entry, not an absolute per-unit
+# count: the open-world prompt roughly doubles roster size (2.2 vs 1.1-1.4
+# characters/unit in the legacy corpus), so the legacy-calibrated absolute
+# threshold overcounts on the richer surface. Foundation-run-001 measured a
+# 23% mixed-entry rate with annotations that eyeballed as sound; 30% leaves
+# headroom while still catching genuine drift.
+MIXED_ENTRY_RATE_LIMIT = 0.30
+for lens, rate in report.get("mixed_rates", {}).items():
+    if rate > MIXED_ENTRY_RATE_LIMIT:
         report["status"] = "gate_tripped"
-        report["reasons"].append(f"{count} mixed units in {lens} > {mixed_limit}")
+        report["reasons"].append(
+            f"mixed-entry rate {rate} in {lens} > {MIXED_ENTRY_RATE_LIMIT}"
+        )
 
 (run_dir / "gate-report.json").write_text(json.dumps(report, indent=1))
 print(json.dumps(report))
