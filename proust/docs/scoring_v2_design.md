@@ -152,3 +152,33 @@ profile; enriching them is an annotation-side question, recorded as future
 work. A genuine v2 finding, verified in passages: the narrator ranks near the
 bottom of the rated advantage set while leading prestige and inclusion —
 scene-level suffering alongside durable standing and welcome.
+
+## Promotion record (2026-08-12)
+
+`proust/scoring_v2_promote.py` (`python -m proust scoring-v2-promote`, or
+`scripts/build_scoring_v2.py --stage promote`) publishes the staged fits as the
+current surfaces: `character-standings-{lens}-current.*` per lens plus a
+person-view JSON, `character-journey-{lens}-timeline-current.*` for the pilot
+cast, and `character-pages-current.*` rebuilt on v2. Promotion never re-fits —
+it reads the staged artifacts back and recomputes only the corpus-side joins —
+so the current surface and the validated one are the same numbers by
+construction.
+
+Two decisions the promotion makes, both consequences of the adoption:
+
+- **The honest-presentation split.** The standings markdown has a "Ranked"
+  section and an "Insufficient comparative evidence" section, and they are never
+  one ordered table. The thin rated sets the adoption accepted are exactly why:
+  253 of 288 characters are unrankable in advantage, and listing them below the
+  ranked 35 would read as a placement instead of as an absence of evidence.
+  Provisional characters carry `rank: null` everywhere, including in the pages'
+  profile block.
+- **Ranks are dense over the conservative rating.** Ties share a rank. On the
+  current corpus no two rated characters tie, so this is presently
+  indistinguishable from the fit's ordinal rank.
+
+The v1-era rating artifacts (`character-whr-*`, `character-glicko2-*`,
+`character-elo-*`) and the still-v1 `character-profile-cards-current.*` stay on
+disk as the validation baselines and the before picture. The pilot editorial
+text is used verbatim by the v2 pages and is read at build time, so the
+in-flight editorial rewrite regenerates the pages without a code change.

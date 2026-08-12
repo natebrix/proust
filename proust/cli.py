@@ -68,6 +68,17 @@ def _aggregate_default_paths(base_name, include_supplements, foundation_corpus):
     return f"{base}.json", f"{base}.md"
 
 
+def _character_pages_default_paths(include_supplements, foundation_corpus):
+    # outputs/character-pages-current.* is scoring v2's artifact now
+    # (scoring-v2-promote writes it), so the v1-scored builder gets its own
+    # foundation-corpus name: a rebuild of the old surface must not silently
+    # downgrade the current one.
+    if foundation_corpus:
+        base = "outputs/character-pages-v1-scored-current"
+        return f"{base}.json", f"{base}.md"
+    return _aggregate_default_paths("character-pages", include_supplements, foundation_corpus)
+
+
 FOUNDATION_HELP = (
     "Build from the foundation corpus (outputs/foundation-run-*) alone. Legacy run-* and "
     "supplement-run-* directories never feed a --foundation build, so a corpus change and a "
@@ -565,6 +576,32 @@ def build_parser():
     character_whr_timeline_parser.add_argument("--output", help="Optional JSON output path. Defaults to outputs/character-whr-<lens>-timeline-current.json, or the -supplemented- variant with --include-supplements.")
     character_whr_timeline_parser.add_argument("--markdown-output", help="Optional Markdown output path. Defaults to outputs/character-whr-<lens>-timeline-current.md, or the -supplemented- variant with --include-supplements.")
     _add_foundation_arguments(character_whr_timeline_parser)
+
+    scoring_v2_promote_parser = subparsers.add_parser(
+        "scoring-v2-promote",
+        help="Promote the staged scoring v2 fits to the current surfaces: character standings per lens, app-shaped journey timelines for the pilot cast, and the character pages rebuilt on v2.",
+    )
+    scoring_v2_promote_parser.add_argument(
+        "--staged-dir",
+        default=None,
+        help="Directory holding the staged scoring v2 fits. Defaults to outputs/scoring-v2.",
+    )
+    scoring_v2_promote_parser.add_argument(
+        "--outputs-dir",
+        default="outputs",
+        help="Directory the promoted -current artifacts are written to. Defaults to outputs.",
+    )
+    scoring_v2_promote_parser.add_argument(
+        "--foundation-outputs-dir",
+        default="outputs",
+        help="Outputs directory to discover foundation-run-* directories from. Defaults to outputs.",
+    )
+    scoring_v2_promote_parser.add_argument(
+        "--character",
+        dest="characters",
+        action="append",
+        help="Character to track in the journey timelines and pages. Repeat for multiple. Defaults to the pilot editorial set.",
+    )
 
     elo_supplement_diff_parser = subparsers.add_parser(
         "elo-supplement-diff",
@@ -1197,6 +1234,33 @@ def main(argv=None):
         }, ensure_ascii=False, indent=2))
         return 0
 
+    if args.command == "scoring-v2-promote":
+        # Promotion is foundation-only by construction: the staged fits it
+        # republishes were built from the foundation corpus alone.
+        try:
+            runs = core.discover_foundation_run_dirs(args.foundation_outputs_dir)
+            promotion = core.promote_scoring_v2(
+                runs,
+                staged_dir=args.staged_dir,
+                outputs_dir=args.outputs_dir,
+                target_characters=args.characters,
+                progress=lambda message: print(message, flush=True),
+            )
+        except (core.RunManifestNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        print(json.dumps({
+            "written": promotion["written"],
+            "ranked_counts": {
+                lens: standings["ranked_count"] for lens, standings in promotion["standings"].items()
+            },
+            "insufficient_evidence_counts": {
+                lens: standings["insufficient_evidence_count"]
+                for lens, standings in promotion["standings"].items()
+            },
+            "character_page_count": promotion["pages"]["character_count"],
+        }, ensure_ascii=False, indent=2))
+        return 0
+
     if args.command == "elo-supplement-diff":
         try:
             runs = _collect_runs(args)
@@ -1296,8 +1360,8 @@ def main(argv=None):
             )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
-        default_json_output, default_markdown_output = _aggregate_default_paths(
-            "character-pages", args.include_supplements, args.foundation
+        default_json_output, default_markdown_output = _character_pages_default_paths(
+            args.include_supplements, args.foundation
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output

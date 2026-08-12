@@ -110,6 +110,10 @@ def load_scored_units(run_dirs):
                 "volume_number": position["volume_number"],
                 "unit_index_within_chapter": position["unit_index_within_chapter"],
                 "time": position["cumulative_unit_index"],
+                # The whole position record rides along too: the promoted
+                # app-facing timelines join on paragraph ranges and
+                # cumulative offsets the fit itself has no use for.
+                "corpus_position": dict(position),
                 "annotation": json.loads(annotation_path.read_text()),
             }
         )

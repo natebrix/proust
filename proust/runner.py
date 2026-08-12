@@ -2138,6 +2138,24 @@ def write_character_whr_timeline_artifacts(analysis, json_output=None, markdown_
     return impl(analysis, json_output=json_output, markdown_output=markdown_output)
 
 
+def promote_scoring_v2(
+    run_dirs,
+    staged_dir=None,
+    outputs_dir="outputs",
+    target_characters=None,
+    progress=None,
+):
+    from .scoring_v2_promote import DEFAULT_STAGED_DIR, promote_scoring_v2 as impl
+
+    return impl(
+        run_dirs,
+        staged_dir=staged_dir or DEFAULT_STAGED_DIR,
+        outputs_dir=outputs_dir,
+        target_characters=target_characters,
+        progress=progress,
+    )
+
+
 def render_character_cross_lens_analysis_markdown(analysis):
     from .export_artifacts import render_character_cross_lens_analysis_markdown as impl
 

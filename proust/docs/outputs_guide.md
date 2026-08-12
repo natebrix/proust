@@ -36,6 +36,12 @@ reference sheet). The scoring config did NOT change in that cutover, so every
 difference between a current artifact and its superseded version is a corpus
 difference.
 
+The scoring config has changed SINCE that cutover: scoring v2 was adopted on
+2026-08-12 and the rating and character-page surfaces are now built from it (see
+"Scoring v2: The Current Rating Surface" below). The corpus underneath is the
+same foundation corpus, so a v1-era rating artifact and its v2 successor differ
+by scoring alone.
+
 The legacy `outputs/run-*` and `outputs/supplement-run-*` families and the
 `-supplemented-current` artifacts built from them are history. They are kept on
 disk, and the aggregate commands still build from them when asked, but nothing
@@ -239,6 +245,10 @@ Use when:
 - you want one stable object per character with annotation count, lens scores, rank spread, volatility, and top driving chapters
 - you want to feed a reader app or another presentation layer without recomputing analysis logic there
 
+Still v1-scored. The cards were an intermediate for the character pages; the v2
+pages build reads the scoring v2 corpus summary directly and no longer needs
+them.
+
 ### Character Pages
 
 - [character-pages-current.json](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.json:1)
@@ -253,6 +263,14 @@ Use when:
 
 - you want a full character-page surface rather than a compact card
 - you want a rendering-oriented handoff for the `islt` app
+
+Now `character_pages_v2`: scored by scoring v2 and rebuilt by `python -m proust
+scoring-v2-promote`. The `character`, `slug`, `portrait`, `editorial`,
+`reading_path`, and `notable_units` keys are unchanged in meaning;
+`profile.lens_scores` carries per-lens rating, band, rank out of the lens's
+ranked set, movement means, and label counts, and `notable_units` /
+`top_chapters` are chosen by v2 absolute movement. The markdown artifact's
+header documents the shape.
 
 ### Chapter Overlays
 
@@ -287,18 +305,20 @@ Use when:
 - you want to explain a chapter as a social field before drilling into paragraph overlays
 - you want the next app-facing middle layer after character pages and chapter overlays
 
-## Staged Scoring v2 Surfaces
+## Scoring v2: The Current Rating Surface
 
-Everything under `outputs/scoring-v2/` is the scoring v2 build described in
-[scoring_v2_design.md](/Users/nathan_brixius/dev/proust/proust/docs/scoring_v2_design.md:1).
-It is STAGED, not adopted: no `-current` artifact is built from it, and nothing
-outside that directory is written by it. Adoption is a reviewed decision on the
-validation report.
+Scoring v2 (described in
+[scoring_v2_design.md](/Users/nathan_brixius/dev/proust/proust/docs/scoring_v2_design.md:1))
+was ADOPTED on 2026-08-12 and is now the project's rating and profile surface.
+It comes in two layers.
 
-Contents:
+### The fit store: `outputs/scoring-v2/`
+
+The fits themselves, and the evidence they were adopted on. Nothing outside
+that directory is written by a build; promotion is a separate step.
 
 - `scoring-v2-{lens}-{name|person}-view-ratings.json` — weighted-WHR standings
-  and trajectories per lens, in both entity keyings
+  and full point-by-point trajectories per lens, in both entity keyings
 - `scoring-v2-{lens}-{name|person}-view-timeline.json` — trajectory nodes joined
   to corpus positions for the tracked character set
 - `scoring-v2-{lens}-comparisons.json` — the comparisons themselves (the primary
@@ -310,8 +330,51 @@ Contents:
   bootstrap stability vs the v1 formula, predictive table with ELO/Glicko-2
   baselines, and the pre-registered literary panel
 
-Rebuild with `python3 scripts/build_scoring_v2.py` (`--stage validate` re-runs
-only the battery against the staged artifacts).
+### The promoted surfaces: `outputs/character-*-current.*`
+
+Read back from the fit store and rendered; no number is re-fitted, so the
+current surface and the validated one cannot diverge.
+
+- `character-standings-{lens}-current.json` / `.md` — the standings per lens.
+  The markdown has TWO sections and they are not one table: **Ranked** holds the
+  characters the corpus compared often enough for a rating to mean something,
+  by conservative rating (`rating - band`), densely ranked; **Insufficient
+  comparative evidence** holds the rest. A wide band is missing evidence, not a
+  low placement, which is why the second section carries no ranks.
+- `character-standings-{lens}-person-view-current.json` — the same standings
+  under the person keying (registry entity ids with `person_view_merge`
+  applied). JSON only.
+- `character-journey-{lens}-timeline-current.json` / `.md` — app-shaped
+  trajectories for the pilot editorial cast: every smoothed and filtered node
+  joined to the full corpus position of the unit it was fitted at.
+- `character-pages-current.json` / `.md` — the dossier pages, rebuilt on v2.
+  Portraits, editorial, and reading paths are unchanged; `profile.lens_scores`
+  is now per-lens v2 standing plus movement means (the markdown header
+  documents the shape).
+
+The point-by-point trajectories are NOT republished in the standings: they stay
+in the fit store, and the app-facing slice of them is in the journey timelines.
+
+Rebuild everything with:
+
+```bash
+python3 scripts/build_scoring_v2.py --stage all
+```
+
+`--stage build` re-fits, `--stage validate` re-runs the battery against the
+staged artifacts, and `--stage promote` (also `python -m proust
+scoring-v2-promote`) regenerates the promoted surfaces from the staged fits
+alone, deterministically and in seconds.
+
+### The v1-era rating artifacts are history
+
+`character-whr-*`, `character-glicko2-*`, and `character-elo-*` are the
+predecessor rating surfaces and the baselines v2 was validated against. They
+stay on disk and the commands still build them, but they are no longer the
+current answer to "where does this character stand?" — the standings are. The
+same applies to `character-profile-cards-current.*` and
+`character-cross-lens-current.*`, which are still v1-scored: the character pages
+no longer read them.
 
 ## Historical Milestone Artifacts
 
@@ -356,8 +419,14 @@ If the question is:
 - "Which characters are most annotated overall?"  
   Read [character-annotation-counts-current.md](/Users/nathan_brixius/dev/proust/outputs/character-annotation-counts-current.md:1)
 
+- "Where does this character stand, and how sure are we?"  
+  Read [character-standings-advantage-current.md](/Users/nathan_brixius/dev/proust/outputs/character-standings-advantage-current.md:1) and its prestige and inclusion siblings
+
+- "How did this character's standing move through the book?"  
+  Read [character-journey-advantage-timeline-current.json](/Users/nathan_brixius/dev/proust/outputs/character-journey-advantage-timeline-current.json:1)
+
 - "What should a cross-lens character card contain?"  
-  Read [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1)
+  Read [character-profile-cards-current.json](/Users/nathan_brixius/dev/proust/outputs/character-profile-cards-current.json:1) (still v1-scored)
 
 - "What should a first full character page contain?"  
   Read [character-pages-current.json](/Users/nathan_brixius/dev/proust/outputs/character-pages-current.json:1)

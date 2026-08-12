@@ -1,5 +1,21 @@
 # Character ELO Plan
 
+> **Superseded as the current rating plan (2026-08-12).** Everything below is
+> the reasoning that produced the ELO, Glicko-2, and v1 Whole-History Rating
+> surfaces, and it is still the best account of WHY the corpus can be rated at
+> all — pairwise comparison within a unit, narrative time as the axis, and
+> uncertainty reported rather than hidden. What it does not describe is the
+> input those systems now consume: scoring v2 derives one movement per
+> character per lens from the annotator's own calibrated status effects,
+> partitions the dimensions so the three lenses cannot leak into one another,
+> and puts every uncertainty signal into a comparison's WEIGHT instead of its
+> direction. Scoring v2 was adopted after a validation gate that used the
+> surfaces planned here as its baselines, and the current standings, journey
+> timelines, and character pages are built from it. Read
+> [scoring_v2_design.md](scoring_v2_design.md) for the current formula and its
+> adoption record, and keep this document for the history and the rating-theory
+> rationale it still carries.
+
 This document defines the first precise ELO-style rating plan for the annotation corpus.
 
 It is intentionally narrow.

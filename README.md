@@ -10,7 +10,7 @@ The current center of gravity is not generic NLP exploration. It is:
   - `prestige`: change in visible rank, distinction, or standing
   - `inclusion`: change in belonging, acceptance, or incorporation
 - app-facing export layers for the separate `islt` web reader
-- experimental derived ranking surfaces such as character ELO on the `advantage` lens
+- derived ranking surfaces over those lenses (scoring v2: weighted pairwise comparisons fitted with Whole-History Rating)
 
 Legacy name-frequency and sentiment utilities still exist in the repo, but they are secondary to the annotation pipeline and the derived artifact surface.
 
@@ -65,17 +65,23 @@ The most important artifact families under `outputs/` are:
 - `character-profile-cards-current.*`
   - app-facing compact character profiles
 - `character-pages-current.*`
-  - app-facing richer character-page data
+  - app-facing richer character-page data, scored by scoring v2
 - `chapter-overlays-current/`
   - paragraph-range overlay data for the `islt` reader
 - `chapter-summaries-current.*`
   - chapter-centered framing and summary data
-- `character-elo-advantage-current.*`
-  - corpus-wide `advantage`-lens character ELO
-- `character-elo-advantage-timeline-current.*`
-  - sparse per-unit ELO timeline points for tracked characters
-- `character-glicko2-<lens>-current.*`, `character-whr-<lens>-current.*`, `character-whr-<lens>-timeline-current.*`
-  - the Glicko-2 and Whole-History Rating surfaces for each lens
+- `character-standings-<lens>-current.*`
+  - the current standings per lens, scoring v2: ranked characters and, kept
+    separate, the ones the corpus has not compared often enough to rank
+- `character-journey-<lens>-timeline-current.*`
+  - app-shaped scoring v2 trajectories for the pilot cast, each node joined to
+    its corpus position
+- `scoring-v2/`
+  - the scoring v2 fit store and its validation report, which the surfaces above
+    are rendered from
+- `character-elo-advantage-current.*`, `character-glicko2-<lens>-current.*`, `character-whr-<lens>-current.*`, `character-whr-<lens>-timeline-current.*`
+  - the v1-era rating surfaces: the baselines scoring v2 was validated against,
+    kept as history rather than as the current answer
 - `foundation-unresolved-triage.*`, `foundation-editorial-discrepancies.*`
   - the two cutover reports: names prompt v2 could not resolve against the registry, and the pilot editorial claims the new numbers no longer support
 
@@ -107,17 +113,34 @@ python -m proust corpus-review --foundation
 python -m proust character-analysis --foundation
 python -m proust character-chapter-analysis --foundation
 python -m proust character-profile-cards --foundation
-python -m proust character-pages --foundation
 python -m proust chapter-overlays --foundation --output-dir outputs/chapter-overlays-current
 python -m proust chapter-summaries --foundation
+python -m proust scoring-v2-promote
+python -m proust foundation-unresolved-triage
+python -m proust foundation-editorial-discrepancies
+```
+
+`scoring-v2-promote` is the current rating and character-page build: it reads
+the staged scoring v2 fits under `outputs/scoring-v2/` and writes the standings,
+the journey timelines, and `character-pages-current.*`. Refitting is the
+separate, slower `python3 scripts/build_scoring_v2.py --stage build`.
+
+The v1-era rating and page commands still exist and still build their own
+artifacts, but nothing current comes from them any more:
+
+```bash
+python -m proust character-pages --foundation
 python -m proust character-elo --foundation
 python -m proust character-elo-timeline --foundation
 python -m proust character-glicko2 --foundation --lens advantage
 python -m proust character-whr --foundation --lens advantage
 python -m proust character-whr-timeline --foundation --lens advantage
-python -m proust foundation-unresolved-triage
-python -m proust foundation-editorial-discrepancies
 ```
+
+`character-pages --foundation` no longer writes
+`outputs/character-pages-current.*` — those are scoring v2's now — but
+`outputs/character-pages-v1-scored-current.*`, so rebuilding the old surface
+cannot silently downgrade the current one.
 
 Swap `--foundation` for `--discover-runs outputs` to rebuild the same surface
 from the superseded legacy corpus instead; the two never mix in one build.
@@ -150,20 +173,27 @@ The main handoff docs for that work are:
 - [proust/docs/islt_chapter_summaries_handoff.md](proust/docs/islt_chapter_summaries_handoff.md)
 - [proust/docs/islt_character_elo_handoff.md](proust/docs/islt_character_elo_handoff.md)
 
-## ELO
+## Derived Rankings
 
-The project currently computes an ELO-style derived ranking only for the `advantage` lens.
-
-That is intentional. `advantage` maps most directly onto the pairwise “who came out ahead in the scene?” interpretation required by ELO.
+The current ranking surface is scoring v2: one annotation becomes weighted
+pairwise comparisons per lens, and Whole-History Rating fits a trajectory over
+them. The standings are split into the characters the corpus compared often
+enough to rank and the ones it did not, because a wide uncertainty band is
+missing evidence rather than a low placement.
 
 Current artifacts:
 
-- [outputs/character-elo-advantage-current.json](outputs/character-elo-advantage-current.json)
-- [outputs/character-elo-advantage-timeline-current.json](outputs/character-elo-advantage-timeline-current.json)
+- [outputs/character-standings-advantage-current.md](outputs/character-standings-advantage-current.md) (and the prestige and inclusion siblings)
+- [outputs/character-journey-advantage-timeline-current.json](outputs/character-journey-advantage-timeline-current.json)
+- [outputs/scoring-v2/validation-report.md](outputs/scoring-v2/validation-report.md)
 
-The design rationale is documented in:
+The design and the adoption record are in:
 
-- [proust/docs/character_elo_plan.md](proust/docs/character_elo_plan.md)
+- [proust/docs/scoring_v2_design.md](proust/docs/scoring_v2_design.md)
+
+The earlier ELO, Glicko-2, and v1 WHR surfaces are the baselines v2 was
+validated against; their rationale is in
+[proust/docs/character_elo_plan.md](proust/docs/character_elo_plan.md).
 
 ## Legacy NLP Utilities
 
