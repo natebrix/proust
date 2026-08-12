@@ -5,7 +5,7 @@
       "surface_forms": [
         "je",
         "moi",
-        "m'"
+        "mes"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
@@ -13,22 +13,58 @@
     {
       "canonical_name": "Swann",
       "surface_forms": [
-        "Swann",
         "M. Swann",
+        "Swann",
         "son père",
         "il"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.98
+      "presence_confidence": 0.99
     },
     {
       "canonical_name": "Gilberte",
       "surface_forms": [
         "Gilberte",
+        "sa fille",
+        "leur fille",
         "elle"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.97
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": [
+        "Mme Swann",
+        "sa mère",
+        "les parents"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "Norpois",
+      "surface_forms": [
+        "M. de Norpois"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.85
+    },
+    {
+      "canonical_name": "Françoise",
+      "surface_forms": [
+        "Françoise"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "la Berma",
+      "surface_forms": [
+        "la Berma"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
     }
   ],
   "appraisal_events": [
@@ -38,22 +74,54 @@
       "target": "le narrateur",
       "type": "blame",
       "polarity": "negative",
-      "narrative_stance": "uncertain",
-      "confidence": 0.75,
-      "evidence": "Swann shrugs off the narrator's earnest, sixteen-page letter with \"Tout cela ne signifie rien, cela ne fait que prouver combien j'ai raison,\" and the narrator later concedes, twice hedged with \"peut-être,\" that Swann may have rightly seen the letter as merely an effect of his love for Gilberte rather than genuine generous feeling for Swann himself.",
-      "explanation": "Swann dismisses the narrator's passionate self-defense as confirming his already low opinion of him; the mature narrator's own retrospective, hedged concession that Swann's skepticism may have been perceptive keeps this from being simply an error on Swann's part, so the narrator's earnest self-image is locally undercut."
+      "narrative_stance": "endorsed",
+      "confidence": 0.94,
+      "evidence": "« Vous savez, ils ne vous gobent pas ! » ; « ne me croyaient pas d'une grande moralité et s'imaginaient que je ne pouvais exercer sur leur fille qu'une mauvaise influence » ; en lisant la lettre de seize pages, « son père avait haussé les épaules en disant : « Tout cela ne signifie rien, cela ne fait que prouver combien j'ai raison. » » ; « La lettre que je lui écrivis, aussi ardente et aussi sincère que les paroles que j'avais dites à M. de Norpois, n'eut pas plus de succès. »",
+      "explanation": "Swann (seconded by Odette) judges the narrator an unscrupulous and immoral influence on Gilberte, and his shrug plus one dismissive sentence annuls sixteen pages of protested sincerity, refusing even the interview the boy asks for. The rejection is relayed through Gilberte's laughing message and closes with her handing the letter back."
+    },
+    {
+      "event_id": "E2",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.86,
+      "evidence": "« Car ce fut une erreur, je n'en doutais pas alors. » ; « Or, peut-être simplement Swann savait-il que la générosité n'est souvent que l'aspect intérieur que prennent nos sentiments égoïstes quand nous ne les avons pas encore nommés et classés. Peut-être avait-il reconnu dans la sympathie que je lui exprimais un simple effet — et une confirmation enthousiaste — de mon amour pour Gilberte » ; « je n'avais pas réussi à abstraire de moi-même mon amour... j'étais désespéré. »",
+      "explanation": "The mature narrator reverses his younger self's verdict of « l'absurde erreur de Swann »: the adverb « alors » marks the boy's certainty as superseded, and the following paragraph credits Swann with an accurate psychological reading the child could not yet perform. Swann is elevated as the superior judge of motive."
     }
   ],
   "status_effects": [
     {
       "character": "le narrateur",
-      "dimension": "general_appraisal",
-      "delta": -1,
+      "dimension": "rhetorical_position",
+      "delta": -2,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.75,
-      "explanation": "The narrator's sincere, self-flattering account of his own generous feelings fails to move Swann and is later partly undercut by the narrator's own retrospective doubt, leaving his self-presentation locally diminished."
+      "confidence": 0.93,
+      "explanation": "His most sustained act of persuasion in the passage — a sixteen-page letter of avowed sincerity — is met with a shrug and one sentence, and the narration explicitly aligns this failure with his earlier failed appeal to Norpois."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E1",
+        "E2"
+      ],
+      "confidence": 0.85,
+      "explanation": "He is judged immoral and an « imposteur » by the Swanns, and the retrospective narration declines to clear him, conceding that his professed generosity may have been self-interest under another name."
+    },
+    {
+      "character": "Swann",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.86,
+      "explanation": "The older narrator retracts the charge of blindness and grants Swann a lucid grasp of how disguised egoism works, so Swann emerges as the better psychologist of the two."
     },
     {
       "character": "Swann",
@@ -62,12 +130,13 @@
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.55,
-      "explanation": "Swann's dismissive judgment is not straightforwardly refuted; the narrator's later hedged suggestion that Swann perceived the letter's real, self-interested motive credits him with discernment the boy could not yet see in himself."
+      "confidence": 0.8,
+      "explanation": "He wins the exchange without entering it: he keeps his verdict, refuses the requested explanation as useless, and his single reported sentence settles the matter against sixteen pages."
     }
   ],
   "ambiguities": [
-    "The passage layers the young narrator's confident conviction that Swann's judgment was 'une erreur judiciaire' with the mature narrator's later, twice-hedged ('peut-être') suggestion that Swann may have accurately seen through the letter; the degree to which the narration endorses Swann's perceptiveness versus merely entertaining it is left uncertain."
+    "Swann's vindication is phrased hypothetically (« Or, peut-être simplement Swann savait-il... »), so its endorsement is carried by the retrospective frame — the concessive « Or » and the « alors » of « je n'en doutais pas alors » — rather than asserted outright; a flatter reading would take the whole paragraph as an unresolved conjecture and lower the stance to uncertain.",
+    "The water-closet interlude interposes a genuine positive note for the narrator (« un plaisir consistant auquel je pouvais m'étayer, délicieux, paisible, riche d'une vérité durable »), which lifts « les soucis que venaient de faire naître en moi les paroles de Swann ». It is read here as an impersonal aesthetic relief, not a social or affective renewal, and does not offset the diminishment: the scene resumes with Gilberte returning the undelivered letter and leaving him for the other children."
   ],
   "unit_id": "v2-p1-autour-de-mme-swann#p-101-p-105"
 }

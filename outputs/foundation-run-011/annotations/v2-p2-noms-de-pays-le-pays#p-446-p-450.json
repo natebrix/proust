@@ -3,7 +3,9 @@
     {
       "canonical_name": "Andrée",
       "surface_forms": [
-        "Andrée"
+        "Andrée",
+        "son amie",
+        "la première"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
@@ -11,10 +13,29 @@
     {
       "canonical_name": "Albertine",
       "surface_forms": [
-        "Albertine"
+        "Albertine",
+        "mon amie",
+        "la seconde"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.95
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "je",
+        "moi"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Elstir",
+      "surface_forms": [
+        "Elstir"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.92
     }
   ],
   "appraisal_events": [
@@ -23,11 +44,22 @@
       "source": "narrator",
       "target": "Andrée",
       "type": "narrated_diminishment",
-      "polarity": "negative",
-      "narrative_stance": "uncertain",
-      "confidence": 0.75,
-      "evidence": "The narrator extensively praises Andrée's tact and 'raffinements de bonté', then suspects 'il n'y avait rien de cette bonté qu'elle manifestait à tout moment' at bottom, that she never used the many small means at her disposal to bring him and Albertine together, and may harbor 'une colère bien cachée' against which she struggles 'peut-être elle-même'.",
-      "explanation": "After an extended, admiring portrait of Andrée's delicacy and tact toward Albertine and the narrator, the narrator undercuts it by suspecting the kindness is performed 'par distinction morale' rather than rooted in genuine goodness, and that she conceals jealousy over his pursuit of Albertine; the judgment is repeatedly hedged as uncertain ('peut-être', 'je ne jurerais pas', 'sans en être absolument sûr')."
+      "polarity": "mixed",
+      "narrative_stance": "endorsed",
+      "confidence": 0.82,
+      "evidence": "« Andrée avait pourtant bien plus qu'elle l'intelligence des choses du cœur, le raffinement dans la gentillesse » ... « on aurait dit qu'au fond de sa nature, il n'y avait rien de cette bonté qu'elle manifestait à tout moment » ... « du moindre des riens ... qui eussent pu m'unir à Albertine, elle ne fit jamais usage » ... « Hélas si, elle sera immariable ! » ... « les amis pleins de tact, une forte dose de dissimulation. Je pensais que tel était le cas pour Andrée sans en être cependant absolument sûr. »",
+      "explanation": "The narrator builds an elaborate encomium of Andrée's tact, delicacy and devoted friendship and then systematically converts each virtue into evidence of dissimulation and concealed hostility toward his love for Albertine. The praise is real but the passage's structure makes it the vehicle of her local demotion rather than her elevation."
+    },
+    {
+      "event_id": "E2",
+      "source": "narrator",
+      "target": "Albertine",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.85,
+      "evidence": "« je n'étais pas certain de la bonté profonde de la première comme je le fus plus tard de celle de la seconde » ... « Je savais maintenant que j'aimais Albertine » ... « ma chambre me redevenait réelle et chère, se renouvelait, car j'en regardais et en appréciais chaque meuble avec les yeux d'Albertine » ... « elle me laissa heureux, mais plus affamé d'elle encore que je n'étais au départ »",
+      "explanation": "Albertine is raised on two converging fronts: she is retrospectively credited with the deep goodness Andrée is suspected of lacking, and the narrator's love for her crystallizes into an avowed fact that reorganizes his whole perception of his room around her gaze."
     }
   ],
   "status_effects": [
@@ -38,22 +70,44 @@
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.75,
-      "explanation": "Andrée's celebrated tact and kindness are locally called into question as possibly a moral performance rather than a genuine trait, though the narrator does not confirm this."
+      "confidence": 0.8,
+      "explanation": "Her acknowledged superiority in tact and refinement is locally outweighed by the narrator's suspicion that her goodness is a surface performance masking concealed anger and quiet obstruction."
     },
     {
-      "character": "Andrée",
+      "character": "Albertine",
+      "dimension": "emotional_position",
+      "delta": 2,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.85,
+      "explanation": "She gains decisive emotional leverage: the narrator's love is now avowed to himself, his room is revalued through her eyes, and he ends the outing hungrier for her than before while she is asked for nothing."
+    },
+    {
+      "character": "Albertine",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": [
+        "E1",
+        "E2"
+      ],
+      "confidence": 0.7,
+      "explanation": "Though she is called frivolous, poor and incapable of Andrée's refinements, the comparison finally favors her because the narrator vouches for her deep goodness and only doubts Andrée's."
+    },
+    {
+      "character": "le narrateur",
       "dimension": "emotional_position",
       "delta": -1,
       "based_on_events": [
-        "E1"
+        "E2"
       ],
-      "confidence": 0.65,
-      "explanation": "The suggestion that Andrée hides a suppressed anger or jealousy toward the narrator's pursuit of Albertine undermines the composed, generous persona she otherwise displays."
+      "confidence": 0.72,
+      "explanation": "The crystallized love leaves him dependent rather than fulfilled: he conceals his feeling as strategy, stage-manages the carriage seating to seem resigned, and comes away only more starved, with nothing yet asked or granted."
     }
   ],
   "ambiguities": [
-    "The narrator's suspicion that Andrée's kindness masks insincerity or hidden resentment is heavily hedged throughout ('peut-être', 'je ne jurerais pas', 'sans en être cependant absolument sûr'), so this is presented as an unresolved suspicion rather than a confirmed narrator judgment; narrative_stance is treated as uncertain rather than endorsed."
+    "The indictment of Andrée is explicitly hedged in the text itself (« par hasard peut-être », « je ne jurerais pas », « sans en être cependant absolument sûr »), yet the paragraph's architecture and its aside on tact as dissimulation clearly guide the judgment; it is read here as an endorsed but deliberately unproven suspicion rather than a neutral report.",
+    "The comparative verdict favoring Albertine rests on retrospective narration (« comme je le fus plus tard »), so part of the local elevation is imported from knowledge the scene itself does not yet possess."
   ],
   "unit_id": "v2-p2-noms-de-pays-le-pays#p-446-p-450"
 }

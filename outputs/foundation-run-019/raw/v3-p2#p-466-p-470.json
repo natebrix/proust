@@ -1,0 +1,68 @@
+{
+  "characters_present": [
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": ["je", "me", "moi", "vous"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "prince Von",
+      "surface_forms": ["le prince Von", "le prince"],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9,
+      "resolution": "unresolved"
+    },
+    {
+      "canonical_name": "Rachel",
+      "surface_forms": ["elle"],
+      "presence_type": "implicit",
+      "presence_confidence": 0.75
+    }
+  ],
+  "appraisal_events": [
+    {
+      "event_id": "E1",
+      "source": "Rachel",
+      "target": "le narrateur",
+      "type": "praise",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
+      "confidence": 0.8,
+      "evidence": "Pas du tout, elle m'a dit beaucoup de bien de vous.",
+      "explanation": "Relayed through the prince's speech, Rachel's report credits the narrator with a favorable opinion, giving him a small local reputational boost."
+    },
+    {
+      "event_id": "E2",
+      "source": "prince Von",
+      "target": "le narrateur",
+      "type": "snub",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.87,
+      "evidence": "Le prince en reçut sans doute une impression différente, car jamais il ne m'adressa plus la parole.",
+      "explanation": "The prince takes silent offense at the narrator's refusal of his company and permanently withdraws acknowledgment, marking a lasting exclusion of the narrator from his social attention."
+    }
+  ],
+  "status_effects": [
+    {
+      "character": "le narrateur",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": ["E1"],
+      "confidence": 0.78,
+      "explanation": "Rachel's favorable report, relayed by the prince, locally elevates how the narrator is regarded."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "inclusion_exclusion",
+      "delta": -1,
+      "based_on_events": ["E2"],
+      "confidence": 0.85,
+      "explanation": "The prince's lasting silence excludes the narrator from further social engagement with him."
+    }
+  ],
+  "ambiguities": [
+    "The narrator states his refusal did not seem offensive to him, while the prince apparently took it as such; the precise cause and justification of the prince's offense is left implicit rather than stated outright, which bears on how E2 should be read."
+  ]
+}

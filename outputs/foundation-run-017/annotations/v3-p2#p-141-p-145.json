@@ -1,21 +1,32 @@
 {
   "characters_present": [
     {
+      "canonical_name": "Albertine",
+      "surface_forms": [
+        "vous",
+        "votre amie Gisèle (implied addressee)"
+      ],
+      "presence_type": "implicit",
+      "presence_confidence": 0.9
+    },
+    {
       "canonical_name": "Gisèle",
       "surface_forms": [
         "Gisèle",
         "votre amie Gisèle"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.98
+      "presence_confidence": 0.99
     },
     {
-      "canonical_name": "Albertine",
+      "canonical_name": "le narrateur",
       "surface_forms": [
-        "vous"
+        "je",
+        "me",
+        "vous m'amusez (addressee of the reply)"
       ],
-      "presence_type": "implicit",
-      "presence_confidence": 0.6
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
     }
   ],
   "appraisal_events": [
@@ -26,26 +37,57 @@
       "type": "blame",
       "polarity": "negative",
       "narrative_stance": "neutral_report",
-      "confidence": 0.8,
-      "evidence": "\"J'ai dû penser qu'elle était bien mal élevée et commune,\" said of Gisèle, who is also described as someone \"que nous fréquentions le moins.\"",
-      "explanation": "Prompted to reconstruct a past thought, Albertine directly characterizes Gisèle as poorly brought up and common, a local negative judgment reported in her own quoted speech."
+      "confidence": 0.93,
+      "evidence": "« Gisèle était celle que nous fréquentions le moins, elle était de la bande si vous voulez, mais pas tout à fait. J'ai dû penser qu'elle était bien mal élevée et commune. »",
+      "explanation": "Albertine dismisses Gisèle both socially (only marginally part of the band, the least frequented) and personally (\"mal élevée et commune\"), a single downward judgment delivered in reported recollection. The narration reports the verdict without endorsing or undercutting it."
+    },
+    {
+      "event_id": "E2",
+      "source": "Albertine",
+      "target": "le narrateur",
+      "type": "other",
+      "polarity": "negative",
+      "narrative_stance": "endorsed",
+      "confidence": 0.74,
+      "evidence": "« Ah ! je n'ai aucun souvenir. » … puis, une fois relancée, une réponse minimale que le narrateur accueille par « Ah ! c'est tout ? »",
+      "explanation": "The narrator's insistent questioning about Albertine's old \"regard dur, rusé\" yields first a blank denial and then a banal substitute answer; his closing \"Ah ! c'est tout ?\" stages the interrogation as unsatisfied, leaving him without the leverage he sought."
     }
   ],
   "status_effects": [
     {
       "character": "Gisèle",
       "dimension": "general_appraisal",
+      "delta": -2,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.92,
+      "explanation": "Gisèle is flatly characterized as ill-bred and vulgar, the only evaluation of her the passage offers."
+    },
+    {
+      "character": "Gisèle",
+      "dimension": "inclusion_exclusion",
       "delta": -1,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.75,
-      "explanation": "Gisèle is mildly diminished by Albertine's recollected characterization of her as ill-bred and common, though the remark is brief and framed as a tentative reconstruction (\"j'ai dû penser\") rather than a firm present judgment."
+      "confidence": 0.88,
+      "explanation": "She is retroactively pushed to the edge of the little band: nominally of it, \"mais pas tout à fait,\" and the least frequented."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "emotional_position",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.72,
+      "explanation": "He drives the exchange but extracts nothing; his final \"Ah ! c'est tout ?\" registers the failure of an inquiry he initiated."
     }
   ],
   "ambiguities": [
-    "The addressee referred to only as \"vous\" is never named in this excerpt; identification as Albertine relies on the reference sheet and the scene's characteristic pairing (interrogation about Balbec, Gisèle as a mutual acquaintance) rather than an explicit textual name within this window.",
-    "Albertine's answer is elicited under pressure (\"pour vous aider... tâchez de vous rappeler\") and hedged with \"j'ai dû penser,\" leaving some uncertainty about whether this is a sincere memory or a plausible reconstruction offered to satisfy the questioner; this does not change the polarity of the judgment but qualifies its narrative weight."
+    "The interlocutor is never named in the passage; the identification as Albertine rests on the Balbec setting, \"la bande,\" and the address to Gisèle's friend — strong but inferential.",
+    "It is undetermined whether Albertine's \"je n'ai aucun souvenir\" and her subsequent judgment of Gisèle are sincere recollection or evasion; on a sincere reading E2 is not a deflection at all and the narrator's loss disappears."
   ],
   "unit_id": "v3-p2#p-141-p-145"
 }

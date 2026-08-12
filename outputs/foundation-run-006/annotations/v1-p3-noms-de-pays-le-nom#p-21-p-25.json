@@ -5,7 +5,19 @@
       "surface_forms": [
         "je",
         "moi",
-        "me"
+        "me",
+        "mon petit nom"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "Gilberte",
+      "surface_forms": [
+        "Gilberte",
+        "la vraie Gilberte",
+        "sa fille",
+        "la fillette que j’aimais"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
@@ -14,43 +26,53 @@
       "canonical_name": "Swann",
       "surface_forms": [
         "M. Swann",
-        "Swann"
+        "Swann",
+        "le Swann de Combray",
+        "son père"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.98
+      "presence_confidence": 0.99
     },
     {
-      "canonical_name": "Gilberte",
+      "canonical_name": "Odette",
       "surface_forms": [
-        "Gilberte",
-        "elle"
+        "Mme Swann"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.97
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "comte de Paris",
+      "surface_forms": [
+        "le comte de Paris",
+        "Philippe VII"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.88
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
-      "source": "le narrateur",
-      "target": "Swann",
-      "type": "narrated_elevation",
-      "polarity": "positive",
-      "narrative_stance": "ironized",
-      "confidence": 0.72,
-      "evidence": "son aspect m'impressionnait encore comme celui d'un personnage historique... Ses relations avec le comte de Paris... prenaient maintenant pour moi quelque chose de merveilleux, comme si personne d'autre n'eût jamais connu les Orléans... tant était profond l'incognito dont il était enveloppé.",
-      "explanation": "The narrator's perception glorifies Swann as a near-mythic figure through his association with the Orléans family, but the passage's own hyperbole ('comme si personne d'autre...') and the remark that no one else notices any such distinction signal that this elevation is a subjective, love-driven distortion of the smitten young narrator rather than a socially confirmed fact."
+      "source": "narrator",
+      "target": "le narrateur",
+      "type": "narrated_diminishment",
+      "polarity": "mixed",
+      "narrative_stance": "endorsed",
+      "confidence": 0.86,
+      "evidence": "Gilberte grants him her first name (« vous pouvez m’appeler Gilberte ») and pronounces his own with pleasure and gratitude, but « au moment même, je ne pouvais apprécier la valeur de ces plaisirs nouveaux » ; she « me faisait aussi de la peine en ayant l’air de ne pas avoir de plaisir à me voir », he waits and fails to find her (« aux Champs-Élysées je ne trouvais pas Gilberte »), blames himself (« c’était ma faute »), and is shut out of « toute son autre existence qui m’échappait ».",
+      "explanation": "A real intimacy is conferred at the outset, but the narrator's own retrospective voice cancels its value and organizes the rest of the passage around anxious waiting, self-blame, and exclusion from Gilberte's inaccessible life, so the dominant local movement is a qualified diminishment of the narrator rather than a realized renewal."
     },
     {
       "event_id": "E2",
-      "source": "Swann",
-      "target": "le narrateur",
-      "type": "snub",
-      "polarity": "negative",
+      "source": "narrator",
+      "target": "Swann",
+      "type": "prestige_association",
+      "polarity": "positive",
       "narrative_stance": "endorsed",
-      "confidence": 0.8,
-      "evidence": "Il répondait poliment aux saluts des camarades de Gilberte, même au mien quoiqu'il fût brouillé avec ma famille, mais sans avoir l'air de me connaître.",
-      "explanation": "Despite having known the narrator well in the past, Swann greets him with the same impersonal politeness given to any of Gilberte's playmates, pointedly showing no sign of prior acquaintance, a muted but clear social snub tied to his estrangement from the narrator's family."
+      "confidence": 0.9,
+      "evidence": "« Ses relations avec le comte de Paris... prenaient maintenant pour moi quelque chose de merveilleux » ; they « le faisaient se détacher vivement sur le fond vulgaire des promeneurs », he is likened to « un personnage historique », admired for consenting to appear among them « sans réclamer d’eux d’égards spéciaux, tant était profond l’incognito dont il était enveloppé », and he pays for his iron chair « de cette main que Philippe VII avait si souvent retenue dans la sienne ».",
+      "explanation": "Swann is sharply elevated by his royal connection and by an incognito the narrator openly admires; the closing image monumentalizes even his most banal gesture through contact with Philippe VII."
     }
   ],
   "status_effects": [
@@ -59,25 +81,35 @@
       "dimension": "social_status",
       "delta": 2,
       "based_on_events": [
-        "E1"
+        "E2"
       ],
-      "confidence": 0.72,
-      "explanation": "Within the narrator's admiring gaze, Swann is locally elevated to the stature of a near-historical figure through his ties to the Orléans family, even though this elevation is framed as a private, exaggerated perception."
+      "confidence": 0.9,
+      "explanation": "Swann's local standing rises markedly: he is detached from the vulgar crowd as a quasi-historical figure whose intimacy with the Orléans is unknown to those around him."
     },
     {
       "character": "le narrateur",
-      "dimension": "inclusion_exclusion",
+      "dimension": "emotional_position",
       "delta": -1,
       "based_on_events": [
-        "E2"
+        "E1"
       ],
-      "confidence": 0.75,
-      "explanation": "The narrator is locally excluded from the recognition he expects, treated by Swann with the same generic courtesy as any stranger despite their real prior acquaintance."
+      "confidence": 0.85,
+      "explanation": "The narrator ends locally weaker: the intimacy he receives cannot be enjoyed, Gilberte's apparent indifference and absence wound him, and he is left dependent on her unpredictable appearances and ashamed before Swann."
+    },
+    {
+      "character": "Gilberte",
+      "dimension": "emotional_position",
+      "delta": 1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.8,
+      "explanation": "Gilberte holds the leverage: she alone decides when to confer the first name, when to appear, and how much of her life to disclose, and her mystery governs the narrator's whole afternoon."
     }
   ],
   "ambiguities": [
-    "The narrator's elevation of Swann is filtered through his own infatuation with Gilberte and is marked by self-aware hyperbole ('comme si personne d'autre n'eût jamais connu les Orléans'), so it should be read as a subjectively inflated perception rather than a narrator-endorsed objective judgment of Swann's standing.",
-    "Gilberte's earlier permission for the narrator to use her first name is a real gesture of intimacy, but the passage immediately undercuts its value by saying the narrator's 'loving self' could not actually feel or benefit from it; this ambivalence was judged too immediately qualified to count as a dominant local movement on its own."
+    "Swann's elevation is filtered through a love-transfigured perception the narrator himself relativizes (« que j’avais vu si souvent autrefois sans qu’il excitât ma curiosité ») ; read as retrospective irony rather than endorsement, E2's effect would soften from +2 to +1. The reading here treats the prestige as factually grounded (the Orléans connection, Philippe VII) and the framing as admiring.",
+    "« Philippe VII » is taken to designate the same man as « le comte de Paris » (the Orleanist pretender), so E2 has a single prestige source; if read as two distinct figures the direction of the event is unchanged."
   ],
   "unit_id": "v1-p3-noms-de-pays-le-nom#p-21-p-25"
 }

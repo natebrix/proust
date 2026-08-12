@@ -1,22 +1,6 @@
 {
   "characters_present": [
     {
-      "canonical_name": "Robert de Saint-Loup",
-      "surface_forms": [
-        "Saint-Loup"
-      ],
-      "presence_type": "explicit",
-      "presence_confidence": 0.98
-    },
-    {
-      "canonical_name": "Odette",
-      "surface_forms": [
-        "Mme Swann"
-      ],
-      "presence_type": "explicit",
-      "presence_confidence": 0.97
-    },
-    {
       "canonical_name": "Morel",
       "surface_forms": [
         "Charles Morel",
@@ -25,78 +9,124 @@
         "Morel"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.93
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "je",
+        "moi",
+        "me"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "oncle Adolphe",
+      "surface_forms": [
+        "mon oncle Adolphe",
+        "mon oncle",
+        "mon grand-oncle",
+        "ce grand-oncle"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": [
+        "Mme Swann",
+        "la dame en rose"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": [
+        "Saint-Loup"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.98
+    },
+    {
+      "canonical_name": "duchesse de Guermantes",
+      "surface_forms": [
+        "Mme de Guermantes"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.96
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
-      "source": "Robert de Saint-Loup",
-      "target": "Odette",
-      "type": "blame",
-      "polarity": "negative",
-      "narrative_stance": "neutral_report",
-      "confidence": 0.75,
-      "evidence": "Je ne veux pas que ma mère me présente à Mme Swann, me dit Saint-Loup. C'est une ancienne grue. Son mari est juif et elle nous le fait au nationalisme.",
-      "explanation": "Saint-Loup crudely dismisses Odette as a former prostitute and mocks her performative nationalism in connection with her Jewish husband, refusing to be introduced to her; the narrator reports the remark without directly endorsing or ironizing it."
-    },
-    {
-      "event_id": "E2",
       "source": "narrator",
       "target": "Morel",
       "type": "narrated_diminishment",
       "polarity": "negative",
       "narrative_stance": "endorsed",
+      "confidence": 0.93,
+      "evidence": "« je me rendis compte qu’il affectait de me parler comme à un égal » ; « Je me rendis vite compte que le fils de Morel était très « arriviste » » ; « C’était aller un peu vite et démasquer son plan. Le poète, blessé, ne répondit pas. »",
+      "explanation": "The narrator builds the passage's dominant movement around exposing Morel: his affected equality, his eagerness to cut the cable with his servant origins, his flattery of a poet whose work he has never read, and the failure of that bid when the offended poet does not reply. The narrator's own judgment (\"arriviste\", \"démasquer son plan\") clearly guides the evaluation."
+    },
+    {
+      "event_id": "E2",
+      "source": "Robert de Saint-Loup",
+      "target": "Odette",
+      "type": "blame",
+      "polarity": "negative",
+      "narrative_stance": "neutral_report",
       "confidence": 0.88,
-      "evidence": "Je me rendis vite compte que le fils de Morel était très « arriviste »... C'était aller un peu vite et démasquer son plan. Le poète, blessé, ne répondit pas.",
-      "explanation": "The narrator explicitly labels young Morel an opportunist and narrates his overeager attempt to exploit a borrowed connection to gain access to an aristocratic circle, an attempt that visibly backfires when the offended poet refuses to answer."
+      "evidence": "« Je ne veux pas que ma mère me présente à Mme Swann [...] C’est une ancienne grue. Son mari est juif et elle nous le fait au nationalisme. » ; « Mme Swann, qui parut assez gênée de me rencontrer »",
+      "explanation": "Saint-Loup openly refuses to be introduced to Mme Swann and disparages her past and her political posturing; the narrator reports the outburst without endorsing it, though the adjacent note of her embarrassment about her earlier Dreyfusard declaration partly corroborates the charge of opportunism."
     }
   ],
   "status_effects": [
     {
-      "character": "Odette",
+      "character": "Morel",
       "dimension": "general_appraisal",
       "delta": -1,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.7,
-      "explanation": "Odette is locally denigrated by Saint-Loup's insulting characterization, though the narrator does not clearly endorse the judgment, tempering the diminishment."
-    },
-    {
-      "character": "Odette",
-      "dimension": "inclusion_exclusion",
-      "delta": -1,
-      "based_on_events": [
-        "E1"
-      ],
-      "confidence": 0.75,
-      "explanation": "Saint-Loup's explicit refusal to be introduced to her enacts a concrete social exclusion within the scene."
+      "confidence": 0.92,
+      "explanation": "Morel comes off worse because the narrator frames his self-promotion, borrowed manners, and calculated flattery as transparent careerism."
     },
     {
       "character": "Morel",
+      "dimension": "social_status",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.82,
+      "explanation": "His concrete attempt to enter the aristocratic world through the poet fails outright: the plan is unmasked and the approach goes unanswered."
+    },
+    {
+      "character": "Odette",
       "dimension": "general_appraisal",
-      "delta": -2,
+      "delta": -1,
       "based_on_events": [
         "E2"
       ],
       "confidence": 0.85,
-      "explanation": "The narrator portrays Morel as a transparent social climber whose calculated affectations and maneuvering are exposed and criticized."
+      "explanation": "She is locally lowered by Saint-Loup's contemptuous characterization and by her own visible awkwardness at being seen after reversing her Dreyfus position."
     },
     {
-      "character": "Morel",
+      "character": "Odette",
       "dimension": "inclusion_exclusion",
       "delta": -1,
       "based_on_events": [
         "E2"
       ],
-      "confidence": 0.75,
-      "explanation": "His bid to gain entry to an aristocratic literary circle via the poet fails outright when the poet, offended, does not reply."
+      "confidence": 0.8,
+      "explanation": "Saint-Loup's refusal to let his mother present him to her is an explicit act of social avoidance within the salon."
     }
   ],
   "ambiguities": [
-    "Saint-Loup's blame of Odette immediately follows the narrator's recollection of her sincere Dreyfusard sympathy, which could imply an ironic undercutting of his judgment that the passage does not make fully explicit; narrative stance is treated conservatively as neutral_report rather than ironized.",
-    "The bare surname 'Morel' is used in this passage for both the son (Charles Morel, matching the reference sheet's canonical entity) and his father, the late valet de chambre (e.g. 'pour Morel, lequel avait enseigné cette manière de voir à son fils'); the diminishment event concerns only the son."
+    "The surname \"Morel\" covers two figures here: in \"pour Morel, lequel avait enseigné cette manière de voir à son fils\" it designates the father, the uncle's former valet de chambre, not Charles Morel; only the son's mentions are annotated as the registry's Morel.",
+    "Saint-Loup's abuse of Mme Swann is quoted rather than narrator-endorsed, but the narrator's immediately preceding remark on her embarrassment over her earlier Dreyfusard declaration lends it partial support, leaving the stance between neutral report and endorsement."
   ],
   "unit_id": "v3-p1#p-741-p-745"
 }

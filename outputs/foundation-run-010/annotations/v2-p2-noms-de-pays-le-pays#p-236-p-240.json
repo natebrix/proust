@@ -1,23 +1,52 @@
 {
   "characters_present": [
     {
-      "canonical_name": "le narrateur",
+      "canonical_name": "baron de Charlus",
       "surface_forms": [
-        "je",
-        "monsieur",
-        "me"
+        "M. de Charlus",
+        "Charlus",
+        "il"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
     },
     {
-      "canonical_name": "baron de Charlus",
+      "canonical_name": "le narrateur",
       "surface_forms": [
-        "M. de Charlus",
-        "il"
+        "je",
+        "me",
+        "moi"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "la grand-mère",
+      "surface_forms": [
+        "votre grand'mère",
+        "ma grand'mère",
+        "sa vieille grand'mère"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
+    },
+    {
+      "canonical_name": "Aimé",
+      "surface_forms": [
+        "Monsieur Aimé",
+        "Aimé",
+        "votre maître d'hôtel"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.93
+    },
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": [
+        "Saint-Loup"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.9
     }
   ],
   "appraisal_events": [
@@ -26,11 +55,11 @@
       "source": "baron de Charlus",
       "target": "le narrateur",
       "type": "praise",
-      "polarity": "positive",
-      "narrative_stance": "uncertain",
-      "confidence": 0.65,
-      "evidence": "\"vous avez bien placé votre affection dans votre grand'mère... c'est une tendresse payée de retour. Il y en a tant dont on ne peut pas dire cela!\"",
-      "explanation": "Charlus explicitly commends the narrator for having placed his affection well, in a bond that is reciprocated, implicitly elevating him above others whose attachments go unanswered."
+      "polarity": "mixed",
+      "narrative_stance": "ironized",
+      "confidence": 0.74,
+      "evidence": "« Vous n'avez peut-être pas de mérite personnel, si peu d'êtres en ont ! Mais pour un temps du moins vous avez la jeunesse et c'est toujours une séduction. » ; « du moins vous avez bien placé votre affection dans votre grand'mère [...] une tendresse payée de retour. »",
+      "explanation": "Charlus consoles and validates the narrator with a doubly qualified compliment: he withholds personal merit, grants him youth as a seduction, and approves his returned tenderness for his grandmother. The next morning's coarse reversal retroactively casts this elevated generosity as an unstable pose rather than a settled judgment."
     },
     {
       "event_id": "E2",
@@ -39,12 +68,32 @@
       "type": "narrated_diminishment",
       "polarity": "negative",
       "narrative_stance": "endorsed",
-      "confidence": 0.78,
-      "evidence": "his voice turns \"cinglante\" and he curtly throws out \"Bonsoir, monsieur\" after peremptorily commanding the groom about Aimé; the next day, with vulgar familiarity, pinching the narrator's neck, he says \"Mais on s'en fiche bien de sa vieille grand'mère, hein? petite fripouille!\"",
-      "explanation": "The narrator registers astonishment at the gap between Charlus's professed tolerance and refined sensitivity and his abrupt, high-handed, then coarsely mocking behavior, exposing him as capricious and unstable beneath his elevated speech."
+      "confidence": 0.91,
+      "evidence": "« Après tous les sentiments élevés que je lui avais entendu exprimer ce soir-là [...] je fus bien étonné de l'entendre me dire, en me pinçant le cou, avec une familiarité et un rire vulgaires : — Mais on s'en fiche bien de sa vieille grand'mère, hein ? petite fripouille ! »",
+      "explanation": "The narrator explicitly stages the gap between Charlus's high-minded evening discourse on tolerance and permitted tenderness and the vulgar physical familiarity of the next morning, which coarsely negates the very affection he had blessed. The narrating voice supplies the damaging terms itself (« sentiments élevés » against « une familiarité et un rire vulgaires »), so the diminishment is carried by the narration, not merely reported."
     }
   ],
   "status_effects": [
+    {
+      "character": "baron de Charlus",
+      "dimension": "general_appraisal",
+      "delta": -2,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.9,
+      "explanation": "Charlus comes out clearly worse locally: the passage is built so that his elevated moral eloquence is exposed by his own vulgar reversal about the grandmother he had just invoked as a sacred attachment."
+    },
+    {
+      "character": "baron de Charlus",
+      "dimension": "rhetorical_position",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.76,
+      "explanation": "His commanding manner collapses within the scene: the haughty order for the maître d'hôtel is defeated by the groom, he cannot find the terms for what he evidently wants to announce, and he can only exit abruptly with a cutting « Bonsoir, monsieur »."
+    },
     {
       "character": "le narrateur",
       "dimension": "emotional_position",
@@ -52,22 +101,12 @@
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.6,
-      "explanation": "Charlus's words affirm that the narrator's devotion to his grandmother is well-placed and requited, a local emotional validation, though its durability is complicated by Charlus's own subsequent reversal."
-    },
-    {
-      "character": "baron de Charlus",
-      "dimension": "general_appraisal",
-      "delta": -1,
-      "based_on_events": [
-        "E2"
-      ],
-      "confidence": 0.75,
-      "explanation": "Charlus's lofty claims of tolerant, refined sympathy are undercut by his petty hauteur toward the staff and his abrupt shift into cold dismissal and, the next day, vulgar mockery, revealing an inconsistent character."
+      "confidence": 0.62,
+      "explanation": "Within Charlus's speech the narrator is locally relieved rather than shamed: his feared appearance of stupidity is waved away, his nocturnal distress is granted legitimacy, and his affection for his grandmother is affirmed as a rare reciprocated tenderness."
     }
   ],
   "ambiguities": [
-    "Charlus's praise of the narrator's grandmother-bond is quoted speech without clear narratorial endorsement, and its sincerity is complicated by his own later mocking dismissal of that same bond ('on s'en fiche bien de sa vieille grand'mère'), so how lastingly it elevates the narrator is uncertain."
+    "The narrative stance on Charlus's evening speech is the load-bearing uncertainty: the morning's vulgar remark can be read as retroactively ironizing the noble sentiments as pure performance, or as a defensive coarsening that follows a sincere but unspeakable overture (« quelque chose à m'annoncer » he cannot phrase). The first reading is taken here; under the second, E1 would be a neutral_report and Charlus's diminishment would be softer."
   ],
   "unit_id": "v2-p2-noms-de-pays-le-pays#p-236-p-240"
 }

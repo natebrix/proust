@@ -1,25 +1,91 @@
 {
   "characters_present": [
     {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "je",
+        "moi",
+        "un gamin comme moi",
+        "mon neveu",
+        "ce gosse"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
+    },
+    {
       "canonical_name": "oncle Adolphe",
       "surface_forms": [
-        "mon oncle"
+        "mon oncle",
+        "ton oncle"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.97
+    },
+    {
+      "canonical_name": "Odette",
+      "surface_forms": [
+        "une voix de femme",
+        "une jeune femme",
+        "en robe de soie rose avec un grand collier de perles au cou"
+      ],
+      "presence_type": "implicit",
+      "presence_confidence": 0.7
+    },
+    {
+      "canonical_name": "le père du narrateur",
+      "surface_forms": [
+        "mon père"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.93
+    },
+    {
+      "canonical_name": "le grand-père du narrateur",
+      "surface_forms": [
+        "mon grand-père"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.93
+    },
+    {
+      "canonical_name": "la grand-mère",
+      "surface_forms": [
+        "ma grand'mère"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.88
+    },
+    {
+      "canonical_name": "la Berma",
+      "surface_forms": [
+        "la Berma"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
-      "source": "narrator",
+      "source": "collective_social_voice",
       "target": "oncle Adolphe",
-      "type": "narrated_diminishment",
+      "type": "discredit_association",
+      "polarity": "mixed",
+      "narrative_stance": "ironized",
+      "confidence": 0.87,
+      "evidence": "« si nous n'allions le voir qu'à certains jours c'est que, les autres jours, venaient des femmes avec lesquelles sa famille n'aurait pas pu se rencontrer » ; sa facilité à présenter « de jolies veuves » et « des comtesses de nom ronflant » à la grand'mère « l'avait déjà brouillé plus d'une fois avec mon grand-père » ; le père, souriant : « Une amie de ton oncle ».",
+      "explanation": "The family's code discredits the uncle through his company — visits are rationed to safe days, the grandfather has quarrelled with him, and the father's smiling insinuation marks any actress's name as one of his conquests. The narrator reports that verdict ironically, since the same compromising intimacy makes the uncle uniquely glamorous to the boy, able to open a door to an actress « inapprochable à tant d'autres »."
+    },
+    {
+      "event_id": "E2",
+      "source": "oncle Adolphe",
+      "target": "le narrateur",
+      "type": "snub",
       "polarity": "negative",
-      "narrative_stance": "neutral_report",
-      "confidence": 0.62,
-      "evidence": "il tâchait autant que possible d'éviter tout trait d'union entre sa famille et ce genre de relations; sa trop grande facilité... l'avait déjà brouillé plus d'une fois avec mon grand-père; le valet de chambre... parut embarrassé.",
-      "explanation": "The passage exposes oncle Adolphe as maintaining an uneasy, concealed division between his respectable family and his relations with actresses and courtesans, a divide that has already caused friction with the grandfather and now requires evasiveness (withholding names, the valet's embarrassment at the door)."
+      "narrative_stance": "endorsed",
+      "confidence": 0.83,
+      "evidence": "« J'entendis mon oncle grommeler, se fâcher » ; « mon oncle lui dit : \"Mon neveu\", sans lui dire mon nom, ni me dire le sien... il tâchait autant que possible d'éviter tout trait d'union entre sa famille et ce genre de relations » ; le valet « parut embarrassé », l'entrée n'étant obtenue que sur l'insistance de la femme : « Oh, si ! Laisse-le entrer ; rien qu'une minute, cela m'amuserait tant... ce gosse ».",
+      "explanation": "The boy engineers the visit precisely to be introduced to one of the uncle's actresses, and the uncle withholds exactly that: he is let in only as an amusement granted by the woman, produced as an anonymous « Mon neveu », and left blushing and unable to speak. Crossing the threshold is not the sought inclusion — the narrator himself states that the uncle was refusing any link between his family and such relations."
     }
   ],
   "status_effects": [
@@ -30,13 +96,43 @@
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.6,
-      "explanation": "His local standing is mildly diminished by the need to hide these relations from his family and by the awkwardness surrounding the narrator's visit."
+      "confidence": 0.85,
+      "explanation": "Within the family his standing is lowered: his visitors make him only conditionally visitable, his gifts of family jewels to dubious countesses have estranged him from the grandfather, and the father treats his name as a standing joke about kept women."
+    },
+    {
+      "character": "oncle Adolphe",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.72,
+      "explanation": "The same disrepute raises him in the narrator's eyes: he is the man on intimate terms with the actresses at whose door important men wait for years in vain, a power the boy credits to him without irony."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "emotional_position",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.82,
+      "explanation": "He obtains entry but not the introduction he came for: admitted as a curiosity over his uncle's grumbling, kept nameless, uncertain whether to say madame or mademoiselle, blushing and afraid to look at her."
+    },
+    {
+      "character": "Odette",
+      "dimension": "rhetorical_position",
+      "delta": 1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.7,
+      "explanation": "Her voice overrides the household's refusal — the valet's excuses and the uncle's anger yield to « Oh, si ! Laisse-le entrer », and the boy is brought in on her terms, as her amusement."
     }
   ],
   "ambiguities": [
-    "The portrayal of oncle Adolphe is mixed rather than purely negative: the narrator also presents his generosity and lack of prejudice sympathetically ('pour mon oncle, au contraire...'), so the diminishment reading is not unequivocal and narrator endorsement is uncertain.",
-    "The unnamed 'jeune femme en robe de soie rose' is not named within this passage (the uncle deliberately withholds her name), and although the reference sheet lists 'la dame en rose' as an alias of Odette, that identity is not confirmed by this passage or its supplied prior context, so she is left out of characters_present rather than resolved to Odette."
+    "The young woman in pink silk is never named in this passage; she is identified here as Odette on the strength of the reference sheet's « la dame en rose » form, but the text itself supports only an unnamed actress or cocotte of the uncle's, so her canonical resolution is inferred rather than stated.",
+    "The uncle's movement is genuinely double-signed: the family's disparagement and the boy's admiration are voiced in the same breath, so E1 is read as ironized and mixed rather than as a plain discredit; a stricter reading that takes the family's verdict at face value would make it simply negative."
   ],
   "unit_id": "v1-p1-combray#p-116-p-120"
 }

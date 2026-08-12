@@ -5,10 +5,22 @@
       "surface_forms": [
         "Mme de Guermantes",
         "la duchesse de Guermantes",
-        "Oriane"
+        "Oriane",
+        "sa cousine",
+        "ma cousine"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.98
+      "presence_confidence": 0.99
+    },
+    {
+      "canonical_name": "le narrateur",
+      "surface_forms": [
+        "je",
+        "moi",
+        "ma vue"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
     },
     {
       "canonical_name": "Robert de Saint-Loup",
@@ -22,62 +34,98 @@
     {
       "canonical_name": "cousine Poictiers",
       "surface_forms": [
-        "ma cousine Poictiers",
-        "cousine Poictiers"
+        "ma cousine Poictiers"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.85
+      "presence_confidence": 0.9
+    },
+    {
+      "canonical_name": "duc de Poictiers",
+      "surface_forms": [
+        "le duc de Poictiers",
+        "mon cousin"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.8
+    },
+    {
+      "canonical_name": "Françoise",
+      "surface_forms": [
+        "Françoise"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.95
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
+      "source": "le narrateur",
+      "target": "duchesse de Guermantes",
+      "type": "narrated_elevation",
+      "polarity": "positive",
+      "narrative_stance": "endorsed",
+      "confidence": 0.93,
+      "evidence": "« la plus grande artiste actuelle dans l'art d'accomplir ces mouvements et d'en faire quelque chose de délicieux » ; son salut est « comme si elle eût exécuté pour moi, en y ajoutant une dédicace, un lavis qui était un chef-d'œuvre » ; en robe de velours rouge « elle me faisait penser à quelque sainte des premiers âges chrétiens », et elle se montre dans la rue « avec la splendide gratuité des grands chefs-d'œuvre ».",
+      "explanation": "The narrator's street-watching transfigures Mme de Guermantes into a supreme artist, a masterpiece, and a saint or martyr, and the narration sustains that elevation rather than deflating it. Her own unawareness of this «réputation éparse» only reinforces the gratuitous superiority the passage attributes to her."
+    },
+    {
+      "event_id": "E2",
       "source": "Robert de Saint-Loup",
       "target": "duchesse de Guermantes",
       "type": "blame",
       "polarity": "negative",
       "narrative_stance": "ironized",
-      "confidence": 0.72,
-      "evidence": "« Elle n’est pas gentille du tout, Oriane... ce n’est plus mon Oriane d’autrefois, on me l’a changée... elle ne vaut pas la peine que tu t’occupes d’elle », and later « Dans le fond Oriane ne l’aime pas parce qu’elle la sent plus intelligente ».",
-      "explanation": "Saint-Loup directly criticizes Oriane's character and dismisses her as unworthy of the narrator's attention, even suggesting she is petty toward a rival; the narrator's aside that Robert is « se trahissant naïvement » signals that this judgment reveals more about Robert's own soured feelings than an objective assessment of Oriane."
-    },
-    {
-      "event_id": "E2",
-      "source": "Robert de Saint-Loup",
-      "target": "cousine Poictiers",
-      "type": "praise",
-      "polarity": "positive",
-      "narrative_stance": "ironized",
-      "confidence": 0.68,
-      "evidence": "« Voilà une jeune femme intelligente et qui te plairait... C'est quelqu'un de gentil, tu sais, c'est quelqu'un de bien »; she is also credited with kindness to former governesses and some Dreyfusard sympathy.",
-      "explanation": "Saint-Loup praises the cousine de Poictiers's intelligence, beauty, and moral delicacy, explicitly favoring her over Oriane; the narrator's note that these are newly and ardently adopted fashionable phrases of Robert's casts mild ironic distance on the depth of the endorsement."
+      "confidence": 0.9,
+      "evidence": "« Elle n'est pas gentille du tout, Oriane, me dit-il, en se trahissant naïvement, ce n'est plus mon Oriane d'autrefois, on me l'a changée. […] elle ne vaut pas la peine que tu t'occupes d'elle. Tu lui fais beaucoup trop d'honneur. » ; il lui oppose sa cousine Poictiers, « autrement jolie qu'Oriane et plus jeune », « quelqu'un de très bien », et conclut : « Dans le fond Oriane ne l'aime pas parce qu'elle la sent plus intelligente. »",
+      "explanation": "Saint-Loup openly downgrades the duchesse and offers a substitute cousin ranked above her in looks, youth, and intelligence, thereby disparaging Oriane within her own family circle. The narrator marks the speech as self-betraying («en se trahissant naïvement») and its moralizing vocabulary as newly borrowed, so the blame is reported with irony that also falls back on the speaker."
     }
   ],
   "status_effects": [
     {
       "character": "duchesse de Guermantes",
       "dimension": "general_appraisal",
-      "delta": -1,
+      "delta": 2,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.68,
-      "explanation": "Saint-Loup's blame, including the insinuation that Oriane is jealous of a more intelligent rival, locally lowers her, though the narrator's framing of his naive self-betrayal tempers how reliable this diminishment is."
+      "confidence": 0.92,
+      "explanation": "The long street sequence raises her to the level of a living masterpiece and a mysterious, quasi-sacred figure, the passage's most sustained evaluative movement."
     },
     {
-      "character": "cousine Poictiers",
-      "dimension": "general_appraisal",
-      "delta": 1,
+      "character": "duchesse de Guermantes",
+      "dimension": "social_status",
+      "delta": -1,
       "based_on_events": [
         "E2"
       ],
-      "confidence": 0.62,
-      "explanation": "She is elevated by Saint-Loup's explicit, itemized praise and by being favorably compared to Oriane, though the narrator's noted fashionableness of Robert's vocabulary slightly qualifies the sincerity of that praise."
+      "confidence": 0.8,
+      "explanation": "Within the Guermantes circle her standing slips: her own cousin declares her unkind, no longer worth attention, and inferior to a younger, more intelligent relative."
+    },
+    {
+      "character": "le narrateur",
+      "dimension": "emotional_position",
+      "delta": -1,
+      "based_on_events": [
+        "E1",
+        "E2"
+      ],
+      "confidence": 0.82,
+      "explanation": "He remains in adoring dependence, ashamed even of being seen («j'avais honte d'affliger par ma vue cette martyre»), and Saint-Loup's visit brings no access to her, only the admission that he was never mentioned and the offer of a consolation acquaintance."
+    },
+    {
+      "character": "Robert de Saint-Loup",
+      "dimension": "general_appraisal",
+      "delta": -1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.75,
+      "explanation": "The narration undercuts him twice over: he betrays himself naively while denouncing Oriane, and his certificates of moral distinction are flagged as freshly and therefore over-ardently adopted formulas."
     }
   ],
   "ambiguities": [
-    "The narrator flags that Saint-Loup is 'se trahissant naïvement' when blaming Oriane, suggesting the criticism may stem from a private grievance rather than a disinterested judgment; this materially affects whether Oriane's diminishment should be read as endorsed or merely reported.",
-    "The woman referred to as 'ma cousine Poictiers' does not match any entry on the reference sheet and is treated as a distinct, unresolved named character."
+    "Saint-Loup's «en se trahissant naïvement» leaves it underdetermined whether his disavowal («il n'avait pas eu l'occasion de parler de moi à sa cousine») conceals an actual rebuff by the duchesse; if it does, the passage also contains a real snub of the narrator by Mme de Guermantes rather than only Saint-Loup's compensatory disparagement of her."
   ],
   "unit_id": "v3-p1#p-306-p-310"
 }

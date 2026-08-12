@@ -3,7 +3,9 @@
     {
       "canonical_name": "Mme de Marsantes",
       "surface_forms": [
-        "Mme de Marsantes"
+        "Mme de Marsantes",
+        "en cette mère",
+        "sa belle-sœur"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
@@ -11,10 +13,24 @@
     {
       "canonical_name": "duchesse de Guermantes",
       "surface_forms": [
-        "Mme de Guermantes"
+        "Mme de Guermantes",
+        "Celle-ci",
+        "sa femme",
+        "sa belle-sœur"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.98
+      "presence_confidence": 0.96
+    },
+    {
+      "canonical_name": "Robert de Saint-Loup",
+      "surface_forms": [
+        "Robert",
+        "le Saint-Loup",
+        "celui-ci",
+        "son fils"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.99
     },
     {
       "canonical_name": "duc de Guermantes",
@@ -22,70 +38,79 @@
         "le duc",
         "son propre frère"
       ],
-      "presence_type": "implicit",
-      "presence_confidence": 0.8
-    },
-    {
-      "canonical_name": "Robert de Saint-Loup",
-      "surface_forms": [
-        "Saint-Loup",
-        "Robert",
-        "celui-ci",
-        "son fils"
-      ],
       "presence_type": "explicit",
-      "presence_confidence": 0.99
+      "presence_confidence": 0.82
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
-      "source": "Mme de Marsantes",
-      "target": "duc de Guermantes",
-      "type": "blame",
+      "source": "duchesse de Guermantes",
+      "target": "Mme de Marsantes",
+      "type": "snub",
       "polarity": "negative",
-      "narrative_stance": "neutral_report",
-      "confidence": 0.55,
-      "evidence": "Chaque fois que le duc avait délaissé trop ouvertement sa femme, Mme de Marsantes avait pris avec éclat contre son propre frère le parti de sa belle-sœur.",
-      "explanation": "The narrator recounts, as established habitual fact, that Mme de Marsantes repeatedly and conspicuously sided with her sister-in-law against her own brother whenever he too openly neglected his wife, casting mild retrospective blame on the duc's conduct."
+      "narrative_stance": "endorsed",
+      "confidence": 0.86,
+      "evidence": "« Il est si occupé, il a tant à faire, dit Mme de Marsantes. Un imperceptible sourire fit onduler les cils de Mme de Guermantes qui regarda le cercle qu'avec la pointe de son ombrelle elle traçait sur le tapis. » ; « elle n'était qu'à demi fâchée des fredaines de Robert » ; « Tiens, quand on parle du Saint-Loup… »",
+      "explanation": "The mother's excuse for Robert is met not with agreement but with an unvoiced ironic smile and a downward glance at the parasol's circle, and the narrator's gloss (the fredaines, the half-annoyance, the remembered debt that keeps the duchess from saying more) confirms that the pretext is disbelieved. Mme de Guermantes wins the exchange silently, capping it with the witty pun on quand on parle du loup, while Mme de Marsantes' word carries no weight and Robert's alleged busyness is exposed as dissipation."
     },
     {
       "event_id": "E2",
-      "source": "Mme de Marsantes",
-      "target": "Robert de Saint-Loup",
-      "type": "admiration",
+      "source": "narrator",
+      "target": "Mme de Marsantes",
+      "type": "narrated_elevation",
       "polarity": "positive",
       "narrative_stance": "endorsed",
-      "confidence": 0.9,
-      "evidence": "la joie battit véritablement comme un coup d'aile...elle attachait sur Robert des yeux émerveillés: — Comment, tu es venu ! quel bonheur ! quelle surprise !",
-      "explanation": "The narrator vividly depicts Mme de Marsantes' spontaneous, overwhelming joy and wonder at her son's unexpected arrival, making Robert the object of intense, narrator-endorsed maternal admiration."
+      "confidence": 0.82,
+      "evidence": "« en cette mère la joie battit véritablement comme un coup d'aile, le corps de Mme de Marsantes se souleva à demi, son visage palpita et elle attachait sur Robert des yeux émerveillés : — Comment, tu es venu ! quel bonheur ! quelle surprise ! »",
+      "explanation": "Against the salon's coded insincerity the narrator vouches for the authenticity of the mother's transport, the adverb véritablement and the wing-beat image marking the feeling as real rather than performed. The passage grants Mme de Marsantes a genuine emotional ascent at exactly the moment her social credit was being quietly deflated."
     }
   ],
   "status_effects": [
     {
-      "character": "duc de Guermantes",
+      "character": "Mme de Marsantes",
+      "dimension": "rhetorical_position",
+      "delta": -1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.85,
+      "explanation": "Her defense of her son is silently disbelieved; she is left holding an excuse that the room, and the narration, do not credit."
+    },
+    {
+      "character": "Mme de Marsantes",
+      "dimension": "emotional_position",
+      "delta": 1,
+      "based_on_events": [
+        "E2"
+      ],
+      "confidence": 0.8,
+      "explanation": "The narrator endorses her joy as genuine, giving her the one unfeigned movement in the scene, though her surprise at her son's coming also marks how little she sees him."
+    },
+    {
+      "character": "duchesse de Guermantes",
+      "dimension": "rhetorical_position",
+      "delta": 1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.84,
+      "explanation": "She controls the register without conceding anything, deflating the excuse with a flicker of the eyelashes and then landing the mot on Saint-Loup's entrance."
+    },
+    {
+      "character": "Robert de Saint-Loup",
       "dimension": "general_appraisal",
       "delta": -1,
       "based_on_events": [
         "E1"
       ],
-      "confidence": 0.5,
-      "explanation": "The recounted history of his open neglect of his wife, opposed even by his own sister, casts the duc in a mildly critical light within this family context."
-    },
-    {
-      "character": "Robert de Saint-Loup",
-      "dimension": "emotional_position",
-      "delta": 2,
-      "based_on_events": [
-        "E2"
-      ],
-      "confidence": 0.85,
-      "explanation": "Robert is the object of his mother's unrestrained joy and marveling welcome upon his arrival, a clear positive shift in his emotional reception in the scene."
+      "confidence": 0.76,
+      "explanation": "The cover story of being too busy is punctured; the narrator names his fredaines and his neglect of the duchess, so he arrives already lightly discredited."
     }
   ],
   "ambiguities": [
-    "Mme de Guermantes' 'imperceptible smile' while tracing a circle on the carpet with her parasol is not explained by the narrator; it may register skepticism about Mme de Marsantes' excuse for Robert's absence or amusement at the family dynamic, but its precise target and meaning are left uncertain.",
-    "Mme de Guermantes' feeling toward Mme de Marsantes' past protection is described as both grateful and resentful ('reconnaissant et rancunier'), so no single-direction status effect is assigned to the duchesse for that backstory."
+    "Mme de Guermantes' imperceptible smile has two possible targets: the pretext offered by Mme de Marsantes, or Robert's conduct behind it. The reading taken here is that it deflates the pretext and thereby touches both, since the narrator's immediate gloss about the fredaines supplies the smile's content while the exchange itself is between the two women.",
+    "Mme de Marsantes' effusive maternal transport can be read as narrator-endorsed authenticity or as one more piece of salon display. The adverb véritablement and the wing-beat image are taken here as narratorial vouching, but the theatrical exclamations keep a faintly ironic reading available."
   ],
   "unit_id": "v3-p1#p-696-p-700"
 }

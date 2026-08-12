@@ -3,7 +3,8 @@
     {
       "canonical_name": "Françoise",
       "surface_forms": [
-        "Françoise"
+        "Françoise",
+        "elle"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.99
@@ -12,7 +13,16 @@
       "canonical_name": "duchesse de Guermantes",
       "surface_forms": [
         "la duchesse",
-        "la Duchesse"
+        "la Duchesse",
+        "madame la mairesse"
+      ],
+      "presence_type": "explicit",
+      "presence_confidence": 0.92
+    },
+    {
+      "canonical_name": "Mme de Sévigné",
+      "surface_forms": [
+        "Mme de Sévigné"
       ],
       "presence_type": "explicit",
       "presence_confidence": 0.95
@@ -21,61 +31,73 @@
       "canonical_name": "Antoine",
       "surface_forms": [
         "Antoine",
+        "cet Antoine",
         "leur maître d'hôtel"
       ],
       "presence_type": "explicit",
-      "presence_confidence": 0.95
+      "presence_confidence": 0.9
     }
   ],
   "appraisal_events": [
     {
       "event_id": "E1",
-      "source": "Françoise",
-      "target": "duchesse de Guermantes",
+      "source": "narrator",
+      "target": "Françoise",
       "type": "narrated_elevation",
       "polarity": "positive",
-      "narrative_stance": "neutral_report",
-      "confidence": 0.72,
-      "evidence": "« C'est une grande famille que les Guermantes! »... « c'est à la Duchesse qu'est le château de Guermantes. Et c'est elle dans le pays qu'est madame la mairesse. C'est quelque chose. »",
-      "explanation": "Françoise repeatedly stresses the family's grandeur, wealth, château, and quasi-official local eminence, even treating the title 'mairesse' as beneath their true standing; the narrator's comic aside about her muddled reasoning ironizes her logic without denying the underlying claim of grandeur."
+      "narrative_stance": "endorsed",
+      "confidence": 0.85,
+      "evidence": "« ajoutait Françoise qui disait : \"faire réponse\", comme Mme de Sévigné » ; puis, sur « Antoinesse » : « Elle ne parlait pas mal en cela. Il existe encore près de Notre-Dame une rue appelée rue Chanoinesse... par ces Français de jadis, dont Françoise était, en réalité, la contemporaine. »",
+      "explanation": "What the passage first presents as Françoise's linguistic error is explicitly recuperated by the narrator: her word-formation is validated by historical precedent and her idiom is aligned with Mme de Sévigné, so the narrator ends by granting her an authentic old-French authority (\"en réalité, la contemporaine\") rather than mocking her."
     },
     {
       "event_id": "E2",
       "source": "Françoise",
-      "target": "Antoine",
-      "type": "narrated_diminishment",
-      "polarity": "negative",
-      "narrative_stance": "ironized",
+      "target": "duchesse de Guermantes",
+      "type": "prestige_association",
+      "polarity": "positive",
+      "narrative_stance": "neutral_report",
       "confidence": 0.72,
-      "evidence": "« c'est un vrai seigneur, un grand pédant, on dirait qu'on lui a coupé la langue... Il ne vous fait même pas réponse quand on lui cause »... « On dit aussi qu'il est voleur comme une pie »... « c'est un vrai feignant que cet Antoine, et son «Antoinesse» ne vaut pas mieux que lui »",
-      "explanation": "Françoise portrays Antoine as haughty, silent toward her, idle, and reputedly dishonest, but the narrator flags her disclaiming remark as spoken 'sans sincérité,' framing her account as gossip rather than fully reliable judgment."
+      "evidence": "« C'est une grande famille que les Guermantes ! » ajoutait-elle avec respect ; puis « pour des gens comme \"euss\", être maire et mairesse c'est trois fois rien ».",
+      "explanation": "Françoise raises the duchesse by reverent genealogical accounting and then by ranking her so far above a municipal title that being mairesse counts as nothing; the footman's failure to catch the irony confirms that the scale, not the honor, is what elevates her."
     }
   ],
   "status_effects": [
+    {
+      "character": "Françoise",
+      "dimension": "general_appraisal",
+      "delta": 1,
+      "based_on_events": [
+        "E1"
+      ],
+      "confidence": 0.8,
+      "explanation": "Françoise comes out locally ahead because the narrator converts her apparent ignorance and faulty vocabulary into genuine survival of an older French, explicitly judging that she \"ne parlait pas mal en cela\"."
+    },
+    {
+      "character": "Françoise",
+      "dimension": "rhetorical_position",
+      "delta": 1,
+      "based_on_events": [
+        "E1",
+        "E2"
+      ],
+      "confidence": 0.74,
+      "explanation": "She holds the floor throughout, delivers the aristocratic scale of values with assurance, and her irony about being mairesse passes straight over the footman, who answers it earnestly."
+    },
     {
       "character": "duchesse de Guermantes",
       "dimension": "social_status",
       "delta": 1,
       "based_on_events": [
-        "E1"
-      ],
-      "confidence": 0.68,
-      "explanation": "Françoise's admiring account of the family's château and local eminence locally elevates the duchesse's standing, though the comic frame around Françoise's reasoning tempers full narrator endorsement."
-    },
-    {
-      "character": "Antoine",
-      "dimension": "general_appraisal",
-      "delta": -2,
-      "based_on_events": [
         "E2"
       ],
-      "confidence": 0.72,
-      "explanation": "Antoine is depicted as proud, idle, dismissive of Françoise, and rumored dishonest, clearly lowering his local standing, tempered slightly by the narrator's note undercutting Françoise's sincerity."
+      "confidence": 0.7,
+      "explanation": "Her standing is locally raised by Françoise's reverence for the Guermantes name and by the claim that ordinary civic distinction is beneath such people."
     }
   ],
   "ambiguities": [
-    "The narrator's comic comparison of Françoise's reasoning to Pascal ironizes her method of arguing for the Guermantes' grandeur without directly denying the substance of the claim, so the elevation is read as reported rather than fully narrator-endorsed.",
-    "The narrator's remark that Françoise speaks 'sans sincérité' undercuts the reliability of her blame of Antoine, though the specific charges of idleness and haughty silence are not themselves contradicted."
+    "The narrator's stance toward Françoise is genuinely double: the mock-Pascal analogy, the Alger/Angers error, the verdict that her vocabulary's \"défaut\" projects obscurity into her thought, and the parenthetical \"sans sincérité\" all diminish her, while the rue Chanoinesse vindication and the Sévigné comparison elevate her. The reading taken here is that the elevation dominates because it is the narrator's explicit corrective judgment and comes last, but a mixed or mildly negative reading of the same material is defensible.",
+    "Françoise's admiration for the Guermantes is reported through a voice the narrator has just shown to be confused about the grounds of \"grandeur\", so it is unclear whether the passage endorses the duchesse's elevation or only records a servant's reverence; the footman's failure to hear the irony is what tips this toward a straight report rather than an ironized one."
   ],
   "unit_id": "v3-p1#p-16-p-20"
 }

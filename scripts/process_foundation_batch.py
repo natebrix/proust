@@ -169,10 +169,23 @@ sign_flips = [
     for key, labels in label_map.items()
     if "win" in labels.values() and "loss" in labels.values()
 ]
+# Zero tolerance by default, with documented exceptions: a flip can be a
+# legitimate cross-lens divergence (prestige-without-belonging inside one
+# unit). Reviewed cases live in the run's adjudicated_flips.json with a
+# rationale; anything not on that list trips the gate.
+adjudicated_path = run_dir / "adjudicated_flips.json"
+adjudicated = set()
+if adjudicated_path.exists():
+    for row in json.loads(adjudicated_path.read_text()).get("adjudicated", []):
+        adjudicated.add((row["unit_id"], row["character"]))
 report["sign_flips"] = sign_flips
-if sign_flips:
+unadjudicated = [
+    flip for flip in sign_flips if (flip["unit_id"], flip["character"]) not in adjudicated
+]
+report["unadjudicated_sign_flips"] = unadjudicated
+if unadjudicated:
     report["status"] = "gate_tripped"
-    report["reasons"].append(f"{len(sign_flips)} cross-lens sign flips")
+    report["reasons"].append(f"{len(unadjudicated)} unadjudicated cross-lens sign flips")
 
 # Mixed-entry rate is ADVISORY on the open-world surface: the per-unit
 # ambiguity penalty fans out across doubled rosters, mechanically pushing
