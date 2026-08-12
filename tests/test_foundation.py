@@ -429,3 +429,32 @@ def test_batch_gate_trips_on_the_narrator_guard(tmp_path):
     assert report["status"] == "gate_tripped"
     assert len(report["narrator_v1p2_units"]) == 4
     assert any("narrator scored" in reason for reason in report["reasons"])
+
+
+def test_reconcile_foundation_names_unifies_registry_variants():
+    from proust.foundation import reconcile_foundation_names
+
+    annotation = {
+        "unit_id": "v2-p2-noms-de-pays-le-pays#p-61-p-65",
+        "characters_present": [
+            {"canonical_name": "marquis de Cambremer", "surface_forms": ["M. de Cambremer"],
+             "presence_type": "explicit", "presence_confidence": 0.9},
+            {"canonical_name": "Mme de Villeparisis", "surface_forms": ["Mme de Villeparisis"],
+             "presence_type": "explicit", "presence_confidence": 0.9},
+        ],
+        "appraisal_events": [
+            {"event_id": "E1", "source": "M. de Cambremer", "target": "Mme de Villeparisis",
+             "type": "admiration", "polarity": "positive", "narrative_stance": "neutral_report",
+             "confidence": 0.8, "evidence": "x", "explanation": "x"},
+        ],
+        "status_effects": [],
+        "ambiguities": [],
+    }
+
+    result = reconcile_foundation_names(annotation, chapter_id="v2-p2-noms-de-pays-le-pays")
+
+    assert result["appraisal_events"][0]["source"] == "marquis de Cambremer"
+    # unresolved open-world names pass through untouched
+    annotation["appraisal_events"][0]["source"] = "la dame inconnue de Trouville"
+    result = reconcile_foundation_names(annotation, chapter_id="v2-p2-noms-de-pays-le-pays")
+    assert result["appraisal_events"][0]["source"] == "la dame inconnue de Trouville"

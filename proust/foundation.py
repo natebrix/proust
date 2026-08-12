@@ -449,6 +449,64 @@ def resolution_summary(annotation, unit_id=None):
     }
 
 
+_RECONCILE_REGISTRY = None
+
+
+def _registry():
+    global _RECONCILE_REGISTRY
+    if _RECONCILE_REGISTRY is None:
+        _RECONCILE_REGISTRY = Registry.load()
+    return _RECONCILE_REGISTRY
+
+
+def reconcile_foundation_names(annotation, chapter_id=None):
+    """Unify character-name variants through the registry at ingest.
+
+    Annotators legitimately write surface variants ("M. de Cambremer") for a
+    character they list canonically elsewhere ("marquis de Cambremer"): the
+    registry resolves both to one entity, so all names in the annotation are
+    rewritten to that entity's canonical annotation name. Names the registry
+    cannot resolve (open-world discoveries) or resolves ambiguously are left
+    untouched; a registry-resolved name also corrects the entry's
+    "resolution" flag to "resolved".
+    """
+    if not isinstance(annotation, dict):
+        return annotation
+    registry = _registry()
+
+    def unify(name):
+        if not isinstance(name, str) or name in ("narrator", "collective_social_voice", "unknown"):
+            return name
+        resolution = registry.resolve(name, chapter_id=chapter_id)
+        if resolution.status != "resolved":
+            return name
+        entity = registry.entities[resolution.entity_id]
+        return (entity.annotation_names[0] if entity.annotation_names else entity.display_name)
+
+    result = json.loads(json.dumps(annotation))
+    for row in result.get("characters_present") or []:
+        if isinstance(row, dict) and isinstance(row.get("canonical_name"), str):
+            unified = unify(row["canonical_name"])
+            if unified != row["canonical_name"]:
+                row["canonical_name"] = unified
+            # correct the flag only when it holds a legal value or is absent;
+            # a malformed value must survive for the validator to reject
+            if row.get("resolution") in (None, "resolved", "unresolved") and (
+                registry.resolve(row["canonical_name"], chapter_id=chapter_id).status == "resolved"
+            ):
+                row["resolution"] = "resolved"
+    for event in result.get("appraisal_events") or []:
+        if isinstance(event, dict):
+            if isinstance(event.get("source"), str):
+                event["source"] = unify(event["source"])
+            if isinstance(event.get("target"), str):
+                event["target"] = unify(event["target"])
+    for effect in result.get("status_effects") or []:
+        if isinstance(effect, dict) and isinstance(effect.get("character"), str):
+            effect["character"] = unify(effect["character"])
+    return result
+
+
 def write_foundation_result(run_dir, unit_id, annotation):
     """Validate and write one foundation annotation.
 
@@ -460,6 +518,8 @@ def write_foundation_result(run_dir, unit_id, annotation):
     if isinstance(annotation, dict) and not annotation.get("unit_id"):
         annotation = dict(annotation, unit_id=unit_id)
 
+    chapter_id = unit_id.split("#", 1)[0] if isinstance(unit_id, str) else None
+    annotation = reconcile_foundation_names(annotation, chapter_id=chapter_id)
     errors = validate_foundation_result(annotation, expected_unit_id=unit_id)
     if errors:
         raise ValueError(f'Invalid foundation annotation for unit "{unit_id}": {"; ".join(errors)}')
