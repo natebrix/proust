@@ -4,7 +4,7 @@
 - Scoring version: `scoring_v2`
 - Source corpus summary: `scoring_v2_corpus_summary_v1`
 - View: `name`
-- Character count: `21`
+- Character count: `23`
 - Corpus: `foundation`
 
 ## Profile shape
@@ -710,6 +710,51 @@ Notable units:
 - Norpois is locally diminished as the narrator exposes his loss of former reserve, naive political self-importance, and senile garrulousness.: `/projects/islt/fr-original/v6-p3#p-11`
 - The narrator's explicit, endorsed judgment that Norpois's praise rests on 'no true taste' clearly diminishes him locally, exposing his pronouncement as empty flattery rather than genuine artistic discernment.: `/projects/islt/fr-original/v3-p1#p-771`
 
+## Rachel
+
+- Slug: `rachel`
+- Portrait default: `none`
+- Annotation units: `43`
+- Archetype signs: `advantage -1, prestige +1, inclusion -1`
+- Pattern: `standing_rises_belonging_thin`
+
+From bit-player to the duchesse's intimate: her scenes hold mid-table, her standing climbs steeply where staged, and her belonging, where the novel weighs it, points down.
+
+Rachel is staged across the whole arc of the novel — Saint-Loup's mistress, working actress, and at the end the celebrated artist whose reading empties la Berma's salon. Her scene-level advantage holds mid-table (16th of 35). Her standing is staged too rarely to rank, but where the novel weighs it the direction is unmistakably upward — few figures rise as steeply late. Belonging is her missing register: where it is staged at all it leans away, the woman received everywhere as an artist and nowhere as her own person.
+
+Why interesting:
+
+- Her late triumph over la Berma at the bal de têtes is one of the sharpest single reversals the novel stages — celebrated in the same room that once priced her.
+- Standing rises, belonging falls, scenes break even: three registers, three different verdicts on one life.
+- For most of the book she was structurally invisible to measurement at all; the open reading of the full cast is what put her on the board.
+
+| Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| advantage | 1498 ± 148 | 1349.2 | 16 of 35 | 43 | -0.318 | 0.6765 | 9/17/0/17 |
+| prestige | 1762 ± 233 | 1528.5 | insufficient evidence | 43 | +0.067 | 0.1781 | 3/3/0/37 |
+| inclusion | 1169 ± 332 | 837.4 | insufficient evidence | 43 | -0.061 | 0.0607 | 0/2/0/41 |
+
+Top chapters (by absolute movement):
+
+| Chapter | Units | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- | --- |
+| v3-p1 | 23 | -0.382 | -0.067 | -0.114 |
+| v7-p4-le-bal-de-tetes | 6 | -0.293 | +0.877 | 0.0 |
+| v2-p2-noms-de-pays-le-pays | 2 | -1.2 | 0.0 | 0.0 |
+| v3-p2 | 5 | -0.232 | -0.17 | 0.0 |
+| v6-p2 | 1 | +0.432 | 0.0 | 0.0 |
+
+Reading path:
+
+- "Rachel quand du Seigneur": the theatre world's pricing: `/projects/islt/fr-original/v3-p1`
+- The bal de têtes: her reading, la Berma's empty salon: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes`
+
+Notable units:
+
+- Her local standing collapses: the prestige she held as a luminous stage figure is explicitly destroyed at close range and equated with cheap scenery.: `/projects/islt/fr-original/v3-p1#p-376`
+- Rachel is clearly lowered as the organizer of a cruel, premeditated hazing that the narrator finds too painful to speak of and whose perpetrators he calls executioners.: `/projects/islt/fr-original/v3-p1#p-371`
+- Rachel moves from remembered kept woman and bit-player to celebrated actress, friend of the duchesse, and de facto hostess of the most desired gathering in Paris.: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes#p-66`
+
 ## docteur Cottard
 
 - Slug: `docteur-cottard`
@@ -847,6 +892,52 @@ Notable units:
 - Bergotte's contradiction is presented as strengthening his interlocutor, making the final judgment a joint work; this is the passage's model of real intellectual force.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-216`
 - Bergotte is locally elevated to the status of an all-but-worshipped authority through the narrator's escalating admiration.: `/projects/islt/fr-original/v1-p1-combray#p-186`
 - Bergotte's oddities of speech and origin, initially read as affectation or vulgarity, are revealed by the narrator as the living root of his literary genius.: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann#p-201`
+
+## Morel
+
+- Slug: `morel`
+- Portrait default: `none`
+- Annotation units: `32`
+- Archetype signs: `advantage -1, prestige +1, inclusion -1`
+- Pattern: `prestige_first_scene_negative`
+
+First in standing, second to last in the scene: the violinist commands the field the novel measures and loses nearly every room in it.
+
+Morel holds the highest standing of the eight characters the novel stages often enough to rank there — his talent, and the protections it buys, place him above dukes. Scene by scene the story reverses: he ranks 34th of 35 in scene-level advantage, with real intensity behind the losses — the flattery, the rages, the exposures. His belonging is staged too rarely to rank, and what little there is leans away. He is the book's cleanest case of prestige without ground under it: the reputation ascends while the man, room by room, comes apart.
+
+Why interesting:
+
+- The widest standing-versus-scene split in the measured cast: first of 8 in prestige, 34th of 35 in scene-level advantage.
+- His prestige moves through protectors — Charlus above all — which makes his standing real and his position precarious at once.
+- Where the novel stages his belonging at all, it leans negative: the salons prize the violinist and hold the man at the door.
+
+| Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| advantage | 1304 ± 121 | 1183.0 | 34 of 35 | 32 | -0.536 | 0.7081 | 3/16/0/13 |
+| prestige | 1817 ± 195 | 1622.2 | 1 of 8 | 32 | +0.077 | 0.1281 | 3/1/0/28 |
+| inclusion | 1475 ± 328 | 1147.1 | insufficient evidence | 32 | -0.024 | 0.0244 | 0/1/0/31 |
+
+Top chapters (by absolute movement):
+
+| Chapter | Units | Advantage | Prestige | Inclusion |
+| --- | --- | --- | --- | --- |
+| v5 | 13 | -0.845 | +0.055 | -0.06 |
+| v4-p2 | 10 | -0.495 | 0.0 | 0.0 |
+| v7-p2-m-de-charlus-pendant-la-guerre | 4 | +0.142 | +0.18 | 0.0 |
+| v7-p4-le-bal-de-tetes | 1 | -0.88 | +1.84 | 0.0 |
+| v3-p1 | 1 | -0.92 | -0.82 | 0.0 |
+
+Reading path:
+
+- The Verdurin salon: talent under patronage: `/projects/islt/fr-original/v4-p2`
+- The rupture with Charlus: `/projects/islt/fr-original/v5`
+- Wartime: the protégé outlives the protector: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre`
+
+Notable units:
+
+- Morel is locally lowered by the narrator's blunt exposure of his stupidity and inability to recognize his fiancée's superior intelligence.: `/projects/islt/fr-original/v5#p-81`
+- Morel is locally reduced to a case study in baseness, ingratitude and self-serving rationalization.: `/projects/islt/fr-original/v5#p-86`
+- Morel is portrayed as a scheming, mercenary, hypocritical figure willing to destroy an innocent man for convenience, with the narrator's explicit condemnation dominating the passage.: `/projects/islt/fr-original/v4-p2#p-376`
 
 ## Legrandin
 

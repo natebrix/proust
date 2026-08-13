@@ -5,10 +5,41 @@ CHARACTER_PORTRAIT_SLUGS = {
     "Swann": "swann",
     "baron de Charlus": "charlus",
     "le narrateur": "le-narrateur",
+    "Morel": "morel",
+    "Rachel": "rachel",
 }
 
 
 CHARACTER_PAGE_PILOT_EDITORIAL = {
+    "Morel": {
+        "subheading": "First in standing, second to last in the scene: the violinist commands the field the novel measures and loses nearly every room in it.",
+        "summary": "Morel holds the highest standing of the eight characters the novel stages often enough to rank there — his talent, and the protections it buys, place him above dukes. Scene by scene the story reverses: he ranks 34th of 35 in scene-level advantage, with real intensity behind the losses — the flattery, the rages, the exposures. His belonging is staged too rarely to rank, and what little there is leans away. He is the book's cleanest case of prestige without ground under it: the reputation ascends while the man, room by room, comes apart.",
+        "why_interesting": [
+            "The widest standing-versus-scene split in the measured cast: first of 8 in prestige, 34th of 35 in scene-level advantage.",
+            "His prestige moves through protectors — Charlus above all — which makes his standing real and his position precarious at once.",
+            "Where the novel stages his belonging at all, it leans negative: the salons prize the violinist and hold the man at the door.",
+        ],
+        "primary_pattern": "prestige_first_scene_negative",
+        "reading_path": [
+            {"chapter_id": "v4-p2", "label": "The Verdurin salon: talent under patronage"},
+            {"chapter_id": "v5", "label": "The rupture with Charlus"},
+            {"chapter_id": "v7-p2-m-de-charlus-pendant-la-guerre", "label": "Wartime: the protégé outlives the protector"},
+        ],
+    },
+    "Rachel": {
+        "subheading": "From bit-player to the duchesse's intimate: her scenes hold mid-table, her standing climbs steeply where staged, and her belonging, where the novel weighs it, points down.",
+        "summary": "Rachel is staged across the whole arc of the novel — Saint-Loup's mistress, working actress, and at the end the celebrated artist whose reading empties la Berma's salon. Her scene-level advantage holds mid-table (16th of 35). Her standing is staged too rarely to rank, but where the novel weighs it the direction is unmistakably upward — few figures rise as steeply late. Belonging is her missing register: where it is staged at all it leans away, the woman received everywhere as an artist and nowhere as her own person.",
+        "why_interesting": [
+            "Her late triumph over la Berma at the bal de têtes is one of the sharpest single reversals the novel stages — celebrated in the same room that once priced her.",
+            "Standing rises, belonging falls, scenes break even: three registers, three different verdicts on one life.",
+            "For most of the book she was structurally invisible to measurement at all; the open reading of the full cast is what put her on the board.",
+        ],
+        "primary_pattern": "standing_rises_belonging_thin",
+        "reading_path": [
+            {"chapter_id": "v3-p1", "label": "\"Rachel quand du Seigneur\": the theatre world's pricing"},
+            {"chapter_id": "v7-p4-le-bal-de-tetes", "label": "The bal de têtes: her reading, la Berma's empty salon"},
+        ],
+    },
     "le narrateur": {
         "subheading": "He loses the scene and keeps the room: near the bottom in scene-level advantage, yet first in belonging and near the top in standing among the figures the novel lets us measure.",
         "summary": "The narrator is the novel's \"I\": nearly every scene passes through him, and scene by scene the scenes go badly — snubs registered, composure lost, comparisons endured. Yet across the whole book his welcome never runs out: he ranks first in belonging and near the top in visible standing among the characters the text weighs often enough to judge. The rooms keep receiving the man the scenes keep wounding, and that split — lived defeat inside durable acceptance — is the book's central irony made measurable.",

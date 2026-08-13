@@ -7,14 +7,16 @@
 - Modes: `smoothed, filtered`
 - Time axis: `cumulative_unit_index`
 - w2: `60.0` Elo² per unit of narrative time
-- Tracked character count: `21`
-- Point count: `1506`
+- Tracked character count: `23`
+- Point count: `1574`
 - Corpus: `foundation`
 
 Each point is one trajectory node joined to the corpus position of the unit it was fitted at: chapter, unit index, paragraph range, and the cumulative paragraph and word offsets an app needs to place it on a reading axis. The point also carries the v2 reading of that same unit (`movement`, `label`), so a chart can show what the character did in the passage that moved the rating. The full series lives in the JSON artifact; the table below is coverage only.
 
 | Character | Nodes | Smoothed Points | Filtered Points | Final Rating | Ranked |
 | --- | --- | --- | --- | --- | --- |
+| Morel | 17 | 17 | 17 | 1817.3 ± 195.1 | yes |
+| Rachel | 17 | 17 | 17 | 1761.5 ± 233.0 | no |
 | le narrateur | 87 | 87 | 87 | 1702.0 ± 170.7 | yes |
 | Odette | 45 | 45 | 45 | 1688.7 ± 203.2 | no |
 | Robert de Saint-Loup | 63 | 63 | 63 | 1588.6 ± 183.7 | yes |
