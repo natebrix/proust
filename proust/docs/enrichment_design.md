@@ -135,11 +135,22 @@ elicitation changes. Nathan gates adoption on the A/B report.
   bedroom door, clan, club, theatre box all qualify. Motivated by the A/B's
   one wrong drop (the goodnight-kiss dining-room exclusion) and by the
   corpus: ~21% of all foundation inclusion evidence is family/domestic.
-* 2026-08-14 — Under investigation before full-pass adoption: (a) whether
-  further boundary types need naming (corpus census in the 2026-08-14
-  session report); (b) whether staged parity — a lens visibly at stake with
-  an even outcome — should be recorded as a delta-0 effect and scored as a
-  draw. Mechanically supported already (tie band + WHR draw model); the
-  risk is the vacuous-draw disease the 2026-08-12 amendment cured, so any
-  adoption requires a probe showing annotators hold the staged-versus-
-  co-present line.
+* 2026-08-14 — **Boundary illustration adopted** (Nathan): the criterion now
+  names the range of qualifying interiors — family table, household, clan,
+  club, theatre box, the circle of a conversation, the intimacy of
+  tutoiement, an institution, a nation, a clandestine fraternity — as
+  illustration, not as a closed list. Grounded in the corpus census (173
+  inclusion effects classified) and the novel's own boundary systems the
+  corpus under-captures (Dreyfus-era salon realignments, the Sodome I
+  recognition network).
+* 2026-08-14 — **Staged parity is a CANDIDATE rule** (Nathan), not adopted:
+  a delta-0 status effect records a lens staged between characters with a
+  witnessed even outcome, scored as a draw. The bright line: uncertainty is
+  not parity — *null is not the same as zero* — and co-presence is not
+  parity. Mechanically already supported (tie band + WHR draw model,
+  verified). Because the vacuous-draw disease of 2026-08-12 is the failure
+  mode, adoption is gated on `parity-probe-001` (prompt
+  `prompt_v2_2_candidate.md`): 8 temptation units (many characters present,
+  little baseline movement), 8 social-dense, 8 controls. Pass requires
+  every delta-0 to cite a staged comparison and zero delta-0s born of mere
+  co-presence.

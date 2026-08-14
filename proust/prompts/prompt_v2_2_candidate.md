@@ -290,9 +290,28 @@ Status delta:
 
 * -2 = clearly diminished in this passage
 * -1 = somewhat diminished
-* 0 = neutral, mixed, or no clear movement
+* 0 = staged parity only (see below) — never "unclear" or "mixed"
 * +1 = somewhat elevated
 * +2 = clearly elevated
+
+**Staged parity (`delta: 0`).** Use a zero delta only when the passage
+*stages* this dimension between characters and shows the outcome to be
+even: a witnessed comparison that ends level — equal honors, matched
+precedence, the same form of greeting pointedly given to both, a contest
+the scene itself presents as a stand-off. The dimension's own criterion
+must still be fully met (a witnessed standing display for `social_status`,
+a shown boundary for `inclusion_exclusion`), and the effect must cite the
+event that stages the comparison.
+
+Two rules with no exceptions:
+
+* **Uncertainty is not parity.** If you cannot tell who came out ahead,
+  record nothing at all — null is not zero. A zero delta is a positive
+  claim that the text shows evenness, and it needs evidence exactly as
+  strong as a +2.
+* **Co-presence is not parity.** Two characters attending the same
+  gathering, dinner, or conversation share no staged comparison. Most
+  passages stage no parity; expect zero deltas to be rare.
 
 ### `ambiguities`
 
@@ -398,6 +417,20 @@ event:
 But if the same passage later shows the assembled room deferring to a newly
 arrived title, that is a separate witnessed movement, for a different
 character, grounded in its own event — record it on its own merits.
+
+Example E:
+
+If a passage stages the claims of two guests against each other and the
+scene resolves them as exactly matched — seated with equal honor, greeted
+with the same studied form, their precedence negotiated to a visible
+stand-off — record:
+
+* `1` event for the staged comparison
+* `social_status 0` for **both** characters, citing that event
+
+But if a passage merely shows the two attending the same soirée, with no
+witnessed comparison between them, record nothing for either: co-presence
+stages no parity, and inability to rank them is null, not zero.
 
 ## Positive examples
 
