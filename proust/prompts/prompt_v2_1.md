@@ -249,12 +249,15 @@ Use these dimensions only. Each is governed by its own criterion:
   invitation that marks rank, a public snub, a reputation spoken of as risen
   or fallen. A private, unshared judgment of a character is
   `general_appraisal`, not `social_status`.
-* `inclusion_exclusion` — a **boundary event**: a circle with an inside and
-  an outside, and a character shown crossing that line or barred at it —
+* `inclusion_exclusion` — a **boundary event**: an interior with an
+  exterior, and a character shown crossing that line or barred at it —
   introduced or not introduced, greeted or cut, invited or left out, absorbed
-  into the group or held at its edge. Mere presence at a gathering is not
-  inclusion, and absence is not exclusion; the boundary itself must be shown
-  moving for this character.
+  into the group or held at its edge. The boundary need not belong to a
+  social set: the family table, a household, a bedroom door, a clan, a club,
+  a box at the theatre all count, so long as the passage shows an inside, an
+  outside, and this character's position across that line changing. Mere
+  presence at a gathering is not inclusion, and absence is not exclusion;
+  the boundary itself must be shown moving for this character.
 
 Create status effects only when there is meaningful local movement.
 Record **every distinct movement that meets its dimension's criterion**.

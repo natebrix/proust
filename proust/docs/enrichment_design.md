@@ -129,4 +129,17 @@ elicitation changes. Nathan gates adoption on the A/B report.
 
 ## Adoption record
 
-(pending)
+* 2026-08-14 — **Family-boundary fix adopted** (Nathan): the
+  `inclusion_exclusion` criterion generalized from "a circle" to "an interior
+  with an exterior" that need not be a social set — family table, household,
+  bedroom door, clan, club, theatre box all qualify. Motivated by the A/B's
+  one wrong drop (the goodnight-kiss dining-room exclusion) and by the
+  corpus: ~21% of all foundation inclusion evidence is family/domestic.
+* 2026-08-14 — Under investigation before full-pass adoption: (a) whether
+  further boundary types need naming (corpus census in the 2026-08-14
+  session report); (b) whether staged parity — a lens visibly at stake with
+  an even outcome — should be recorded as a delta-0 effect and scored as a
+  draw. Mechanically supported already (tie band + WHR draw model); the
+  risk is the vacuous-draw disease the 2026-08-12 amendment cured, so any
+  adoption requires a probe showing annotators hold the staged-versus-
+  co-present line.
