@@ -847,6 +847,27 @@ def discover_foundation_run_dirs(outputs_dir="outputs"):
     return run_dirs
 
 
+def discover_enrichment_run_dirs(outputs_dir="outputs"):
+    """The enrichment corpus: enrichment-run-* directories, and nothing else.
+
+    Mirrors discover_foundation_run_dirs: a directory qualifies only when its
+    run.json declares run_type == "enrichment", so no other run family can
+    leak into an enrichment build.
+    """
+    output_path = Path(outputs_dir)
+    if not output_path.exists():
+        raise ValueError(f'Outputs directory "{output_path}" does not exist.')
+
+    run_dirs = sorted(
+        run_dir
+        for run_dir in output_path.glob("enrichment-run-*")
+        if run_dir.is_dir() and _run_type(run_dir) == "enrichment"
+    )
+    if not run_dirs:
+        raise ValueError(f'No enrichment run directories found under "{output_path}".')
+    return run_dirs
+
+
 def foundation_corpus_label(run_dirs):
     """"foundation" when every run feeding a build is a foundation run, else None.
 

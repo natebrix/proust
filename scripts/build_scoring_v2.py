@@ -23,22 +23,42 @@ from time import perf_counter
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from proust import scoring_v2_build, scoring_v2_promote, scoring_v2_validate  # noqa: E402
-from proust.app_exports import discover_foundation_run_dirs  # noqa: E402
+from proust.app_exports import (  # noqa: E402
+    discover_enrichment_run_dirs,
+    discover_foundation_run_dirs,
+)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outputs-dir", default="outputs")
-    parser.add_argument("--output-dir", default=scoring_v2_build.DEFAULT_OUTPUT_DIR)
+    parser.add_argument("--output-dir", default=None)
+    parser.add_argument(
+        "--corpus",
+        choices=("foundation", "enrichment"),
+        default="foundation",
+        help="which run family feeds the build; enrichment stages its fits "
+        "under outputs/scoring-v2-enrichment by default so the foundation "
+        "fit store is untouched until promotion",
+    )
     parser.add_argument(
         "--stage", choices=("build", "validate", "promote", "both", "all"), default="both"
     )
     parser.add_argument("--bootstrap-samples", type=int, default=scoring_v2_validate.DEFAULT_BOOTSTRAP_SAMPLES)
     arguments = parser.parse_args()
+    if arguments.output_dir is None:
+        arguments.output_dir = (
+            scoring_v2_build.DEFAULT_OUTPUT_DIR
+            if arguments.corpus == "foundation"
+            else "outputs/scoring-v2-enrichment"
+        )
 
     started = perf_counter()
-    run_dirs = discover_foundation_run_dirs(arguments.outputs_dir)
-    print(f"foundation runs: {len(run_dirs)}", flush=True)
+    if arguments.corpus == "foundation":
+        run_dirs = discover_foundation_run_dirs(arguments.outputs_dir)
+    else:
+        run_dirs = discover_enrichment_run_dirs(arguments.outputs_dir)
+    print(f"{arguments.corpus} runs: {len(run_dirs)}", flush=True)
 
     if arguments.stage in ("build", "both", "all"):
         build = scoring_v2_build.build_scoring_v2(
