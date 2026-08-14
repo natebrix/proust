@@ -154,3 +154,23 @@ elicitation changes. Nathan gates adoption on the A/B report.
   little baseline movement), 8 social-dense, 8 controls. Pass requires
   every delta-0 to cite a staged comparison and zero delta-0s born of mere
   co-presence.
+* 2026-08-14 — **Staged parity NOT adopted; probe verdict: safe but inert.**
+  parity-probe-001 ran 30 units under the candidate rule: 24 stratified
+  (8 temptation, 8 social-dense, 8 controls) plus 6 hand-picked units where
+  the text itself uses parity language ("son égalité avec nous fut
+  signifiée", "sur le pied d'égalité", "autant de considération que").
+  Result: **zero delta-0 effects in 118 status effects** — perfect restraint
+  on the temptation set (no co-presence draws, controls flat) and zero
+  firings even where parity is explicitly staged. The literary reason
+  surfaced by the targeted units: Proust stages "equality" as a
+  *directional act* — equality granted from above (the princesse de
+  Luxembourg's signified equality, Françoise receiving a duchess-household's
+  deference, Saint-Loup's class egalitarianism) annotates correctly as
+  elevation of the lower party or appraisal of the granter, never as a
+  level stand-off between weighed rivals. The tie band already converts
+  near-equal mutual movements into draws; an explicit parity rule adds
+  prompt complexity and misuse surface for zero measured yield.
+  `prompt_v2_2_candidate.md` is retained as the record of the candidate.
+  One hardening from the probe is folded into v2.1: the delta scale's
+  `0` line now reads "do not use — if there is no clear movement, record
+  no effect at all: null is not zero."

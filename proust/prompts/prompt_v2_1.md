@@ -290,7 +290,7 @@ Status delta:
 
 * -2 = clearly diminished in this passage
 * -1 = somewhat diminished
-* 0 = neutral, mixed, or no clear movement
+* 0 = do not use — if there is no clear movement, record no effect at all: null is not zero
 * +1 = somewhat elevated
 * +2 = clearly elevated
 
