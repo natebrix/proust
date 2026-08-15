@@ -6,35 +6,34 @@
 - Lens / view: `advantage` / `name`
 - Modes: `smoothed, filtered`
 - Time axis: `cumulative_unit_index`
-- w2: `15.0` Elo² per unit of narrative time
+- w2: `5.0` Elo² per unit of narrative time
 - Tracked character count: `23`
-- Point count: `4064`
-- Corpus: `foundation`
+- Point count: `3248`
 
 Each point is one trajectory node joined to the corpus position of the unit it was fitted at: chapter, unit index, paragraph range, and the cumulative paragraph and word offsets an app needs to place it on a reading axis. The point also carries the v2 reading of that same unit (`movement`, `label`), so a chart can show what the character did in the passage that moved the rating. The full series lives in the JSON artifact; the table below is coverage only.
 
 | Character | Nodes | Smoothed Points | Filtered Points | Final Rating | Ranked |
 | --- | --- | --- | --- | --- | --- |
-| Morel | 30 | 30 | 30 | 1303.8 ± 120.8 | yes |
-| Rachel | 42 | 42 | 42 | 1497.5 ± 148.3 | yes |
-| le narrateur | 306 | 306 | 306 | 1368.7 ± 87.2 | yes |
-| Odette | 132 | 132 | 132 | 1434.8 ± 123.0 | yes |
-| Robert de Saint-Loup | 147 | 147 | 147 | 1457.4 ± 106.9 | yes |
-| Swann | 192 | 192 | 192 | 1474.9 ± 111.1 | yes |
-| Albertine | 123 | 123 | 123 | 1482.9 ± 96.0 | yes |
-| baron de Charlus | 114 | 114 | 114 | 1407.3 ± 98.0 | yes |
-| duchesse de Guermantes | 182 | 182 | 182 | 1460.6 ± 104.1 | yes |
-| Mme de Villeparisis | 74 | 74 | 74 | 1484.4 ± 143.6 | yes |
-| Françoise | 73 | 73 | 73 | 1647.8 ± 140.9 | yes |
-| Mme Verdurin | 77 | 77 | 77 | 1488.5 ± 120.8 | yes |
-| Gilberte | 71 | 71 | 71 | 1417.7 ± 105.2 | yes |
-| Norpois | 61 | 61 | 61 | 1573.0 ± 164.7 | yes |
-| la grand-mère | 72 | 72 | 72 | 1654.2 ± 164.8 | yes |
-| Bloch | 68 | 68 | 68 | 1349.2 ± 121.4 | yes |
-| duc de Guermantes | 105 | 105 | 105 | 1396.3 ± 116.5 | yes |
-| docteur Cottard | 42 | 42 | 42 | 1459.9 ± 168.2 | yes |
-| la mère du narrateur | 38 | 38 | 38 | 1579.5 ± 166.9 | yes |
-| Bergotte | 30 | 30 | 30 | 1630.8 ± 174.8 | yes |
-| Legrandin | 19 | 19 | 19 | 1347.7 ± 203.3 | no |
-| Mme de Cambremer | 19 | 19 | 19 | 1400.7 ± 180.0 | yes |
-| M. Vinteuil | 15 | 15 | 15 | 1575.1 ± 209.9 | no |
+| Morel | 34 | 34 | 34 | 1487.6 ± 99.3 | yes |
+| Rachel | 27 | 27 | 27 | 1578.7 ± 132.4 | yes |
+| le narrateur | 197 | 197 | 197 | 1513.2 ± 73.3 | yes |
+| Odette | 117 | 117 | 117 | 1492.9 ± 98.2 | yes |
+| Robert de Saint-Loup | 107 | 107 | 107 | 1513.8 ± 84.0 | yes |
+| Swann | 168 | 168 | 168 | 1457.6 ± 88.4 | yes |
+| Albertine | 99 | 99 | 99 | 1509.4 ± 79.3 | yes |
+| baron de Charlus | 101 | 101 | 101 | 1513.6 ± 73.7 | yes |
+| duchesse de Guermantes | 162 | 162 | 162 | 1593.8 ± 79.7 | yes |
+| Mme de Villeparisis | 61 | 61 | 61 | 1579.6 ± 118.3 | yes |
+| Françoise | 50 | 50 | 50 | 1574.8 ± 113.6 | yes |
+| Mme Verdurin | 71 | 71 | 71 | 1534.9 ± 95.6 | yes |
+| Gilberte | 54 | 54 | 54 | 1504.7 ± 94.0 | yes |
+| Norpois | 52 | 52 | 52 | 1502.9 ± 121.0 | yes |
+| la grand-mère | 40 | 40 | 40 | 1577.5 ± 128.8 | yes |
+| Bloch | 61 | 61 | 61 | 1306.1 ± 110.0 | yes |
+| duc de Guermantes | 91 | 91 | 91 | 1435.1 ± 87.4 | yes |
+| docteur Cottard | 37 | 37 | 37 | 1582.5 ± 118.6 | yes |
+| la mère du narrateur | 27 | 27 | 27 | 1619.8 ± 146.0 | yes |
+| Bergotte | 23 | 23 | 23 | 1562.5 ± 157.3 | yes |
+| Legrandin | 15 | 15 | 15 | 1294.4 ± 165.9 | yes |
+| Mme de Cambremer | 22 | 22 | 22 | 1368.5 ± 140.5 | yes |
+| M. Vinteuil | 8 | 8 | 8 | 1657.8 ± 216.8 | no |
