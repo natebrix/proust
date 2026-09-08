@@ -5634,3 +5634,17 @@ Updated stopping point:
 - keep the accepted annotation JSON fixed
 - treat `chapter_overlay_v2` as the default chapter-overlay surface
 - if app-facing data work continues, prioritize rendering and higher-order editorial framing over new structural export work
+
+## Registry correction queued: Mme de Cambremer vs the dowager (2026-09-08)
+
+Context: while writing the hand-authored dossier prose for the ISLT reader in brixius-web, the 19 comparison passages credited to `mme-de-cambremer` (née Legrandin) were read against the source text to check which Cambremer woman each one stages.
+
+Findings:
+
+- About 14 of the 19 are unambiguously the young marquise: the Saint-Euverte evening ("une petite Mme de Cambremer", "la jeune Mme de Cambremer"), "Renée de Cambremer", the Villeparisis matinée (Legrandin's sister; the duchesse's "bovine" mockery), the Poussin/Degas exchange, the La Raspelière dinner, the letter announcing her son's marriage, and the Elstir remark.
+- `v4-p2#p-61-p-65` reads "la vieille Mme de Cambremer" and is credited to `mme-de-cambremer`. It should be credited to `la-marquise-douairiere-de-cambremer`.
+- `v3-p1#p-76-p-80` (the Opéra box) is ambiguous and Proust is inconsistent about which woman it is; leave it unless a general rule is adopted.
+- The Grand Hôtel visit (`v4-p2#p-226-p-240`) is correctly credited to both entities, since both women are present.
+- Two family-level mentions ("les Cambremer", "la médiocrité des Cambremer") are attributed to the young marquise; acceptable.
+
+Decision: no refit for this alone. Relabel `v4-p2#p-61-p-65` at the next corpus revision, when the fingerprint changes anyway. The dowager's 6 passages do not merit a separate dossier. The reader now labels the dossier "Mme de Cambremer (née Legrandin)" and its prose describes only the young marquise.
