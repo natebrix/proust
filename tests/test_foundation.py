@@ -731,3 +731,69 @@ def test_unresolved_triage_aggregates_the_resolution_sidecars(tmp_path):
     row = report["names"][0]
     assert row["unit_ids"] == [unit_id]
     assert row["disposition"] == "one-off-legitimate"
+
+
+def _write_enrichment_run(outputs_dir, run_id, characters):
+    """An enrichment run: a foundation-shaped run whose run.json says run_type enrichment."""
+    run_dir = _write_foundation_run(outputs_dir, run_id, characters)
+    manifest_path = run_dir / "run.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["run_type"] = "enrichment"
+    manifest_path.write_text(json.dumps(manifest))
+    return run_dir
+
+
+def test_enrichment_aggregate_build_uses_only_enrichment_runs_and_records_it(tmp_path):
+    from proust import cli
+
+    outputs_dir = tmp_path / "outputs"
+    outputs_dir.mkdir()
+    _write_foundation_run(outputs_dir, "foundation-run-001", ["Swann", "Odette"])
+    _write_enrichment_run(outputs_dir, "enrichment-run-001", ["Swann", "Albertine"])
+    _write_legacy_runs(outputs_dir)
+
+    review_path = tmp_path / "corpus-review.json"
+    assert cli.main([
+        "corpus-review",
+        "--enrichment",
+        "--foundation-outputs-dir",
+        str(outputs_dir),
+        "--output",
+        str(review_path),
+    ]) == 0
+
+    review = json.loads(review_path.read_text())
+    assert review["run_ids"] == ["enrichment-run-001"]
+    assert review["corpus"] == "enrichment"
+    characters = {row["character"] for row in review["lens_reviews"]["advantage"]["character_totals"]}
+    assert characters == {"Swann", "Albertine"}
+
+
+def test_foundation_and_enrichment_flags_are_mutually_exclusive():
+    from proust import cli
+
+    with pytest.raises(SystemExit):
+        cli.main(["corpus-review", "--foundation", "--enrichment"])
+
+
+def test_scoring_v2_promote_refuses_fits_from_the_other_corpus(tmp_path, capsys):
+    from proust import cli
+
+    outputs_dir = tmp_path / "outputs"
+    outputs_dir.mkdir()
+    _write_enrichment_run(outputs_dir, "enrichment-run-001", ["Swann"])
+    staged = tmp_path / "staged"
+    staged.mkdir()
+    (staged / "scoring-v2-build-manifest.json").write_text(json.dumps({"corpus": "foundation"}))
+
+    with pytest.raises(SystemExit):
+        cli.main([
+            "scoring-v2-promote",
+            "--staged-dir",
+            str(staged),
+            "--foundation-outputs-dir",
+            str(outputs_dir),
+            "--outputs-dir",
+            str(tmp_path / "promoted"),
+        ])
+    assert "holds foundation fits" in capsys.readouterr().err
