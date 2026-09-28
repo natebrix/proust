@@ -182,3 +182,65 @@ The v1-era rating artifacts (`character-whr-*`, `character-glicko2-*`,
 disk as the validation baselines and the before picture. The pilot editorial
 text is used verbatim by the v2 pages and is read at build time, so the
 in-flight editorial rewrite regenerates the pages without a code change.
+
+## Enrichment promotion (2026-08-14)
+
+The fit adopted above was built on the foundation corpus. On 2026-08-14 the
+enrichment corpus (prompt v2.1; see [enrichment_design.md](enrichment_design.md))
+was fitted into `outputs/scoring-v2-enrichment/` and promoted in its place
+(commit `5e1ab980`). The formula did not change. Ranked sets went from
+35 / 8 / 9 to 41 / 22 / 9 (advantage / prestige / inclusion), so the "thin
+prestige and inclusion" note in the adoption record describes the foundation
+fit. `outputs/scoring-v2/` remains on disk as the foundation fit.
+
+To rebuild the current surfaces, pass `--corpus enrichment` to
+`scripts/build_scoring_v2.py`; the default is still `foundation`.
+
+## Pair weighting: staged candidate (2026-09-28)
+
+**Status: STAGED, not promoted.** Evidence in
+`outputs/scoring-v2-enrichment-ranking/` (fits plus a full validation report);
+the current surfaces still use `all_pairs`.
+
+A passage with n comparable characters produces n(n−1)/2 pairwise games from
+only n movements. Counting each game in full treats one ranking as many
+independent results: bands come out too narrow, the one-step predictions are
+overconfident (filtered WHR log-loss 0.713 in advantage, worse than the
+coin-flip 0.693), and a character's rank tracks how often they share crowded
+salons. The `ranking` weighting (`--pair-weighting ranking`) scales a
+passage's pairs so together they carry n − 1 games' worth of evidence, the
+degrees of freedom of one ranking. Two-character passages are unchanged, and
+outcomes never change, only weights.
+
+Enrichment corpus, name view, same validation battery:
+
+| check | all_pairs (current) | ranking |
+| --- | --- | --- |
+| advantage log-loss, filtered / deflated | 0.713 / 0.698 | **0.703 / 0.690** |
+| prestige log-loss, filtered / deflated | 0.756 / 0.724 | **0.750 / 0.721** |
+| inclusion log-loss, filtered / deflated | 0.740 / 0.711 | 0.742 / 0.712 |
+| conservative rank vs comparison count (adv / pre / inc) | 0.45 / 0.55 / 0.23 | **0.24 / 0.44** / 0.31 |
+| bootstrap rank sd, v2 vs v1 formula (advantage) | 6.80 vs 6.92 | **5.29 vs 5.83** |
+| cross-lens mean abs Spearman (all rated) | 0.136 | 0.140 |
+| ranked characters (adv / pre / inc) | 41 / 22 / 9 | 31 / 14 / 8 |
+| literary panel | 7 / 8 | 6 / 8 |
+
+(Sequential Elo still predicts best, 0.645–0.654: the weighting removes part
+of the overconfidence, not all of it.)
+
+The new panel miss is Saniette: still the lowest advantage rating (1311), but
+his 44 comparisons came from 12 passages, so his band (239) crosses the
+200-point threshold and he moves to "insufficient comparative evidence". That
+is the correction working as intended, and a formal rather than substantive
+miss.
+
+**Cost of adoption:** the ranked sets shrink, so every "Nth of M" claim in the
+dossier editorial goes stale: 84 claims in 22 of the 23 pilot dossiers. Adopting
+means `python3 scripts/build_scoring_v2.py --corpus enrichment --pair-weighting
+ranking --stage all` on a machine with the portraits folder, then an editorial
+pass against the new standings.
+
+**Recommendation:** adopt, together with the editorial pass. Calibration and
+frequency decoupling improve in advantage and prestige, the two lenses with
+enough evidence to rank, and the smaller ranked sets are the honest size of the
+evidence. Inclusion is neutral either way.

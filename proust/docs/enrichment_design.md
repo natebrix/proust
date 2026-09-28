@@ -1,7 +1,12 @@
 # Prestige and inclusion enrichment — design note
 
-Status: **PROPOSED** (2026-08-14). Probe evidence in `outputs/budget-probe-001/`;
-A/B evaluation staged in `outputs/enrichment-ab-001/`. Adoption gates below.
+Status: **ADOPTED AND PROMOTED** (2026-08-14). Proposed the same day; probe
+evidence in `outputs/budget-probe-001/`, A/B evaluation in
+`outputs/enrichment-ab-001/`, adoption gates and record below. The enrichment
+corpus (`outputs/enrichment-run-*`, prompt v2.1) was fitted into
+`outputs/scoring-v2-enrichment/` and promoted as the current scoring v2
+surfaces in commit `5e1ab980` ("Promote the enrichment fit and rewrite all
+dossier editorial"): standings, journey timelines, and character pages.
 
 ## Problem
 
@@ -174,3 +179,9 @@ elicitation changes. Nathan gates adoption on the A/B report.
   One hardening from the probe is folded into v2.1: the delta scale's
   `0` line now reads "do not use — if there is no clear movement, record
   no effect at all: null is not zero."
+* 2026-08-14 — **Promoted** (commit `5e1ab980`): the enrichment fit became the
+  current scoring v2 surface. Ranked sets rose from 35 / 8 / 9 (advantage /
+  prestige / inclusion, foundation corpus) to 41 / 22 / 9. The other
+  aggregate surfaces (corpus review, cross-lens analyses, profile cards,
+  chapter summaries and overlays) were not rebuilt and remain on the
+  foundation corpus.
