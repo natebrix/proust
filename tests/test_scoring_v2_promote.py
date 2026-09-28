@@ -184,6 +184,20 @@ def test_standings_leave_the_trajectories_in_the_staged_fit():
     assert ratings["characters"][0]["smoothed_trajectory"]
 
 
+def test_standings_name_the_store_they_were_promoted_from():
+    # Promoting from the enrichment store once recorded the default
+    # foundation store as the source: the numbers and the label disagreed.
+    ratings = _ratings([_standing_row("Swann", 1620.0, 68.0)])
+
+    standings = scoring_v2_promote.build_character_standings(
+        ratings, staged_dir="outputs/scoring-v2-enrichment"
+    )
+
+    assert standings["trajectory_source"] == (
+        "outputs/scoring-v2-enrichment/scoring-v2-advantage-name-view-ratings.json"
+    )
+
+
 def test_standings_rank_densely_so_a_tie_shares_one_rank():
     ratings = _ratings(
         [

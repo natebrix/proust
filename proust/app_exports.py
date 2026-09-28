@@ -11,6 +11,8 @@ from . import runner
 from .app_config import ISLT_PORTRAITS_DIR, ISLT_READER_BASE_PATH, PORTRAIT_STYLES
 from .editorial import CHAPTER_SUMMARY_EDITORIAL, CHARACTER_PAGE_PILOT_EDITORIAL, CHARACTER_PORTRAIT_SLUGS
 from .foundation import FOUNDATION_RUN_TYPE
+
+ENRICHMENT_RUN_TYPE = "enrichment"
 from .paths import ISLT_EDITIONS_DIR
 from .reporting_utils import character_ranks, character_totals_by_name
 from .scoring import SCORING_LENS_CONFIGS, SCORING_LENS_ORDER
@@ -861,7 +863,7 @@ def discover_enrichment_run_dirs(outputs_dir="outputs"):
     run_dirs = sorted(
         run_dir
         for run_dir in output_path.glob("enrichment-run-*")
-        if run_dir.is_dir() and _run_type(run_dir) == "enrichment"
+        if run_dir.is_dir() and _run_type(run_dir) == ENRICHMENT_RUN_TYPE
     )
     if not run_dirs:
         raise ValueError(f'No enrichment run directories found under "{output_path}".')
@@ -869,7 +871,8 @@ def discover_enrichment_run_dirs(outputs_dir="outputs"):
 
 
 def foundation_corpus_label(run_dirs):
-    """"foundation" when every run feeding a build is a foundation run, else None.
+    """The corpus a build ran on: "foundation" or "enrichment" when every run
+    feeding it is of that one type, else None.
 
     The foundation surfaces keep the standard -current artifact names (the
     -supplemented- naming era is over), so which corpus an artifact was
@@ -878,8 +881,11 @@ def foundation_corpus_label(run_dirs):
     run_dirs = list(run_dirs or [])
     if not run_dirs:
         return None
-    if all(_run_type(run_dir) == FOUNDATION_RUN_TYPE for run_dir in run_dirs):
+    run_types = {_run_type(run_dir) for run_dir in run_dirs}
+    if run_types == {FOUNDATION_RUN_TYPE}:
         return FOUNDATION_RUN_TYPE
+    if run_types == {ENRICHMENT_RUN_TYPE}:
+        return ENRICHMENT_RUN_TYPE
     return None
 
 

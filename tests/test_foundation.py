@@ -633,6 +633,12 @@ def test_foundation_corpus_label_is_all_or_nothing(tmp_path):
     assert app_exports.foundation_corpus_label([foundation_run, legacy_run]) is None
     assert app_exports.foundation_corpus_label([]) is None
 
+    enrichment_run = outputs_dir / "enrichment-run-001"
+    enrichment_run.mkdir()
+    (enrichment_run / "run.json").write_text(json.dumps({"run_type": "enrichment"}))
+    assert app_exports.foundation_corpus_label([enrichment_run]) == "enrichment"
+    assert app_exports.foundation_corpus_label([enrichment_run, foundation_run]) is None
+
 
 def test_foundation_aggregate_build_uses_only_foundation_runs(tmp_path):
     from proust import cli

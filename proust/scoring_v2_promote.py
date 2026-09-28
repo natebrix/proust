@@ -115,7 +115,7 @@ def assign_dense_ranks(rows, value_of):
 # ---------------------------------------------------------------------------
 
 
-def build_character_standings(ratings, corpus=None):
+def build_character_standings(ratings, corpus=None, staged_dir=DEFAULT_STAGED_DIR):
     """The promoted standings for one lens and view: ranked, and not yet rankable.
 
     Every row is the staged fit's row minus its point-by-point
@@ -154,7 +154,7 @@ def build_character_standings(ratings, corpus=None):
         "character_standings_version": f"character_standings_{lens}_{view}_view_v2",
         "scoring_version": ratings["scoring_version"],
         "source_fit_version": ratings["scoring_v2_ratings_version"],
-        "trajectory_source": str(staged_ratings_path(lens, view)),
+        "trajectory_source": str(staged_ratings_path(lens, view, staged_dir=staged_dir)),
         "lens": lens,
         "view": view,
         "time_axis": ratings["time_axis"],
@@ -945,7 +945,7 @@ def promote_scoring_v2(
         )
         for view in scoring_v2_build.VIEWS:
             ratings = read_staged_ratings(lens, view, staged_dir=staged_dir)
-            standings = build_character_standings(ratings, corpus=corpus)
+            standings = build_character_standings(ratings, corpus=corpus, staged_dir=staged_dir)
             json_output, markdown_output = standings_paths(lens, view=view, outputs_dir=outputs_dir)
             written.extend(
                 write_character_standings_artifacts(
