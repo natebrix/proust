@@ -196,11 +196,13 @@ fit. `outputs/scoring-v2/` remains on disk as the foundation fit.
 To rebuild the current surfaces, pass `--corpus enrichment` to
 `scripts/build_scoring_v2.py`; the default is still `foundation`.
 
-## Pair weighting: staged candidate (2026-09-28)
+## Pair weighting: adopted (2026-09-28)
 
-**Status: STAGED, not promoted.** Evidence in
-`outputs/scoring-v2-enrichment-ranking/` (fits plus a full validation report);
-the current surfaces still use `all_pairs`.
+**Status: ADOPTED 2026-09-28.** `ranking` is the default
+(`scoring_v2.DEFAULT_PAIR_WEIGHTING`); `outputs/scoring-v2-enrichment/` was
+refitted with it and its validation report is the evidence below. The
+foundation store `outputs/scoring-v2/` was not refitted and still records
+`all_pairs` (a manifest without `pair_weighting` means `all_pairs`).
 
 A passage with n comparable characters produces n(n−1)/2 pairwise games from
 only n movements. Counting each game in full treats one ranking as many
@@ -234,13 +236,16 @@ his 44 comparisons came from 12 passages, so his band (239) crosses the
 is the correction working as intended, and a formal rather than substantive
 miss.
 
-**Cost of adoption:** the ranked sets shrink, so every "Nth of M" claim in the
-dossier editorial goes stale: 84 claims in 22 of the 23 pilot dossiers. Adopting
-means `python3 scripts/build_scoring_v2.py --corpus enrichment --pair-weighting
-ranking --stage all` on a machine with the portraits folder, then an editorial
-pass against the new standings.
+**Adopted with an editorial pass.** Calibration and frequency decoupling improve
+in advantage and prestige, the two lenses with enough evidence to rank, and the
+smaller ranked sets are the honest size of the evidence; inclusion is neutral.
+The ranked sets shrank, so every "Nth of M" claim in the dossier editorial was
+rewritten against the new standings (`proust/editorial.py`). Rank claims are
+now checked mechanically: `python3 scripts/check_editorial_claims.py` (also run
+by `tests/test_editorial_claims.py`) verifies every "Nth of M", "unranked" and
+"ranked in all three registers" claim against the promoted standings.
 
-**Recommendation:** adopt, together with the editorial pass. Calibration and
-frequency decoupling improve in advantage and prestige, the two lenses with
-enough evidence to rank, and the smaller ranked sets are the honest size of the
-evidence. Inclusion is neutral either way.
+The clearest single movement is docteur Cottard, from 5th to 14th in
+advantage: his wins cluster in the Verdurin salon's most crowded passages, and
+weighted by passage his record is close to even. The duchesse de Guermantes
+moves to first in advantage and prestige.

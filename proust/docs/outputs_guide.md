@@ -322,11 +322,10 @@ It comes in two layers.
 
 ### The fit stores: `outputs/scoring-v2-enrichment/` (current) and `outputs/scoring-v2/` (foundation)
 
-A third store, `outputs/scoring-v2-enrichment-ranking/`, is a staged candidate:
-the enrichment corpus fitted with `--pair-weighting ranking`. Nothing current
-reads it; the evidence and the adoption question are in
-[scoring_v2_design.md](scoring_v2_design.md) ("Pair weighting: staged
-candidate").
+The current store uses the `ranking` pair weighting, adopted 2026-09-28 (see
+[scoring_v2_design.md](scoring_v2_design.md), "Pair weighting: adopted"); the
+foundation store predates it and uses `all_pairs`. Ranked sets are currently
+31 / 14 / 8 (advantage / prestige / inclusion).
 
 The fits themselves, and the evidence they were adopted on. Nothing outside
 that directory is written by a build; promotion is a separate step.

@@ -765,6 +765,7 @@ def build_validation_report(
 
     return {
         "scoring_v2_validation_version": "scoring_v2_validation_v1",
+        "fit_store": str(output_dir),
         "build_manifest": manifest,
         "unit_count": len(units),
         "bootstrap_samples": bootstrap_samples,
@@ -831,8 +832,9 @@ def render_validation_report_markdown(report):
         "Formula: `proust/scoring_v2.py`, exactly as specified in "
         "`proust/docs/scoring_v2_design.md`. Ratings: weighted WHR "
         "(`proust/whr.py`), smoothed and filtered, on the "
-        "`cumulative_unit_index` narrative axis. Everything here is staged under "
-        "`outputs/scoring-v2/`; adoption is a separate reviewed decision.",
+        "`cumulative_unit_index` narrative axis. Pair weighting: "
+        f"`{manifest.get('pair_weighting', v2.PAIR_WEIGHTING_ALL_PAIRS)}`. Everything here is staged under "
+        f"`{report.get('fit_store', build_module.DEFAULT_OUTPUT_DIR)}/`; adoption is a separate reviewed decision.",
         "",
         f"w2 selected per lens/view: "
         + ", ".join(f"{key} = {value:g}" for key, value in sorted(manifest["w2_elo_selected"].items())),

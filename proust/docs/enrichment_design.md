@@ -181,7 +181,8 @@ elicitation changes. Nathan gates adoption on the A/B report.
   no effect at all: null is not zero."
 * 2026-08-14 — **Promoted** (commit `5e1ab980`): the enrichment fit became the
   current scoring v2 surface. Ranked sets rose from 35 / 8 / 9 (advantage /
-  prestige / inclusion, foundation corpus) to 41 / 22 / 9. The other
+  prestige / inclusion, foundation corpus) to 41 / 22 / 9 (31 / 14 / 8 since
+  the ranking pair weighting was adopted on 2026-09-28). The other
   aggregate surfaces (corpus review, cross-lens analyses, profile cards,
   chapter summaries and overlays) were not rebuilt and remain on the
   foundation corpus.

@@ -654,7 +654,9 @@ def _salon(names):
 
 def test_ranking_weighting_leaves_a_two_person_scene_unchanged():
     annotation = _salon(["Swann", "Odette"])
-    all_pairs = scoring_v2.unit_comparisons(annotation, "advantage")
+    all_pairs = scoring_v2.unit_comparisons(
+        annotation, "advantage", pair_weighting=scoring_v2.PAIR_WEIGHTING_ALL_PAIRS
+    )
     ranking = scoring_v2.unit_comparisons(
         annotation, "advantage", pair_weighting=scoring_v2.PAIR_WEIGHTING_RANKING
     )
@@ -667,7 +669,9 @@ def test_ranking_weighting_gives_a_salon_n_minus_one_games_of_evidence():
     # the passage stakes four games' worth, spread evenly over its pairs.
     names = ["Swann", "Odette", "Charlus", "Cottard", "Brichot"]
     annotation = _salon(names)
-    all_pairs = scoring_v2.unit_comparisons(annotation, "advantage")
+    all_pairs = scoring_v2.unit_comparisons(
+        annotation, "advantage", pair_weighting=scoring_v2.PAIR_WEIGHTING_ALL_PAIRS
+    )
     ranking = scoring_v2.unit_comparisons(
         annotation, "advantage", pair_weighting=scoring_v2.PAIR_WEIGHTING_RANKING
     )
@@ -676,6 +680,10 @@ def test_ranking_weighting_gives_a_salon_n_minus_one_games_of_evidence():
     assert abs(sum(row["weight"] for row in ranking) - 0.4 * sum(row["weight"] for row in all_pairs)) < 1e-9
     # direction never changes, only how much the rating layer is asked to believe
     assert [row["observed_a"] for row in ranking] == [row["observed_a"] for row in all_pairs]
+
+
+def test_ranking_is_the_adopted_default():
+    assert scoring_v2.DEFAULT_PAIR_WEIGHTING == scoring_v2.PAIR_WEIGHTING_RANKING
 
 
 def test_unknown_pair_weighting_is_rejected():
