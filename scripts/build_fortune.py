@@ -25,6 +25,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from proust import fortune  # noqa: E402
 from proust import scoring_v2_build  # noqa: E402
 from proust.app_exports import (  # noqa: E402
+    _reader_chapter_link,
+    _slugify_text,
     discover_enrichment_run_dirs,
     discover_foundation_run_dirs,
 )
@@ -156,6 +158,142 @@ def build_lens(units, lens, marks, min_appearances, keyer=None, view="name", sam
     }
 
 
+# ---------------------------------------------------------------------------
+# App-facing export: what the islt character pages read.
+# ---------------------------------------------------------------------------
+
+APP_EXPORT_NAME = "character-fortune-current.json"
+APP_EXPORT_VERSION = "character_fortune_v1"
+
+# A lens "shows arcs" when the fitted model beats a no-arc model by at least
+# this many log-likelihood points; below it the app should not draw lines.
+ARC_EVIDENCE_TO_SHOW = 2.0
+
+# The rule the design doc and the report call a clear move.
+CLEAR_MAX_ORDER_P = 0.01
+CLEAR_MIN_LEVEL_CHANGE = 0.25
+
+
+def _app_point(point, x_of):
+    """A start/end/peak/move endpoint, reusing the ratings the build computed."""
+    return {
+        "x": x_of(point["time"]),
+        "rating": point["rating"],
+        "sd": point["rating_sd"],
+        "chapter_title": point["chapter_title"],
+    }
+
+
+def _app_move(move, x_of):
+    if not move:
+        return None
+    return {
+        "points": move["rating_size"],
+        "from": _app_point(move["from"], x_of),
+        "to": _app_point(move["to"], x_of),
+        "order_p": move["order_p"],
+        "clear": bool(
+            move["order_p"] is not None
+            and move["order_p"] <= CLEAR_MAX_ORDER_P
+            and move["size"] >= CLEAR_MIN_LEVEL_CHANGE
+        ),
+    }
+
+
+def build_app_export(results, units, marks, keyer, page_slugs, corpus):
+    """One small file for the app: person view, precomputed ratings, positions, links.
+
+    x is the fraction of the novel's words before a point (0 to 1), so the
+    app never needs word counts or chapter lengths. Ratings and their
+    standard deviations are already on the Elo-style scale. Only characters
+    with enough passages for an arc in the overall lens are included.
+    """
+    total_words = max(unit["corpus_position"]["cumulative_word_count_end"] for unit in units)
+
+    def x_of(time):
+        return round(time * fortune.WORDS_PER_TIME_UNIT / total_words, 5)
+
+    unit_at_time = {fortune.unit_time(unit["corpus_position"]): unit for unit in units}
+
+    volumes = []
+    for mark in marks:
+        if not volumes or volumes[-1]["volume"] != mark["volume"]:
+            volumes.append(
+                {"volume": mark["volume"], "title": mark["chapter_title"].split(" — ")[0], "x": x_of(mark["time"])}
+            )
+    chapters = [
+        {"chapter_id": mark["chapter_id"], "chapter_title": mark["chapter_title"], "volume": mark["volume"],
+         "x": x_of(mark["time"])}
+        for mark in marks
+    ]
+
+    lenses = {}
+    for lens, views in results.items():
+        result = views["person"]
+        lenses[lens] = {
+            "points_per_level": result["rating_points_per_level"],
+            "arc_evidence": result["arc_evidence"],
+            "shows_arcs": result["arc_evidence"] >= ARC_EVIDENCE_TO_SHOW,
+        }
+
+    overall = {row["key"]: row for row in results[fortune.OVERALL_LENS]["person"]["characters"] if row["listed"]}
+    characters = []
+    for key in sorted(overall, key=lambda k: -overall[k]["appearances"]):
+        name = overall[key]["character"]
+        entry = {
+            "character": name,
+            "key": key,
+            "slug": page_slugs.get(name, _slugify_text(name)),
+            "has_character_page": name in page_slugs,
+            "lenses": {},
+        }
+        for lens, views in results.items():
+            result = views["person"]
+            row = next((r for r in result["characters"] if r["key"] == key and r["listed"]), None)
+            if row is None or not lenses[lens]["shows_arcs"]:
+                continue
+            passages = []
+            for time, movement, _weight in row["observations"]:
+                unit = unit_at_time[time]
+                position = unit["corpus_position"]
+                passages.append(
+                    {
+                        "x": x_of(time),
+                        "outcome": round(fortune.FORTUNE_RATING_CENTER + result["rating_points_per_level"] * movement),
+                        "unit_id": unit["unit_id"],
+                        "chapter_title": position["chapter_title"],
+                        "reader_link": _reader_chapter_link(position["chapter_id"], position["paragraph_start"]),
+                    }
+                )
+            entry["lenses"][lens] = {
+                "passages_count": row["appearances"],
+                "line": [
+                    [x_of(time), round(fortune.FORTUNE_RATING_CENTER + result["rating_points_per_level"] * level),
+                     round(result["rating_points_per_level"] * sd)]
+                    for time, level, sd, _filtered in row["trajectory"]
+                ],
+                "passages": passages,
+                "start": _app_point(row["start"], x_of),
+                "end": _app_point(row["end"], x_of),
+                "biggest_fall": _app_move(row["biggest_fall"], x_of),
+                "biggest_rise": _app_move(row["biggest_rise"], x_of),
+            }
+        characters.append(entry)
+
+    return {
+        "character_fortune_version": APP_EXPORT_VERSION,
+        "corpus": corpus,
+        "view": "person",
+        "x_axis": "fraction of the novel's words before the point (0 to 1)",
+        "rating_center": fortune.FORTUNE_RATING_CENTER,
+        "clear_move_rule": {"max_order_p": CLEAR_MAX_ORDER_P, "min_level_change": CLEAR_MIN_LEVEL_CHANGE},
+        "lenses": lenses,
+        "volumes": volumes,
+        "chapters": chapters,
+        "characters": characters,
+    }
+
+
 def _fmt_point(point):
     return f"{point['rating']} ± {point['rating_sd']}"
 
@@ -278,6 +416,17 @@ def main():
         for (chapter_id, name), candidates in sorted(keyer.ambiguous.items(), key=lambda item: (item[0][0] or "", item[0][1]))
     ] or ["no names left ambiguous by the registry"]
     (output_dir / "fortune-report.md").write_text(render_report(results, keyer_notes))
+
+    pages_path = Path(arguments.outputs_dir) / "character-pages-current.json"
+    page_slugs = (
+        {page["character"]: page["slug"] for page in json.loads(pages_path.read_text())["pages"]}
+        if pages_path.exists()
+        else {}
+    )
+    app_export = build_app_export(results, units, marks, keyer, page_slugs, arguments.corpus)
+    app_path = Path(arguments.outputs_dir) / APP_EXPORT_NAME
+    app_path.write_text(json.dumps(app_export, ensure_ascii=False, separators=(",", ":")) + "\n")
+    print(f"app export: {len(app_export['characters'])} characters -> {app_path}", flush=True)
 
 
 if __name__ == "__main__":
