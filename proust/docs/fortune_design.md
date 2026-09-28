@@ -102,10 +102,11 @@ were. Scales differ by lens, so compare ratings within a lens.
 
 ## Open questions
 
-- `characters.yaml` has `prince-de-guermantes` (proposed, overlay) and
-  `prince-de-guermantes-2` (confirmed, from annotations): one person, two
-  entities. Harmless for fortune today (one resolves every time), but worth
-  merging.
+- Resolved 2026-09-28: `prince-de-guermantes-2`, a bootstrap duplicate, is
+  merged into `prince-de-guermantes`, and the overlay in
+  `scripts/build_character_registry.py` now claims the annotation name so a
+  re-bootstrap cannot recreate it. Fortune numbers are unchanged; scoring v2's
+  person-view artifacts still carry the old id until their next build.
 - Whether `Registry.resolve` itself should honor chapter-scoped overlaps.
   That would change scoring v2's person view, so it is a separate decision.
 - Tie-in with WHR: fortune falling while head-to-head standing holds would

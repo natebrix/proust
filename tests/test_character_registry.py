@@ -130,3 +130,22 @@ def test_scanner_ignores_pure_descriptors(registry):
     found = scanner.scan("le docteur entra, suivi de la duchesse et du peintre.")
     assert "docteur-cottard" not in found
     assert "duchesse-de-guermantes" not in found
+
+
+def test_prince_de_guermantes_is_one_entity(registry):
+    """The bootstrap once minted prince-de-guermantes-2 from the annotation
+    name because the overlay entity claimed none; Gilbert is one person."""
+    assert "prince-de-guermantes-2" not in registry.entities
+    for chapter_id in (None, "v3-p2", "v4-p2", "v7-p4-le-bal-de-tetes"):
+        resolution = registry.resolve("prince de Guermantes", chapter_id=chapter_id)
+        assert resolution.status == "resolved"
+        assert resolution.entity_id == "prince-de-guermantes"
+
+
+def test_no_two_entities_share_a_display_name(registry):
+    """Two entities with one display name are either a bootstrap duplicate or
+    a pair that readers cannot tell apart in any person-keyed output."""
+    seen = {}
+    for entity in registry.entities.values():
+        other = seen.setdefault(entity.display_name, entity.id)
+        assert other == entity.id, f"{other} and {entity.id} share {entity.display_name!r}"
