@@ -16,6 +16,13 @@ sentence by sentence and checked against the promoted name-view standings
 - spelled-out ranked-set sizes are flagged: write them as digits so this
   check can read them
 
+It also lints the voice of the dossiers (reading-path labels included) and the chapter summaries
+(`CHAPTER_SUMMARY_EDITORIAL`). The pages are for readers of the novel, so the
+text must not narrate how the numbers were produced (annotation passes,
+corpora, criteria, comparisons, "the old reading"), and it avoids the
+mannered devices that made the dossiers sound alike: em-dash asides and
+"not X but Y" constructions.
+
 A lens is named by its word or its register: advantage / scene(s) /
 scene-level, prestige / standing, inclusion / belonging. Claims about the
 past are written without "of M" ("3rd-of-8", "from 7th to 20th") and are not
@@ -29,7 +36,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from proust.editorial import CHARACTER_PAGE_PILOT_EDITORIAL  # noqa: E402
+from proust.editorial import CHAPTER_SUMMARY_EDITORIAL, CHARACTER_PAGE_PILOT_EDITORIAL  # noqa: E402
 
 LENSES = ("advantage", "prestige", "inclusion")
 LENS_WORDS = {
@@ -46,7 +53,17 @@ RANK_CLAIM = re.compile(
     re.IGNORECASE,
 )
 UNRANKED_CLAIM = re.compile(r"\bunranked\b|\btoo\s+(?:\w+\s+){0,3}to\s+rank\b|\bno longer supports a rank\b", re.IGNORECASE)
-ALL_THREE_CLAIM = re.compile(r"ranked in (?:all three registers|every register)|one of the eight", re.IGNORECASE)
+ALL_THREE_CLAIM = re.compile(r"ranked in (?:all three|every register)|one of the eight", re.IGNORECASE)
+# Words about the analysis rather than the novel.
+PROCESS_TERMS = re.compile(
+    r"\b(?:old|older|oldest|new|newer|earlier|stricter|sparser|enriched|current|first|second) "
+    r"(?:reading|evidence|count|criteria|field)\b"
+    r"|\benrich\w*|\bcertif\w*|\bregisters?\b|\bcorpus\b|\bcorpora\b|\bannotat\w*"
+    r"|\bcriteri\w*|\bcomparisons?\b|\bevidence\b|\bmeasurabl\w*|\bthe numbers\b|\bthe measurement\b"
+    r"|\bmeasured cast\b|\bdata\b|\bartifact\b",
+    re.IGNORECASE,
+)
+MANNERED = re.compile(r"—|–|\bnot\s+(?:\w+\s+){0,6}?but\b", re.IGNORECASE)
 SPELLED_TOTAL = re.compile(r"\b(?:twenty-two|forty-one|thirty-one|fourteen)\b", re.IGNORECASE)
 
 
@@ -140,11 +157,33 @@ def check(editorial, standings):
     return checked, problems
 
 
+def style_problems(label, text):
+    problems = []
+    for match in PROCESS_TERMS.finditer(text):
+        problems.append(f"{label}: process wording {match.group(0)!r}")
+    for match in MANNERED.finditer(text):
+        problems.append(f"{label}: mannered construction {match.group(0)!r}")
+    return problems
+
+
+def check_style(editorial, chapter_editorial):
+    problems = []
+    for character, entry in editorial.items():
+        for field, text in texts(entry):
+            problems += style_problems(f"{character} / {field}", text)
+        for step in entry["reading_path"]:
+            problems += style_problems(f"{character} / reading_path {step['chapter_id']}", step["label"])
+    for chapter_id, text in chapter_editorial.items():
+        problems += style_problems(f"chapter {chapter_id}", text)
+    return problems
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outputs-dir", default="outputs")
     arguments = parser.parse_args()
     checked, problems = check(CHARACTER_PAGE_PILOT_EDITORIAL, load_standings(arguments.outputs_dir))
+    problems += check_style(CHARACTER_PAGE_PILOT_EDITORIAL, CHAPTER_SUMMARY_EDITORIAL)
     for problem in problems:
         print(problem)
     print(f"{checked} claims checked, {len(problems)} problems")

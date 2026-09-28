@@ -1213,7 +1213,7 @@ def test_build_chapter_summary_export_groups_chapter_character_rows(tmp_path):
     assert combray["tonal_archetype"]["label"]
     assert "signed_density" in combray["lens_profile"]["advantage"]
     assert combray["distinguishing_passages"][0]["unit_id"] == "v1-p1-combray#p-17"
-    assert combray["summary"].startswith("Combray is organized around the household and its visitors")
+    assert combray["summary"].startswith("Combray is the household and its visitors")
     assert "cross-lens split" not in combray["summary"]
     assert "Swann" in pr.render_chapter_summary_export_markdown(analysis)
 

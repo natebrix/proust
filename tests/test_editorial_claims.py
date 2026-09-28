@@ -36,3 +36,14 @@ def test_the_checker_catches_a_wrong_rank_and_a_wrong_unranked_claim():
     }
     _checked, problems = checker.check({"X": entry}, standings)
     assert len(problems) == 4
+
+
+def test_the_editorial_speaks_to_readers_without_process_wording_or_mannered_devices():
+    checker = _checker()
+    assert checker.check_style(checker.CHARACTER_PAGE_PILOT_EDITORIAL, checker.CHAPTER_SUMMARY_EDITORIAL) == []
+
+
+def test_the_style_lint_catches_process_wording_and_mannered_devices():
+    checker = _checker()
+    problems = checker.style_problems("X", "The enriched reading certifies him — not a winner but a survivor.")
+    assert len(problems) == 4
