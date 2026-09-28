@@ -172,7 +172,11 @@ def build_readings(units, lens, registry=None, merge_map=None):
                     "time": unit["time"],
                     "character": character,
                     "person": v2.person_view_key(
-                        character, registry=registry, merge_map=merge_map, chapter_id=unit["chapter_id"]
+                        character,
+                        registry=registry,
+                        merge_map=merge_map,
+                        chapter_id=unit["chapter_id"],
+                        unit_id=unit["unit_id"],
                     ),
                     "movement": round(movements[character], 6),
                     "label": labels[character],

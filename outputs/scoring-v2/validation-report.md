@@ -74,21 +74,21 @@ One-step-ahead over the v2 comparisons in narrative order. Every system is score
 | advantage/name | elo_sequential | 0.639731 | 0.224781 | 3475 |
 | advantage/name | elo_unit_frozen | 0.690754 | 0.247897 | 3475 |
 | advantage/name | glicko2_chapter_period | 0.750061 | 0.268868 | 3475 |
-| advantage/person | whr_filtered | 0.712578 | 0.255024 | 3474 |
-| advantage/person | whr_filtered_deflated | 0.699967 | 0.251108 | 3474 |
-| advantage/person | elo_sequential | 0.639673 | 0.224759 | 3474 |
-| advantage/person | elo_unit_frozen | 0.690789 | 0.247900 | 3474 |
-| advantage/person | glicko2_chapter_period | 0.776715 | 0.276820 | 3474 |
+| advantage/person | whr_filtered | 0.712350 | 0.254931 | 3474 |
+| advantage/person | whr_filtered_deflated | 0.699792 | 0.251032 | 3474 |
+| advantage/person | elo_sequential | 0.639486 | 0.224676 | 3474 |
+| advantage/person | elo_unit_frozen | 0.690629 | 0.247835 | 3474 |
+| advantage/person | glicko2_chapter_period | 0.776649 | 0.276803 | 3474 |
 | prestige/name | whr_filtered | 0.726454 | 0.256436 | 1184 |
 | prestige/name | whr_filtered_deflated | 0.700606 | 0.249012 | 1184 |
 | prestige/name | elo_sequential | 0.621480 | 0.215890 | 1184 |
 | prestige/name | elo_unit_frozen | 0.686416 | 0.244655 | 1184 |
 | prestige/name | glicko2_chapter_period | 0.751339 | 0.269992 | 1184 |
-| prestige/person | whr_filtered | 0.728047 | 0.256969 | 1183 |
-| prestige/person | whr_filtered_deflated | 0.701779 | 0.249448 | 1183 |
-| prestige/person | elo_sequential | 0.621698 | 0.215988 | 1183 |
-| prestige/person | elo_unit_frozen | 0.686573 | 0.244724 | 1183 |
-| prestige/person | glicko2_chapter_period | 0.753169 | 0.270541 | 1183 |
+| prestige/person | whr_filtered | 0.727813 | 0.256759 | 1183 |
+| prestige/person | whr_filtered_deflated | 0.701563 | 0.249278 | 1183 |
+| prestige/person | elo_sequential | 0.621193 | 0.215759 | 1183 |
+| prestige/person | elo_unit_frozen | 0.685992 | 0.244454 | 1183 |
+| prestige/person | glicko2_chapter_period | 0.751537 | 0.269886 | 1183 |
 | inclusion/name | whr_filtered | 0.720449 | 0.255018 | 531 |
 | inclusion/name | whr_filtered_deflated | 0.694206 | 0.247104 | 531 |
 | inclusion/name | elo_sequential | 0.629650 | 0.218810 | 531 |
@@ -108,18 +108,18 @@ One-step-ahead over the v2 comparisons in narrative order. Every system is score
 | advantage/name | 15 **(selected)** | 0.712944 |
 | advantage/name | 35 | 0.712998 |
 | advantage/name | 60 | 0.714222 |
-| advantage/person | 5 | 0.714020 |
-| advantage/person | 15 **(selected)** | 0.712578 |
-| advantage/person | 35 | 0.712692 |
-| advantage/person | 60 | 0.713984 |
+| advantage/person | 5 | 0.713799 |
+| advantage/person | 15 **(selected)** | 0.712350 |
+| advantage/person | 35 | 0.712413 |
+| advantage/person | 60 | 0.713642 |
 | prestige/name | 5 | 0.732717 |
 | prestige/name | 15 | 0.729890 |
 | prestige/name | 35 | 0.727362 |
 | prestige/name | 60 **(selected)** | 0.726454 |
-| prestige/person | 5 | 0.734353 |
-| prestige/person | 15 | 0.731528 |
-| prestige/person | 35 | 0.728982 |
-| prestige/person | 60 **(selected)** | 0.728047 |
+| prestige/person | 5 | 0.733200 |
+| prestige/person | 15 | 0.730653 |
+| prestige/person | 35 | 0.728480 |
+| prestige/person | 60 **(selected)** | 0.727813 |
 | inclusion/name | 5 **(selected)** | 0.720449 |
 | inclusion/name | 15 | 0.721532 |
 | inclusion/name | 35 | 0.723758 |
@@ -304,10 +304,10 @@ The person view aggregates on registry entity ids with `person_view_merge` links
 
 | lens | merged | name-view rows | person-view row | mean abs rank shift | self-pairings dropped |
 | --- | --- | --- | --- | ---: | ---: |
-| advantage | le-peintre -> elstir | le peintre r=1729 rank=- units=8; Elstir r=1610 rank=4 units=29 | elstir r=1630 rank=3 units=37 | 0.114 | 1 |
-| advantage | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1570 rank=- units=3; duc de Guermantes r=1396 rank=27 units=110 | duc-de-guermantes r=1400 rank=27 units=113 | 0.114 | 1 |
-| prestige | le-peintre -> elstir | le peintre r=1590 rank=- units=8; Elstir r=1336 rank=- units=29 | elstir r=1394 rank=- units=37 | 0.0 | 1 |
-| prestige | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1477 rank=- units=3; duc de Guermantes r=1367 rank=- units=110 | duc-de-guermantes r=1366 rank=- units=113 | 0.0 | 1 |
+| advantage | le-peintre -> elstir | le peintre r=1729 rank=- units=8; Elstir r=1610 rank=4 units=29 | elstir r=1627 rank=3 units=37 | 0.4 | 1 |
+| advantage | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1570 rank=- units=3; duc de Guermantes r=1396 rank=27 units=110 | duc-de-guermantes r=1399 rank=26 units=113 | 0.4 | 1 |
+| prestige | le-peintre -> elstir | le peintre r=1590 rank=- units=8; Elstir r=1336 rank=- units=29 | elstir r=1395 rank=- units=37 | 0.0 | 1 |
+| prestige | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1477 rank=- units=3; duc de Guermantes r=1367 rank=- units=110 | duc-de-guermantes r=1368 rank=- units=113 | 0.0 | 1 |
 | inclusion | le-peintre -> elstir | le peintre r=1611 rank=- units=8; Elstir r=1574 rank=- units=29 | elstir r=1612 rank=- units=37 | 0.0 | 0 |
 | inclusion | prince-des-laumes -> duc-de-guermantes | prince des Laumes r=1500 rank=- units=3; duc de Guermantes r=1413 rank=- units=110 | duc-de-guermantes r=1414 rank=- units=113 | 0.0 | 0 |
 
@@ -315,16 +315,16 @@ Largest rank shifts between the two views (name-view rank minus person-view rank
 
 | lens | character | person key | name rank | person rank | shift | rating shift |
 | --- | --- | --- | ---: | ---: | ---: | ---: |
-| advantage | Bergotte | bergotte | 3 | 4 | -1 | +1.8 |
-| advantage | Elstir | elstir | 4 | 3 | +1 | +20.0 |
-| advantage | M. Verdurin | m-verdurin | 18 | 17 | +1 | -1.5 |
-| advantage | comte de Forcheville | comte-de-forcheville | 17 | 18 | -1 | -4.8 |
-| advantage | Aimé | aime | 5 | 5 | +0 | +2.3 |
-| prestige | Bloch | bloch | 3 | 3 | +0 | +0.0 |
-| prestige | Gilberte | gilberte | 4 | 4 | +0 | -0.3 |
-| prestige | Mme Verdurin | mme-verdurin | 5 | 5 | +0 | +0.2 |
-| prestige | Morel | morel | 1 | 1 | +0 | +0.1 |
-| prestige | Robert de Saint-Loup | saint-loup | 7 | 7 | +0 | +0.0 |
+| advantage | princesse de Guermantes | princesse-de-guermantes | 8 | 5 | +3 | +20.2 |
+| advantage | Mme Verdurin | mme-verdurin | 12 | 14 | -2 | -13.5 |
+| advantage | Aimé | aime | 5 | 6 | -1 | +1.0 |
+| advantage | Bergotte | bergotte | 3 | 4 | -1 | +0.2 |
+| advantage | Elstir | elstir | 4 | 3 | +1 | +17.7 |
+| prestige | Bloch | bloch | 3 | 3 | +0 | -6.8 |
+| prestige | Gilberte | gilberte | 4 | 4 | +0 | +0.0 |
+| prestige | Mme Verdurin | mme-verdurin | 5 | 5 | +0 | -3.5 |
+| prestige | Morel | morel | 1 | 1 | +0 | -2.1 |
+| prestige | Robert de Saint-Loup | saint-loup | 7 | 7 | +0 | +0.6 |
 | inclusion | Albertine | albertine | 9 | 9 | +0 | +1.6 |
 | inclusion | Bloch | bloch | 6 | 6 | +0 | +1.0 |
 | inclusion | Gilberte | gilberte | 2 | 2 | +0 | +1.3 |
@@ -342,5 +342,5 @@ The design doc leaves four points open; each was resolved once, in code, and is 
 
 Deferred, as the design doc says: dossier lens cards (dominant dimension, percentile), the archetype rewrite, and the person/name UI toggle -- all app-facing, all after the adoption gate. The corpus summary carries the sign triple the archetype would use.
 
-Wall clock: 87.2 s for the validation battery; 540.057 s for the build it reads.
+Wall clock: 90.8 s for the validation battery; 597.486 s for the build it reads.
 

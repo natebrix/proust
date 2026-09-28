@@ -130,3 +130,53 @@ def test_scanner_ignores_pure_descriptors(registry):
     found = scanner.scan("le docteur entra, suivi de la duchesse et du peintre.")
     assert "docteur-cottard" not in found
     assert "duchesse-de-guermantes" not in found
+
+
+def test_prince_de_guermantes_is_one_entity(registry):
+    """The bootstrap once minted prince-de-guermantes-2 from the annotation
+    name because the overlay entity claimed none; Gilbert is one person."""
+    assert "prince-de-guermantes-2" not in registry.entities
+    for chapter_id in (None, "v3-p2", "v4-p2", "v7-p4-le-bal-de-tetes"):
+        resolution = registry.resolve("prince de Guermantes", chapter_id=chapter_id)
+        assert resolution.status == "resolved"
+        assert resolution.entity_id == "prince-de-guermantes"
+
+
+def test_no_two_entities_share_a_display_name(registry):
+    """Two entities with one display name are either a bootstrap duplicate or
+    a pair that readers cannot tell apart in any person-keyed output."""
+    seen = {}
+    for entity in registry.entities.values():
+        other = seen.setdefault(entity.display_name, entity.id)
+        assert other == entity.id, f"{other} and {entity.id} share {entity.display_name!r}"
+
+
+BAL = "v7-p4-le-bal-de-tetes"
+
+
+def test_scoped_form_makes_an_annotation_name_ambiguous_there(registry):
+    """characters.yaml scopes "princesse de Guermantes" to mme-verdurin in the
+    last two chapters; the annotation name must not override that ruling."""
+    resolution = registry.resolve("princesse de Guermantes", chapter_id=BAL)
+    assert resolution.status == "ambiguous"
+    assert resolution.candidates == ("mme-verdurin", "princesse-de-guermantes")
+    assert registry.resolve("princesse de Guermantes", chapter_id="v5").entity_id == "princesse-de-guermantes"
+    assert registry.resolve("princesse de Guermantes").entity_id == "princesse-de-guermantes"
+
+
+def test_unit_ruling_settles_one_passage_only(registry):
+    ruled = f"{BAL}#p-61-p-65"
+    assert registry.resolve("princesse de Guermantes", chapter_id=BAL, unit_id=ruled).entity_id == "mme-verdurin"
+    assert registry.resolve("princesse de Guermantes", chapter_id=BAL, unit_id=f"{BAL}#p-1-p-5").status == "ambiguous"
+    # The ruling covers one name only.
+    assert registry.resolve("Gilberte", chapter_id=BAL, unit_id=ruled).entity_id == "gilberte"
+
+
+def test_unit_rulings_must_name_a_known_entity_and_a_reason(tmp_path):
+    source = REGISTRY_PATH.read_text(encoding="utf-8")
+    broken = source.replace("  entity: mme-verdurin\n", "  entity: nobody-at-all\n", 1)
+    assert broken != source
+    path = tmp_path / "characters.yaml"
+    path.write_text(broken, encoding="utf-8")
+    with pytest.raises(ValueError, match="unknown entity"):
+        Registry.load(path)

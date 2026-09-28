@@ -21,6 +21,14 @@ known_source_issues:
 - 'excluded row ''Charles'' -> ''Swann'': bare first name; collides with Charlie/Charlus contexts
   — reference only'
 - 'excluded row ''Charlie'' -> ''Morel'': bare first name; reference only'
+unit_rulings:
+- unit_id: v7-p4-le-bal-de-tetes#p-61-p-65
+  name: princesse de Guermantes
+  entity: mme-verdurin
+  reason: 'Ruling 2026-09-28: the bare title is ambiguous in the Bal de têtes (see the mme-verdurin
+    chapter-scoped form). This passage is not: an old woman repeats "nous ferons clan!" in a
+    tinny voice from her dentures. The petit clan is Mme Verdurin''s own phrase, and Marie-Gilbert
+    is dead by now. The only late passage in the corpus that uses the bare title.'
 entities:
 - id: amie-de-mlle-vinteuil
   display_name: l'amie de Mlle Vinteuil
@@ -331,8 +339,13 @@ entities:
     - overlay
 - id: prince-de-guermantes
   display_name: prince de Guermantes
-  status: proposed
-  notes: MISSING from standings despite major scenes (Dreyfus confession, V7 matinée host).
+  status: confirmed
+  notes: 'Gilbert, prince de Guermantes: the Dreyfus confession, and later the V7 matinée
+    host after his marriage to Mme Verdurin. Ruling 2026-09-28: merged the bootstrap duplicate
+    prince-de-guermantes-2 (created from the annotation name when the overlay entry carried
+    no annotation_names, then slug-suffixed on collision) into this entity; one person.'
+  annotation_names:
+  - prince de Guermantes
   surface_forms:
   - form: prince de Guermantes
     scope: global
@@ -340,6 +353,7 @@ entities:
     scan: true
     sources:
     - overlay
+    - annotations
   - form: Gilbert
     scope: mention_only
     rewrite: never
@@ -2492,18 +2506,6 @@ entities:
     scan: false
     sources:
     - annotation_surface_forms(3x)
-- id: prince-de-guermantes-2
-  display_name: prince de Guermantes
-  status: confirmed
-  annotation_names:
-  - prince de Guermantes
-  surface_forms:
-  - form: prince de Guermantes
-    scope: global
-    rewrite: never
-    scan: true
-    sources:
-    - annotations
 - id: prince-de-leon
   display_name: prince de Léon
   status: confirmed

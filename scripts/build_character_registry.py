@@ -216,6 +216,9 @@ OVERLAY = [
          status="proposed",
          notes="MISSING from standings despite major scenes (Dreyfus confession, "
                "V7 matinée host).",
+         # Claims the annotation name so a bootstrap does not mint a
+         # slug-suffixed duplicate (prince-de-guermantes-2) for it.
+         annotation_names=["prince de Guermantes"],
          surface_forms=[F("prince de Guermantes", rewrite="never"),
                         F("Gilbert", scope="mention_only")]),
     dict(id="princesse-de-guermantes", display_name="princesse de Guermantes",
