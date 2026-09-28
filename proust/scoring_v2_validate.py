@@ -186,8 +186,10 @@ def v1_matches(units, lens, epsilon=V1_EPSILON):
     return matches
 
 
-def v2_matches(units, lens, registry=None, merge_map=None, view="name"):
-    comparisons = build_module.build_comparisons(units, lens, registry=registry, merge_map=merge_map)
+def v2_matches(units, lens, registry=None, merge_map=None, view="name", pair_weighting=v2.DEFAULT_PAIR_WEIGHTING):
+    comparisons = build_module.build_comparisons(
+        units, lens, registry=registry, merge_map=merge_map, pair_weighting=pair_weighting
+    )
     matches, _dropped = build_module.view_matches(comparisons, view)
     return matches
 
@@ -226,6 +228,7 @@ def bootstrap_stability(
     samples=DEFAULT_BOOTSTRAP_SAMPLES,
     seed=BOOTSTRAP_SEED,
     progress=None,
+    pair_weighting=v2.DEFAULT_PAIR_WEIGHTING,
 ):
     """Resample units with replacement; how far do the standings move?
 
@@ -246,7 +249,9 @@ def bootstrap_stability(
         drawn = [units[generator.randrange(len(units))] for _ in range(len(units))]
         for formula in ("v2", "v1"):
             if formula == "v2":
-                matches = v2_matches(drawn, lens, registry=registry, merge_map=merge_map)
+                matches = v2_matches(
+                    drawn, lens, registry=registry, merge_map=merge_map, pair_weighting=pair_weighting
+                )
             else:
                 matches = v1_matches(drawn, lens)
             ratings = _conservative_ratings(matches, w2_by_formula[formula], weighted=(formula == "v2"))
@@ -723,6 +728,7 @@ def build_validation_report(
             merge_map=merge_map,
             samples=bootstrap_samples,
             progress=progress,
+            pair_weighting=manifest.get("pair_weighting", v2.DEFAULT_PAIR_WEIGHTING),
         )
         stability[lens]["v2_non_provisional_count"] = len(v2_non_provisional)
         stability[lens]["v1_non_provisional_count"] = len(v1_non_provisional)
@@ -759,6 +765,7 @@ def build_validation_report(
 
     return {
         "scoring_v2_validation_version": "scoring_v2_validation_v1",
+        "fit_store": str(output_dir),
         "build_manifest": manifest,
         "unit_count": len(units),
         "bootstrap_samples": bootstrap_samples,
@@ -825,8 +832,9 @@ def render_validation_report_markdown(report):
         "Formula: `proust/scoring_v2.py`, exactly as specified in "
         "`proust/docs/scoring_v2_design.md`. Ratings: weighted WHR "
         "(`proust/whr.py`), smoothed and filtered, on the "
-        "`cumulative_unit_index` narrative axis. Everything here is staged under "
-        "`outputs/scoring-v2/`; adoption is a separate reviewed decision.",
+        "`cumulative_unit_index` narrative axis. Pair weighting: "
+        f"`{manifest.get('pair_weighting', v2.PAIR_WEIGHTING_ALL_PAIRS)}`. Everything here is staged under "
+        f"`{report.get('fit_store', build_module.DEFAULT_OUTPUT_DIR)}/`; adoption is a separate reviewed decision.",
         "",
         f"w2 selected per lens/view: "
         + ", ".join(f"{key} = {value:g}" for key, value in sorted(manifest["w2_elo_selected"].items())),

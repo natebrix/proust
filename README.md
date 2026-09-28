@@ -41,9 +41,17 @@ The project is in post-production canonicalized corpus analysis:
 
 ## Main Output Families
 
-Every `-current` aggregate below is built from the FOUNDATION corpus
-(`outputs/foundation-run-*`: 963 units, prompt v2, open world, annotated on the
-authoritative Wikisource text). The legacy `outputs/run-*` and
+The current surfaces come from two annotation passes over the same 963-unit
+grid of the authoritative Wikisource text:
+
+- the ENRICHMENT corpus (`outputs/enrichment-run-*`, prompt v2.1) feeds the
+  scoring v2 standings, journey timelines, character pages, and fortune arcs
+- the FOUNDATION corpus (`outputs/foundation-run-*`, prompt v2) feeds the
+  corpus review, cross-lens analyses, profile cards, chapter summaries, and
+  chapter overlays
+
+See [proust/docs/outputs_guide.md](proust/docs/outputs_guide.md) for the
+table. The legacy `outputs/run-*` and
 `outputs/supplement-run-*` families are history: they are still on disk and
 still buildable, but nothing current is built from them, and the superseded
 `-supplemented-current` artifacts are kept only as the before picture. Pass
@@ -52,8 +60,8 @@ it the commands behave exactly as they always did.
 
 The most important artifact families under `outputs/` are:
 
-- `foundation-run-*`
-  - the current corpus: run directories with units, prompt v2 prompts, raw model output, annotations, and resolution sidecars
+- `enrichment-run-*`, `foundation-run-*`
+  - the two current corpora: run directories with units, prompts, raw model output, annotations, and resolution sidecars
 - `run-*`, `supplement-run-*`
   - the superseded corpora, kept for history
 - `corpus-review-current.*`
@@ -121,9 +129,24 @@ python -m proust foundation-editorial-discrepancies
 ```
 
 `scoring-v2-promote` is the current rating and character-page build: it reads
-the staged scoring v2 fits under `outputs/scoring-v2/` and writes the standings,
-the journey timelines, and `character-pages-current.*`. Refitting is the
-separate, slower `python3 scripts/build_scoring_v2.py --stage build`.
+staged scoring v2 fits and writes the standings, the journey timelines, and
+`character-pages-current.*`. The current fits are the enrichment store, so
+refit and promote with:
+
+```bash
+python3 scripts/build_scoring_v2.py --corpus enrichment --stage all
+```
+
+(`--corpus` defaults to `foundation`, which would promote the older store.
+Promote only on a machine with the `islt` portraits folder, or every
+character page loses its portraits.)
+
+Fortune arcs, each character's own trajectory across the novel, build in
+about 15 seconds:
+
+```bash
+python3 scripts/build_fortune.py
+```
 
 The v1-era rating and page commands still exist and still build their own
 artifacts, but nothing current comes from them any more:
@@ -165,6 +188,7 @@ The main app-facing layers are:
 - character pages
 - chapter overlays
 - chapter summaries
+- fortune arcs (`character-fortune-current.json`)
 
 The main handoff docs for that work are:
 
@@ -172,6 +196,7 @@ The main handoff docs for that work are:
 - [proust/docs/islt_character_pages_handoff.md](proust/docs/islt_character_pages_handoff.md)
 - [proust/docs/islt_chapter_summaries_handoff.md](proust/docs/islt_chapter_summaries_handoff.md)
 - [proust/docs/islt_character_elo_handoff.md](proust/docs/islt_character_elo_handoff.md)
+- [proust/docs/islt_fortune_arcs_handoff.md](proust/docs/islt_fortune_arcs_handoff.md)
 
 ## Derived Rankings
 
@@ -185,11 +210,18 @@ Current artifacts:
 
 - [outputs/character-standings-advantage-current.md](outputs/character-standings-advantage-current.md) (and the prestige and inclusion siblings)
 - [outputs/character-journey-advantage-timeline-current.json](outputs/character-journey-advantage-timeline-current.json)
-- [outputs/scoring-v2/validation-report.md](outputs/scoring-v2/validation-report.md)
+- [outputs/scoring-v2-enrichment/validation-report.md](outputs/scoring-v2-enrichment/validation-report.md)
 
 The design and the adoption record are in:
 
 - [proust/docs/scoring_v2_design.md](proust/docs/scoring_v2_design.md)
+
+The standings answer "who comes out ahead of whom in shared scenes". The
+other question, "what does the novel do to this character over time", is
+answered by the fortune arcs:
+
+- [outputs/fortune/fortune-report.md](outputs/fortune/fortune-report.md)
+- [proust/docs/fortune_design.md](proust/docs/fortune_design.md)
 
 The earlier ELO, Glicko-2, and v1 WHR surfaces are the baselines v2 was
 validated against; their rationale is in

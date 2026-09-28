@@ -29,18 +29,26 @@ If you are re-entering the project and want the shortest useful path, read in th
 
 ## Which Corpus The Current Artifacts Come From
 
-Every `-current` aggregate artifact is now built from the FOUNDATION corpus:
-the `outputs/foundation-run-*` directories (963 units, prompt v2, open world,
-annotated against the authoritative Wikisource text with a per-chapter registry
-reference sheet). The scoring config did NOT change in that cutover, so every
-difference between a current artifact and its superseded version is a corpus
-difference.
+The current artifacts come from TWO corpora over the same 963-unit grid (the
+authoritative Wikisource text, open world, a per-chapter registry reference
+sheet):
 
-The scoring config has changed SINCE that cutover: scoring v2 was adopted on
-2026-08-12 and the rating and character-page surfaces are now built from it (see
-"Scoring v2: The Current Rating Surface" below). The corpus underneath is the
-same foundation corpus, so a v1-era rating artifact and its v2 successor differ
-by scoring alone.
+| surfaces | corpus | built |
+| --- | --- | --- |
+| scoring v2 standings, journey timelines, character pages; fortune arcs | ENRICHMENT: `outputs/enrichment-run-*`, prompt v2.1 | promoted 2026-08-14 (`5e1ab980`); see [enrichment_design.md](enrichment_design.md) |
+| corpus review, character and chapter cross-lens analyses, annotation counts, profile cards, chapter summaries, chapter overlays | FOUNDATION: `outputs/foundation-run-*`, prompt v2 | rebuilt 2026-08-12 (`14a4907a`) |
+
+Enrichment re-annotated the same units with dimension criteria and a wider
+effect budget, so prestige and inclusion carry more evidence there. Numbers
+from the two groups are not directly comparable; rebuilding the second group
+from the enrichment corpus is an open decision.
+
+Artifacts record their corpus in a `corpus` field (`foundation` or
+`enrichment`). Files built before 2026-09-28 may show `null` there: the label
+did not recognise enrichment builds until then.
+
+Scoring v2 was adopted on 2026-08-12 and the rating and character-page surfaces
+are built from it (see "Scoring v2: The Current Rating Surface" below).
 
 The legacy `outputs/run-*` and `outputs/supplement-run-*` families and the
 `-supplemented-current` artifacts built from them are history. They are kept on
@@ -312,7 +320,12 @@ Scoring v2 (described in
 was ADOPTED on 2026-08-12 and is now the project's rating and profile surface.
 It comes in two layers.
 
-### The fit store: `outputs/scoring-v2/`
+### The fit stores: `outputs/scoring-v2-enrichment/` (current) and `outputs/scoring-v2/` (foundation)
+
+The current store uses the `ranking` pair weighting, adopted 2026-09-28 (see
+[scoring_v2_design.md](scoring_v2_design.md), "Pair weighting: adopted"); the
+foundation store predates it and uses `all_pairs`. Ranked sets are currently
+31 / 14 / 8 (advantage / prestige / inclusion).
 
 The fits themselves, and the evidence they were adopted on. Nothing outside
 that directory is written by a build; promotion is a separate step.
@@ -355,11 +368,18 @@ current surface and the validated one cannot diverge.
 The point-by-point trajectories are NOT republished in the standings: they stay
 in the fit store, and the app-facing slice of them is in the journey timelines.
 
-Rebuild everything with:
+Rebuild the CURRENT surfaces with:
 
 ```bash
-python3 scripts/build_scoring_v2.py --stage all
+python3 scripts/build_scoring_v2.py --corpus enrichment --stage all
 ```
+
+The `--corpus` default is `foundation`, which fits into `outputs/scoring-v2/`
+and, with `--stage all` or `promote`, would overwrite the promoted surfaces
+with foundation numbers. Promoting also rebuilds `character-pages-current.*`,
+whose portraits are read from `~/dev/brixius-web/public/projects/islt/portraits`;
+on a machine without that folder every portrait comes out empty, so promote
+only where the folder exists.
 
 `--stage build` re-fits, `--stage validate` re-runs the battery against the
 staged artifacts, and `--stage promote` (also `python -m proust
@@ -403,6 +423,26 @@ Use these when:
 
 Do not treat them as the current default reading surface.
 
+## Fortune Arcs: Each Character's Own Trajectory
+
+Built by `python3 scripts/build_fortune.py` (about 15 seconds); design and
+findings in [fortune_design.md](fortune_design.md).
+
+- `outputs/fortune/fortune-{lens}-{person|name}.json` — the analysis files:
+  selected drift and noise, arc evidence, and per character the smoothed arc,
+  the passages behind it, and the biggest fall and rise with their
+  order-permutation p-values. Lenses: `overall`, `advantage`, `prestige`,
+  `inclusion`.
+- `outputs/fortune/fortune-report.md` — the readable summary: biggest falls and
+  rises per lens, on the Elo-style rating scale.
+- `outputs/character-fortune-current.json` — the app-facing export for the
+  `islt` character pages (person view, precomputed ratings, positions and
+  reader links); see [islt_fortune_arcs_handoff.md](islt_fortune_arcs_handoff.md).
+
+Fortune answers "what did the novel do to this character over time?". The
+standings answer "who comes out ahead of whom in shared scenes?". They are
+different questions and can disagree.
+
 ## Which Artifact Answers Which Question
 
 If the question is:
@@ -421,6 +461,9 @@ If the question is:
 
 - "Where does this character stand, and how sure are we?"  
   Read [character-standings-advantage-current.md](/Users/nathan_brixius/dev/proust/outputs/character-standings-advantage-current.md:1) and its prestige and inclusion siblings
+
+- "What did the novel do to this character over time (their arc)?"  
+  Read [fortune-report.md](/Users/nathan_brixius/dev/proust/outputs/fortune/fortune-report.md:1); the app reads `character-fortune-current.json`
 
 - "How did this character's standing move through the book?"  
   Read [character-journey-advantage-timeline-current.json](/Users/nathan_brixius/dev/proust/outputs/character-journey-advantage-timeline-current.json:1)

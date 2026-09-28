@@ -5,6 +5,7 @@
 - Source corpus summary: `scoring_v2_corpus_summary_v1`
 - View: `name`
 - Character count: `23`
+- Corpus: `enrichment`
 
 ## Profile shape
 
@@ -28,21 +29,21 @@
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `relational_positive_understated`
 
-He loses the scene and keeps the room: his individual scenes still run against him, yet he is first in belonging, 4th of 22 in standing, and held mid-table in advantage by the sheer certainty of the evidence.
+He loses the scene and keeps the room: his individual scenes still run against him, yet he is first in belonging, 4th of 14 in prestige, and 7th of 31 in advantage on the sheer certainty of the evidence.
 
-The narrator is the novel's "I": nearly every scene passes through him, and scene by scene the scenes still go badly — 200 decided losses against 168 wins, with negative passages far outnumbering positive ones. Yet across the whole book his welcome never runs out: he ranks first in belonging, 4th of 22 in visible standing, and his advantage position (10th of 41) is less a verdict on his victories than on his measurability — no one in the book is weighed more often or more surely, and that certainty holds his floor where flashier figures wobble. The rooms keep receiving the man the scenes keep wounding; the split between lived defeat and durable acceptance remains the book's central irony made measurable.
+The narrator is the novel's "I": nearly every scene passes through him, and scene by scene the scenes still go badly — 200 decided losses against 168 wins, with negative passages far outnumbering positive ones. Yet across the whole book his welcome never runs out: he ranks 1st of 8 in belonging and 4th of 14 in prestige, and his place in scene-level advantage (7th of 31) is less a verdict on his victories than on his measurability — no one in the book is weighed more often or more surely, and that certainty holds his floor where flashier figures wobble. The rooms keep receiving the man the scenes keep wounding; the split between lived defeat and durable acceptance remains the book's central irony made measurable.
 
 Why interesting:
 
 - His scene outcomes still lean against him — more decided losses than wins, negative passages nearly two to one — while all three of his standings sit in the upper half: the same passages, weighed differently.
-- Because the whole novel passes through him, he is measured against more of the cast than any other figure, so his readings are the most certain in the book — his rating carries the narrowest uncertainty of anyone's.
+- Because the whole novel passes through him, he is measured against more of the cast than any other figure, so his readings are the most certain in the book — his advantage rating carries the narrowest uncertainty of anyone's.
 - His suffering is local and his acceptance is cumulative: no single scene secures his place, and no single defeat costs it.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1513 ± 73 | 1439.9 | 10 of 41 | 209 | -0.201 | 0.6321 | 46/81/7/75 |
-| prestige | 1633 ± 118 | 1515.5 | 4 of 22 | 209 | +0.061 | 0.1003 | 18/4/0/187 |
-| inclusion | 1602 ± 100 | 1502.1 | 1 of 9 | 209 | +0.077 | 0.3553 | 36/26/1/146 |
+| advantage | 1513 ± 82 | 1430.8 | 7 of 31 | 209 | -0.201 | 0.6321 | 46/81/7/75 |
+| prestige | 1648 ± 128 | 1520.9 | 4 of 14 | 209 | +0.061 | 0.1003 | 18/4/0/187 |
+| inclusion | 1598 ± 101 | 1496.7 | 1 of 8 | 209 | +0.077 | 0.3553 | 36/26/1/146 |
 
 Top chapters (by absolute movement):
 
@@ -74,21 +75,21 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `uniform_positive`
 
-Second in every register the novel measures — advantage, prestige, and belonging alike — the most complete dominance in the book, and in each case second to a different rival.
+First in scene-level advantage, first in prestige, and second only to the narrator in belonging — the most complete dominance the novel measures.
 
-The duchesse now holds the same rank three times over: 2nd of 41 in scene-level advantage, 2nd of 22 in prestige, 2nd of 9 in belonging — no one else places in the top three of every register. Her scenes back it up: 225 decided wins against 92 losses, the wit crowning her far more often than it cuts her. And the trio of figures who edge her out reads like the novel's own commentary — Forcheville in the scenes, Morel in standing, the narrator in belonging: a brute, a protégé, and an observer, each beating the queen of the Faubourg at exactly one game. She is the book's measured establishment, and the measurements agree.
+The duchesse holds the top of the book: 1st of 31 in scene-level advantage, 1st of 14 in prestige, and 2nd of 8 in belonging, behind only the narrator — no one else places in the top three of every register. Her scenes back it up: 225 decided wins against 92 losses, the wit crowning her far more often than it cuts her. Counted passage by passage, so that a crowded salon weighs as one scene rather than a dozen, she moves up past Forcheville in the scenes and past Morel in standing: her dominance is spread across the book, not piled up in a few full rooms. She is the book's measured establishment, and the measurements agree.
 
 Why interesting:
 
-- She is second in all three registers at once — the most complete high placement in the measured cast — and to a different character each time.
+- She ranks first in two registers and second in the third — the most complete high placement in the measured cast.
 - Her scene record (225 wins, 92 losses across 354 decided comparisons) is the most lopsidedly victorious of any heavily-measured figure: the wit wins far more evenings than it loses.
-- The old reading had her mid-table in advantage; the witnessed-standing criteria found the deference the salons actually pay her.
+- The only character above her anywhere is the narrator, in belonging: the observer the salons absorb outranks the hostess who admits him.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1594 ± 80 | 1514.1 | 2 of 41 | 183 | +0.049 | 0.4899 | 62/41/8/72 |
-| prestige | 1683 ± 99 | 1583.8 | 2 of 22 | 183 | +0.216 | 0.2704 | 38/4/0/141 |
-| inclusion | 1619 ± 159 | 1460.2 | 2 of 9 | 183 | 0.0 | 0.0 | 0/0/0/183 |
+| advantage | 1602 ± 93 | 1508.5 | 1 of 31 | 183 | +0.049 | 0.4899 | 62/41/8/72 |
+| prestige | 1706 ± 108 | 1598.2 | 1 of 14 | 183 | +0.216 | 0.2704 | 38/4/0/141 |
+| inclusion | 1613 ± 162 | 1451.1 | 2 of 8 | 183 | 0.0 | 0.0 | 0/0/0/183 |
 
 Top chapters (by absolute movement):
 
@@ -117,24 +118,24 @@ Notable units:
 - Slug: `swann`
 - Portrait default: `/projects/islt/portraits/swann-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `177`
-- Archetype signs: `advantage -1, prestige -1, inclusion -1`
+- Archetype signs: `advantage -1, prestige +1, inclusion -1`
 - Pattern: `broad_negative`
 
-One of the most heavily measured men in the novel, and measured losing: below the middle in scene-level advantage, mid-table in a prestige field he once led from the shadows, near the bottom in belonging.
+One of the most heavily measured men in the novel, and measured losing: below the middle in scene-level advantage, in the lower half of a prestige field he once led from the shadows, next to last in belonging.
 
-Swann is staged constantly — 386 decided comparisons in advantage alone, more than anyone but the narrator — and the scenes go against him: 197 losses to 144 wins, with negative passages far outnumbering positive. His advantage standing sits below the middle (26th of 41). Prestige, newly measurable for him, lands mid-table (12th of 22) — a sobering number for the man Combray never realized dined with princes, because the novel stages his standing mostly in decline, through the marriage that costs him the rooms he owned. Belonging is his cleanest loss: 8th of 9, the elegant man who ends the book steered around as an embarrassment.
+Swann is staged constantly — 386 decided comparisons in advantage alone, more than anyone but the narrator — and the scenes go against him: 197 losses to 144 wins, with negative passages far outnumbering positive. His scene-level advantage sits below the middle (19th of 31). Prestige lands in the lower half (10th of 14) — a sobering number for the man Combray never realized dined with princes, because the novel stages his standing mostly in decline, through the marriage that costs him the rooms he owned. Belonging is his cleanest loss: 7th of 8, the elegant man who ends the book steered around as an embarrassment.
 
 Why interesting:
 
 - He is among the most heavily measured figures in the book, so his negative readings carry unusual evidentiary weight — this is not a small-sample verdict.
-- His prestige rank (12th of 22) captures the tragedy structurally: the novel stages his standing almost entirely on its way down, after the marriage, so the measured Swann is the diminished one.
-- Belonging near the bottom (8th of 9) squares with the book's late cruelty: the name unspeakable in the Guermantes household his person once graced.
+- His prestige rank (10th of 14) captures the tragedy structurally: the novel stages his standing almost entirely on its way down, after the marriage, so the measured Swann is the diminished one.
+- Belonging near the bottom (7th of 8) squares with the book's late cruelty: the name unspeakable in the Guermantes household his person once graced.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1458 ± 88 | 1369.2 | 26 of 41 | 177 | -0.317 | 0.7741 | 46/83/3/45 |
-| prestige | 1494 ± 129 | 1364.8 | 12 of 22 | 177 | +0.024 | 0.1659 | 15/15/2/145 |
-| inclusion | 1346 ± 122 | 1224.0 | 8 of 9 | 177 | -0.12 | 0.1975 | 8/20/0/149 |
+| advantage | 1475 ± 102 | 1372.3 | 19 of 31 | 177 | -0.317 | 0.7741 | 46/83/3/45 |
+| prestige | 1530 ± 134 | 1395.3 | 10 of 14 | 177 | +0.024 | 0.1659 | 15/15/2/145 |
+| inclusion | 1359 ± 125 | 1234.0 | 7 of 8 | 177 | -0.12 | 0.1975 | 8/20/0/149 |
 
 Top chapters (by absolute movement):
 
@@ -163,24 +164,24 @@ Notable units:
 - Slug: `robert-de-saint-loup`
 - Portrait default: `/projects/islt/portraits/saint-loup-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `138`
-- Archetype signs: `advantage +1, prestige -1, inclusion -1`
-- Pattern: `prestige_positive_inclusion_negative`
+- Archetype signs: `advantage -1, prestige +1, inclusion -1`
+- Pattern: `broad_presence_middling`
 
-Ranked in all three registers — solidly mid-table in scene-level advantage and belonging, but in the lower half of the prestige field his name would predict he'd own.
+Present everywhere and first nowhere: mid-table in scene-level advantage, below the middle of the prestige field his name would predict he'd own, and his belonging now too thinly staged to rank.
 
-Saint-Loup remains one of the few characters the novel stages enough to rank in advantage, prestige, and belonging all at once. His footing is mid-table in scene-level advantage (14th of 41, wins and losses nearly even across 234 decided comparisons) and solid in belonging (5th of 9). But in prestige — the register his aristocratic bearing would predict he'd own — he ranks 16th of 22, the lower third of the measured field, his standing resting on presence more than deference. He is accepted more than he is deferred to, a Guermantes who spends the name rather than banks it.
+Saint-Loup is one of the most heavily staged figures in the novel, and the measurement finds breadth rather than dominance. His scene-level advantage sits mid-table (16th of 31, wins and losses nearly even across 234 decided comparisons). In prestige — the register his aristocratic bearing would predict he'd own — he ranks 9th of 14, behind his uncle Charlus and his great-aunt Villeparisis, and behind Odette and Gilberte, the woman he marries. His belonging, counted passage by passage, is staged too rarely to rank. He is accepted more than he is deferred to, a Guermantes who spends the name rather than banks it.
 
 Why interesting:
 
-- He is one of the few figures ranked in all three lenses at once, a completeness the novel affords barely a handful of its cast.
-- His prestige position inverts what his rank and bearing would suggest: 16th of the 22 characters the novel sizes there, behind Rachel — his own mistress — and Odette.
+- His prestige position inverts what his rank and bearing would suggest: 9th of the 14 characters the novel sizes there, below his own family and below Odette.
 - His advantage record is almost perfectly even (105 wins, 108 losses across 234 decided comparisons): breadth of presence, not a run of triumphs, is what holds his place.
+- His belonging leaned slightly negative and is now unranked: many passages include him, few stage him crossing a threshold.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1514 ± 84 | 1429.8 | 14 of 41 | 138 | -0.132 | 0.6397 | 37/57/3/41 |
-| prestige | 1476 ± 125 | 1351.3 | 16 of 22 | 138 | +0.047 | 0.1162 | 11/7/0/120 |
-| inclusion | 1486 ± 195 | 1291.3 | 5 of 9 | 138 | -0.024 | 0.0235 | 0/3/0/135 |
+| advantage | 1486 ± 100 | 1386.5 | 16 of 31 | 138 | -0.132 | 0.6397 | 37/57/3/41 |
+| prestige | 1553 ± 144 | 1409.3 | 9 of 14 | 138 | +0.047 | 0.1162 | 11/7/0/120 |
+| inclusion | 1490 ± 202 | 1287.1 | insufficient evidence | 138 | -0.024 | 0.0235 | 0/3/0/135 |
 
 Top chapters (by absolute movement):
 
@@ -212,21 +213,21 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `volatile_scenes_standing_holds`
 
-Volatile in the scenes and newly ranked in standing (13th of 22) — while belonging, once her clearest loss, has become her open question: the stricter reading un-ranked it.
+Volatile in the scenes and in the upper half of them (12th of 31) — while her standing and her belonging are both, counted passage by passage, still open questions.
 
-Albertine's scenes remain among the most conflicted measured — wins and losses nearly even (80 to 84), with more explicitly mixed passages than most of the cast — and her advantage standing holds mid-table, 13th of 41. Prestige, unmeasurable before, now ranks her 13th of 22: the captive girl carries more certified standing than the duc de Guermantes. The starkest change is belonging: the old reading ranked her dead last, but under the stricter boundary criteria the sequestration chapters stage fewer true boundary events than the old reading counted, and what remains is too thin to rank. Her exclusion was real, but much of it was the narrator's arrangement rather than the world's verdict — and the measurement now respects that difference.
+Albertine's scenes remain among the most conflicted measured — wins and losses nearly even (80 to 84), with more explicitly mixed passages than most of the cast — and her scene-level advantage sits in the upper half, 12th of 31. Prestige leans slightly upward, but the evidence comes from few passages and no longer supports a rank. Belonging, which an older reading ranked dead last, is also unranked: the sequestration chapters stage fewer true boundary events than that reading counted. Her exclusion was real, but much of it was the narrator's arrangement rather than the world's verdict — and the measurement respects that difference.
 
 Why interesting:
 
 - Her belonging reading changed more than anyone's: from dead last to unranked, because the boundary criteria distinguish being shut in by one man from being shut out by the world.
-- She is newly ranked in prestige (13th of 22) — the novel does stage her standing, through the elegance the narrator cultivates and the world appraises.
-- Her scene volatility persists in the new reading: near-even outcomes with an unusual share of explicitly mixed passages, a genuine internal split rather than a slide.
+- Her standing is staged mostly through the elegance the narrator cultivates — real, but in too few passages to rank.
+- Her scene volatility persists: near-even outcomes with an unusual share of explicitly mixed passages, a genuine internal split rather than a slide.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1509 ± 79 | 1430.1 | 13 of 41 | 126 | -0.203 | 0.7437 | 35/60/5/26 |
-| prestige | 1549 ± 185 | 1364.3 | 13 of 22 | 126 | +0.01 | 0.0469 | 4/2/0/120 |
-| inclusion | 1723 ± 245 | 1477.5 | insufficient evidence | 126 | -0.013 | 0.0618 | 3/3/0/120 |
+| advantage | 1504 ± 90 | 1413.3 | 12 of 31 | 126 | -0.203 | 0.7437 | 35/60/5/26 |
+| prestige | 1511 ± 226 | 1284.3 | insufficient evidence | 126 | +0.01 | 0.0469 | 4/2/0/120 |
+| inclusion | 1676 ± 254 | 1422.3 | insufficient evidence | 126 | -0.013 | 0.0618 | 3/3/0/120 |
 
 Top chapters (by absolute movement):
 
@@ -255,24 +256,24 @@ Notable units:
 - Slug: `odette`
 - Portrait default: `/projects/islt/portraits/odette-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `124`
-- Archetype signs: `advantage -1, prestige +1, inclusion -1`
+- Archetype signs: `advantage +1, prestige +1, inclusion -1`
 - Pattern: `prestige_positive_inclusion_negative`
 
-Ranked in all three registers, and highest where the old reading couldn't see her: 3rd of 22 in prestige — the demi-mondaine ends the book outranking most of the Faubourg.
+Ranked in all three registers, and highest where the old reading couldn't see her: 3rd of 14 in prestige — the demi-mondaine ends the book outranking most of the Faubourg.
 
-Odette is now one of the few figures the novel ranks in every register, and her strongest is the one the evidence used to leave open: prestige, where she stands 3rd of 22, behind only Morel and the duchesse de Guermantes. Her scene-level advantage holds mid-table (20th of 41, wins and losses nearly even across 248 decided comparisons), and belonging sits mid-low (6th of 9). The shape is the novel's longest social climb made measurable: the woman the salons refused to receive ends with a certified standing above most of the people who refused her.
+Odette is one of the eight figures the novel ranks in every register, and her strongest is the one the evidence used to leave open: prestige, where she stands 3rd of 14, behind only the duchesse de Guermantes and Morel. Her scene-level advantage sits at the exact middle (15th of 31, wins and losses nearly even across 248 decided comparisons), and belonging sits mid-low (5th of 8). The shape is the novel's longest social climb made measurable: the woman the salons refused to receive ends with a certified standing above most of the people who refused her.
 
 Why interesting:
 
-- Her prestige standing — 3rd of 22 — was invisible to the old reading, which had too little staged evidence to rank her there at all; the enriched reading certifies the climb.
+- Her prestige standing — 3rd of 14 — was invisible to the old reading, which had too little staged evidence to size her there at all; the enriched reading certifies the climb.
 - The three registers disagree about her in the most Proustian way: standing high, scenes even, belonging modest — received as a name long before she is received as a person.
 - In scene-level advantage her record is nearly balanced (112 wins, 107 losses), steady unglamorous footing rather than a dramatic arc.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1493 ± 98 | 1394.7 | 20 of 41 | 124 | -0.081 | 0.5035 | 26/40/2/56 |
-| prestige | 1686 ± 124 | 1561.9 | 3 of 22 | 124 | +0.107 | 0.1687 | 13/4/1/106 |
-| inclusion | 1402 ± 153 | 1248.7 | 6 of 9 | 124 | -0.094 | 0.1066 | 1/8/0/115 |
+| advantage | 1520 ± 120 | 1400.3 | 15 of 31 | 124 | -0.081 | 0.5035 | 26/40/2/56 |
+| prestige | 1710 ± 137 | 1573.2 | 3 of 14 | 124 | +0.107 | 0.1687 | 13/4/1/106 |
+| inclusion | 1417 ± 157 | 1259.7 | 5 of 8 | 124 | -0.094 | 0.1066 | 1/8/0/115 |
 
 Top chapters (by absolute movement):
 
@@ -304,21 +305,21 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `ranked_everywhere_late_fall`
 
-The stricter reading restores the baron: top-quarter in scene-level advantage, 5th of 22 in prestige, and newly ranked 3rd of 9 in belonging — a great position, measured on its way to a great fall.
+Ranked in all three registers — upper half in the scenes, mid-table in prestige, 3rd of 8 in belonging — a great position, measured on its way to a great fall.
 
-The enriched reading transforms Charlus's profile more than almost anyone's. Where the old evidence left him last in prestige and unrankable in belonging, the witnessed-standing and boundary criteria now certify what the novel actually stages for most of its length: a man of enormous measured position — 10th of 41 in scene-level advantage, 5th of 22 in prestige, 3rd of 9 in belonging. The fall is still in the data, but it lives in the trajectory rather than the rank: the wartime chapters and the Verdurin expulsion drag his late ratings down from a summit the earlier volumes spent thousands of pages building. He is the book's great instance of position as altitude — measured high precisely so the descent can be measured too.
+Where the oldest evidence left Charlus last in prestige and unrankable in belonging, the witnessed-standing and boundary criteria certify what the novel actually stages for most of its length: a man of real position — 13th of 31 in scene-level advantage, 7th of 14 in prestige, 3rd of 8 in belonging. His ranks are middling for a baron because the book stages him high and then brings him down, and a rank averages the two. The fall lives in the trajectory: the wartime chapters and the Verdurin expulsion drag his late ratings down from a summit the earlier volumes spent thousands of pages building. He is the book's great instance of position as altitude — measured high precisely so the descent can be measured too.
 
 Why interesting:
 
-- All three of his readings improved under stricter criteria — evidence that his old low ranks were artifacts of unwitnessed-judgment noise, not of the text.
-- He is now ranked in all three registers, one of the few, with belonging 3rd of 9 — the clubbable baron the novel installs everywhere before it evicts him.
-- His fall is a trajectory fact, not a rank fact: the standing is high across the book and collapses at its end, which is precisely the shape the novel wrote.
+- He is one of the eight figures ranked in all three registers, with belonging 3rd of 8 — the clubbable baron the novel installs everywhere before it evicts him.
+- His fall is a trajectory fact more than a rank fact: the standing is high through the early volumes and collapses at the end, which is precisely the shape the novel wrote.
+- His scene record (133 wins, 115 losses) is positive overall, a reminder of how long the novel lets him win before it stops.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1514 ± 74 | 1439.9 | 10 of 41 | 110 | -0.256 | 0.7058 | 28/46/5/31 |
-| prestige | 1591 ± 93 | 1497.9 | 5 of 22 | 110 | +0.032 | 0.269 | 16/11/1/82 |
-| inclusion | 1571 ± 146 | 1424.3 | 3 of 9 | 110 | +0.011 | 0.0705 | 3/2/0/105 |
+| advantage | 1502 ± 92 | 1410.0 | 13 of 31 | 110 | -0.256 | 0.7058 | 28/46/5/31 |
+| prestige | 1550 ± 110 | 1440.0 | 7 of 14 | 110 | +0.032 | 0.269 | 16/11/1/82 |
+| inclusion | 1562 ± 155 | 1406.6 | 3 of 8 | 110 | +0.011 | 0.0705 | 3/2/0/105 |
 
 Top chapters (by absolute movement):
 
@@ -348,23 +349,23 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/duc-de-guermantes-default-vermeer-proustian-20260425-1609.png`
 - Annotation units: `97`
 - Archetype signs: `advantage -1, prestige -1, inclusion +1`
-- Pattern: `advantage_reversed_high_title`
+- Pattern: `title_and_scenes_low`
 
-The title now earns a rank — 14th of 22 in prestige — but the rooms still go against him: 31st of 41 in scene-level advantage, with the book's most lopsided losing texture among its great names.
+The title earns a rank and it is the last one — 14th of 14 in prestige — while the rooms go against him too: 27th of 31 in scene-level advantage.
 
-The enriched reading finally measures the duc's title: he ranks 14th of 22 in prestige, a real if middling standing built on the ceremony that attends a Guermantes. It does not rescue his scenes. In scene-level advantage he sits 31st of 41, losing 126 decided comparisons against 75 wins, with passages that cut him outnumbering those that lift him ten to one — the Jockey Club defeat, the deceptions endured, the wife's wit at his expense. His belonging stays too thin to rank. The gap between the two measured registers is now his profile: the name commands deference the man cannot hold onto in any actual room.
+The duc's title is measured, and it lands at the floor: 14th of 14 in prestige, a Guermantes name that commands ceremony and not much more. It does not rescue his scenes either. In scene-level advantage he sits 27th of 31, losing 126 decided comparisons against 75 wins, with passages that cut him outnumbering those that lift him ten to one — the Jockey Club defeat, the deceptions endured, the wife's wit at his expense. His belonging stays too thin to rank. The gap between name and man has closed from the wrong side: in the passages the novel actually stages, neither holds.
 
 Why interesting:
 
-- His prestige and advantage ranks now quantify the book's running joke about him: 14th of 22 as a name, 31st of 41 as a presence.
+- His two ranks quantify the book's running joke about him: last of 14 in prestige, 27th of 31 in scene-level advantage.
 - His negative scene texture is the most lopsided of the great aristocrats (5 positive passages against 53) — the comedy of the duc is structural, not incidental.
-- Against his wife the comparison is total: she is 2nd in every register; he cracks the top half of none.
+- Against his wife the comparison is total: she leads in two registers; he cracks the top half of none.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1435 ± 87 | 1347.7 | 31 of 41 | 97 | -0.507 | 0.5645 | 5/53/4/35 |
-| prestige | 1496 ± 138 | 1357.3 | 14 of 22 | 97 | -0.012 | 0.0614 | 2/2/0/93 |
-| inclusion | 1562 ± 202 | 1360.0 | insufficient evidence | 97 | 0.0 | 0.0 | 0/0/0/97 |
+| advantage | 1423 ± 105 | 1318.0 | 27 of 31 | 97 | -0.507 | 0.5645 | 5/53/4/35 |
+| prestige | 1467 ± 168 | 1299.7 | 14 of 14 | 97 | -0.012 | 0.0614 | 2/2/0/93 |
+| inclusion | 1565 ± 206 | 1358.6 | insufficient evidence | 97 | 0.0 | 0.0 | 0/0/0/97 |
 
 Top chapters (by absolute movement):
 
@@ -396,21 +397,21 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion -1`
 - Pattern: `prestige_positive_inclusion_negative`
 
-Ranked in all three registers, and the three disagree completely: 6th of 22 in prestige, mid-table in the scenes, dead last of 9 in belonging — the hostess the book crowns and never seats.
+Ranked in all three registers, and the three disagree completely: 6th of 14 in prestige, 10th of 31 in the scenes, dead last of 8 in belonging — the hostess the book crowns and never seats.
 
-Mme Verdurin remains one of the few figures ranked in advantage, prestige, and belonging at once, and the enriched reading sharpens her contradiction to its final form. Prestige: 6th of 22, real certified standing, ending as it does in the princesse de Guermantes title. Advantage: 12th of 41, though the texture is brutal — passages that lift her are outnumbered eight to one by passages that cut. Belonging: dead last, 9th of 9. The woman who built the century's most exclusive interior is, by the book's own staging, never securely inside anything — bypassed at her own soirées, mocked in her own title. The clan was a fortress built by someone the walls never protected.
+Mme Verdurin is one of the eight figures ranked in advantage, prestige, and belonging at once, and the measurement sharpens her contradiction to its final form. Prestige: 6th of 14, real certified standing, ending as it does in the princesse de Guermantes title. Advantage: 10th of 31, though the texture is brutal — passages that lift her are outnumbered eight to one by passages that cut. Belonging: dead last, 8th of 8. The woman who built the century's most exclusive interior is, by the book's own staging, never securely inside anything — bypassed at her own soirées, mocked in her own title. The clan was a fortress built by someone the walls never protected.
 
 Why interesting:
 
-- Her three ranks tell three different stories — top-third standing, mid-table scenes, last-place belonging — the widest three-way disagreement in the measured cast.
+- Her three ranks tell three different stories — upper-half standing, upper-third scenes, last-place belonging — the widest three-way disagreement in the measured cast.
 - Her last place in belonging is earned at her own parties: the corpus's adjudicated divergences include guests bypassing her as hostess while a queen rescues her, and the Faubourg mocking her as princesse.
 - Her prestige is the book's great manufactured standing — built, purchased, and finally titled — and the numbers certify it while refusing it warmth.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1535 ± 96 | 1439.3 | 12 of 41 | 78 | -0.336 | 0.4254 | 4/33/0/41 |
-| prestige | 1574 ± 105 | 1468.6 | 6 of 22 | 78 | +0.129 | 0.2362 | 13/4/0/61 |
-| inclusion | 1334 ± 156 | 1178.0 | 9 of 9 | 78 | -0.055 | 0.0549 | 0/3/0/75 |
+| advantage | 1537 ± 122 | 1415.4 | 10 of 31 | 78 | -0.336 | 0.4254 | 4/33/0/41 |
+| prestige | 1586 ± 127 | 1459.1 | 6 of 14 | 78 | +0.129 | 0.2362 | 13/4/0/61 |
+| inclusion | 1357 ± 168 | 1189.0 | 8 of 8 | 78 | -0.055 | 0.0549 | 0/3/0/75 |
 
 Top chapters (by absolute movement):
 
@@ -442,21 +443,21 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `advantage_strong_prestige_ranked`
 
-The quiet riser of the stricter reading: 6th of 41 in scene-level advantage and newly ranked 10th of 22 in prestige — the salonnière the old evidence mistook for background.
+The quiet riser: 4th of 31 in scene-level advantage and ranked 8th of 14 in prestige — the salonnière the old evidence mistook for background.
 
-Mme de Villeparisis is one of the enriched reading's clearest promotions: from the exact middle of the old table to 6th of 41 in scene-level advantage (72 decided wins against 38 losses), with a new ranked standing in prestige (10th of 22) besides. The rise is not mysterious — her matinées are among the book's most heavily staged social machinery, and the witnessed-standing criteria credit the hostess who runs the room rather than only the guests who shine in it. Belonging alone stays too thin to rank, the famous ambiguity of her position — received by everyone, placed by no one — surviving as an honestly open question.
+Mme de Villeparisis is one of the clearest promotions since the oldest reading: 4th of 31 in scene-level advantage (72 decided wins against 38 losses), with a ranked standing in prestige (8th of 14) besides. The rise is not mysterious — her matinées are among the book's most heavily staged social machinery, and the witnessed-standing criteria credit the hostess who runs the room rather than only the guests who shine in it. Belonging alone stays too thin to rank, the famous ambiguity of her position — received by everyone, placed by no one — surviving as an honestly open question.
 
 Why interesting:
 
-- Her advantage rank jumped from the median to 6th of 41 — the stricter criteria found the authority her matinées actually exercise.
-- She is the foundation corpus's one adjudicated case of prestige-without-belonging at Balbec, and the enriched reading preserves exactly that shape: ranked standing, unrankable belonging.
-- Her win rate (72 to 38) is among the strongest of any non-family figure — quiet dominance the old reading's thin evidence could not see.
+- Her advantage rank rose from the median of the oldest reading to 4th of 31 — the stricter criteria found the authority her matinées actually exercise.
+- She is the foundation corpus's one adjudicated case of prestige-without-belonging at Balbec, and the current reading preserves exactly that shape: ranked standing, unrankable belonging.
+- Her win rate (72 to 38) is among the strongest of any heavily measured figure — quiet dominance the old reading's thin evidence could not see.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1580 ± 118 | 1461.3 | 6 of 41 | 73 | -0.077 | 0.3693 | 14/19/2/38 |
-| prestige | 1527 ± 131 | 1395.9 | 10 of 22 | 73 | -0.016 | 0.2053 | 7/9/0/57 |
-| inclusion | 1524 ± 208 | 1316.4 | insufficient evidence | 73 | 0.0 | 0.0 | 0/0/0/73 |
+| advantage | 1595 ± 134 | 1461.4 | 4 of 31 | 73 | -0.077 | 0.3693 | 14/19/2/38 |
+| prestige | 1561 ± 148 | 1412.8 | 8 of 14 | 73 | -0.016 | 0.2053 | 7/9/0/57 |
+| inclusion | 1532 ± 215 | 1316.7 | insufficient evidence | 73 | 0.0 | 0.0 | 0/0/0/73 |
 
 Top chapters (by absolute movement):
 
@@ -488,21 +489,21 @@ Notable units:
 - Archetype signs: `advantage -1, prestige -1, inclusion -1`
 - Pattern: `broad_negative`
 
-Near the bottom everywhere the room can see him: 36th of 41 in the scenes, lower-third in prestige (18th of 22), 7th of 9 in belonging — the old reading's flattering prestige rank was an artifact, and it's gone.
+Near the bottom everywhere the room can see him: 30th of 31 in the scenes, 13th of 14 in prestige, 6th of 8 in belonging.
 
-Bloch's advantage reading remains among the harshest measured — 36th of 41, losses outnumbering wins better than three to one (100 to 31), negative passages five to one. What changed is prestige: the old, tiny field ranked him a startling 3rd of 8; the enriched field of 22 places him 18th, which is what the text has staged all along — the gaffes, the wrong clothes, the name changed to Jacques du Rozier. Belonging completes the picture at 7th of 9. His late success as a dramatist is real but arrives mostly offstage; the rooms the novel actually stages are the ones that cost him. The consistency across all three registers is now the point: the book's most relentless study of the socially unabsorbed.
+Bloch's advantage reading is among the harshest measured — 30th of 31, losses outnumbering wins better than three to one (100 to 31), negative passages five to one. Prestige, once a startling 3rd-of-8 in a tiny early field, now places him 13th of 14, next to last — which is what the text has staged all along: the gaffes, the wrong clothes, the name changed to Jacques du Rozier. Belonging completes the picture at 6th of 8. His late success as a dramatist is real but arrives mostly offstage; the rooms the novel actually stages are the ones that cost him. The consistency across all three registers is the point: the book's most relentless study of the socially unabsorbed.
 
 Why interesting:
 
-- His old 3rd-of-8 prestige rank was a small-field artifact that the enriched reading corrects to 18th of 22 — a demotion that brings the number into line with every scene the novel wrote him.
+- His early 3rd-of-8 prestige rank was a small-field artifact; the current reading places him 13th of 14 in prestige — a demotion that brings the number into line with every scene the novel wrote him.
 - His advantage record (31-100-15) is the most lopsided of any heavily measured figure — being cut down in the room is his structural role.
-- All three registers now agree on him, which they do for almost no one else — and their agreement is itself the reading.
+- All three registers agree on him, which they do for almost no one else — and their agreement is itself the reading.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1306 ± 110 | 1196.1 | 36 of 41 | 64 | -0.692 | 0.8975 | 8/43/2/11 |
-| prestige | 1482 ± 156 | 1325.7 | 18 of 22 | 64 | -0.046 | 0.0934 | 2/5/0/57 |
-| inclusion | 1409 ± 172 | 1236.7 | 7 of 9 | 64 | -0.152 | 0.2444 | 3/10/0/51 |
+| advantage | 1317 ± 129 | 1187.7 | 30 of 31 | 64 | -0.692 | 0.8975 | 8/43/2/11 |
+| prestige | 1479 ± 173 | 1305.7 | 13 of 14 | 64 | -0.046 | 0.0934 | 2/5/0/57 |
+| inclusion | 1412 ± 174 | 1237.4 | 6 of 8 | 64 | -0.152 | 0.2444 | 3/10/0/51 |
 
 Top chapters (by absolute movement):
 
@@ -531,24 +532,24 @@ Notable units:
 - Slug: `francoise`
 - Portrait default: `/projects/islt/portraits/francoise-default-vermeer-proustian-20260425-1432.png`
 - Annotation units: `61`
-- Archetype signs: `advantage +1, prestige +1, inclusion -1`
+- Archetype signs: `advantage +1, prestige -1, inclusion -1`
 - Pattern: `advantage_high_durable`
 
-Top-ten in the scenes she was born to win — 7th of 41 in advantage — and newly ranked in prestige (19th of 22): the kitchen has a standing the salons must now be measured against.
+Top five in the scenes she was born to win — 5th of 31 in advantage — while her standing, witnessed in a handful of passages, stays too thin to rank.
 
-Françoise no longer holds the top rank the sparser reading gave her, but her position remains formidable and better founded: 7th of 41 in scene-level advantage, on a genuinely winning record (51 decided wins to 38 losses), amid a field that now includes the salon figures the stricter criteria promoted past her. And she gains something the old reading could not give her: a ranked prestige standing (19th of 22) — the deference of footmen, doctors, and households is witnessed standing too, and the enriched reading counts it. Belonging stays unranked, the servant's position at the family's center and margin at once remaining, fittingly, unmeasurable.
+Françoise holds 5th of 31 in scene-level advantage on a genuinely winning record (51 decided wins to 38 losses), in a field that includes the salon figures the stricter criteria promoted. Her prestige is witnessed — the deference of footmen, doctors, and households counts as standing too — but only in a handful of passages, too few to rank. Belonging stays unranked, the servant's position at the family's center and margin at once remaining, fittingly, unmeasurable.
 
 Why interesting:
 
-- Her old first-place advantage rank was partly a small-field artifact; her new 7th of 41, on a real winning record, is the sturdier claim.
-- She is ranked in prestige at all — a servant measured in the register built for duchesses — because the witnessed-standing criterion is blind to class, exactly as the novel's own attention is.
-- Her scenes stay nearly even (51-38-11): durable footing, not a hot streak, is what the ranking has always reflected.
+- Her old first-place advantage rank was partly a small-field artifact; 5th of 31 in scene-level advantage, on a real winning record, is the sturdier claim.
+- The witnessed-standing criterion is blind to class, exactly as the novel's own attention is: her prestige evidence exists, a servant measured in the register built for duchesses, even if it is too sparse to rank.
+- Her scenes stay nearly even (51-38-11): durable footing, not a hot streak, is what the ranking reflects.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1575 ± 114 | 1461.2 | 7 of 41 | 61 | +0.086 | 0.5864 | 20/17/0/24 |
-| prestige | 1514 ± 198 | 1315.7 | 19 of 22 | 61 | +0.052 | 0.0516 | 3/0/0/58 |
-| inclusion | 1322 ± 370 | 951.9 | insufficient evidence | 61 | -0.013 | 0.0128 | 0/1/0/60 |
+| advantage | 1581 ± 133 | 1448.1 | 5 of 31 | 61 | +0.086 | 0.5864 | 20/17/0/24 |
+| prestige | 1480 ± 222 | 1258.5 | insufficient evidence | 61 | +0.052 | 0.0516 | 3/0/0/58 |
+| inclusion | 1337 ± 375 | 961.5 | insufficient evidence | 61 | -0.013 | 0.0128 | 0/1/0/60 |
 
 Top chapters (by absolute movement):
 
@@ -580,21 +581,21 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `inclusion_positive_prestige_positive_advantage_negative`
 
-Ranked in all three registers and strongest in belonging (4th of 9) — the girl who changes names twice and lands, each time, further inside.
+Ranked in all three registers and strongest in prestige (5th of 14) — the girl who changes names twice and lands, each time, further inside.
 
-Gilberte remains ranked everywhere the novel measures: 4th of 9 in belonging, 8th of 22 in prestige, 17th of 41 in scene-level advantage, her scenes themselves nearly even (64 decided wins, 61 losses). Belonging is still her strongest register, fitting for the book's great study in absorbed identity — Swann's daughter becoming Mlle de Forcheville becoming the marquise de Saint-Loup, each name a door that opens on a room the last one couldn't enter. The corpus catches the mechanism directly: her walk into the Guermantes salon under her new name is one of its cleanest boundary events.
+Gilberte is ranked everywhere the novel measures: 5th of 14 in prestige, 4th of 8 in belonging, 17th of 31 in scene-level advantage, her scenes themselves nearly even (64 decided wins, 61 losses). Her standing and her belonging are the registers that fit the book's great study in absorbed identity — Swann's daughter becoming Mlle de Forcheville becoming the marquise de Saint-Loup, each name a door that opens on a room the last one couldn't enter. The corpus catches the mechanism directly: her walk into the Guermantes salon under her new name is one of its cleanest boundary events.
 
 Why interesting:
 
 - Her belonging rank rests on the novel's most explicit boundary machinery: the same salon that would not receive Mlle Swann receives Mlle de Forcheville.
-- She is one of the few characters ranked in all three registers at once, with the strengths running opposite to her father's — his belonging collapses as hers compounds.
+- She is one of the eight characters ranked in all three registers, with the strengths running opposite to her father's — his standing and belonging collapse as hers compound.
 - Her scene record is almost perfectly even (64-61): she never dominates a room, and never needs to; the names do the work.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1505 ± 94 | 1410.7 | 17 of 41 | 57 | -0.028 | 0.4766 | 12/18/0/27 |
-| prestige | 1539 ± 124 | 1415.4 | 8 of 22 | 57 | +0.085 | 0.174 | 6/2/0/49 |
-| inclusion | 1554 ± 164 | 1389.9 | 4 of 9 | 57 | +0.05 | 0.0712 | 2/1/1/53 |
+| advantage | 1503 ± 119 | 1384.0 | 17 of 31 | 57 | -0.028 | 0.4766 | 12/18/0/27 |
+| prestige | 1630 ± 154 | 1476.1 | 5 of 14 | 57 | +0.085 | 0.174 | 6/2/0/49 |
+| inclusion | 1517 ± 181 | 1336.2 | 4 of 8 | 57 | +0.05 | 0.0712 | 2/1/1/53 |
 
 Top chapters (by absolute movement):
 
@@ -626,21 +627,21 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `reputation_ranked_scenes_even`
 
-The diplomat demoted by better evidence: from 7th to 24th of 41 in scene-level advantage, though prestige now ranks him (11th of 22) — the authority was always reputation more than performance.
+The diplomat demoted by better evidence: from 7th in the oldest reading to 20th of 31 in scene-level advantage, while prestige ranks him 11th of 14 — the authority was always reputation more than performance.
 
-Norpois is the enriched reading's clearest deflation. The old evidence placed him 7th in scene-level advantage; the stricter criteria place him 24th of 41, his scenes an almost perfect draw (45 decided wins, 44 losses). What he gains instead is a ranked prestige standing, 11th of 22 — because the deference paid to an ambassador is witnessed constantly, even in the passages where his actual conversation wins nothing. The two numbers together are truer than the old one alone: a man received everywhere as an authority and fought to a standstill in most rooms — which is very close to the joke the novel itself tells about him.
+Norpois is the clearest deflation in the measured cast. The oldest evidence placed him 7th in scene-level advantage; the current reading places him 20th of 31, his scenes an almost perfect draw (45 decided wins, 44 losses). What he has instead is a ranked prestige standing, 11th of 14 — because the deference paid to an ambassador is witnessed constantly, even in the passages where his actual conversation wins nothing. The two numbers together are truer than the old one alone: a man received everywhere as an authority and fought to a standstill in most rooms — which is very close to the joke the novel itself tells about him.
 
 Why interesting:
 
-- His demotion (7th to 24th) is the cleanest case of the old reading mistaking reputation for scene-level performance; the new criteria separate the two registers and rank him in each honestly.
+- His demotion (7th in the oldest reading, 20th of 31 now) is the cleanest case of reputation mistaken for scene-level performance; the current criteria separate the two registers and rank him in each honestly.
 - His prestige rank rests on the most repeatable of witnessed displays — the ceremony that attends an ambassador — which the novel stages relentlessly and mostly ironically.
 - His scene record (45-44-12) is nearly a perfect draw: the wielder of official language neither wins nor loses rooms, which is its own diplomatic verdict.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1503 ± 121 | 1381.9 | 24 of 41 | 54 | -0.069 | 0.4894 | 16/17/1/20 |
-| prestige | 1569 ± 177 | 1392.2 | 11 of 22 | 54 | +0.101 | 0.1274 | 6/1/0/47 |
-| inclusion | 1594 ± 225 | 1369.1 | insufficient evidence | 54 | +0.013 | 0.0133 | 1/0/0/53 |
+| advantage | 1507 ± 135 | 1371.4 | 20 of 31 | 54 | -0.069 | 0.4894 | 16/17/1/20 |
+| prestige | 1545 ± 196 | 1348.5 | 11 of 14 | 54 | +0.101 | 0.1274 | 6/1/0/47 |
+| inclusion | 1579 ± 232 | 1347.5 | insufficient evidence | 54 | +0.013 | 0.0133 | 1/0/0/53 |
 
 Top chapters (by absolute movement):
 
@@ -672,9 +673,9 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
 - Pattern: `advantage_strongly_positive`
 
-Top-ten in scene-level advantage (8th of 41) on genuinely winning scenes — and the belonging that once read as mildly negative now leans warmly upward, though still too rarely staged to rank.
+Top-ten in scene-level advantage (9th of 31) on genuinely winning scenes — and the belonging that once read as mildly negative now leans warmly upward, though still too rarely staged to rank.
 
-la grand-mère holds 8th of 41 in scene-level advantage, on scenes that genuinely go her way (37 decided wins against 31 losses, positive passages outnumbering negative). The quiet correction in her profile is belonging: the old reading had it leaning mildly negative, but the family-boundary criterion — which counts the household's interior as a real inside — turned the direction warmly positive, though the evidence stays too thin to rank. Prestige leans upward too, on famously literal witnessed ground: the princesse de Luxembourg signifying her equality at Balbec. Where the novel measures her, she is strong; where it doesn't, it at least no longer misreads her.
+la grand-mère holds 9th of 31 in scene-level advantage, on scenes that genuinely go her way (37 decided wins against 31 losses, positive passages outnumbering negative). The quiet correction in her profile is belonging: an older reading had it leaning mildly negative, but the family-boundary criterion — which counts the household's interior as a real inside — turned the direction warmly positive, though the evidence stays too thin to rank. Prestige leans upward too, on famously literal witnessed ground: the princesse de Luxembourg signifying her equality at Balbec. Where the novel measures her, she is strong; where it doesn't, it at least no longer misreads her.
 
 Why interesting:
 
@@ -684,9 +685,9 @@ Why interesting:
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1578 ± 129 | 1448.7 | 8 of 41 | 48 | +0.177 | 0.6675 | 17/14/0/17 |
-| prestige | 1632 ± 217 | 1415.0 | insufficient evidence | 48 | +0.053 | 0.1185 | 3/2/0/43 |
-| inclusion | 1755 ± 244 | 1511.5 | insufficient evidence | 48 | +0.047 | 0.0792 | 3/1/0/44 |
+| advantage | 1563 ± 145 | 1418.6 | 9 of 31 | 48 | +0.177 | 0.6675 | 17/14/0/17 |
+| prestige | 1601 ± 235 | 1366.0 | insufficient evidence | 48 | +0.053 | 0.1185 | 3/2/0/43 |
+| inclusion | 1752 ± 257 | 1494.8 | insufficient evidence | 48 | +0.047 | 0.0792 | 3/1/0/44 |
 
 Top chapters (by absolute movement):
 
@@ -718,21 +719,21 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion -1`
 - Pattern: `advantage_positive_texture_mocking`
 
-The steepest riser in the stricter reading: from the lower third to 5th of 41 in scene-level advantage, with a new ranked standing in prestige (15th of 22) — the buffoon was winning his rooms all along.
+A winning record in the salon's crowded rooms, now weighed passage by passage: 14th of 31 in scene-level advantage, while his standing stays too thin to rank.
 
-Cottard is the enriched reading's biggest surprise: 5th of 41 in scene-level advantage, up from the old lower third, on a genuinely winning record (50 decided wins to 43 losses). The mechanism is the opened event budget — in the Verdurin salon's dense scenes, the old two-event ceiling had room for the hosts and the victims, and Cottard's small, constant victories (the puns that land in the clan, the diagnoses that awe the faithful, the professorship that arrives) fell off the sheet. Counted, they compound. Prestige now ranks him too (15th of 22), the eminent-specialist reputation the later volumes keep asserting. He remains a buffoon in texture — passages that mock him outnumber those that flatter — but the outcomes go his way, which is precisely Proust's joke about medicine.
+Cottard's scene record is genuinely winning (50 decided wins to 43 losses), and it places him 14th of 31 in scene-level advantage. His wins live in the Verdurin salon's dense scenes: the puns that land in the clan, the diagnoses that awe the faithful, the professorship that arrives. A crowded salon produces many pairwise comparisons from one passage, and his wins come disproportionately from the most crowded ones: an earlier count that weighed every pair in full lifted him to 5th, but weighed passage by passage his record is close to even — about 25 wins' worth to 24 — and he sits at the middle, where the novel's double portrait of him belongs. His prestige, the eminent-specialist reputation the later volumes assert, is witnessed in too few passages to rank. He remains a buffoon in texture — passages that mock him outnumber those that flatter — but the outcomes go his way, which is precisely Proust's joke about medicine.
 
 Why interesting:
 
-- His rise from 25th to 5th is the single largest promotion of the enrichment pass — a coverage artifact corrected, not a reinterpretation: his wins were always in the text, below the old event ceiling.
+- His rank is the clearest case of crowd size mistaken for strength: his wins cluster in the fullest salons, and weighing each passage once moved him from 5th to 14th.
 - The texture-versus-outcome split is his signature: the narration laughs at him constantly while the scenes keep handing him the win.
-- His two ranked standings — scene-winner, mid-table name — square exactly with the book's double portrait of the idiot who is also the great clinician.
+- The ranked scene-winner with an unranked prestige squares with the book's double portrait of the idiot who is also the great clinician.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1582 ± 119 | 1463.9 | 5 of 41 | 37 | -0.165 | 0.7129 | 9/19/1/8 |
-| prestige | 1537 ± 183 | 1353.8 | 15 of 22 | 37 | +0.057 | 0.0568 | 3/0/0/34 |
-| inclusion | 1410 ± 246 | 1163.5 | insufficient evidence | 37 | 0.0 | 0.0 | 0/0/0/37 |
+| advantage | 1555 ± 148 | 1407.1 | 14 of 31 | 37 | -0.165 | 0.7129 | 9/19/1/8 |
+| prestige | 1530 ± 206 | 1324.0 | insufficient evidence | 37 | +0.057 | 0.0568 | 3/0/0/34 |
+| inclusion | 1425 ± 258 | 1167.1 | insufficient evidence | 37 | 0.0 | 0.0 | 0/0/0/37 |
 
 Top chapters (by absolute movement):
 
@@ -761,24 +762,24 @@ Notable units:
 - Slug: `morel`
 - Portrait default: `/projects/islt/portraits/morel-default-vermeer-proustian-20260813-0900.png`
 - Annotation units: `35`
-- Archetype signs: `advantage -1, prestige +1, inclusion +1`
-- Pattern: `prestige_first_scene_negative`
+- Archetype signs: `advantage -1, prestige +1, inclusion -1`
+- Pattern: `prestige_high_scene_negative`
 
-First in standing across a field of twenty-two, and below the middle of the scenes: the violinist commands the register the salons keep and loses more rooms than he wins.
+Second in prestige, behind only the duchesse, and in the bottom quarter of the scenes: the violinist commands the register the salons keep and loses more rooms than he wins.
 
-Morel holds the highest standing of the twenty-two characters the novel stages often enough to rank in prestige — his talent, and the protections it buys, place him above dukes and duchesses alike. Scene by scene the story runs the other way: he sits below the middle in scene-level advantage (21st of 41), and the texture of those scenes is sharply negative — for every passage that lifts him, more than four cut him down. His belonging is still staged too rarely to rank. He remains the book's cleanest case of prestige without ground under it: the reputation ascends while the man, room by room, gives ground.
+Morel ranks 2nd of 14 in prestige, behind only the duchesse de Guermantes: his talent, and the protections it buys, place him above dukes, barons and Verdurins alike. Scene by scene the story runs the other way: he sits 25th of 31 in scene-level advantage, and the texture of those scenes is sharply negative — for every passage that lifts him, more than four cut him down. His belonging is still staged too rarely to rank. He remains the book's cleanest case of prestige without ground under it: the reputation ascends while the man, room by room, gives ground.
 
 Why interesting:
 
-- The clearest standing-versus-scene split in the measured cast: first of 22 in prestige, below the middle of 41 in scene-level advantage, with heavily negative scene texture.
+- The clearest standing-versus-scene split in the measured cast: 2nd of 14 in prestige, 25th of 31 in scene-level advantage, with heavily negative scene texture.
 - His prestige moves through protectors — Charlus above all — which makes his standing real and his position precarious at once.
 - Belonging stays unranked: the salons prize the violinist and never quite seat the man.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1488 ± 99 | 1388.3 | 21 of 41 | 35 | -0.718 | 0.8773 | 5/22/0/8 |
-| prestige | 1773 ± 164 | 1608.1 | 1 of 22 | 35 | +0.206 | 0.2063 | 6/0/0/29 |
-| inclusion | 1513 ± 219 | 1293.4 | insufficient evidence | 35 | -0.041 | 0.0414 | 0/2/0/33 |
+| advantage | 1476 ± 134 | 1342.5 | 25 of 31 | 35 | -0.718 | 0.8773 | 5/22/0/8 |
+| prestige | 1770 ± 188 | 1582.1 | 2 of 14 | 35 | +0.206 | 0.2063 | 6/0/0/29 |
+| inclusion | 1499 ± 229 | 1269.9 | insufficient evidence | 35 | -0.041 | 0.0414 | 0/2/0/33 |
 
 Top chapters (by absolute movement):
 
@@ -808,23 +809,23 @@ Notable units:
 - Portrait default: `/projects/islt/portraits/rachel-default-vermeer-proustian-20260813-0900.png`
 - Annotation units: `29`
 - Archetype signs: `advantage +1, prestige +1, inclusion +1`
-- Pattern: `standing_rises_belonging_thin`
+- Pattern: `scenes_strong_standing_unranked`
 
-From bit-player to the duchesse's intimate — and now the numbers certify it: ranked 7th of 22 in prestige, top-quarter in the scenes, with only belonging still too thin to call.
+From bit-player to the duchesse's intimate: 8th of 31 in scene-level advantage, while her standing — high, but staged in too few passages — is back to an open question.
 
-Rachel is staged across the whole arc of the novel — Saint-Loup's mistress, working actress, and at the end the celebrated artist whose reading empties la Berma's salon. The new reading ranks her in two registers at once: 9th of 41 in scene-level advantage and 7th of 22 in prestige, the steep late climb no longer a lean but a certified standing. Belonging remains her open question — still staged too rarely to rank — though what the novel now weighs there no longer points away. The woman the theatre once priced at twenty francs ends the book measurable beside duchesses.
+Rachel is staged across the whole arc of the novel — Saint-Loup's mistress, working actress, and at the end the celebrated artist whose reading empties la Berma's salon. The scenes certify her: 8th of 31 in scene-level advantage. Her prestige leans high, but its 24 comparisons come from only 10 passages, and counted passage by passage they are too few to rank; belonging is thinner still. The woman the theatre once priced at twenty francs ends the book winning the rooms she enters, even if the novel stages her standing too sparingly to certify it.
 
 Why interesting:
 
 - Her late triumph over la Berma at the bal de têtes is one of the sharpest single reversals the novel stages — celebrated in the same room that once priced her.
-- The stricter reading promoted her: what was a provisional upward lean in standing is now a ranked 7th of 22, one of the few figures whose position strengthened as the evidence hardened.
+- Her scene record is ranked and strong (8th of 31 in advantage); her standing is the register where the evidence runs out, not where she falls short.
 - For most of the book she was structurally invisible to measurement at all; the open reading of the full cast is what put her on the board.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1579 ± 132 | 1446.3 | 9 of 41 | 29 | -0.216 | 0.6092 | 7/14/0/8 |
-| prestige | 1640 ± 183 | 1456.7 | 7 of 22 | 29 | +0.041 | 0.2003 | 2/2/0/25 |
-| inclusion | 1713 ± 418 | 1294.6 | insufficient evidence | 29 | +0.025 | 0.0248 | 1/0/0/28 |
+| advantage | 1600 ± 173 | 1427.0 | 8 of 31 | 29 | -0.216 | 0.6092 | 7/14/0/8 |
+| prestige | 1639 ± 224 | 1415.2 | insufficient evidence | 29 | +0.041 | 0.2003 | 2/2/0/25 |
+| inclusion | 1648 ± 462 | 1185.3 | insufficient evidence | 29 | +0.025 | 0.0248 | 1/0/0/28 |
 
 Top chapters (by absolute movement):
 
@@ -855,21 +856,21 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion -1`
 - Pattern: `familial_positive`
 
-Fourth of 41 in scene-level advantage — the highest family standing in the book — on the cleanest winning record of any measured figure: nine passages lift her for every one that cuts.
+Sixth of 31 in scene-level advantage — the highest family standing in the book — on the cleanest winning record of any measured figure: nine passages lift her for every one that cuts.
 
-la mère du narrateur holds the strongest scene record in the measured cast: 4th of 41 in advantage, 34 decided wins against 16 losses, and a passage texture of nine positive to one negative — no one else the novel weighs comes out so consistently ahead. Her authority is entirely domestic and entirely effective: the goodnight-kiss economy, the moral verdicts the household defers to, the quiet management of the father. Prestige and belonging both remain too thin to rank, and belonging still leans mildly negative — the cost of being the boundary-keeper, the one who decides who is admitted to the child rather than the one admitted anywhere herself.
+la mère du narrateur holds one of the strongest scene records in the measured cast: 6th of 31 in advantage, 34 decided wins against 16 losses, and a passage texture of nine positive to one negative — no one else the novel weighs comes out so consistently ahead. Her authority is entirely domestic and entirely effective: the goodnight-kiss economy, the moral verdicts the household defers to, the quiet management of the father. Prestige and belonging both remain too thin to rank, and belonging still leans mildly negative — the cost of being the boundary-keeper, the one who decides who is admitted to the child rather than the one admitted anywhere herself.
 
 Why interesting:
 
 - Her passage texture (+9/−1) is the cleanest positive of any measured figure — quiet domestic authority, near-perfectly effective.
-- She climbed to 4th of 41 in a field that now includes the promoted salon figures — family standing holding its own against the drawing rooms.
+- She ranks 6th of 31 in scene-level advantage, above every other member of the family and in a field that includes the promoted salon figures.
 - Belonging still leans against her, a fine irony the numbers preserve: the guardian of the family's inside is rarely staged crossing into anyone else's.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1620 ± 146 | 1473.8 | 4 of 41 | 28 | +0.273 | 0.3177 | 9/1/0/18 |
-| prestige | 1731 ± 266 | 1464.5 | insufficient evidence | 28 | +0.005 | 0.0482 | 1/1/0/26 |
-| inclusion | 1392 ± 228 | 1163.5 | insufficient evidence | 28 | -0.108 | 0.1618 | 1/3/0/24 |
+| advantage | 1605 ± 169 | 1435.9 | 6 of 31 | 28 | +0.273 | 0.3177 | 9/1/0/18 |
+| prestige | 1751 ± 280 | 1470.6 | insufficient evidence | 28 | +0.005 | 0.0482 | 1/1/0/26 |
+| inclusion | 1399 ± 231 | 1168.4 | insufficient evidence | 28 | -0.108 | 0.1618 | 1/3/0/24 |
 
 Top chapters (by absolute movement):
 
@@ -901,9 +902,9 @@ Notable units:
 - Archetype signs: `advantage +1, prestige +1, inclusion -1`
 - Pattern: `advantage_positive_reputation_offstage`
 
-From 3rd to 19th of 41 in scene-level advantage: the great author's standing was always more reputation than scene, and the stricter reading files the reputation under prestige — where it leans high but stays too thin to rank.
+From 3rd in the oldest reading to 21st of 31 in scene-level advantage: the great author's standing was always more reputation than scene, and his prestige leans high but stays too thin to rank.
 
-Bergotte is one of the enriched reading's honest demotions: from 3rd to 19th of 41 in scene-level advantage, his record still winning (25 decided wins to 21 losses) but no longer extraordinary. What the old reading counted as scene-dominance was largely the aura of the name — and the stricter criteria route that aura where it belongs, into prestige, where his lean is among the strongest measured but the staging stays too sparse to certify a rank. Belonging is nearly silent. He remains a strong positive presence where the book actually stages him; the correction is that the book stages him less than his fame made it feel.
+Bergotte is one of the measured cast's honest demotions: from 3rd in the oldest reading to 21st of 31 in scene-level advantage, his record still winning (25 decided wins to 21 losses) but no longer extraordinary. What the oldest reading counted as scene-dominance was largely the aura of the name — and the stricter criteria route that aura where it belongs, into prestige, where his lean is among the strongest measured but the staging stays too sparse to certify a rank. Belonging is nearly silent. He remains a strong positive presence where the book actually stages him; the correction is that the book stages him less than his fame made it feel.
 
 Why interesting:
 
@@ -913,9 +914,9 @@ Why interesting:
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1562 ± 157 | 1405.2 | 19 of 41 | 27 | +0.127 | 0.8517 | 11/8/0/8 |
-| prestige | 1777 ± 469 | 1308.1 | insufficient evidence | 27 | +0.037 | 0.1467 | 2/2/0/23 |
-| inclusion | 1266 ± 491 | 774.7 | insufficient evidence | 27 | 0.0 | 0.0 | 0/0/0/27 |
+| advantage | 1549 ± 181 | 1368.0 | 21 of 31 | 27 | +0.127 | 0.8517 | 11/8/0/8 |
+| prestige | 1779 ± 468 | 1311.7 | insufficient evidence | 27 | +0.037 | 0.1467 | 2/2/0/23 |
+| inclusion | 1268 ± 492 | 776.0 | insufficient evidence | 27 | 0.0 | 0.0 | 0/0/0/27 |
 
 Top chapters (by absolute movement):
 
@@ -947,21 +948,21 @@ Notable units:
 - Archetype signs: `advantage -1, prestige +1, inclusion -1`
 - Pattern: `advantage_negative_prestige_performed`
 
-Now ranked, and ranked where he always belonged: 39th of 41 in scene-level advantage, near the very bottom — while his unrankable prestige lean is, absurdly and perfectly, the highest in the book.
+Among the lowest ratings in the scenes, but on too few passages to rank: 40 comparisons from 23 passages — while his unrankable prestige lean is, absurdly and perfectly, among the highest in the book.
 
-The enriched reading finally certifies Legrandin: 39th of 41 in scene-level advantage, near the very bottom of everyone the novel measures, on scenes that go against him seven to one (8 decided wins, 28 losses). And it adds the joke only this book would build: his prestige lean, still too thinly staged to rank, is the steepest upward of any unranked figure — because what the novel witnesses of him is precisely his performances of standing, the bows calibrated for aristocratic eyes, the syntax of the exquisite. The snob loses every real room while broadcasting, constantly and measurably, the standing he doesn't have.
+Legrandin's scene-level advantage rating is among the lowest anyone receives, on scenes that go against him more than three to one (8 decided wins, 28 losses) and passages that cut him seven to one. Counted passage by passage, though, his 40 comparisons come from only 23 passages, too few to certify a rank. And the joke only this book would build survives intact: his prestige lean, also too thinly staged to rank, is among the steepest upward of any unranked figure — because what the novel witnesses of him is precisely his performances of standing, the bows calibrated for aristocratic eyes, the syntax of the exquisite. The snob loses every real room while broadcasting, constantly and measurably, the standing he doesn't have.
 
 Why interesting:
 
-- He graduated from unrankable to a certified place near the very bottom — the stricter reading's evidence was enough to make his losses official.
-- His unranked prestige lean is the highest measured, an artifact of what the novel stages about him: not standing, but the performance of standing.
+- His scene rating is near the floor, but the evidence behind it is thin: what the novel stages of him is concentrated in a few scenes, not spread across the book.
+- His unranked prestige lean is among the highest measured, an artifact of what the novel stages about him: not standing, but the performance of standing.
 - The pairing — floor of the scenes, ceiling of the pose — is the complete anatomy of snobbery in two numbers.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1294 ± 166 | 1128.5 | 39 of 41 | 23 | -0.547 | 0.7439 | 2/15/0/6 |
-| prestige | 1887 ± 241 | 1646.3 | insufficient evidence | 23 | +0.013 | 0.1435 | 1/2/0/20 |
-| inclusion | 1387 ± 495 | 891.7 | insufficient evidence | 23 | 0.0 | 0.0 | 0/0/0/23 |
+| advantage | 1285 ± 208 | 1076.9 | insufficient evidence | 23 | -0.547 | 0.7439 | 2/15/0/6 |
+| prestige | 1760 ± 298 | 1462.8 | insufficient evidence | 23 | +0.013 | 0.1435 | 1/2/0/20 |
+| inclusion | 1394 ± 494 | 900.6 | insufficient evidence | 23 | 0.0 | 0.0 | 0/0/0/23 |
 
 Top chapters (by absolute movement):
 
@@ -993,21 +994,21 @@ Notable units:
 - Archetype signs: `advantage -1, prestige -1, inclusion -1`
 - Pattern: `compact_negative`
 
-Near the bottom in both registers the novel now measures her in: 34th of 41 in scene-level advantage and last — 22nd of 22 — in prestige, the certified floor of the standing table.
+Last of 31 in scene-level advantage — the certified floor of the scenes — while her standing, once ranked last, is now too thinly staged to rank at all.
 
-Mme de Cambremer is now measured twice, and severely both times: 34th of 41 in scene-level advantage, on a record of 15 decided wins to 41 losses without a single positively-toned passage, and dead last of the 22 characters ranked in prestige. The bottom rank is fitting rather than cruel: her position in the book is precisely the provincial grande dame whose standing every Parisian room quietly declines to honor — Charlus's engineered humiliation of her at la Raspelière is one of the corpus's textbook witnessed snubs. She anchors the floor of the prestige table the way the duchesse anchors its ceiling, and the table needs both.
+Mme de Cambremer is measured severely: 31st of 31 in scene-level advantage, last of everyone the novel ranks there, on a record of 15 decided wins to 41 losses without a single positively-toned passage. Her prestige leans hard downward, but counted passage by passage its evidence is too thin to rank. The bottom rank is fitting rather than cruel: her position in the book is precisely the provincial grande dame whose standing every Parisian room quietly declines to honor — Charlus's engineered humiliation of her at la Raspelière is one of the corpus's textbook witnessed snubs. She anchors the floor of the scenes the way the duchesse anchors their ceiling, and the table needs both.
 
 Why interesting:
 
-- She is the certified last place in prestige — the enriched field's floor — where the old reading could only call her lean negative.
+- She is the certified last place in scene-level advantage — the floor of the ranked field.
 - Not one of her measured passages is positively toned (0 for, 17 against): the harshest texture in the ranked cast.
-- She confirms that severe standing loss doesn't require constant presence: the novel stages her rarely and beats her reliably.
+- She confirms that severe loss doesn't require constant presence: the novel stages her rarely and beats her reliably.
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1368 ± 140 | 1228.0 | 34 of 41 | 22 | -0.831 | 0.8309 | 0/17/0/5 |
-| prestige | 1442 ± 196 | 1246.5 | 22 of 22 | 22 | -0.064 | 0.0636 | 0/2/0/20 |
-| inclusion | 1316 ± 245 | 1071.5 | insufficient evidence | 22 | -0.146 | 0.2082 | 1/3/0/18 |
+| advantage | 1317 ± 192 | 1125.5 | 31 of 31 | 22 | -0.831 | 0.8309 | 0/17/0/5 |
+| prestige | 1378 ± 255 | 1122.1 | insufficient evidence | 22 | -0.064 | 0.0636 | 0/2/0/20 |
+| inclusion | 1355 ± 260 | 1095.1 | insufficient evidence | 22 | -0.146 | 0.2082 | 1/3/0/18 |
 
 Top chapters (by absolute movement):
 
@@ -1051,8 +1052,8 @@ Why interesting:
 
 | Lens | Standing | Conservative | Rank | Appearances | Mean m | Mean abs m | +/-/mixed/neutral |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| advantage | 1658 ± 217 | 1441.0 | insufficient evidence | 9 | +0.02 | 1.1667 | 4/3/1/1 |
-| prestige | 1715 ± 298 | 1417.3 | insufficient evidence | 9 | +0.078 | 0.3 | 1/1/0/7 |
+| advantage | 1654 ± 268 | 1386.0 | insufficient evidence | 9 | +0.02 | 1.1667 | 4/3/1/1 |
+| prestige | 1691 ± 351 | 1340.2 | insufficient evidence | 9 | +0.078 | 0.3 | 1/1/0/7 |
 | inclusion | 1500 ± 700 | 800.0 | insufficient evidence | 9 | 0.0 | 0.0 | 0/0/0/9 |
 
 Top chapters (by absolute movement):

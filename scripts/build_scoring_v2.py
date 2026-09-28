@@ -22,6 +22,7 @@ from pathlib import Path
 from time import perf_counter
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from proust import scoring_v2 as v2  # noqa: E402
 from proust import scoring_v2_build, scoring_v2_promote, scoring_v2_validate  # noqa: E402
 from proust.app_exports import (  # noqa: E402
     discover_enrichment_run_dirs,
@@ -45,6 +46,12 @@ def main():
         "--stage", choices=("build", "validate", "promote", "both", "all"), default="both"
     )
     parser.add_argument("--bootstrap-samples", type=int, default=scoring_v2_validate.DEFAULT_BOOTSTRAP_SAMPLES)
+    parser.add_argument(
+        "--pair-weighting",
+        choices=v2.PAIR_WEIGHTINGS,
+        default=v2.DEFAULT_PAIR_WEIGHTING,
+        help="how much evidence one passage's pairs carry together (see proust/scoring_v2.py)",
+    )
     arguments = parser.parse_args()
     if arguments.output_dir is None:
         arguments.output_dir = (
@@ -62,7 +69,9 @@ def main():
 
     if arguments.stage in ("build", "both", "all"):
         build = scoring_v2_build.build_scoring_v2(
-            run_dirs, progress=lambda message: print(message, flush=True)
+            run_dirs,
+            progress=lambda message: print(message, flush=True),
+            pair_weighting=arguments.pair_weighting,
         )
         written = scoring_v2_build.write_scoring_v2_artifacts(build, output_dir=arguments.output_dir)
         print(json.dumps({"written": written, "manifest": build["manifest"]}, ensure_ascii=False), flush=True)

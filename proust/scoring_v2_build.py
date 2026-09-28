@@ -126,7 +126,7 @@ def load_scored_units(run_dirs):
 # ---------------------------------------------------------------------------
 
 
-def build_comparisons(units, lens, registry=None, merge_map=None):
+def build_comparisons(units, lens, registry=None, merge_map=None, pair_weighting=v2.DEFAULT_PAIR_WEIGHTING):
     """Every v2 comparison of the corpus for one lens, in narrative order.
 
     Each row is `scoring_v2.unit_comparisons`'s, plus the unit's narrative
@@ -146,6 +146,7 @@ def build_comparisons(units, lens, registry=None, merge_map=None):
             registry=registry,
             merge_map=merge_map,
             chapter_id=unit["chapter_id"],
+            pair_weighting=pair_weighting,
         ):
             row["time"] = unit["time"]
             row["chapter_id"] = unit["chapter_id"]
@@ -701,6 +702,7 @@ def build_scoring_v2(
     registry=None,
     target_characters=None,
     progress=None,
+    pair_weighting=v2.DEFAULT_PAIR_WEIGHTING,
 ):
     """Comparisons, ratings, timelines, and a corpus summary for every lens and view."""
     started = perf_counter()
@@ -717,7 +719,9 @@ def build_scoring_v2(
     tracked = list(target_characters or CHARACTER_PAGE_PILOT_EDITORIAL.keys())
 
     for lens in lenses:
-        comparisons_by_lens[lens] = build_comparisons(units, lens, registry=registry, merge_map=merge_map)
+        comparisons_by_lens[lens] = build_comparisons(
+            units, lens, registry=registry, merge_map=merge_map, pair_weighting=pair_weighting
+        )
         readings_by_lens[lens] = build_readings(units, lens, registry=registry, merge_map=merge_map)
         for view in views:
             matches, dropped = view_matches(comparisons_by_lens[lens], view)
@@ -762,6 +766,7 @@ def build_scoring_v2(
         "lenses": list(lenses),
         "views": list(views),
         "tie_band": v2.TIE_BAND,
+        "pair_weighting": pair_weighting,
         "lens_dimension_weights": v2.LENS_DIMENSION_WEIGHTS,
         "ambiguity_decay": v2.AMBIGUITY_DECAY,
         "ambiguity_floor": v2.AMBIGUITY_FLOOR,

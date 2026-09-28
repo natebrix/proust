@@ -71,6 +71,17 @@ NON_CHARACTER_NAMES = ("narrator", "collective_social_voice", "unknown")
 
 PERSON_VIEW_MERGE_POLICY = "person_view_merge"
 
+# How much evidence one passage's pairs carry together. "all_pairs" counts
+# every pair in full, so a passage with n comparable characters stakes
+# n(n-1)/2 games on n movements. "ranking" scales the pairs so the passage
+# stakes n - 1 games' worth -- the degrees of freedom of one ranking of n
+# characters -- which is what a single ordering can actually tell the
+# rating layer. Two-character passages are unchanged under either rule.
+PAIR_WEIGHTING_ALL_PAIRS = "all_pairs"
+PAIR_WEIGHTING_RANKING = "ranking"
+PAIR_WEIGHTINGS = (PAIR_WEIGHTING_ALL_PAIRS, PAIR_WEIGHTING_RANKING)
+DEFAULT_PAIR_WEIGHTING = PAIR_WEIGHTING_RANKING
+
 LABEL_POSITIVE = "positive"
 LABEL_NEGATIVE = "negative"
 LABEL_MIXED = "mixed"
@@ -310,6 +321,7 @@ def unit_comparisons(
     merge_map=None,
     chapter_id=None,
     tie_band=TIE_BAND,
+    pair_weighting=DEFAULT_PAIR_WEIGHTING,
 ):
     """Every within-unit pairwise comparison this lens supports, weighted.
 
@@ -361,10 +373,22 @@ def unit_comparisons(
         for name in movements
     }
 
+    if pair_weighting not in PAIR_WEIGHTINGS:
+        raise ValueError(f'Unknown pair weighting "{pair_weighting}". Expected one of: {", ".join(PAIR_WEIGHTINGS)}.')
+
+    pairs = [
+        (character_a, character_b)
+        for character_a, character_b in combinations(sorted(movements), 2)
+        # vacuous pair: this lens saw neither of them move
+        if character_a in lens_participants or character_b in lens_participants
+    ]
+    pair_share = 1.0
+    if pairs and pair_weighting == PAIR_WEIGHTING_RANKING:
+        ranked_characters = {character for pair in pairs for character in pair}
+        pair_share = (len(ranked_characters) - 1) / len(pairs)
+
     comparisons = []
-    for character_a, character_b in combinations(sorted(movements), 2):
-        if character_a not in lens_participants and character_b not in lens_participants:
-            continue  # vacuous pair: this lens saw neither of them move
+    for character_a, character_b in pairs:
         movement_a = movements[character_a]
         movement_b = movements[character_b]
         observed_a, observed_b = comparison_outcome(movement_a, movement_b, tie_band=tie_band)
@@ -385,7 +409,8 @@ def unit_comparisons(
                 "confidence_a": round(confidence_a, 6),
                 "confidence_b": round(confidence_b, 6),
                 "ambiguity_weight": round(rho, 6),
-                "weight": round(rho * min(confidence_a, confidence_b), 6),
+                "pair_share": round(pair_share, 6),
+                "weight": round(rho * min(confidence_a, confidence_b) * pair_share, 6),
             }
         )
     return comparisons
@@ -399,6 +424,10 @@ __all__ = [
     "LABEL_NEUTRAL",
     "LABEL_POSITIVE",
     "LENS_DIMENSION_WEIGHTS",
+    "DEFAULT_PAIR_WEIGHTING",
+    "PAIR_WEIGHTINGS",
+    "PAIR_WEIGHTING_ALL_PAIRS",
+    "PAIR_WEIGHTING_RANKING",
     "PERSON_VIEW_MERGE_POLICY",
     "SCORING_V2_LENS_ORDER",
     "SCORING_V2_VERSION",
