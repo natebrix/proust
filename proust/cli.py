@@ -8,6 +8,7 @@ from . import foundation
 from . import foundation_reports
 from . import runner as core
 from . import supplement
+from .app_exports import discover_enrichment_run_dirs
 from .editorial import CHARACTER_PAGE_PILOT_EDITORIAL
 from .export_artifacts import write_coverage_audit_artifacts
 
@@ -56,9 +57,9 @@ def _aggregate_default_paths(base_name, include_supplements, foundation_corpus):
     # simply prints the analysis to stdout, preserving existing behavior
     # exactly). --include-supplements points at the -supplemented- artifact
     # names so the unsuffixed -current.* files are never touched by that flag;
-    # --foundation writes the unsuffixed -current.* names, because the
-    # foundation corpus IS the current surface (git history keeps the
-    # superseded versions).
+    # --foundation and --enrichment write the unsuffixed -current.* names:
+    # both annotate the whole canonical grid, and the one you pass is the
+    # current surface (git history keeps the superseded versions).
     if foundation_corpus:
         base = f"outputs/{base_name}-current"
     elif include_supplements:
@@ -80,19 +81,44 @@ def _character_pages_default_paths(include_supplements, foundation_corpus):
 
 
 FOUNDATION_HELP = (
-    "Build from the foundation corpus (outputs/foundation-run-*) alone. Legacy run-* and "
+    "Build from the foundation corpus (outputs/foundation-run-*, prompt v2) alone. Legacy run-* and "
     "supplement-run-* directories never feed a --foundation build, so a corpus change and a "
     "scoring change can never be confused for one another."
 )
 
+ENRICHMENT_HELP = (
+    "Build from the enrichment corpus (outputs/enrichment-run-*, prompt v2.1) alone: the corpus "
+    "the current scoring v2 standings, character pages and fortune arcs are built from."
+)
+
 
 def _add_foundation_arguments(command_parser):
-    command_parser.add_argument("--foundation", action="store_true", help=FOUNDATION_HELP)
+    corpus_group = command_parser.add_mutually_exclusive_group()
+    corpus_group.add_argument("--foundation", action="store_true", help=FOUNDATION_HELP)
+    corpus_group.add_argument("--enrichment", action="store_true", help=ENRICHMENT_HELP)
     command_parser.add_argument(
         "--foundation-outputs-dir",
         default="outputs",
-        help="Outputs directory to discover foundation-run-* directories from when --foundation is set. Defaults to outputs.",
+        help="Outputs directory to discover foundation-run-* or enrichment-run-* directories from "
+        "when --foundation or --enrichment is set. Defaults to outputs.",
     )
+
+
+def _stamp_corpus(result, args):
+    """Record which corpus a -current surface was built from, in its JSON."""
+    corpus = _current_corpus(args)
+    if corpus:
+        result["corpus"] = corpus
+    return result
+
+
+def _current_corpus(args):
+    """The corpus flag in force: "foundation", "enrichment", or None for a legacy build."""
+    if getattr(args, "enrichment", False):
+        return "enrichment"
+    if getattr(args, "foundation", False):
+        return "foundation"
+    return None
 
 
 def _read_json_artifact(path):
@@ -100,25 +126,28 @@ def _read_json_artifact(path):
 
 
 def _collect_supplement_runs(args):
-    # A foundation build never merges supplements: the supplement pass exists
-    # only to patch the legacy closed-world corpus, and the foundation pass
-    # re-annotated the whole corpus open-world instead.
-    if getattr(args, "foundation", False) or not getattr(args, "include_supplements", False):
+    # A foundation or enrichment build never merges supplements: the
+    # supplement pass exists only to patch the legacy closed-world corpus, and
+    # both later passes re-annotated the whole corpus open-world instead.
+    if _current_corpus(args) or not getattr(args, "include_supplements", False):
         return None
     return core.discover_supplement_run_dirs(args.supplement_outputs_dir)
 
 
 def _collect_runs(args):
-    if getattr(args, "foundation", False):
+    corpus = _current_corpus(args)
+    if corpus:
         if args.runs or getattr(args, "discover_runs", None):
             raise ValueError(
-                "--foundation builds from outputs/foundation-run-* alone; drop --run and --discover-runs."
+                f"--{corpus} builds from outputs/{corpus}-run-* alone; drop --run and --discover-runs."
             )
         if getattr(args, "include_supplements", False):
             raise ValueError(
-                "--foundation and --include-supplements are mutually exclusive: supplements do not "
-                "exist in the foundation corpus."
+                f"--{corpus} and --include-supplements are mutually exclusive: supplements do not "
+                f"exist in the {corpus} corpus."
             )
+        if corpus == "enrichment":
+            return discover_enrichment_run_dirs(args.foundation_outputs_dir)
         return core.discover_foundation_run_dirs(args.foundation_outputs_dir)
 
     runs = list(args.runs or [])
@@ -582,9 +611,17 @@ def build_parser():
         help="Promote the staged scoring v2 fits to the current surfaces: character standings per lens, app-shaped journey timelines for the pilot cast, and the character pages rebuilt on v2.",
     )
     scoring_v2_promote_parser.add_argument(
+        "--corpus",
+        choices=("enrichment", "foundation"),
+        default="enrichment",
+        help="Which corpus's fits to promote. Defaults to enrichment, the current surface; "
+        "foundation promotes the older outputs/scoring-v2 store over it.",
+    )
+    scoring_v2_promote_parser.add_argument(
         "--staged-dir",
         default=None,
-        help="Directory holding the staged scoring v2 fits. Defaults to outputs/scoring-v2.",
+        help="Directory holding the staged scoring v2 fits. Defaults to outputs/scoring-v2-enrichment "
+        "for --corpus enrichment and outputs/scoring-v2 for --corpus foundation.",
     )
     scoring_v2_promote_parser.add_argument(
         "--outputs-dir",
@@ -594,7 +631,7 @@ def build_parser():
     scoring_v2_promote_parser.add_argument(
         "--foundation-outputs-dir",
         default="outputs",
-        help="Outputs directory to discover foundation-run-* directories from. Defaults to outputs.",
+        help="Outputs directory to discover the corpus's run directories from. Defaults to outputs.",
     )
     scoring_v2_promote_parser.add_argument(
         "--character",
@@ -861,11 +898,11 @@ def main(argv=None):
     if args.command == "corpus-review":
         try:
             runs = _collect_runs(args)
-            review = core.build_corpus_sanity_review(runs)
+            review = _stamp_corpus(core.build_corpus_sanity_review(runs), args)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         default_json_output, default_markdown_output = _aggregate_default_paths(
-            "corpus-review", False, args.foundation
+            "corpus-review", False, bool(_current_corpus(args))
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
@@ -1041,11 +1078,11 @@ def main(argv=None):
     if args.command == "character-analysis":
         try:
             review = core.build_corpus_sanity_review(_collect_runs(args))
-            analysis = core.build_character_cross_lens_analysis(review)
+            analysis = _stamp_corpus(core.build_character_cross_lens_analysis(review), args)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         default_json_output, default_markdown_output = _aggregate_default_paths(
-            "character-cross-lens", False, args.foundation
+            "character-cross-lens", False, bool(_current_corpus(args))
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
@@ -1069,10 +1106,11 @@ def main(argv=None):
                 target_characters=args.characters,
                 supplement_run_dirs=supplement_run_dirs,
             )
+            _stamp_corpus(analysis, args)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         default_json_output, default_markdown_output = _aggregate_default_paths(
-            "character-chapter-cross-lens", args.include_supplements, args.foundation
+            "character-chapter-cross-lens", args.include_supplements, bool(_current_corpus(args))
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
@@ -1090,11 +1128,11 @@ def main(argv=None):
     if args.command == "character-annotation-counts":
         try:
             review = core.build_corpus_sanity_review(_collect_runs(args))
-            analysis = core.build_character_annotation_counts(review)
+            analysis = _stamp_corpus(core.build_character_annotation_counts(review), args)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         default_json_output, default_markdown_output = _aggregate_default_paths(
-            "character-annotation-counts", False, args.foundation
+            "character-annotation-counts", False, bool(_current_corpus(args))
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
@@ -1235,13 +1273,24 @@ def main(argv=None):
         return 0
 
     if args.command == "scoring-v2-promote":
-        # Promotion is foundation-only by construction: the staged fits it
-        # republishes were built from the foundation corpus alone.
+        # The staged fits and the runs must be the same corpus: both corpora
+        # cover the same 963 units, so the promote's unit-count check cannot
+        # tell them apart.
         try:
-            runs = core.discover_foundation_run_dirs(args.foundation_outputs_dir)
+            if args.corpus == "enrichment":
+                runs = discover_enrichment_run_dirs(args.foundation_outputs_dir)
+                staged_dir = args.staged_dir or "outputs/scoring-v2-enrichment"
+            else:
+                runs = core.discover_foundation_run_dirs(args.foundation_outputs_dir)
+                staged_dir = args.staged_dir or "outputs/scoring-v2"
+            manifest_corpus = json.loads((Path(staged_dir) / "scoring-v2-build-manifest.json").read_text()).get("corpus")
+            if manifest_corpus and manifest_corpus != args.corpus:
+                raise ValueError(
+                    f"{staged_dir} holds {manifest_corpus} fits; pass --corpus {manifest_corpus} or a matching --staged-dir."
+                )
             promotion = core.promote_scoring_v2(
                 runs,
-                staged_dir=args.staged_dir,
+                staged_dir=staged_dir,
                 outputs_dir=args.outputs_dir,
                 target_characters=args.characters,
                 progress=lambda message: print(message, flush=True),
@@ -1318,11 +1367,13 @@ def main(argv=None):
         try:
             runs = _collect_runs(args)
             supplement_run_dirs = _collect_supplement_runs(args)
-            analysis = core.build_character_profile_cards(runs, supplement_run_dirs=supplement_run_dirs)
+            analysis = _stamp_corpus(
+                core.build_character_profile_cards(runs, supplement_run_dirs=supplement_run_dirs), args
+            )
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         default_json_output, default_markdown_output = _aggregate_default_paths(
-            "character-profile-cards", args.include_supplements, args.foundation
+            "character-profile-cards", args.include_supplements, bool(_current_corpus(args))
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
@@ -1340,6 +1391,7 @@ def main(argv=None):
     if args.command == "chapter-overlays":
         try:
             dataset = core.build_chapter_overlay_data(_collect_runs(args))
+            _stamp_corpus(dataset["manifest"], args)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         core.write_chapter_overlay_artifacts(dataset, args.output_dir)
@@ -1361,7 +1413,7 @@ def main(argv=None):
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         default_json_output, default_markdown_output = _character_pages_default_paths(
-            args.include_supplements, args.foundation
+            args.include_supplements, bool(_current_corpus(args))
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output
@@ -1378,11 +1430,11 @@ def main(argv=None):
 
     if args.command == "chapter-summaries":
         try:
-            analysis = core.build_chapter_summary_export(_collect_runs(args))
+            analysis = _stamp_corpus(core.build_chapter_summary_export(_collect_runs(args)), args)
         except (core.RunManifestNotFoundError, ValueError) as exc:
             parser.error(str(exc))
         default_json_output, default_markdown_output = _aggregate_default_paths(
-            "chapter-summaries", False, args.foundation
+            "chapter-summaries", False, bool(_current_corpus(args))
         )
         json_output = args.output or default_json_output
         markdown_output = args.markdown_output or default_markdown_output

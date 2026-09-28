@@ -29,23 +29,25 @@ If you are re-entering the project and want the shortest useful path, read in th
 
 ## Which Corpus The Current Artifacts Come From
 
-The current artifacts come from TWO corpora over the same 963-unit grid (the
-authoritative Wikisource text, open world, a per-chapter registry reference
-sheet):
+Every current artifact is built from the ENRICHMENT corpus:
+`outputs/enrichment-run-*`, 963 units of the authoritative Wikisource text,
+prompt v2.1, open world, with a per-chapter registry reference sheet.
 
-| surfaces | corpus | built |
-| --- | --- | --- |
-| scoring v2 standings, journey timelines, character pages; fortune arcs | ENRICHMENT: `outputs/enrichment-run-*`, prompt v2.1 | promoted 2026-08-14 (`5e1ab980`); see [enrichment_design.md](enrichment_design.md) |
-| corpus review, character and chapter cross-lens analyses, annotation counts, profile cards, chapter summaries, chapter overlays | FOUNDATION: `outputs/foundation-run-*`, prompt v2 | rebuilt 2026-08-12 (`14a4907a`) |
+| surfaces | built from enrichment |
+| --- | --- |
+| scoring v2 standings, journey timelines, character pages | promoted 2026-08-14 (`5e1ab980`); see [enrichment_design.md](enrichment_design.md) |
+| fortune arcs and the app export | 2026-09-27 onward |
+| corpus review, character and chapter cross-lens analyses, annotation counts, profile cards, chapter summaries, chapter overlays | rebuilt 2026-09-28 with `--enrichment` (they were on the foundation corpus from 2026-08-12, `14a4907a`, until then) |
 
-Enrichment re-annotated the same units with dimension criteria and a wider
-effect budget, so prestige and inclusion carry more evidence there. Numbers
-from the two groups are not directly comparable; rebuilding the second group
-from the enrichment corpus is an open decision.
+The FOUNDATION corpus (`outputs/foundation-run-*`, prompt v2) annotated the same
+grid first. Enrichment re-annotated it with dimension criteria and a wider
+effect budget, and lists fewer characters as materially present (193 against
+288). Foundation and its fit store `outputs/scoring-v2/` are kept as history.
 
-Artifacts record their corpus in a `corpus` field (`foundation` or
-`enrichment`). Files built before 2026-09-28 may show `null` there: the label
-did not recognise enrichment builds until then.
+Every current JSON artifact records its corpus in a `corpus` field. Files
+built before 2026-09-28 may show `null` there: the label did not recognise
+enrichment builds, and the chapter-level builders did not record a corpus at
+all, until then.
 
 Scoring v2 was adopted on 2026-08-12 and the rating and character-page surfaces
 are built from it (see "Scoring v2: The Current Rating Surface" below).
@@ -53,9 +55,9 @@ are built from it (see "Scoring v2: The Current Rating Surface" below).
 The legacy `outputs/run-*` and `outputs/supplement-run-*` families and the
 `-supplemented-current` artifacts built from them are history. They are kept on
 disk, and the aggregate commands still build from them when asked, but nothing
-current is derived from them. `--foundation` on an aggregate command builds
-from the foundation corpus alone; the two families are never mixed in one
-build.
+current is derived from them. `--enrichment` (or `--foundation`) on an
+aggregate command builds from that corpus alone; run families are never mixed
+in one build.
 
 Two reports accompany the cutover:
 

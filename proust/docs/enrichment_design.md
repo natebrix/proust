@@ -184,5 +184,5 @@ elicitation changes. Nathan gates adoption on the A/B report.
   prestige / inclusion, foundation corpus) to 41 / 22 / 9 (31 / 14 / 8 since
   the ranking pair weighting was adopted on 2026-09-28). The other
   aggregate surfaces (corpus review, cross-lens analyses, profile cards,
-  chapter summaries and overlays) were not rebuilt and remain on the
-  foundation corpus.
+  chapter summaries and overlays) stayed on the foundation corpus until
+  2026-09-28, when they were rebuilt from enrichment with `--enrichment`.
