@@ -280,18 +280,20 @@ def name_view_key(name):
     return name
 
 
-def person_view_key(name, registry=None, merge_map=None, chapter_id=None):
+def person_view_key(name, registry=None, merge_map=None, chapter_id=None, unit_id=None):
     """The person view's key: the merged entity id, or the name if unresolved.
 
     Open-world names the registry cannot resolve (and names it resolves
     ambiguously) key on themselves, so nothing is ever silently dropped or
     pooled; they simply behave like the name view for that character.
+    `chapter_id` lets chapter-scoped registry rulings apply, and `unit_id`
+    lets a registry unit ruling settle a name that is ambiguous there.
     """
     if registry is None:
         return name
     if name in NON_CHARACTER_NAMES:
         return name
-    resolution = registry.resolve(name, chapter_id=chapter_id)
+    resolution = registry.resolve(name, chapter_id=chapter_id, unit_id=unit_id)
     if resolution.status != "resolved":
         return name
     entity_id = resolution.entity_id
@@ -353,7 +355,9 @@ def unit_comparisons(
         merge_map = person_view_merge_map(registry)
 
     keys = {
-        name: person_view_key(name, registry=registry, merge_map=merge_map, chapter_id=chapter_id)
+        name: person_view_key(
+            name, registry=registry, merge_map=merge_map, chapter_id=chapter_id, unit_id=resolved_unit_id
+        )
         for name in movements
     }
 

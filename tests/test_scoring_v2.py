@@ -399,6 +399,22 @@ def test_keep_separate_links_never_merge(registry):
     assert scoring_v2.person_view_key("Mme Verdurin", registry=registry) == "mme-verdurin"
 
 
+def test_late_title_is_ambiguous_unless_a_unit_ruling_settles_it(registry):
+    # In the Bal de têtes the registry scopes "princesse de Guermantes" to
+    # Mme Verdurin as well, so the bare title must not feed Marie-Gilbert;
+    # the one reviewed passage that uses it is Mme Verdurin's.
+    bal = "v7-p4-le-bal-de-tetes"
+    assert scoring_v2.person_view_key("princesse de Guermantes", registry=registry, chapter_id=bal) == (
+        "princesse de Guermantes"
+    )
+    assert scoring_v2.person_view_key(
+        "princesse de Guermantes", registry=registry, chapter_id=bal, unit_id=f"{bal}#p-61-p-65"
+    ) == "mme-verdurin"
+    assert scoring_v2.person_view_key("princesse de Guermantes", registry=registry, chapter_id="v3-p2") == (
+        "princesse-de-guermantes"
+    )
+
+
 def test_an_unresolved_name_keys_on_itself(registry):
     assert scoring_v2.person_view_key("un personnage inconnu", registry=registry) == (
         "un personnage inconnu"

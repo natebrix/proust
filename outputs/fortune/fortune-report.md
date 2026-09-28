@@ -29,8 +29,8 @@ movements than one in which no character's fortune ever changes.
 ## Person view rulings
 
 - merged by `person_view_merge`: le peintre → Elstir, prince des Laumes → duc de Guermantes
-- reviewed passage ruling: "princesse de Guermantes" in `v7-p4-le-bal-de-tetes#p-61-p-65` → Mme Verdurin
-- no names left ambiguous by chapter-scoped registry forms
+- registry unit ruling: "princesse de Guermantes" in `v7-p4-le-bal-de-tetes#p-61-p-65` → Mme Verdurin
+- no names left ambiguous by the registry
 
 ## overall
 

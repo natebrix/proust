@@ -64,6 +64,14 @@ Resolution (`Registry.resolve`) returns `resolved` / `ambiguous` (e.g.
 "M. Bloch" → père or fils) / `unresolved` — never a silent drop. Unresolved
 and ambiguous names are a triage queue, not a void.
 
+Order of authority (2026-09-28): a `unit_rulings` entry for this passage and
+name wins; then an annotation name, unless a chapter- or context-scoped form
+of the same text belonging to another entity applies (then the name is
+ambiguous in that scope, e.g. "princesse de Guermantes" in the Matinée and
+the Bal de têtes); then the surface forms in scope. `unit_rulings` is a
+top-level list in `characters.yaml` (`unit_id`, `name`, `entity`, `reason`),
+for settling one passage at a time where a name is ambiguous by design.
+
 ## Prompt v2 (replaces scope rules 17–19)
 
 > - You are given a **reference sheet** of known characters and their surface

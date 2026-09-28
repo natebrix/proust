@@ -42,18 +42,14 @@ Guermantes). Unresolved names key on themselves (`name:<name>`) and never pool.
 Two names for one person in the same passage become one observation (movements
 add, weights average).
 
-It adds one rule the registry intends but `Registry.resolve` does not apply:
-if another entity has a `chapters:`-scoped form with the same text in this
-chapter, the name is ambiguous there and stays on its name key.
-`Registry.resolve` answers exact annotation names first, so in the Matinée and
-the Bal de têtes "princesse de Guermantes" always resolves to Marie-Gilbert,
-contrary to the ruling in `characters.yaml`. Fortune does not change
-`resolve` (scoring v2's person view depends on it); it works around it.
-
-`REVIEWED_UNIT_RESOLUTIONS` settles ambiguous passages one at a time, each
-with its reason. There is one today: Bal de têtes p. 61–65 ("nous ferons
-clan!", dentures) → Mme Verdurin. It is the only late passage that uses the
-bare title.
+Resolution is the registry's, passage-aware: `Registry.resolve(name,
+chapter_id=..., unit_id=...)`. Where another entity has a chapter-scoped form
+with the same text (Mme Verdurin's "princesse de Guermantes" in the Matinée and
+the Bal de têtes), the name is ambiguous there and stays on its name key,
+unless a `unit_rulings` entry in `characters.yaml` settles the passage. There
+is one today: Bal de têtes p. 61–65 ("nous ferons clan!", dentures) → Mme
+Verdurin, the only late passage that uses the bare title. Scoring v2's person
+view resolves the same way.
 
 Both views are built: `fortune-<lens>-person.json` and
 `fortune-<lens>-name.json`. The report reads the person view.
@@ -105,9 +101,9 @@ were. Scales differ by lens, so compare ratings within a lens.
 - Resolved 2026-09-28: `prince-de-guermantes-2`, a bootstrap duplicate, is
   merged into `prince-de-guermantes`, and the overlay in
   `scripts/build_character_registry.py` now claims the annotation name so a
-  re-bootstrap cannot recreate it. Fortune numbers are unchanged; scoring v2's
-  person-view artifacts still carry the old id until their next build.
-- Whether `Registry.resolve` itself should honor chapter-scoped overlaps.
-  That would change scoring v2's person view, so it is a separate decision.
+  re-bootstrap cannot recreate it.
+- Resolved 2026-09-28: `Registry.resolve` now honors chapter-scoped rulings
+  over annotation names and takes `unit_id` for `unit_rulings`; fortune's
+  workaround is gone and its outputs are unchanged by the switch.
 - Tie-in with WHR: fortune falling while head-to-head standing holds would
   mark a character sinking with their whole milieu.

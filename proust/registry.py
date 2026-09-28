@@ -20,6 +20,11 @@ Scope grammar for surface forms (string-valued for YAML simplicity):
     mention_only              never rewritten; used for resolution/reference
     context:<tag>             valid where the tag applies (e.g. verdurin-salon)
     chapters:<id>,<id>,...    valid only in the listed chapter ids
+
+A chapter- or context-scoped form is a ruling about that scope. When its
+text is also another entity's annotation name, the name is ambiguous
+wherever the scoped form applies, and ``resolve`` says so. Individual
+passages can then be settled by ``unit_rulings`` (see ``UnitRuling``).
 """
 
 from __future__ import annotations
@@ -99,12 +104,32 @@ class Resolution:
     candidates: tuple = ()
 
 
+@dataclass(frozen=True)
+class UnitRuling:
+    """A reviewed resolution of one name in one passage.
+
+    For names the registry itself holds ambiguous in a scope: the ruling
+    settles a single unit (``unit_id``) and must say why (``reason``).
+    """
+
+    unit_id: str
+    name: str
+    entity_id: str
+    reason: str
+
+
+# Scope kinds that record a ruling about where a form applies, as opposed to
+# a form that holds everywhere.
+_RULING_SCOPES = ("chapters", "context")
+
+
 @dataclass
 class Registry:
     entities: dict = field(default_factory=dict)  # id -> Entity
     forms: list = field(default_factory=list)  # [SurfaceForm], longest-first
     _by_norm_form: dict = field(default_factory=dict)  # norm form -> [SurfaceForm]
     _by_annotation_name: dict = field(default_factory=dict)  # name -> entity_id
+    unit_rulings: dict = field(default_factory=dict)  # (unit_id, name) -> UnitRuling
 
     # ------------------------------------------------------------------ load
     @classmethod
@@ -151,6 +176,17 @@ class Registry:
                 registry._by_norm_form.setdefault(
                     normalize_text(form.form), []
                 ).append(form)
+        for raw in data.get("unit_rulings", []) or ():
+            ruling = UnitRuling(
+                unit_id=raw["unit_id"],
+                name=raw["name"],
+                entity_id=raw["entity"],
+                reason=raw.get("reason", "") or "",
+            )
+            key = (ruling.unit_id, ruling.name)
+            if key in registry.unit_rulings:
+                raise ValueError(f"Duplicate unit ruling for {ruling.name!r} in {ruling.unit_id!r}")
+            registry.unit_rulings[key] = ruling
         registry.forms.sort(key=lambda f: len(f.form), reverse=True)
         registry.validate()
         return registry
@@ -183,6 +219,11 @@ class Registry:
                         f"form {claimants[0].form!r} rewrite-claimed by multiple "
                         f"entities with overlapping scope: {ids}"
                     )
+        for (unit_id, name), ruling in self.unit_rulings.items():
+            if ruling.entity_id not in self.entities:
+                problems.append(f"unit ruling for {name!r} in {unit_id!r} names unknown entity {ruling.entity_id!r}")
+            if not ruling.reason.strip():
+                problems.append(f"unit ruling for {name!r} in {unit_id!r} gives no reason")
         if problems:
             raise ValueError(
                 "characters.yaml failed safety validation:\n- " + "\n- ".join(problems)
@@ -194,20 +235,40 @@ class Registry:
         surface: str,
         chapter_id: str | None = None,
         context_tags: tuple = (),
+        unit_id: str | None = None,
     ) -> Resolution:
         """Resolve a surface form or annotation canonical name to an entity.
 
         Never raises on unknown names; returns status="unresolved" so callers
         can triage instead of dropping.
+
+        Order of authority: a unit ruling for this exact passage and name;
+        then an annotation name, unless a scoped form of the same text
+        belonging to another entity applies here (then the name is
+        ambiguous in this scope -- "princesse de Guermantes" in the late
+        Temps retrouvé chapters, where the title is Mme Verdurin's); then
+        the surface forms that apply in this scope.
         """
+        if unit_id is not None:
+            ruling = self.unit_rulings.get((unit_id, surface))
+            if ruling is not None:
+                return Resolution(ruling.entity_id, surface, "resolved")
         surface_norm = normalize_text(surface.strip())
-        if surface in self._by_annotation_name:
-            return Resolution(self._by_annotation_name[surface], surface, "resolved")
         candidates = [
             f
             for f in self._by_norm_form.get(surface_norm, [])
             if f.applies_in(chapter_id, context_tags)
         ]
+        if surface in self._by_annotation_name:
+            owner = self._by_annotation_name[surface]
+            rivals = {
+                f.entity_id
+                for f in candidates
+                if f.scope_kind in _RULING_SCOPES and f.entity_id != owner
+            }
+            if rivals:
+                return Resolution(None, surface, "ambiguous", tuple(sorted(rivals | {owner})))
+            return Resolution(owner, surface, "resolved")
         entity_ids = sorted({f.entity_id for f in candidates})
         if len(entity_ids) == 1:
             return Resolution(entity_ids[0], surface, "resolved")

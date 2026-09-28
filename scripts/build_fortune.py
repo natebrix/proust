@@ -9,7 +9,7 @@ Usage:
 
 Writes `fortune-<lens>-<view>.json` for every lens (overall plus the three
 scoring v2 lenses) in both views -- `person` (registry entities, merged
-names, reviewed passage rulings) and `name` (annotation names as written) --
+names, registry unit rulings) and `name` (annotation names as written) --
 plus `fortune-report.md`, which reads the person view. The model is
 `proust/fortune.py`; nothing here is tuned per character.
 """
@@ -263,20 +263,20 @@ def main():
                 flush=True,
             )
 
-    # Every build walks the same passages once per lens, so each hit is
-    # counted four times; report distinct (passage or chapter, name) pairs.
     keyer_notes = [
         f"merged by `person_view_merge`: "
         + ", ".join(f"{keyer.display(source)} → {keyer.display(target)}" for source, target in sorted(keyer.merge_map.items())),
     ]
     keyer_notes += [
-        f"reviewed passage ruling: \"{name}\" in `{unit_id}` → {keyer.display(fortune.REVIEWED_UNIT_RESOLUTIONS[(unit_id, name)])}"
-        for unit_id, name in sorted(keyer.reviewed_hits)
+        f"registry unit ruling: \"{name}\" in `{unit_id}` → "
+        f"{keyer.display(keyer.registry.unit_rulings[(unit_id, name)].entity_id)}"
+        for unit_id, name in sorted(keyer.ruled)
     ]
     keyer_notes += [
-        f"left on the name (ambiguous in `{chapter_id}` by a chapter-scoped registry form): \"{name}\""
-        for chapter_id, name in sorted(keyer.ambiguous_hits)
-    ] or ["no names left ambiguous by chapter-scoped registry forms"]
+        f"left on the name (registry resolves it as ambiguous in `{chapter_id or 'any chapter'}`: "
+        f"{', '.join(candidates)}): \"{name}\""
+        for (chapter_id, name), candidates in sorted(keyer.ambiguous.items(), key=lambda item: (item[0][0] or "", item[0][1]))
+    ] or ["no names left ambiguous by the registry"]
     (output_dir / "fortune-report.md").write_text(render_report(results, keyer_notes))
 
 

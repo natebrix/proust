@@ -137,7 +137,7 @@ BAL = "v7-p4-le-bal-de-tetes"
 VERDURIN_PRINCESSE_UNIT = "v7-p4-le-bal-de-tetes#p-61-p-65"
 
 
-def test_person_keyer_follows_merges_scoped_rulings_and_reviews():
+def test_person_keyer_follows_merges_scoped_rulings_and_unit_rulings():
     keyer = fortune.PersonKeyer(Registry.load())
 
     assert keyer.key("le peintre", chapter_id="v2-p2-noms-de-pays-le-pays") == "elstir"

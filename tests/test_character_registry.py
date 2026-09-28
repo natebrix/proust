@@ -149,3 +149,34 @@ def test_no_two_entities_share_a_display_name(registry):
     for entity in registry.entities.values():
         other = seen.setdefault(entity.display_name, entity.id)
         assert other == entity.id, f"{other} and {entity.id} share {entity.display_name!r}"
+
+
+BAL = "v7-p4-le-bal-de-tetes"
+
+
+def test_scoped_form_makes_an_annotation_name_ambiguous_there(registry):
+    """characters.yaml scopes "princesse de Guermantes" to mme-verdurin in the
+    last two chapters; the annotation name must not override that ruling."""
+    resolution = registry.resolve("princesse de Guermantes", chapter_id=BAL)
+    assert resolution.status == "ambiguous"
+    assert resolution.candidates == ("mme-verdurin", "princesse-de-guermantes")
+    assert registry.resolve("princesse de Guermantes", chapter_id="v5").entity_id == "princesse-de-guermantes"
+    assert registry.resolve("princesse de Guermantes").entity_id == "princesse-de-guermantes"
+
+
+def test_unit_ruling_settles_one_passage_only(registry):
+    ruled = f"{BAL}#p-61-p-65"
+    assert registry.resolve("princesse de Guermantes", chapter_id=BAL, unit_id=ruled).entity_id == "mme-verdurin"
+    assert registry.resolve("princesse de Guermantes", chapter_id=BAL, unit_id=f"{BAL}#p-1-p-5").status == "ambiguous"
+    # The ruling covers one name only.
+    assert registry.resolve("Gilberte", chapter_id=BAL, unit_id=ruled).entity_id == "gilberte"
+
+
+def test_unit_rulings_must_name_a_known_entity_and_a_reason(tmp_path):
+    source = REGISTRY_PATH.read_text(encoding="utf-8")
+    broken = source.replace("  entity: mme-verdurin\n", "  entity: nobody-at-all\n", 1)
+    assert broken != source
+    path = tmp_path / "characters.yaml"
+    path.write_text(broken, encoding="utf-8")
+    with pytest.raises(ValueError, match="unknown entity"):
+        Registry.load(path)

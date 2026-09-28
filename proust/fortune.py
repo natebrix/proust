@@ -36,7 +36,6 @@ from collections import defaultdict
 import math
 
 from . import scoring_v2 as v2
-from .registry import normalize_text
 
 # The three scoring v2 lenses plus their sum: a character's whole movement
 # in a passage, whichever dimension carried it.
@@ -103,17 +102,6 @@ def unit_observations(annotation, lens):
 # Person view: follow a person across names and titles.
 # ---------------------------------------------------------------------------
 
-# Passage-level rulings for names the registry itself declares ambiguous in
-# a chapter. Each entry is (unit_id, annotation name) -> entity id, and
-# each must say why.
-REVIEWED_UNIT_RESOLUTIONS = {
-    # "nous ferons clan!" in a tinny voice from her dentures: the petit clan
-    # is Mme Verdurin's own phrase, and Marie-Gilbert is dead by the Bal de
-    # tetes. The registry scopes "princesse de Guermantes" to mme-verdurin
-    # in this chapter and calls the bare form ambiguous; this passage is not.
-    ("v7-p4-le-bal-de-tetes#p-61-p-65", "princesse de Guermantes"): "mme-verdurin",
-}
-
 NAME_KEY_PREFIX = "name:"
 
 
@@ -123,52 +111,32 @@ class PersonKeyer:
     Keys are registry entity ids (after `person_view_merge` links, so "le
     peintre" is Elstir and the prince des Laumes is the duc de Guermantes)
     or, for names the registry cannot place, `name:<name>`, so an
-    unresolved name never pools with anyone.
+    unresolved or ambiguous name never pools with anyone. Resolution is the
+    registry's own, passage-aware (`Registry.resolve` with `unit_id`), so
+    chapter-scoped rulings and `unit_rulings` in characters.yaml apply here
+    exactly as they do in scoring v2's person view.
 
-    One rule goes beyond `Registry.resolve`: when another entity carries a
-    CHAPTER-SCOPED form with the same text in this chapter, the name is
-    ambiguous there, as the registry's own notes intend ("princesse de
-    Guermantes" in the late Temps retrouve chapters may be Mme Verdurin).
-    `Registry.resolve` answers exact annotation names before it looks at
-    scoped forms, so it never reports that ambiguity. Ambiguous names key
-    on the name unless `REVIEWED_UNIT_RESOLUTIONS` settles the passage.
-    Global forms shared by two entities are not treated this way: those are
-    duplicates in the registry, not rulings.
+    `ruled` and `ambiguous` record which registry rulings the build leaned
+    on, for the report.
     """
 
-    def __init__(self, registry, reviewed=None):
+    def __init__(self, registry):
         self.registry = registry
         self.merge_map = v2.person_view_merge_map(registry)
-        self.reviewed = REVIEWED_UNIT_RESOLUTIONS if reviewed is None else reviewed
-        self._scoped = defaultdict(list)
-        for form in registry.forms:
-            if form.scope_kind == "chapters":
-                self._scoped[normalize_text(form.form)].append(form)
-        self.ambiguous_hits = defaultdict(int)
-        self.reviewed_hits = defaultdict(int)
-
-    def _merged(self, entity_id):
-        return self.merge_map.get(entity_id, entity_id)
+        self.ruled = set()  # (unit_id, name)
+        self.ambiguous = {}  # (chapter_id, name) -> candidate entity ids
 
     def key(self, name, unit_id=None, chapter_id=None):
         if name in v2.NON_CHARACTER_NAMES:
             return NAME_KEY_PREFIX + name
-        reviewed = self.reviewed.get((unit_id, name))
-        if reviewed:
-            self.reviewed_hits[(unit_id, name)] += 1
-            return self._merged(reviewed)
-        resolution = self.registry.resolve(name, chapter_id=chapter_id)
+        resolution = self.registry.resolve(name, chapter_id=chapter_id, unit_id=unit_id)
+        if resolution.status == "ambiguous":
+            self.ambiguous[(chapter_id, name)] = resolution.candidates
         if resolution.status != "resolved":
             return NAME_KEY_PREFIX + name
-        rivals = {
-            form.entity_id
-            for form in self._scoped.get(normalize_text(name), ())
-            if form.applies_in(chapter_id, ()) and form.entity_id != resolution.entity_id
-        }
-        if rivals:
-            self.ambiguous_hits[(chapter_id, name)] += 1
-            return NAME_KEY_PREFIX + name
-        return self._merged(resolution.entity_id)
+        if (unit_id, name) in self.registry.unit_rulings:
+            self.ruled.add((unit_id, name))
+        return self.merge_map.get(resolution.entity_id, resolution.entity_id)
 
     def display(self, key):
         if key.startswith(NAME_KEY_PREFIX):
@@ -416,7 +384,6 @@ __all__ = [
     "FORTUNE_RATING_CENTER",
     "NAME_KEY_PREFIX",
     "PersonKeyer",
-    "REVIEWED_UNIT_RESOLUTIONS",
     "OVERALL_LENS",
     "WORDS_PER_TIME_UNIT",
     "arc_summary",
