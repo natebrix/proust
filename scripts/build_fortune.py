@@ -126,9 +126,13 @@ def build_lens(units, lens, marks, min_appearances, keyer=None, view="name", sam
                 },
                 "biggest_fall": _move(summary["biggest_fall"], sd_by_time, sigma2, marks, p_values["fall"]),
                 "biggest_rise": _move(summary["biggest_rise"], sd_by_time, sigma2, marks, p_values["rise"]),
+                # [time, level, sd, filtered level, rating, rating sd]: the
+                # ratings come from the unrounded levels, so they agree with
+                # start/end/peak/moves to the point.
                 "trajectory": [
                     [node["time"], round(node["smoothed"], 3), round(math.sqrt(node["smoothed_var"]), 3),
-                     round(node["filtered"], 3)]
+                     round(node["filtered"], 3), round(fortune.fortune_rating(node["smoothed"], sigma2)),
+                     round(points * math.sqrt(node["smoothed_var"]))]
                     for node in nodes
                 ],
                 "observations": [[time, round(value, 3), round(weight, 3)] for time, value, weight in rows],
@@ -163,7 +167,30 @@ def build_lens(units, lens, marks, min_appearances, keyer=None, view="name", sam
 # ---------------------------------------------------------------------------
 
 APP_EXPORT_NAME = "character-fortune-current.json"
-APP_EXPORT_VERSION = "character_fortune_v1"
+APP_EXPORT_VERSION = "character_fortune_v2"
+
+# Short chapter names for reader-facing sentences ("from Noms de pays : le
+# pays to L'Adoration perpétuelle"). The full titles run to 90 characters.
+CHAPTER_SHORT_TITLES = {
+    "v1-p1-combray": "Combray",
+    "v1-p2-un-amour-de-swann": "Un amour de Swann",
+    "v1-p3-noms-de-pays-le-nom": "Noms de pays : le nom",
+    "v2-p1-autour-de-mme-swann": "Autour de Mme Swann",
+    "v2-p2-noms-de-pays-le-pays": "Noms de pays : le pays",
+    "v3-p1": "Le Côté de Guermantes I",
+    "v3-p2": "Le Côté de Guermantes II",
+    "v4-p1": "Sodome et Gomorrhe I",
+    "v4-p2": "Sodome et Gomorrhe II",
+    "v5": "La Prisonnière",
+    "v6-p1": "Albertine disparue I",
+    "v6-p2": "Albertine disparue II",
+    "v6-p3": "Albertine disparue III",
+    "v6-p4": "Albertine disparue IV",
+    "v7-p1-a-tansonville": "À Tansonville",
+    "v7-p2-m-de-charlus-pendant-la-guerre": "M. de Charlus pendant la guerre",
+    "v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle": "L'Adoration perpétuelle",
+    "v7-p4-le-bal-de-tetes": "Le Bal de têtes",
+}
 
 # A lens "shows arcs" when the fitted model beats a no-arc model by at least
 # this many log-likelihood points; below it the app should not draw lines.
@@ -174,23 +201,24 @@ CLEAR_MAX_ORDER_P = 0.01
 CLEAR_MIN_LEVEL_CHANGE = 0.25
 
 
-def _app_point(point, x_of):
+def _app_point(point, x_of, short_title_at):
     """A start/end/peak/move endpoint, reusing the ratings the build computed."""
     return {
         "x": x_of(point["time"]),
         "rating": point["rating"],
         "sd": point["rating_sd"],
         "chapter_title": point["chapter_title"],
+        "chapter_short_title": short_title_at(point["time"]),
     }
 
 
-def _app_move(move, x_of):
+def _app_move(move, x_of, short_title_at):
     if not move:
         return None
     return {
         "points": move["rating_size"],
-        "from": _app_point(move["from"], x_of),
-        "to": _app_point(move["to"], x_of),
+        "from": _app_point(move["from"], x_of, short_title_at),
+        "to": _app_point(move["to"], x_of, short_title_at),
         "order_p": move["order_p"],
         "clear": bool(
             move["order_p"] is not None
@@ -215,14 +243,21 @@ def build_app_export(results, units, marks, keyer, page_slugs, corpus):
 
     unit_at_time = {fortune.unit_time(unit["corpus_position"]): unit for unit in units}
 
+    def short_title_at(time):
+        return CHAPTER_SHORT_TITLES[locate(time, marks)["chapter_id"]]
+
     volumes = []
     for mark in marks:
         if not volumes or volumes[-1]["volume"] != mark["volume"]:
             volumes.append(
                 {"volume": mark["volume"], "title": mark["chapter_title"].split(" — ")[0], "x": x_of(mark["time"])}
             )
+    missing = [mark["chapter_id"] for mark in marks if mark["chapter_id"] not in CHAPTER_SHORT_TITLES]
+    if missing:
+        raise ValueError(f"CHAPTER_SHORT_TITLES has no entry for: {', '.join(missing)}")
     chapters = [
-        {"chapter_id": mark["chapter_id"], "chapter_title": mark["chapter_title"], "volume": mark["volume"],
+        {"chapter_id": mark["chapter_id"], "chapter_title": mark["chapter_title"],
+         "short_title": CHAPTER_SHORT_TITLES[mark["chapter_id"]], "volume": mark["volume"],
          "x": x_of(mark["time"])}
         for mark in marks
     ]
@@ -268,15 +303,14 @@ def build_app_export(results, units, marks, keyer, page_slugs, corpus):
             entry["lenses"][lens] = {
                 "passages_count": row["appearances"],
                 "line": [
-                    [x_of(time), round(fortune.FORTUNE_RATING_CENTER + result["rating_points_per_level"] * level),
-                     round(result["rating_points_per_level"] * sd)]
-                    for time, level, sd, _filtered in row["trajectory"]
+                    [x_of(time), rating, rating_sd]
+                    for time, _level, _sd, _filtered, rating, rating_sd in row["trajectory"]
                 ],
                 "passages": passages,
-                "start": _app_point(row["start"], x_of),
-                "end": _app_point(row["end"], x_of),
-                "biggest_fall": _app_move(row["biggest_fall"], x_of),
-                "biggest_rise": _app_move(row["biggest_rise"], x_of),
+                "start": _app_point(row["start"], x_of, short_title_at),
+                "end": _app_point(row["end"], x_of, short_title_at),
+                "biggest_fall": _app_move(row["biggest_fall"], x_of, short_title_at),
+                "biggest_rise": _app_move(row["biggest_rise"], x_of, short_title_at),
             }
         characters.append(entry)
 

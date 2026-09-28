@@ -35,9 +35,13 @@ Ratings use an Elo-style scale so readers can hold onto them:
 
 One file, rebuilt by `python3 scripts/build_fortune.py`:
 
-- `../proust/outputs/character-fortune-current.json` (~0.7 MB)
+- `outputs/character-fortune-current.json` (~0.7 MB)
 
-Do not read `outputs/fortune/*.json`; those are the analysis files.
+The app vendors it: copy it to
+`brixius-web/app/projects/islt/_data/character-fortune-current.json`, next to
+the other vendored ISLT data (reading `../proust` at runtime does not work once
+deployed). Re-copy it whenever `build_fortune.py` is re-run. Do not read
+`outputs/fortune/*.json`; those are the analysis files.
 
 ## Data shape
 
@@ -45,14 +49,14 @@ Top level:
 
 | field | meaning |
 | --- | --- |
-| `character_fortune_version` | `character_fortune_v1` |
+| `character_fortune_version` | `character_fortune_v2` (v2 added short titles and made line points agree exactly with the endpoints) |
 | `corpus`, `view` | provenance (`enrichment`, `person`) |
 | `x_axis` | x is the fraction of the novel's words before a point, 0 to 1 |
 | `rating_center` | `1500` |
 | `clear_move_rule` | how `clear` below is decided (`max_order_p`, `min_level_change`) |
 | `lenses` | per lens: `points_per_level`, `arc_evidence`, `shows_arcs` |
 | `volumes` | `[{volume, title, x}]`: where each of the seven volumes starts |
-| `chapters` | `[{chapter_id, chapter_title, volume, x}]`: where each chapter starts |
+| `chapters` | `[{chapter_id, chapter_title, short_title, volume, x}]`: where each chapter starts; `short_title` is for sentences |
 | `characters` | one entry per character with enough passages for an arc (42) |
 
 Each character:
@@ -72,7 +76,7 @@ Each lens entry:
 | `passages_count` | passages behind the line |
 | `line` | `[[x, rating, sd], ...]`, the smoothed arc, in order |
 | `passages` | `[{x, outcome, unit_id, chapter_title, reader_link}]`, one dot per passage |
-| `start`, `end` | `{x, rating, sd, chapter_title}` |
+| `start`, `end` | `{x, rating, sd, chapter_title, chapter_short_title}`; the rating equals the `line` point at the same x |
 | `biggest_fall`, `biggest_rise` | `{points, from, to, order_p, clear}` or `null` |
 
 `lenses.inclusion.shows_arcs` is `false`: its annotations are too sparse
@@ -111,8 +115,9 @@ Good framing:
 - one sentence: "How the passages involving {name} leave them, from Combray
   to the Bal de têtes. 1500 is even; higher is better."
 
-Say the move when it is `clear`, and only then: "Biggest fall: 479 points,
-from Jeunes Filles to the Matinée."
+Say the move when it is `clear`, and only then, using the short titles:
+"Biggest fall: 479 points, from Noms de pays : le pays to L'Adoration
+perpétuelle." Keep the full `chapter_title` for hover text.
 
 Avoid:
 
@@ -123,9 +128,9 @@ Avoid:
 
 ## Likely app seams
 
-- `/Users/nathan_brixius/dev/brixius-web/lib/islt.ts`: a loader
-  `getCharacterFortune(slug)` that reads the file once and returns
-  `{ lenses, volumes, chapters, entry }` for one slug, or `null`
+- `/Users/nathan_brixius/dev/brixius-web/app/projects/islt/_data/`: the
+  vendored JSON and a loader `getCharacterFortune(slug)` that reads it once and
+  returns `{ lenses, volumes, chapters, entry }` for one slug, or `null`
 - a small `CharacterFortuneChart` component
 - `/Users/nathan_brixius/dev/brixius-web/app/projects/islt/characters/[slug]/page.tsx`:
   render the component when the loader returns an entry
@@ -146,3 +151,7 @@ before anything else.
 ## Short prompt
 
 `Please add a fortune-arc chart to the existing ISLT character pages using ../proust/outputs/character-fortune-current.json. Read proust/docs/islt_fortune_arcs_handoff.md first and follow its data shape, rendering target and display policy. Join on slug. Default to the overall lens; offer advantage and prestige only where shows_arcs is true and the character has an entry. Draw the smoothed line with a ±sd band, faint per-passage dots, volume rules and a 1500 baseline, and mark the biggest move only when clear is true. Do not recompute anything in the app.`
+
+## Update prompt (v1 → v2, for the existing `nbrixius/islt-fortune-arcs` branch)
+
+`Please update the ISLT fortune chart to character_fortune_v2. Re-copy ../proust/outputs/character-fortune-current.json into app/projects/islt/_data/. Use chapter_short_title (on start, end and move endpoints) for the biggest-move sentence, and keep the full chapter_title in hover text. Line points now equal the endpoint ratings exactly; keep the existing tests passing and update any expected values that change.`
