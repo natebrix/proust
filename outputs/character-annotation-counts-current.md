@@ -2,295 +2,200 @@
 
 - Analysis version: `character_annotation_counts_v1`
 - Source review version: `corpus_sanity_review_v1`
-- Character count: `288`
+- Character count: `193`
 
 | Character | Annotation Units | Advantage | Prestige | Inclusion |
 | --- | --- | --- | --- | --- |
-| le narrateur | 316 | -268.695 | -226.919 | -267.072 |
-| Swann | 202 | -202.791 | -164.941 | -206.587 |
-| duchesse de Guermantes | 199 | -15.023 | -15.21 | -50.797 |
-| Robert de Saint-Loup | 168 | -101.126 | -92.039 | -104.621 |
-| Albertine | 146 | -126.789 | -113.52 | -129.528 |
-| Odette | 142 | -102.025 | -88.736 | -106.221 |
-| baron de Charlus | 119 | -96.286 | -86.021 | -95.23 |
-| duc de Guermantes | 110 | -124.918 | -108.339 | -114.591 |
-| Françoise | 82 | -21.294 | -21.902 | -30.262 |
-| Mme Verdurin | 82 | -73.213 | -60.504 | -74.541 |
-| la grand-mère | 80 | -25.976 | -23.201 | -35.487 |
-| Mme de Villeparisis | 79 | -57.389 | -50.284 | -59.184 |
-| Gilberte | 76 | -39.203 | -34.714 | -44.254 |
-| Bloch | 71 | -120.771 | -99.93 | -114.21 |
-| Norpois | 63 | -40.965 | -37.285 | -41.516 |
-| Rachel | 43 | -46.714 | -40.362 | -46.856 |
-| docteur Cottard | 43 | -42.057 | -37.188 | -38.676 |
-| la mère du narrateur | 40 | -16.748 | -16.854 | -19.086 |
-| princesse de Parme | 38 | -31.235 | -24.995 | -31.9 |
-| Bergotte | 36 | -2.249 | -3.399 | -7.174 |
-| Morel | 32 | -34.123 | -28.022 | -32.654 |
-| Andrée | 31 | -24.649 | -22.073 | -25.268 |
-| Elstir | 29 | +5.046 | +0.99 | +0.411 |
-| M. Verdurin | 27 | -18.552 | -17.286 | -17.286 |
-| comte de Forcheville | 25 | -7.791 | -7.26 | -10.0 |
-| princesse de Guermantes | 25 | -6.701 | -6.311 | -10.07 |
-| Legrandin | 24 | -33.364 | -28.261 | -29.29 |
-| le père du narrateur | 24 | -18.07 | -16.311 | -18.962 |
-| prince de Guermantes | 22 | -18.542 | -17.937 | -17.526 |
-| tante Léonie | 22 | -19.036 | -15.772 | -18.141 |
-| Brichot | 21 | -19.09 | -16.311 | -18.414 |
-| Mme de Marsantes | 21 | -25.623 | -21.012 | -25.923 |
-| Mme de Cambremer | 20 | -34.188 | -31.223 | -30.202 |
-| la Berma | 19 | -5.866 | -8.569 | -6.376 |
-| marquis de Bréauté | 19 | -17.754 | -17.694 | -15.405 |
-| Aimé | 18 | -7.532 | -8.504 | -8.107 |
-| Jupien | 18 | +2.123 | +0.55 | -1.139 |
-| le grand-père du narrateur | 16 | -10.032 | -9.784 | -10.618 |
-| M. Vinteuil | 15 | -5.82 | -6.335 | -6.667 |
-| Mlle Vinteuil | 15 | -10.708 | -9.968 | -10.389 |
-| M. d'Argencourt | 14 | -17.999 | -16.8 | -15.719 |
-| Mme Bontemps | 13 | -8.459 | -8.355 | -7.478 |
-| marquise de Saint-Euverte | 13 | -27.353 | -25.762 | -23.187 |
-| l'amie de Mlle Vinteuil | 12 | -3.9 | -4.152 | -4.328 |
-| Mme Cottard | 11 | -4.74 | -4.217 | -4.726 |
-| le directeur | 11 | -9.104 | -6.926 | -9.365 |
-| M. Nissim Bernard | 10 | -15.91 | -13.152 | -15.016 |
-| M. de Vaugoubert | 9 | -13.17 | -10.18 | -12.45 |
-| Mme de Surgis | 9 | -8.7 | -7.22 | -8.907 |
-| Saniette | 9 | -31.097 | -25.055 | -29.369 |
-| Bloch père | 8 | -15.535 | -14.168 | -12.912 |
-| Mme d'Arpajon | 8 | -14.8 | -13.756 | -12.243 |
-| le peintre | 8 | -1.614 | -2.37 | -2.388 |
-| Dreyfus | 7 | -5.559 | -5.391 | -5.391 |
-| Eulalie | 7 | -0.144 | -1.179 | +0.521 |
-| général de Froberville | 7 | -4.354 | -4.123 | -4.174 |
-| marquise de Gallardon | 7 | -15.26 | -14.728 | -12.022 |
-| Mme Sazerat | 6 | -4.405 | -4.036 | -4.149 |
-| comtesse Molé | 6 | -8.19 | -6.852 | -7.726 |
-| docteur du Boulbon | 6 | -2.354 | -2.608 | -2.815 |
-| la marquise douairière de Cambremer | 6 | +0.79 | +0.498 | -0.381 |
-| marquis de Cambremer | 6 | -7.04 | -6.72 | -6.094 |
-| oncle Adolphe | 6 | -10.801 | -9.118 | -10.638 |
-| princesse de Luxembourg | 6 | -4.896 | -4.637 | -4.691 |
-| Gisèle | 5 | -11.146 | -8.839 | -10.752 |
-| Mlle de Stermaria | 5 | -3.511 | -3.874 | -3.357 |
-| Mme Leroi | 5 | -5.735 | -5.46 | -4.968 |
-| Mme d'Heudicourt | 5 | -8.5 | -7.344 | -7.409 |
-| capitaine de Borodino | 5 | -9.812 | -8.656 | -8.847 |
-| duc de Châtellerault | 5 | -8.18 | -6.566 | -7.108 |
-| princesse Sherbatoff | 5 | -4.418 | -3.505 | -3.934 |
-| Léa | 4 | -2.8 | -2.8 | -2.8 |
-| M. de Grouchy | 4 | -3.363 | -3.645 | -2.965 |
-| M. de Stermaria | 4 | -5.435 | -5.437 | -4.433 |
-| Mme de Sévigné | 4 | +0.39 | -0.075 | -0.261 |
-| Rosemonde | 4 | -2.8 | -2.8 | -2.8 |
-| général de Monserfeuil | 4 | -6.045 | -5.158 | -5.923 |
-| Alix | 3 | -10.063 | -8.442 | -8.199 |
-| Céleste Albaret | 3 | +5.575 | +4.56 | +3.599 |
-| Mme de Franquetot | 3 | -3.265 | -2.512 | -3.275 |
-| Rémi | 3 | -1.6 | -1.6 | -1.6 |
-| comte de Paris | 3 | -2.0 | -2.0 | -2.0 |
-| la reine de Naples | 3 | +1.09 | +0.552 | +0.552 |
-| le pianiste | 3 | +2.277 | +2.098 | +1.314 |
-| le roi Théodose | 3 | -0.419 | -0.567 | -0.567 |
-| prince Von | 3 | -4.98 | -4.304 | -4.389 |
-| prince de Foix | 3 | -2.85 | -2.68 | -2.68 |
-| prince des Laumes | 3 | -2.4 | -2.4 | -2.4 |
-| princesse d'Épinay | 3 | -1.6 | -1.6 | -1.6 |
-| Balzac | 2 | -1.6 | -1.6 | -1.6 |
-| Céline | 2 | -2.45 | -2.28 | -2.28 |
-| Esther | 2 | -2.0 | -2.0 | -2.0 |
-| Goncourt | 2 | -1.6 | -1.6 | -1.6 |
-| M. Bontemps | 2 | -0.501 | -0.246 | -0.966 |
-| M. Pierre | 2 | -7.054 | -5.641 | -6.197 |
-| M. Ski | 2 | -0.8 | -0.8 | -0.8 |
-| M. d'Herweck | 2 | -4.409 | -4.559 | -3.139 |
-| M. de Chateaubriand | 2 | -4.265 | -3.547 | -3.699 |
-| M. de Marsantes | 2 | -0.48 | -0.624 | -0.624 |
-| Mlle d'Éporcheville | 2 | -1.2 | -1.2 | -1.2 |
-| Mlle de Saint-Loup | 2 | +3.85 | +2.945 | +2.575 |
-| Mme Blandais | 2 | -5.719 | -4.859 | -5.077 |
-| Mme Goupil | 2 | -1.6 | -1.6 | -1.6 |
-| Mme de Charlus | 2 | -1.6 | -1.6 | -1.6 |
-| Mme de Souvré | 2 | -3.47 | -2.63 | -3.832 |
-| Mme de Varambon | 2 | -5.89 | -4.62 | -5.563 |
-| Mme de Vaugoubert | 2 | -4.0 | -3.296 | -3.468 |
-| Octave | 2 | -0.75 | -0.667 | -0.945 |
-| Picquart | 2 | -4.265 | -3.964 | -3.45 |
-| Poullein | 2 | -1.32 | -1.08 | -1.15 |
-| Victurnien | 2 | +1.525 | +0.573 | +2.117 |
-| duc d'Aumale | 2 | +1.01 | +1.275 | +0.495 |
-| grand-duc héritier de Luxembourg | 2 | +1.46 | +1.018 | +0.838 |
-| jeune blonde de Rivebelle | 2 | -0.8 | -0.8 | -0.8 |
-| le prince Von | 2 | -2.526 | -2.45 | -2.452 |
-| marquis du Lau | 2 | +3.295 | +2.923 | +2.064 |
-| prince d'Agrigente | 2 | -0.6 | -0.473 | -0.74 |
-| prince de Faffenheim | 2 | -3.015 | -2.181 | -2.801 |
-| prince d’Agrigente | 2 | -1.6 | -1.6 | -1.6 |
-| princesse Mathilde | 2 | -1.2 | -1.2 | -1.2 |
-| professeur E… | 2 | -3.61 | -2.968 | -3.058 |
-| Antoine | 1 | -0.8 | -0.8 | -0.8 |
-| Arnulphe | 1 | -0.4 | -0.4 | -0.4 |
-| Barrès | 1 | -0.8 | -0.8 | -0.8 |
-| Beauserfeuil | 1 | -0.95 | -0.84 | -0.84 |
-| Bibi | 1 | +0.3 | +0.16 | +0.16 |
-| Bismarck | 1 | +0.548 | +0.343 | +0.214 |
-| Cartier | 1 | -1.965 | -1.635 | -1.635 |
-| Charcot | 1 | -0.8 | -0.8 | -0.8 |
-| Clémenceau | 1 | -0.8 | -0.8 | -0.8 |
-| Coquelin | 1 | -0.8 | -0.8 | -0.8 |
-| D'Annunzio | 1 | -0.4 | -0.4 | -0.4 |
-| Dechambre | 1 | -1.1 | -0.96 | -0.96 |
-| Dostoïevski | 1 | -0.8 | -0.8 | -0.8 |
-| Dumont | 1 | -2.28 | -1.568 | -2.864 |
-| Duroc | 1 | +1.708 | +1.273 | +1.205 |
-| Flora | 1 | -0.8 | -0.8 | -0.8 |
-| Gribelin | 1 | +0.15 | +0.04 | +0.04 |
-| Herbinger | 1 | -0.8 | -0.8 | -0.8 |
-| La Moussaye | 1 | -0.4 | -0.4 | -0.4 |
+| le narrateur | 209 | -69.082 | -47.661 | -78.266 |
+| duchesse de Guermantes | 183 | +61.414 | +62.789 | +19.42 |
+| Swann | 177 | -142.265 | -100.194 | -154.203 |
+| Robert de Saint-Loup | 138 | -49.601 | -36.121 | -58.161 |
+| Albertine | 126 | -72.141 | -60.139 | -70.29 |
+| Odette | 124 | -46.438 | -28.404 | -62.228 |
+| baron de Charlus | 110 | -68.082 | -56.945 | -67.903 |
+| duc de Guermantes | 97 | -101.378 | -84.501 | -88.516 |
+| Mme Verdurin | 78 | -45.762 | -30.773 | -50.781 |
+| Mme de Villeparisis | 73 | -27.817 | -24.947 | -28.067 |
+| Bloch | 64 | -110.256 | -84.912 | -106.643 |
+| Françoise | 61 | +1.277 | +2.201 | -5.059 |
+| Gilberte | 57 | -7.242 | -6.198 | -9.924 |
+| Norpois | 54 | -11.217 | -9.369 | -14.135 |
+| la grand-mère | 48 | +9.168 | +8.79 | +3.848 |
+| docteur Cottard | 37 | -15.507 | -11.959 | -16.514 |
+| princesse de Parme | 36 | -9.791 | -7.406 | -10.542 |
+| Morel | 35 | -35.319 | -24.382 | -35.679 |
+| M. Verdurin | 32 | -14.86 | -12.919 | -13.666 |
+| Rachel | 29 | -18.008 | -16.558 | -16.841 |
+| comte de Forcheville | 28 | +5.676 | +4.643 | +3.321 |
+| la mère du narrateur | 28 | +3.342 | +3.763 | -1.672 |
+| Bergotte | 27 | -0.055 | -0.273 | -2.818 |
+| Andrée | 25 | -3.148 | -2.636 | -6.023 |
+| Legrandin | 23 | -24.087 | -19.702 | -21.354 |
+| Mme de Cambremer | 22 | -41.888 | -34.041 | -37.52 |
+| Mme de Marsantes | 21 | -16.475 | -12.596 | -15.619 |
+| le père du narrateur | 21 | -5.065 | -3.177 | -7.933 |
+| princesse de Guermantes | 19 | -1.582 | +1.497 | -5.472 |
+| Elstir | 18 | +8.708 | +7.815 | +4.561 |
+| Brichot | 17 | -10.534 | -8.794 | -10.171 |
+| marquis de Bréauté | 17 | -8.658 | -6.883 | -7.968 |
+| Jupien | 15 | +8.191 | +6.187 | +6.562 |
+| Mme Cottard | 15 | -2.117 | -0.302 | -3.415 |
+| Mme Bontemps | 13 | -2.952 | -2.148 | -2.746 |
+| la Berma | 13 | +0.058 | +0.367 | -3.56 |
+| prince de Guermantes | 13 | -8.497 | -6.523 | -8.113 |
+| Saniette | 12 | -32.521 | -24.928 | -31.468 |
+| le grand-père du narrateur | 11 | -3.096 | -2.969 | -3.199 |
+| M. d'Argencourt | 10 | -9.429 | -8.192 | -7.85 |
+| Mme d'Arpajon | 10 | -16.158 | -13.779 | -13.566 |
+| marquise de Gallardon | 10 | -17.722 | -14.339 | -15.412 |
+| Aimé | 9 | +1.823 | +1.391 | +0.637 |
+| M. Vinteuil | 9 | -1.119 | -0.729 | -2.108 |
+| Mme de Surgis | 9 | +2.984 | +4.857 | +0.309 |
+| marquise de Saint-Euverte | 9 | -21.593 | -20.067 | -18.035 |
+| tante Léonie | 9 | +3.071 | +3.798 | +0.164 |
+| Mlle Vinteuil | 8 | -7.406 | -6.426 | -6.631 |
+| général de Froberville | 8 | -5.773 | -4.573 | -4.819 |
+| le peintre | 8 | +5.979 | +5.8 | +3.318 |
+| Bloch père | 7 | -15.926 | -12.754 | -14.495 |
+| M. de Vaugoubert | 7 | -4.776 | -3.014 | -5.315 |
+| l'amie de Mlle Vinteuil | 7 | -0.88 | -1.012 | -1.196 |
+| M. Nissim Bernard | 6 | -7.759 | -5.881 | -6.949 |
+| Mme Leroi | 6 | -7.957 | -8.416 | -5.968 |
+| comtesse Molé | 6 | -8.119 | -5.976 | -8.526 |
+| le directeur | 6 | -5.969 | -4.68 | -5.56 |
+| capitaine de Borodino | 5 | -11.403 | -10.694 | -9.229 |
+| la marquise douairière de Cambremer | 5 | +2.036 | +3.066 | -1.288 |
+| le bâtonnier | 5 | -9.18 | -7.448 | -7.797 |
+| le pianiste | 5 | -0.888 | -1.158 | -0.762 |
+| prince Von | 5 | -4.764 | -4.072 | -4.16 |
+| prince de Foix | 5 | -8.086 | -6.393 | -8.213 |
+| Alix | 4 | -3.962 | -1.957 | -3.77 |
+| Gisèle | 4 | -4.248 | -2.512 | -5.119 |
+| M. Bontemps | 4 | -2.152 | -0.936 | -2.689 |
+| M. Pierre | 4 | -8.338 | -5.285 | -9.469 |
+| M. de Stermaria | 4 | -1.22 | -1.056 | -1.056 |
+| Mlle de Stermaria | 4 | +1.795 | +1.287 | +1.267 |
+| Mme Sazerat | 4 | -2.748 | -2.152 | -2.39 |
+| docteur du Boulbon | 4 | +6.14 | +5.296 | +4.151 |
+| duc de Châtellerault | 4 | -4.88 | -3.946 | -4.194 |
+| la reine de Naples | 4 | -0.35 | -0.52 | -0.52 |
+| ma grand'tante | 4 | -6.36 | -5.328 | -5.418 |
+| marquis de Cambremer | 4 | -6.29 | -5.228 | -6.458 |
+| oncle Adolphe | 4 | -5.043 | -3.841 | -5.69 |
+| princesse de Luxembourg | 4 | -1.97 | -1.925 | -1.54 |
+| Céleste Albaret | 3 | +2.633 | +2.812 | +1.414 |
+| Eulalie | 3 | +3.644 | +2.408 | +3.903 |
+| M. de Bornier | 3 | -5.162 | -4.179 | -4.179 |
+| M. de Grouchy | 3 | -0.4 | -0.4 | -0.4 |
+| Mme Blatin | 3 | -8.51 | -6.37 | -8.19 |
+| Mme de Souvré | 3 | -7.18 | -5.019 | -7.668 |
+| Octave | 3 | -0.378 | +0.304 | -1.433 |
+| Poullein | 3 | -3.19 | -2.46 | -2.825 |
+| la marquise | 3 | -5.47 | -4.265 | -4.943 |
+| le roi Théodose | 3 | +0.267 | -0.001 | -0.001 |
+| prince de Faffenheim | 3 | -2.532 | -1.947 | -2.367 |
+| princesse Sherbatoff | 3 | -0.75 | -0.675 | -0.93 |
+| professeur E... | 3 | -4.84 | -3.964 | -4.28 |
+| Gibergue | 2 | -2.255 | -2.08 | -2.125 |
+| M. Ski | 2 | -4.165 | -3.412 | -3.546 |
+| M. d'Herweck | 2 | -5.655 | -2.91 | -7.915 |
+| Marie Gineste | 2 | +1.479 | +1.233 | +1.036 |
+| Maurice | 2 | -1.2 | -1.2 | -1.2 |
+| Mlle d'Oloron | 2 | +5.558 | +5.238 | +4.699 |
+| Mme Blandais | 2 | -2.974 | -1.955 | -3.269 |
+| Mme de Chaussepierre | 2 | +0.748 | +1.732 | -0.646 |
+| Rémi | 2 | -0.4 | -0.4 | -0.4 |
+| Victurnien | 2 | +3.527 | +2.261 | +3.649 |
+| baron de Guermantes | 2 | -0.4 | -0.4 | -0.4 |
+| colonel de Froberville | 2 | -5.53 | -4.504 | -4.677 |
+| commandant Duroc | 2 | +0.43 | +0.275 | +0.275 |
+| grand-duc héritier de Luxembourg | 2 | -0.174 | -1.12 | +0.172 |
+| général de Monserfeuil | 2 | -2.875 | -2.3 | -2.448 |
+| la cousine d'Oriane | 2 | -3.727 | -2.951 | -2.951 |
+| le professeur E… | 2 | -3.924 | -3.139 | -3.287 |
+| les Iéna | 2 | -3.45 | -3.764 | -2.716 |
+| marquis de Palancy | 2 | +2.319 | +2.976 | +1.293 |
+| prince d'Agrigente | 2 | -0.86 | -0.763 | -1.018 |
+| princesse Mathilde | 2 | -0.8 | -0.8 | -0.8 |
+| princesse d'Épinay | 2 | -2.6 | -2.1 | -2.263 |
+| Antoine | 1 | -2.127 | -1.77 | -1.77 |
+| Arnulphe | 1 | +0.84 | +0.42 | +1.19 |
+| Bibi | 1 | +0.75 | +0.6 | +0.6 |
+| Céline | 1 | +0.52 | +0.325 | +0.39 |
+| Dechambre | 1 | -1.93 | -1.624 | -1.702 |
+| Dieulafoy | 1 | +2.85 | +2.375 | +2.185 |
+| Dreyfus | 1 | -1.278 | -1.094 | -1.094 |
+| Dumont | 1 | -3.142 | -3.232 | -2.53 |
+| Flora | 1 | 0.0 | 0.0 | 0.0 |
+| Israël | 1 | -2.573 | -2.127 | -2.127 |
+| La Moussaye | 1 | 0.0 | 0.0 | 0.0 |
 | Lady Israels | 1 | 0.0 | 0.0 | 0.0 |
-| Lady Israël | 1 | -0.4 | -0.4 | -0.4 |
-| Lady Rufus Israël | 1 | -0.4 | -0.4 | -0.4 |
-| Liszt | 1 | -0.8 | -0.8 | -0.8 |
-| Léonor de Cambremer | 1 | -0.8 | -0.8 | -0.8 |
-| Létourville | 1 | -0.8 | -0.8 | -0.8 |
-| L’excellent écrivain G… | 1 | -0.8 | -0.8 | -0.8 |
-| M. Arthur Meyer | 1 | -0.8 | -0.8 | -0.8 |
-| M. Barrère | 1 | -1.59 | -1.352 | -1.401 |
-| M. Carnot | 1 | -0.8 | -0.8 | -0.8 |
-| M. Grevy | 1 | -0.4 | -0.4 | -0.4 |
-| M. Molé | 1 | -0.8 | -0.8 | -0.8 |
-| M. Reinach | 1 | -0.8 | -0.8 | -0.8 |
-| M. Swann, le père | 1 | -0.8 | -0.8 | -0.8 |
-| M. Vibert | 1 | -0.4 | -0.4 | -0.4 |
-| M. d'Orsan | 1 | -0.8 | -0.8 | -0.8 |
-| M. de Beauserfeuil | 1 | -0.8 | -0.8 | -0.8 |
-| M. de Bornier | 1 | -1.2 | -1.2 | -1.2 |
-| M. de Bouillon | 1 | -0.8 | -0.8 | -0.8 |
-| M. de Chevregny | 1 | -0.4 | -0.4 | -0.4 |
-| M. de Courgivaux | 1 | +2.42 | +2.018 | +1.854 |
-| M. de Crécy | 1 | -0.4 | -0.4 | -0.4 |
-| M. de Goncourt | 1 | -1.2 | -1.2 | -1.2 |
-| M. de La Rochefoucauld | 1 | -0.8 | -0.8 | -0.8 |
-| M. de Luxembourg | 1 | -0.69 | -1.024 | -0.394 |
-| M. de Miribel | 1 | -0.8 | -0.8 | -0.8 |
-| M. de Vigny | 1 | -3.167 | -2.681 | -2.681 |
-| Madame Elstir | 1 | -0.8 | -0.8 | -0.8 |
-| Madame d'Ambresac | 1 | 0.0 | 0.0 | 0.0 |
-| Maeterlinck | 1 | -0.8 | -0.8 | -0.8 |
-| Manet | 1 | -0.8 | -0.8 | -0.8 |
-| Marie | 1 | -0.1 | -0.24 | -0.24 |
-| Marie Gineste | 1 | -0.4 | -0.4 | -0.4 |
-| Marie-Aynard | 1 | -0.8 | -0.8 | -0.8 |
-| Maurice | 1 | -2.498 | -1.68 | -3.169 |
-| Mlle Bloch | 1 | +1.28 | +1.142 | +1.343 |
-| Mlle d'Oloron | 1 | +1.41 | +1.92 | +0.39 |
-| Mlle de l’Orgeville | 1 | -0.8 | -0.8 | -0.8 |
-| Mme Blatin | 1 | -3.773 | -3.476 | -2.711 |
-| Mme Carnot | 1 | -0.8 | -0.8 | -0.8 |
-| Mme Elstir | 1 | +0.78 | +0.544 | +0.384 |
-| Mme Féré | 1 | -0.4 | -0.4 | -0.4 |
-| Mme Iéna | 1 | -3.59 | -2.226 | -4.716 |
-| Mme Legrandin mère | 1 | -0.8 | -0.8 | -0.8 |
-| Mme Poncin | 1 | +0.347 | +0.119 | +0.131 |
-| Mme Putbus | 1 | -0.8 | -0.8 | -0.8 |
-| Mme Ristori | 1 | -0.8 | -0.8 | -0.8 |
-| Mme Timoléon d'Amoncourt | 1 | -0.4 | -0.4 | -0.4 |
-| Mme Trombert | 1 | -0.4 | -0.4 | -0.4 |
-| Mme de Chaussepierre | 1 | +1.81 | +2.32 | +0.79 |
-| Mme de Grouchy | 1 | +0.144 | -0.06 | +0.008 |
-| Mme de Montmorency | 1 | -0.8 | -0.8 | -0.8 |
-| Mme de Morienval | 1 | -1.6 | -1.44 | -1.44 |
-| Mme de Rochechouart | 1 | -0.8 | -0.8 | -0.8 |
-| Mme de Sagan | 1 | -0.4 | -0.4 | -0.4 |
-| Mme de Simiane | 1 | -1.62 | -1.296 | -1.378 |
-| Mme de Stermaria | 1 | -0.8 | -0.8 | -0.8 |
-| Mme de Villebon | 1 | -1.15 | -1.0 | -1.0 |
-| Monsieur Vallenères | 1 | -2.474 | -2.604 | -1.916 |
-| Musset | 1 | -0.8 | -0.8 | -0.8 |
-| Napoléon III | 1 | -0.8 | -0.8 | -0.8 |
-| Prince Henri d'Orléans | 1 | -1.667 | -1.401 | -1.401 |
-| Périgot (Joseph) | 1 | -2.425 | -2.02 | -2.073 |
-| Sainte-Beuve | 1 | -0.8 | -0.8 | -0.8 |
-| Sarah Bernhardt | 1 | -0.8 | -0.8 | -0.8 |
-| Sir Rufus Israël | 1 | -0.8 | -0.8 | -0.8 |
-| Thibaud | 1 | -0.8 | -0.8 | -0.8 |
-| Théodore | 1 | +2.26 | +1.818 | +1.638 |
-| Théodose Cadet | 1 | -2.258 | -1.794 | -2.348 |
-| Victoire | 1 | -0.8 | -0.8 | -0.8 |
-| Victor Hugo | 1 | -0.8 | -0.8 | -0.8 |
-| Victurnienne | 1 | -0.8 | -0.8 | -0.8 |
-| Vigny | 1 | -1.852 | -1.562 | -1.632 |
-| baron de Guermantes | 1 | -0.4 | -0.4 | -0.4 |
-| colonel Picquart | 1 | +2.15 | +1.725 | +1.555 |
-| colonel de Froberville | 1 | -4.744 | -4.448 | -3.75 |
-| comtesse G… | 1 | -1.941 | -1.864 | -1.751 |
-| comtesse de Monteriender | 1 | 0.0 | 0.0 | 0.0 |
-| comtesse douairière d'Argencourt | 1 | -0.8 | -0.8 | -0.8 |
-| cousine Poictiers | 1 | -0.4 | -0.4 | -0.4 |
-| d'Orléans | 1 | -0.8 | -0.8 | -0.8 |
-| docteur Dieulafoy | 1 | +3.83 | +3.605 | +2.699 |
-| docteur Percepied | 1 | -0.8 | -0.8 | -0.8 |
-| duc de Chartres | 1 | -0.8 | -0.8 | -0.8 |
-| duc de Poictiers | 1 | -0.4 | -0.4 | -0.4 |
-| duc de Sidonia | 1 | -1.0 | -0.88 | -0.88 |
-| duchesse de Gallardon douairière | 1 | -0.8 | -0.8 | -0.8 |
-| duchesse de La Rochefoucauld | 1 | -0.8 | -0.8 | -0.8 |
-| duchesse de La Trémoïlle | 1 | +0.91 | +0.665 | +0.665 |
-| duchesse de Luxembourg | 1 | -1.6 | -1.44 | -1.44 |
-| duchesse de Létourville | 1 | -0.8 | -0.8 | -0.8 |
-| duchesse de Praslin | 1 | -0.8 | -0.8 | -0.8 |
-| d’Orgeville | 1 | -0.8 | -0.8 | -0.8 |
-| elle | 1 | +0.02 | -0.12 | -0.05 |
-| l'abbé Poiré | 1 | -0.8 | -0.8 | -0.8 |
-| l'ambassadrice de Turquie | 1 | -2.945 | -2.856 | -2.263 |
-| l'empereur | 1 | -3.114 | -2.639 | -2.639 |
-| l'historien de la Fronde | 1 | -1.48 | -1.163 | -1.286 |
-| la Charité de Giotto | 1 | -4.105 | -2.635 | -4.565 |
-| la cousine d'Oriane | 1 | -1.939 | -1.615 | -1.615 |
-| la duchesse d'Alençon | 1 | -0.8 | -0.8 | -0.8 |
-| la jeune ouvriere | 1 | -0.4 | -0.4 | -0.4 |
-| la marquise | 1 | -1.795 | -1.516 | -1.575 |
-| la « marquise » | 1 | -2.95 | -2.44 | -2.525 |
-| le baron Bréau-Chenut | 1 | -0.8 | -0.8 | -0.8 |
-| le bâtonnier | 1 | -0.4 | -0.4 | -0.4 |
-| le capitaine | 1 | +0.15 | +0.04 | +0.04 |
-| le commandant Duroc | 1 | +0.628 | +0.328 | +0.256 |
-| le comte de Paris | 1 | -0.8 | -0.8 | -0.8 |
-| le curé | 1 | -2.55 | -2.04 | -2.125 |
-| le diplomate belge | 1 | -1.88 | -1.255 | -2.05 |
-| le grand-duc Wladimir | 1 | -0.4 | -0.4 | -0.4 |
-| le grand-duc héritier de Luxembourg | 1 | -1.41 | -1.198 | -1.198 |
-| le jeune marquis de Cambremer | 1 | -1.2 | -1.2 | -1.2 |
-| le jeune prince de Foix | 1 | -0.8 | -0.8 | -0.8 |
-| le lieutenant-colonel Henry | 1 | -0.8 | -0.8 | -0.8 |
-| le lieutenant-colonel Picquart | 1 | -0.8 | -0.8 | -0.8 |
-| le marquis de Ganançay | 1 | -0.8 | -0.8 | -0.8 |
-| le marquis de Palancy | 1 | -0.8 | -0.8 | -0.8 |
-| le petit Cambremer | 1 | -0.8 | -0.8 | -0.8 |
-| le prince de Faffenheim | 1 | -5.178 | -3.937 | -4.907 |
-| le prince de Galles | 1 | -0.8 | -0.8 | -0.8 |
-| le prince von *** | 1 | -3.177 | -2.106 | -3.672 |
-| le professeur E… | 1 | -3.82 | -2.884 | -3.742 |
-| le vieux père Chenut | 1 | -0.8 | -0.8 | -0.8 |
-| les Courvoisier | 1 | -1.62 | -1.456 | -1.456 |
-| les La Trémoïlle | 1 | -0.8 | -0.8 | -0.8 |
-| les demoiselles d’Ambresac | 1 | -0.8 | -0.8 | -0.8 |
-| ma grand'tante | 1 | -1.1 | -0.96 | -0.96 |
-| ma grand’tante | 1 | -1.65 | -1.48 | -1.48 |
-| marquis Maurice de Vaudémont | 1 | +1.414 | +1.574 | +0.843 |
-| marquis de Beausergent | 1 | -0.08 | -0.224 | -0.224 |
-| marquis de Fierbois | 1 | -0.8 | -0.8 | -0.8 |
-| marquise de Citri | 1 | -3.51 | -2.79 | -2.945 |
-| monsieur Vallenères | 1 | -0.8 | -0.8 | -0.8 |
-| prince Foggi | 1 | -1.78 | -1.504 | -1.574 |
-| prince de Chimay | 1 | -0.8 | -0.8 | -0.8 |
-| prince de Léon | 1 | -0.4 | -0.4 | -0.4 |
-| prince de Sagan | 1 | -0.8 | -0.8 | -0.8 |
-| prince de Saxe | 1 | +0.865 | +0.975 | +0.37 |
-| princesse d'Iéna | 1 | -1.96 | -2.085 | -1.437 |
-| princesse de Nassau | 1 | -2.86 | -2.368 | -2.45 |
-| princesse de Silistrie | 1 | -0.8 | -0.8 | -0.8 |
-| vicomte de Courvoisier | 1 | -0.8 | -0.8 | -0.8 |
-| vicomtesse d'Égremont | 1 | -3.51 | -3.7 | -2.33 |
-| vicomtesse de Saint-Fiacre | 1 | -2.66 | -2.128 | -2.218 |
-| Élisabeth | 1 | -1.2 | -1.2 | -1.2 |
-| Émilie Daltier | 1 | -0.4 | -0.4 | -0.4 |
+| Larivière | 1 | +2.41 | +1.943 | +1.753 |
+| Léa | 1 | -0.4 | -0.4 | -0.4 |
+| M. Barrère | 1 | -1.395 | -1.116 | -1.175 |
+| M. Swann, le père | 1 | +0.91 | +0.665 | +0.665 |
+| M. Vallenères | 1 | -1.05 | -1.2 | -0.75 |
+| M. de Beautreillis | 1 | -1.37 | -1.176 | -1.218 |
+| M. de Chaussepierre | 1 | +2.314 | +2.848 | +1.246 |
+| M. de Courgivaux | 1 | +1.45 | +1.235 | +1.085 |
+| M. de Crécy | 1 | +0.8 | +0.575 | +0.5 |
+| M. de Goncourt | 1 | -2.288 | -2.235 | -2.077 |
+| M. de Luxembourg | 1 | +0.531 | +0.602 | +0.321 |
+| M. de Palancy | 1 | -1.47 | -1.176 | -1.251 |
+| M. de Saint-Candé | 1 | +1.01 | +0.798 | +0.753 |
+| M. de Vaudémont | 1 | +1.63 | +1.768 | +0.994 |
+| Madame d'Ambresac | 1 | +1.549 | +2.004 | +0.869 |
+| Majesté | 1 | -5.092 | -5.072 | -3.682 |
+| Mlle Bloch | 1 | -0.467 | -0.56 | +0.045 |
+| Mlle d'Éporcheville | 1 | 0.0 | 0.0 | 0.0 |
+| Mlle de Saint-Loup | 1 | +2.36 | +1.968 | +1.808 |
+| Mme Elstir | 1 | +0.35 | +0.2 | +0.2 |
+| Mme G... | 1 | 0.0 | 0.0 | 0.0 |
+| Mme Putbus | 1 | -2.789 | -2.295 | -2.295 |
+| Mme d'Heudicourt | 1 | -2.224 | -1.765 | -1.765 |
+| Mme d'Hunolstein | 1 | -3.255 | -1.87 | -4.395 |
+| Mme de Citri | 1 | -3.1 | -2.56 | -2.65 |
+| Mme de Franquetot | 1 | -0.8 | -0.8 | -0.8 |
+| Mme de Montmorency | 1 | -1.889 | -1.575 | -1.575 |
+| Mme de Mortemart | 1 | -3.838 | -3.1 | -3.366 |
+| Mme de Valcourt | 1 | -1.36 | -0.88 | -1.76 |
+| Mme de Varambon | 1 | -3.0 | -2.48 | -2.57 |
+| Mme de Vaugoubert | 1 | -2.295 | -1.836 | -1.895 |
+| Mme de Villebon | 1 | +2.046 | +1.691 | +1.582 |
+| Potain | 1 | -1.608 | -1.353 | -1.353 |
+| Périgot (Joseph) | 1 | -2.52 | -2.096 | -2.152 |
+| Rosemonde | 1 | 0.0 | 0.0 | 0.0 |
+| Sainte-Beuve | 1 | -1.38 | -1.104 | -1.174 |
+| Théodore | 1 | +1.6 | +1.36 | +1.2 |
+| Victor | 1 | -1.42 | -1.136 | -1.208 |
+| comte Arnulphe | 1 | -1.62 | -1.296 | -1.378 |
+| comte de Paris | 1 | 0.0 | 0.0 | 0.0 |
+| comtesse de Monteriender | 1 | -1.345 | -1.076 | -1.135 |
+| cousine Poictiers | 1 | +0.874 | +0.71 | +0.71 |
+| docteur Percepied | 1 | -0.4 | -0.4 | -0.4 |
+| duc d'Aumale | 1 | 0.0 | 0.0 | 0.0 |
+| duc de Guastalla | 1 | -2.06 | -1.414 | -2.197 |
+| duc de La Trémoïlle | 1 | -0.4 | -0.4 | -0.4 |
+| duc de Sidonia | 1 | 0.0 | 0.0 | 0.0 |
+| duchesse de Létourville | 1 | -0.4 | -0.4 | -0.4 |
+| grand-duc Wladimir | 1 | -0.4 | -0.4 | -0.4 |
+| l'empereur Guillaume | 1 | -2.017 | -1.625 | -1.625 |
+| la jeune ouvriere | 1 | -1.935 | -1.385 | -1.565 |
+| le jeune marquis de Cambremer | 1 | +1.875 | +1.11 | +1.964 |
+| le petit Cambremer | 1 | +0.64 | +0.88 | +0.16 |
+| le prince de Faffenheim | 1 | -1.506 | -1.394 | -1.404 |
+| le vicomte de Courvoisier | 1 | -3.471 | -1.977 | -4.702 |
+| marquis de Beausergent | 1 | +1.0 | +0.795 | +0.645 |
+| marquis de Surgis | 1 | +0.135 | +0.016 | -0.043 |
+| marquise d'Amoncourt | 1 | -2.07 | -1.736 | -1.821 |
+| prince Foggi | 1 | 0.0 | 0.0 | 0.0 |
+| prince de Sagan | 1 | 0.0 | 0.0 | 0.0 |
+| prince des Laumes | 1 | -3.06 | -2.528 | -2.618 |
+| princesse d'Orvillers | 1 | +0.587 | +0.402 | +0.402 |
+| princesse de Caprarola | 1 | -1.6 | -1.28 | -1.36 |
+| princesse de Nassau | 1 | -0.75 | -0.6 | -0.6 |
+| princesse de Silistrie | 1 | -1.25 | -1.08 | -1.08 |
+| spécialiste X... | 1 | -2.336 | -1.869 | -1.93 |
+| vicomte de Courvoisier | 1 | +0.315 | +0.48 | -0.015 |
+| vicomtesse d'Égremont | 1 | -2.4 | -1.92 | -2.0 |
+| vicomtesse de Saint-Fiacre | 1 | -2.45 | -1.96 | -2.045 |

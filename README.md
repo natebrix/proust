@@ -41,27 +41,27 @@ The project is in post-production canonicalized corpus analysis:
 
 ## Main Output Families
 
-The current surfaces come from two annotation passes over the same 963-unit
-grid of the authoritative Wikisource text:
-
-- the ENRICHMENT corpus (`outputs/enrichment-run-*`, prompt v2.1) feeds the
-  scoring v2 standings, journey timelines, character pages, and fortune arcs
-- the FOUNDATION corpus (`outputs/foundation-run-*`, prompt v2) feeds the
-  corpus review, cross-lens analyses, profile cards, chapter summaries, and
-  chapter overlays
-
-See [proust/docs/outputs_guide.md](proust/docs/outputs_guide.md) for the
-table. The legacy `outputs/run-*` and
+Every current surface is built from the ENRICHMENT corpus
+(`outputs/enrichment-run-*`: 963 units of the authoritative Wikisource text,
+prompt v2.1, open world): the scoring v2 standings, journey timelines,
+character pages, fortune arcs, corpus review, cross-lens analyses, profile
+cards, chapter summaries, and chapter overlays. The FOUNDATION corpus
+(`outputs/foundation-run-*`, prompt v2) annotated the same grid first and is
+kept, with its fit store, as history; see
+[proust/docs/outputs_guide.md](proust/docs/outputs_guide.md). The legacy `outputs/run-*` and
 `outputs/supplement-run-*` families are history: they are still on disk and
 still buildable, but nothing current is built from them, and the superseded
 `-supplemented-current` artifacts are kept only as the before picture. Pass
-`--foundation` to any aggregate command to build the current surfaces; without
-it the commands behave exactly as they always did.
+`--enrichment` to any aggregate command to build the current surfaces
+(`--foundation` rebuilds them from the older corpus); without either flag the
+commands behave exactly as they always did.
 
 The most important artifact families under `outputs/` are:
 
-- `enrichment-run-*`, `foundation-run-*`
-  - the two current corpora: run directories with units, prompts, raw model output, annotations, and resolution sidecars
+- `enrichment-run-*`
+  - the current corpus: run directories with units, prompts, raw model output, annotations, and resolution sidecars
+- `foundation-run-*`
+  - the first full-grid corpus, kept for history
 - `run-*`, `supplement-run-*`
   - the superseded corpora, kept for history
 - `corpus-review-current.*`
@@ -117,12 +117,13 @@ The most important current commands are:
 ```bash
 python -m proust prepare --output outputs/run-999
 python -m proust automate --source-run outputs/run-999 --output outputs/run-1000
-python -m proust corpus-review --foundation
-python -m proust character-analysis --foundation
-python -m proust character-chapter-analysis --foundation
-python -m proust character-profile-cards --foundation
-python -m proust chapter-overlays --foundation --output-dir outputs/chapter-overlays-current
-python -m proust chapter-summaries --foundation
+python -m proust corpus-review --enrichment
+python -m proust character-analysis --enrichment
+python -m proust character-chapter-analysis --enrichment
+python -m proust character-annotation-counts --enrichment
+python -m proust character-profile-cards --enrichment
+python -m proust chapter-overlays --enrichment --output-dir outputs/chapter-overlays-current
+python -m proust chapter-summaries --enrichment
 python -m proust scoring-v2-promote
 python -m proust foundation-unresolved-triage
 python -m proust foundation-editorial-discrepancies
@@ -130,16 +131,17 @@ python -m proust foundation-editorial-discrepancies
 
 `scoring-v2-promote` is the current rating and character-page build: it reads
 staged scoring v2 fits and writes the standings, the journey timelines, and
-`character-pages-current.*`. The current fits are the enrichment store, so
-refit and promote with:
+`character-pages-current.*`. It defaults to the enrichment store
+(`outputs/scoring-v2-enrichment/`) and refuses fits whose manifest names the
+other corpus. Refit and promote with:
 
 ```bash
 python3 scripts/build_scoring_v2.py --corpus enrichment --stage all
 ```
 
-(`--corpus` defaults to `foundation`, which would promote the older store.
-Promote only on a machine with the `islt` portraits folder, or every
-character page loses its portraits.)
+(This script's `--corpus` still defaults to `foundation`, which would promote
+the older store. Promote only on a machine with the `islt` portraits folder, or
+every character page loses its portraits.)
 
 Fortune arcs, each character's own trajectory across the novel, build in
 about 15 seconds:

@@ -3,12 +3,12 @@
 - Analysis version: `chapter_summary_export_v2`
 - Source review version: `corpus_sanity_review_v1`
 - Chapter count: `18`
-- Intensity medians: `advantage=2.875`, `prestige=2.488`, `inclusion=2.742`
+- Intensity medians: `advantage=2.392`, `prestige=1.993`, `inclusion=2.24`
 
 ## v1-p1-combray
 
 - Title: `Du Côté de Chez Swann — I. Combray`
-- Unit count: `69`
+- Unit count: `48`
 - Reader link: `/projects/islt/fr-original/v1-p1-combray`
 - Tonal archetype: `Diffuse`
 - Strongest split: `Odette`
@@ -17,28 +17,28 @@ Combray is organized around the household and its visitors, with Françoise, Swa
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -1.704 | 2.055 | 2 (94th) |
-| prestige | negative | -1.461 | 1.721 | 3 (88th) |
-| inclusion | negative | -1.84 | 2.058 | 2 (94th) |
+| advantage | negative | -1.037 | 2.035 | 6 (71st) |
+| prestige | negative | -0.773 | 1.753 | 6 (71st) |
+| inclusion | negative | -1.211 | 1.946 | 7 (65th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| tante Léonie | 19 | 53.794 | advantage | advantage negative, prestige negative, inclusion negative |
-| Legrandin | 8 | 41.043 | advantage | advantage negative, prestige negative, inclusion negative |
-| Bloch | 5 | 34.76 | inclusion | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 19 | 26.638 | inclusion | advantage negative, prestige negative, inclusion negative |
-| oncle Adolphe | 4 | 25.757 | advantage | advantage negative, prestige negative, inclusion negative |
-| M. Vinteuil | 6 | 24.593 | advantage | advantage negative, prestige negative, inclusion negative |
-| le père du narrateur | 9 | 23.61 | advantage | advantage negative, prestige negative, inclusion negative |
-| le grand-père du narrateur | 10 | 17.268 | prestige | advantage negative, prestige negative, inclusion negative |
+| Bloch | 6 | 34.617 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Legrandin | 8 | 23.888 | advantage | advantage negative, prestige negative, inclusion negative |
+| M. Vinteuil | 5 | 23.493 | advantage | advantage negative, prestige negative, inclusion negative |
+| ma grand'tante | 4 | 17.106 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mlle Vinteuil | 5 | 15.985 | advantage | advantage negative, prestige negative, inclusion negative |
+| duchesse de Guermantes | 2 | 14.504 | prestige | advantage positive, prestige positive, inclusion positive |
+| la grand-mère | 7 | 11.941 | advantage | advantage negative, prestige negative, inclusion negative |
+| Swann | 10 | 11.807 | inclusion | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v1-p1-combray#p-26-p-30 (26-30) | 34.584 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. Swann loses rhetorical authority across all three lenses. |
-| v1-p1-combray#p-296-p-300 (296-300) | 29.281 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. tante Léonie loses inclusion standing across all three lenses. |
-| v1-p1-combray#p-131-p-135 (131-135) | 27.881 | oncle Adolphe | advantage negative, prestige negative, inclusion negative | oncle Adolphe loses inclusion standing across all three lenses. le narrateur loses emotional standing across all three lenses. |
-| v1-p1-combray#p-306-p-310 (306-310) | 22.751 | M. Vinteuil | advantage negative, prestige negative, inclusion negative | M. Vinteuil loses social status across all three lenses. Mlle Vinteuil loses standing across all three lenses. |
-| v1-p1-combray#p-16-p-20 (16-20) | 22.674 | ma grand’tante | advantage negative, prestige negative, inclusion negative | Swann gains social status in advantage and prestige; shows mixed social status in inclusion. ma grand’tante loses overall standing across all three lenses. |
+| v1-p1-combray#p-296-p-300 (296-300) | 40.887 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses inclusion standing across all three lenses. tante Léonie loses inclusion standing across all three lenses. |
+| v1-p1-combray#p-306-p-310 (306-310) | 26.302 | M. Vinteuil | advantage negative, prestige negative, inclusion negative | M. Vinteuil loses overall standing across all three lenses. l'amie de Mlle Vinteuil loses overall standing across all three lenses. |
+| v1-p1-combray#p-26-p-30 (26-30) | 22.086 | Swann | advantage positive, prestige positive, inclusion positive | Swann gains social status across all three lenses. ma grand'tante loses overall standing across all three lenses. |
+| v1-p1-combray#p-11-p-15 (11-15) | 17.23 | la grand-mère | advantage negative, prestige negative, inclusion negative | la grand-mère loses emotional standing across all three lenses. ma grand'tante loses overall standing across all three lenses. |
+| v1-p1-combray#p-31-p-35 (31-35) | 16.478 | le narrateur | advantage negative, prestige negative, inclusion positive | le narrateur gains inclusion standing across all three lenses. Swann loses social status across all three lenses. |
 
 ## v1-p2-un-amour-de-swann
 
@@ -52,269 +52,266 @@ This chapter is dominated by Swann's pursuit of Odette and by the salon world ar
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -2.622 | 2.741 | 10 (47th) |
-| prestige | negative | -2.219 | 2.327 | 10 (47th) |
-| inclusion | negative | -2.569 | 2.608 | 10 (47th) |
+| advantage | negative | -1.624 | 1.934 | 10 (47th) |
+| prestige | negative | -1.203 | 1.489 | 9 (53rd) |
+| inclusion | negative | -1.678 | 1.833 | 10 (47th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| Swann | 98 | 329.465 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Odette | 67 | 137.939 | advantage | advantage negative, prestige negative, inclusion negative |
-| Mme Verdurin | 44 | 112.683 | advantage | advantage negative, prestige negative, inclusion negative |
-| docteur Cottard | 23 | 78.164 | advantage | advantage negative, prestige negative, inclusion negative |
-| M. Verdurin | 17 | 38.154 | advantage | advantage negative, prestige negative, inclusion negative |
-| marquise de Gallardon | 5 | 33.905 | advantage | advantage negative, prestige negative, inclusion negative |
-| Saniette | 3 | 27.685 | advantage | advantage negative, prestige negative, inclusion negative |
-| Mme de Cambremer | 3 | 21.677 | advantage | advantage negative, prestige negative, inclusion negative |
+| Swann | 100 | 234.518 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Mme Verdurin | 46 | 61.32 | advantage | advantage negative, prestige negative, inclusion negative |
+| Odette | 63 | 59.534 | advantage | advantage negative, prestige negative, inclusion negative |
+| docteur Cottard | 22 | 44.46 | advantage | advantage negative, prestige negative, inclusion negative |
+| marquise de Gallardon | 5 | 33.391 | advantage | advantage negative, prestige negative, inclusion negative |
+| M. Verdurin | 20 | 26.971 | advantage | advantage negative, prestige negative, inclusion negative |
+| Saniette | 4 | 23.701 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme de Cambremer | 4 | 18.839 | advantage | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v1-p2-un-amour-de-swann#p-536-p-540 (536-540) | 43.231 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses overall standing across all three lenses. Odette loses overall standing across all three lenses. |
-| v1-p2-un-amour-de-swann#p-241-p-245 (241-245) | 26.656 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses inclusion standing across all three lenses. Mme Verdurin loses overall standing across all three lenses. |
-| v1-p2-un-amour-de-swann#p-326-p-330 (326-330) | 24.796 | Saniette | advantage negative, prestige negative, inclusion negative | Saniette loses inclusion standing across all three lenses. Odette loses overall standing across all three lenses. |
-| v1-p2-un-amour-de-swann#p-581-p-585 (581-585) | 24.381 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses emotional standing across all three lenses. Mme Verdurin loses standing across all three lenses. |
-| v1-p2-un-amour-de-swann#p-291-p-295 (291-295) | 23.389 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses emotional standing across all three lenses. Mme Verdurin loses social status across all three lenses. |
+| v1-p2-un-amour-de-swann#p-271-p-275 (271-275) | 27.7 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses overall standing across all three lenses. comte de Forcheville gains inclusion standing across all three lenses. |
+| v1-p2-un-amour-de-swann#p-361-p-365 (361-365) | 27.154 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses overall standing across all three lenses. Mme Verdurin loses overall standing across all three lenses. |
+| v1-p2-un-amour-de-swann#p-266-p-270 (266-270) | 26.951 | Saniette | advantage negative, prestige negative, inclusion negative | Saniette loses rhetorical authority across all three lenses. M. Verdurin loses overall standing across all three lenses. |
+| v1-p2-un-amour-de-swann#p-326-p-330 (326-330) | 26.35 | Saniette | advantage negative, prestige negative, inclusion negative | Saniette loses overall standing across all three lenses. Odette loses overall standing across all three lenses. |
+| v1-p2-un-amour-de-swann#p-366-p-370 (366-370) | 22.881 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses overall standing across all three lenses. docteur Cottard loses overall standing across all three lenses. |
 
 ## v1-p3-noms-de-pays-le-nom
 
 - Title: `Du Côté de Chez Swann — III. Noms de pays : le nom`
-- Unit count: `13`
+- Unit count: `12`
 - Reader link: `/projects/islt/fr-original/v1-p3-noms-de-pays-le-nom`
 - Tonal archetype: `Diffuse`
-- Strongest split: `Odette`
+- Strongest split: `le narrateur`
 
 This section is centered on the young narrator's idealizing imagination, especially around Gilberte, Swann, and Odette. Unlike the darker social weather of the earlier chapters, it is largely buoyed by fascination, projection, and moments of elevation, though Gilberte's hold over the scene can flip from promise to hurt. The chapter feels lighter and more aspirational, with desire and fantasy doing more work than humiliation.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -1.844 | 2.32 | 4 (82nd) |
-| prestige | negative | -1.403 | 1.938 | 2 (94th) |
-| inclusion | negative | -2.345 | 2.404 | 9 (53rd) |
+| advantage | positive | +0.647 | 1.715 | 2 (94th) |
+| prestige | positive | +0.759 | 1.518 | 2 (94th) |
+| inclusion | positive | +0.274 | 1.253 | 2 (94th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| le narrateur | 10 | 44.801 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Mme Blatin | 1 | 9.96 | advantage | advantage negative, prestige negative, inclusion negative |
-| Odette | 6 | 5.101 | inclusion | advantage negative, prestige positive, inclusion negative |
-| Françoise | 2 | 4.8 | prestige | advantage negative, prestige negative, inclusion negative |
-| Swann | 5 | 3.622 | prestige | advantage positive, prestige positive, inclusion negative |
-| la mère du narrateur | 3 | 3.6 | prestige | advantage negative, prestige negative, inclusion negative |
-| Gilberte | 8 | 2.726 | advantage | advantage positive, prestige positive, inclusion positive |
-| Bergotte | 1 | 2.4 | prestige | advantage negative, prestige negative, inclusion negative |
+| Odette | 3 | 21.548 | prestige | advantage positive, prestige positive, inclusion positive |
+| Gilberte | 6 | 14.306 | advantage | advantage positive, prestige positive, inclusion positive |
+| le narrateur | 11 | 7.548 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme Blatin | 1 | 7.11 | advantage | advantage negative, prestige negative, inclusion negative |
+| Swann | 2 | 2.175 | inclusion | advantage negative, prestige negative, inclusion negative |
+| la mère du narrateur | 1 | 1.14 | advantage | advantage positive, prestige positive, inclusion positive |
+| le père du narrateur | 1 | 0.0 | prestige | advantage mixed, prestige mixed, inclusion mixed |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v1-p3-noms-de-pays-le-nom#p-6-p-10 (6-10) | 23.662 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. Gilberte gains overall standing across all three lenses. |
-| v1-p3-noms-de-pays-le-nom#p-51-p-55 (51-55) | 23.201 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses inclusion standing across all three lenses. Odette gains social status in advantage and prestige. |
-| v1-p3-noms-de-pays-le-nom#p-46-p-50 (46-50) | 17.0 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses social status across all three lenses. Gilberte loses standing across all three lenses. |
-| v1-p3-noms-de-pays-le-nom#p-21-p-25 (21-25) | 16.455 | Swann | advantage negative, prestige positive, inclusion negative | Swann gains social status across all three lenses. le narrateur loses emotional standing across all three lenses. |
-| v1-p3-noms-de-pays-le-nom#p-11-p-15 (11-15) | 11.36 | le narrateur | advantage positive, prestige positive, inclusion positive | le narrateur gains emotional standing across all three lenses. Gilberte gains overall standing across all three lenses. |
+| v1-p3-noms-de-pays-le-nom#p-61-p-64 (61-64) | 16.767 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses inclusion standing across all three lenses. Odette gains overall standing across all three lenses. |
+| v1-p3-noms-de-pays-le-nom#p-6-p-10 (6-10) | 16.201 | Gilberte | advantage positive, prestige positive, inclusion positive | le narrateur gains inclusion standing across all three lenses. Gilberte gains overall standing across all three lenses. |
+| v1-p3-noms-de-pays-le-nom#p-51-p-55 (51-55) | 14.78 | Odette | advantage positive, prestige positive, inclusion negative | Odette gains social status across all three lenses. le narrateur loses inclusion standing across all three lenses. |
+| v1-p3-noms-de-pays-le-nom#p-11-p-15 (11-15) | 11.845 | le narrateur | advantage positive, prestige positive, inclusion positive | le narrateur gains emotional standing across all three lenses. Gilberte gains social status across all three lenses. |
+| v1-p3-noms-de-pays-le-nom#p-21-p-25 (21-25) | 10.82 | le narrateur | advantage positive, prestige positive, inclusion positive | le narrateur gains inclusion standing across all three lenses. Swann gains overall standing in advantage and prestige; shows mixed overall standing in inclusion. |
 
 ## v2-p1-autour-de-mme-swann
 
 - Title: `À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann`
-- Unit count: `64`
+- Unit count: `60`
 - Reader link: `/projects/islt/fr-original/v2-p1-autour-de-mme-swann`
 - Tonal archetype: `Diffuse`
-- Strongest split: `docteur Cottard`
+- Strongest split: `Norpois`
 
 The chapter revolves around Odette's renewed brilliance, Swann's diminished position beside her, and the narrator's fascination with the Swann household and its orbit. Its most revealing pattern is the contrast between Odette's steady rise and Swann's repeated weakening, which gives the chapter the shape of a social reordering inside an apparently elegant world. Rather than one sharp crisis, it builds its meaning through repeated scenes in which glamour and access gather around Odette.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -2.13 | 2.526 | 6 (71st) |
-| prestige | negative | -1.884 | 2.197 | 5 (76th) |
-| inclusion | negative | -2.265 | 2.474 | 6 (71st) |
+| advantage | negative | -0.535 | 1.627 | 3 (88th) |
+| prestige | negative | -0.369 | 1.453 | 3 (88th) |
+| inclusion | negative | -0.751 | 1.459 | 3 (88th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| le narrateur | 34 | 93.763 | advantage | advantage negative, prestige negative, inclusion negative |
-| Odette | 34 | 69.772 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Swann | 25 | 61.319 | advantage | advantage negative, prestige negative, inclusion negative |
-| Gilberte | 28 | 53.772 | advantage | advantage negative, prestige negative, inclusion negative |
-| Norpois | 27 | 37.261 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Bergotte | 13 | 19.813 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Mme Bontemps | 5 | 17.662 | advantage | advantage negative, prestige negative, inclusion negative |
-| Françoise | 4 | 15.564 | advantage | advantage positive, prestige positive, inclusion positive |
+| Odette | 31 | 43.207 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Swann | 22 | 28.144 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Françoise | 4 | 23.255 | advantage | advantage positive, prestige positive, inclusion positive |
+| Gilberte | 24 | 20.519 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Bergotte | 13 | 19.51 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme Blatin | 2 | 15.96 | inclusion | advantage negative, prestige negative, inclusion negative |
+| la Berma | 5 | 15.249 | prestige | advantage positive, prestige positive, inclusion positive |
+| le narrateur | 26 | 13.556 | prestige | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v2-p1-autour-de-mme-swann#p-236-p-240 (236-240) | 38.629 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses social status across all three lenses. le narrateur gains social status across all three lenses. |
-| v2-p1-autour-de-mme-swann#p-216-p-220 (216-220) | 31.009 | Norpois | advantage negative, prestige negative, inclusion negative | Norpois loses overall standing across all three lenses. Bergotte gains rhetorical authority across all three lenses. |
-| v2-p1-autour-de-mme-swann#p-141-p-145 (141-145) | 30.154 | M. Bontemps | advantage negative, prestige negative, inclusion negative | M. Bontemps loses overall standing across all three lenses. Albertine loses overall standing across all three lenses. |
-| v2-p1-autour-de-mme-swann#p-101-p-105 (101-105) | 25.898 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses rhetorical authority across all three lenses. Swann gains overall standing across all three lenses. |
-| v2-p1-autour-de-mme-swann#p-86-p-90 (86-90) | 25.401 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses inclusion standing across all three lenses. la Berma gains overall standing across all three lenses. |
+| v2-p1-autour-de-mme-swann#p-176-p-180 (176-180) | 26.619 | Mme Blatin | advantage negative, prestige negative, inclusion negative | Mme Blatin loses overall standing across all three lenses. Swann loses overall standing across all three lenses. |
+| v2-p1-autour-de-mme-swann#p-186-p-190 (186-190) | 24.051 | Odette | advantage positive, prestige positive, inclusion positive | Odette gains social status across all three lenses. Swann gains social status across all three lenses. |
+| v2-p1-autour-de-mme-swann#p-1-p-5 (1-5) | 23.838 | docteur Cottard | advantage positive, prestige positive, inclusion positive | Norpois gains social status across all three lenses. docteur Cottard gains overall standing across all three lenses. |
+| v2-p1-autour-de-mme-swann#p-131-p-135 (131-135) | 22.567 | Odette | advantage positive, prestige positive, inclusion positive | Odette gains social status across all three lenses. Françoise gains overall standing across all three lenses. |
+| v2-p1-autour-de-mme-swann#p-156-p-160 (156-160) | 21.513 | Odette | advantage negative, prestige negative, inclusion negative | Odette loses overall standing across all three lenses. Mme de Marsantes shows mixed overall standing across all three lenses. |
 
 ## v2-p2-noms-de-pays-le-pays
 
 - Title: `À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays`
-- Unit count: `90`
+- Unit count: `81`
 - Reader link: `/projects/islt/fr-original/v2-p2-noms-de-pays-le-pays`
 - Tonal archetype: `Diffuse`
-- Strongest split: `Swann`
+- Strongest split: `Robert de Saint-Loup`
 
-Balbec is organized around new encounters and shifting attractions, especially Elstir, Albertine, Charlus, Saint-Loup, and the narrator's movements among them. The chapter's most striking pattern is its mixed social weather: artistic and social arrival on one side, awkwardness and exclusion on the other, so that discovery and discomfort keep alternating. Elstir emerges as the clearest source of uplift, while the narrator's own footing remains noticeably less secure.
+Balbec is organized around new encounters and shifting attractions, especially Elstir, Albertine, Charlus, Saint-Loup, and the narrator's movements among them. The chapter's most striking pattern is its mixed social weather: artistic and social arrival on one side, awkwardness and exclusion on the other, so that discovery and discomfort keep alternating. Elstir, Charlus, and Albertine emerge as the clearest sources of uplift, while the narrator's own footing remains noticeably less secure.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -1.802 | 2.341 | 3 (88th) |
-| prestige | negative | -1.516 | 1.919 | 4 (82nd) |
-| inclusion | negative | -2.052 | 2.267 | 3 (88th) |
+| advantage | negative | -0.699 | 1.955 | 4 (82nd) |
+| prestige | negative | -0.449 | 1.617 | 4 (82nd) |
+| inclusion | negative | -0.954 | 1.728 | 4 (82nd) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| le narrateur | 40 | 129.637 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Bloch | 11 | 46.762 | advantage | advantage negative, prestige negative, inclusion negative |
-| Mme de Villeparisis | 21 | 42.447 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Bloch père | 4 | 27.928 | advantage | advantage negative, prestige negative, inclusion negative |
-| la grand-mère | 31 | 22.167 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Robert de Saint-Loup | 26 | 17.731 | inclusion | advantage negative, prestige negative, inclusion negative |
-| le directeur | 8 | 17.315 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Mme Blandais | 2 | 15.655 | advantage | advantage negative, prestige negative, inclusion negative |
+| Bloch | 13 | 64.874 | advantage | advantage negative, prestige negative, inclusion negative |
+| le narrateur | 28 | 60.127 | inclusion | advantage negative, prestige negative, inclusion negative |
+| baron de Charlus | 11 | 28.607 | advantage | advantage positive, prestige positive, inclusion positive |
+| Bloch père | 5 | 27.492 | advantage | advantage negative, prestige negative, inclusion negative |
+| le bâtonnier | 5 | 24.425 | advantage | advantage negative, prestige negative, inclusion negative |
+| Elstir | 9 | 24.113 | advantage | advantage positive, prestige positive, inclusion positive |
+| Albertine | 17 | 22.386 | advantage | advantage positive, prestige positive, inclusion positive |
+| la grand-mère | 24 | 20.725 | advantage | advantage positive, prestige positive, inclusion positive |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v2-p2-noms-de-pays-le-pays#p-6-p-10 (6-10) | 33.463 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. Legrandin loses overall standing across all three lenses. |
-| v2-p2-noms-de-pays-le-pays#p-151-p-155 (151-155) | 29.569 | M. de Vigny | advantage negative, prestige negative, inclusion negative | M. de Vigny loses overall standing across all three lenses. le narrateur gains inclusion standing across all three lenses. |
-| v2-p2-noms-de-pays-le-pays#p-326-p-330 (326-330) | 27.279 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses social status across all three lenses. Albertine loses overall standing across all three lenses. |
-| v2-p2-noms-de-pays-le-pays#p-371-p-375 (371-375) | 26.967 | Elstir | advantage negative, prestige negative, inclusion negative | Elstir loses overall standing across all three lenses. le narrateur loses overall standing across all three lenses. |
-| v2-p2-noms-de-pays-le-pays#p-161-p-165 (161-165) | 26.588 | la grand-mère | advantage negative, prestige negative, inclusion negative | la grand-mère gains rhetorical authority across all three lenses. Mme de Villeparisis loses overall standing across all three lenses. |
+| v2-p2-noms-de-pays-le-pays#p-456-p-460 (456-460) | 47.832 | Albertine | advantage negative, prestige negative, inclusion negative | Albertine gains social status across all three lenses. le narrateur loses emotional standing across all three lenses. |
+| v2-p2-noms-de-pays-le-pays#p-181-p-185 (181-185) | 27.832 | Bloch | advantage negative, prestige negative, inclusion negative | Bloch loses overall standing across all three lenses. Robert de Saint-Loup gains overall standing across all three lenses. |
+| v2-p2-noms-de-pays-le-pays#p-46-p-50 (46-50) | 23.482 | Majesté | advantage negative, prestige negative, inclusion negative | Majesté loses social status across all three lenses. la grand-mère loses social status across all three lenses. |
+| v2-p2-noms-de-pays-le-pays#p-406-p-410 (406-410) | 23.404 | Octave | advantage negative, prestige negative, inclusion negative | Octave loses overall standing across all three lenses. le narrateur loses inclusion standing across all three lenses. |
+| v2-p2-noms-de-pays-le-pays#p-86-p-90 (86-90) | 23.12 | Mme de Villeparisis | advantage positive, prestige positive, inclusion positive | Mme de Villeparisis gains social status across all three lenses. la grand-mère gains inclusion standing across all three lenses. |
 
 ## v3-p1
 
 - Title: `Le Côté de Guermantes — I`
-- Unit count: `178`
+- Unit count: `172`
 - Reader link: `/projects/islt/fr-original/v3-p1`
 - Tonal archetype: `Diffuse`
-- Strongest split: `duchesse de Guermantes`
+- Strongest split: `Odette`
 
 This chapter is centered on entry into the Guermantes world, with the duchesse, Saint-Loup, Bloch, Charlus, and Odette all helping define its social landscape. What makes it interesting is the split between glitter at the top and repeated embarrassment lower down: the duchesse is repeatedly confirmed, while Bloch is persistently cut down, and Saint-Loup looks admirable in public yet less secure in matters of closeness and belonging. High society dazzles here, but it also exposes how unevenly its rewards are distributed.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -2.158 | 2.634 | 7 (65th) |
-| prestige | negative | -1.915 | 2.316 | 7 (65th) |
-| inclusion | negative | -2.232 | 2.413 | 4 (82nd) |
+| advantage | negative | -1.127 | 1.755 | 7 (65th) |
+| prestige | negative | -0.821 | 1.409 | 7 (65th) |
+| inclusion | negative | -1.261 | 1.637 | 8 (59th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| Robert de Saint-Loup | 88 | 178.17 | advantage | advantage negative, prestige negative, inclusion negative |
-| Bloch | 25 | 134.083 | advantage | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 57 | 97.684 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Rachel | 23 | 96.321 | advantage | advantage negative, prestige negative, inclusion negative |
-| duc de Guermantes | 21 | 59.345 | advantage | advantage negative, prestige negative, inclusion negative |
-| Mme de Marsantes | 15 | 57.408 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Mme de Villeparisis | 39 | 55.498 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Norpois | 24 | 37.337 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Robert de Saint-Loup | 81 | 124.654 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Bloch | 24 | 114.015 | advantage | advantage negative, prestige negative, inclusion negative |
+| duchesse de Guermantes | 45 | 54.676 | advantage | advantage positive, prestige positive, inclusion positive |
+| duc de Guermantes | 15 | 44.196 | advantage | advantage negative, prestige negative, inclusion negative |
+| Legrandin | 9 | 37.821 | advantage | advantage negative, prestige negative, inclusion negative |
+| Rachel | 17 | 36.068 | prestige | advantage negative, prestige negative, inclusion negative |
+| capitaine de Borodino | 5 | 31.326 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme de Marsantes | 16 | 31.147 | advantage | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v3-p1#p-851-p-855 (851-855) | 34.847 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. docteur Cottard loses overall standing across all three lenses. |
-| v3-p1#p-531-p-535 (531-535) | 34.007 | Bloch | advantage negative, prestige negative, inclusion negative | Bloch loses overall standing across all three lenses. capitaine de Borodino loses social status across all three lenses. |
-| v3-p1#p-61-p-65 (61-65) | 31.191 | princesse de Guermantes | advantage negative, prestige negative, inclusion negative | princesse de Guermantes gains overall standing across all three lenses. marquise de Saint-Euverte loses overall standing across all three lenses. |
-| v3-p1#p-556-p-560 (556-560) | 31.127 | Rachel | advantage negative, prestige negative, inclusion negative | Rachel loses overall standing across all three lenses. duc de Guermantes gains social status in advantage and prestige; shows mixed social status in inclusion. |
-| v3-p1#p-741-p-745 (741-745) | 29.086 | Morel | advantage negative, prestige negative, inclusion negative | Morel loses social status across all three lenses. Odette loses overall standing across all three lenses. |
+| v3-p1#p-836-p-840 (836-840) | 28.633 | Bloch père | advantage negative, prestige negative, inclusion negative | Bloch père loses overall standing across all three lenses. M. d'Argencourt loses overall standing across all three lenses. |
+| v3-p1#p-76-p-80 (76-80) | 25.691 | Mme de Cambremer | advantage positive, prestige positive, inclusion negative | Mme de Cambremer loses overall standing across all three lenses. duchesse de Guermantes gains social status across all three lenses. |
+| v3-p1#p-806-p-810 (806-810) | 23.248 | Rachel | advantage negative, prestige negative, inclusion negative | Rachel loses social status across all three lenses. Robert de Saint-Loup loses overall standing across all three lenses. |
+| v3-p1#p-676-p-680 (676-680) | 22.394 | Bloch | advantage negative, prestige negative, inclusion negative | Bloch loses inclusion standing across all three lenses. Mme de Villeparisis gains social status across all three lenses. |
+| v3-p1#p-606-p-610 (606-610) | 22.248 | Mme de Cambremer | advantage negative, prestige negative, inclusion negative | Mme de Cambremer loses overall standing across all three lenses. Legrandin loses overall standing across all three lenses. |
 
 ## v3-p2
 
 - Title: `Le Côté de Guermantes — II`
-- Unit count: `144`
+- Unit count: `137`
 - Reader link: `/projects/islt/fr-original/v3-p2`
 - Tonal archetype: `Diffuse`
-- Strongest split: `Bergotte`
+- Strongest split: `baron de Charlus`
 
 This chapter is dominated by the Guermantes world, with the duchesse repeatedly gathering brilliance and authority around herself while the duc, Swann, and the narrator's family move through a more exposed atmosphere. What stands out is the contrast between her sustained command of the room and the steady diminishment of figures around her, especially the duc and Swann. The chapter feels less like a single reversal than a long society performance in which one woman keeps controlling the terms.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -2.259 | 2.409 | 8 (59th) |
-| prestige | negative | -2.069 | 2.194 | 8 (59th) |
-| inclusion | negative | -2.302 | 2.385 | 8 (59th) |
+| advantage | negative | -0.812 | 1.953 | 5 (76th) |
+| prestige | negative | -0.573 | 1.692 | 5 (76th) |
+| inclusion | negative | -1.004 | 1.534 | 5 (76th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| duc de Guermantes | 63 | 190.082 | advantage | advantage negative, prestige negative, inclusion negative |
-| princesse de Parme | 35 | 94.1 | advantage | advantage negative, prestige negative, inclusion negative |
-| baron de Charlus | 17 | 38.113 | advantage | advantage negative, prestige negative, inclusion negative |
-| duchesse de Guermantes | 83 | 38.112 | inclusion | advantage negative, prestige negative, inclusion negative |
-| prince de Guermantes | 9 | 32.399 | advantage | advantage negative, prestige negative, inclusion negative |
-| Robert de Saint-Loup | 18 | 32.232 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Mme de Villeparisis | 9 | 31.147 | advantage | advantage negative, prestige negative, inclusion negative |
-| Françoise | 8 | 25.57 | advantage | advantage negative, prestige negative, inclusion negative |
+| duc de Guermantes | 58 | 145.916 | advantage | advantage negative, prestige negative, inclusion negative |
+| duchesse de Guermantes | 82 | 91.651 | advantage | advantage positive, prestige positive, inclusion positive |
+| prince de Guermantes | 6 | 30.855 | advantage | advantage negative, prestige negative, inclusion negative |
+| princesse de Parme | 32 | 30.763 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme de Villeparisis | 7 | 26.908 | advantage | advantage negative, prestige negative, inclusion negative |
+| Bloch | 3 | 24.966 | inclusion | advantage negative, prestige negative, inclusion negative |
+| le narrateur | 35 | 23.496 | prestige | advantage positive, prestige positive, inclusion positive |
+| Mme d'Arpajon | 6 | 22.994 | advantage | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v3-p2#p-286-p-290 (286-290) | 36.104 | Mme de Villeparisis | advantage negative, prestige negative, inclusion negative | Mme de Villeparisis loses social status across all three lenses. duchesse de Guermantes gains social status across all three lenses. |
-| v3-p2#p-651-p-655 (651-655) | 32.537 | duchesse de Guermantes | advantage negative, prestige negative, inclusion negative | duchesse de Guermantes loses rhetorical authority across all three lenses. Legrandin loses standing across all three lenses. |
-| v3-p2#p-486-p-490 (486-490) | 29.85 | duchesse de Guermantes | advantage negative, prestige negative, inclusion negative | duchesse de Guermantes loses overall standing across all three lenses. le narrateur gains inclusion standing across all three lenses. |
-| v3-p2#p-641-p-645 (641-645) | 29.452 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses overall standing across all three lenses. Robert de Saint-Loup gains overall standing across all three lenses. |
-| v3-p2#p-311-p-315 (311-315) | 29.45 | princesse de Parme | advantage negative, prestige negative, inclusion negative | princesse de Parme loses overall standing across all three lenses. duchesse de Guermantes gains social status across all three lenses. |
+| v3-p2#p-436-p-440 (436-440) | 28.761 | Bloch | advantage negative, prestige negative, inclusion negative | Bloch loses overall standing across all three lenses. duchesse de Guermantes loses overall standing across all three lenses. |
+| v3-p2#p-311-p-315 (311-315) | 25.296 | duchesse de Guermantes | advantage positive, prestige positive, inclusion negative | duchesse de Guermantes gains social status across all three lenses. princesse d'Épinay loses overall standing across all three lenses. |
+| v3-p2#p-266-p-270 (266-270) | 24.541 | prince d'Agrigente | advantage negative, prestige negative, inclusion negative | prince d'Agrigente loses overall standing across all three lenses. duchesse de Guermantes gains social status across all three lenses. |
+| v3-p2#p-486-p-490 (486-490) | 24.417 | le narrateur | advantage positive, prestige positive, inclusion positive | le narrateur gains social status across all three lenses. duchesse de Guermantes loses overall standing across all three lenses. |
+| v3-p2#p-431-p-435 (431-435) | 23.953 | marquis de Bréauté | advantage negative, prestige negative, inclusion negative | marquis de Bréauté loses overall standing across all three lenses. marquise de Gallardon loses overall standing across all three lenses. |
 
 ## v4-p1
 
 - Title: `Sodome et Gomorrhe — I`
-- Unit count: `5`
+- Unit count: `4`
 - Reader link: `/projects/islt/fr-original/v4-p1`
-- Tonal archetype: `Diffuse`
-- Strongest split: `le narrateur`
+- Tonal archetype: `Totalizing`
+- Strongest split: `Jupien`
 
-This short chapter is centered almost entirely on the charged encounter between Charlus and Jupien. Its interest lies in the abrupt swing from Charlus's initial excitement to his loss of footing, while Jupien emerges unexpectedly strengthened. The scene reads like a compressed seduction and reversal, with power passing more quickly than the surface first suggests.
+This short chapter is centered almost entirely on the charged encounter between Charlus and Jupien. Its interest lies in how both men come out ahead: Charlus's pursuit succeeds, and Jupien, the waistcoat-maker, emerges strengthened even more than the baron. The scene reads like a compressed seduction in which recognition and advantage pass between the two more quickly than the surface first suggests.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | positive | +0.166 | 0.592 | 1 (100th) |
-| prestige | positive | +0.124 | 0.793 | 1 (100th) |
-| inclusion | negative | -0.266 | 0.444 | 1 (100th) |
+| advantage | positive | +3.606 | 3.805 | 1 (100th) |
+| prestige | positive | +2.619 | 2.819 | 1 (100th) |
+| inclusion | positive | +3.465 | 3.665 | 1 (100th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| Jupien | 5 | 4.63 | prestige | advantage positive, prestige positive, inclusion positive |
-| baron de Charlus | 5 | 2.278 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Jupien | 4 | 25.74 | advantage | advantage positive, prestige positive, inclusion positive |
+| baron de Charlus | 4 | 14.218 | inclusion | advantage positive, prestige positive, inclusion positive |
 | Françoise | 1 | 1.2 | prestige | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 1 | 1.032 | prestige | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v4-p1#p-16-p-20 (16-20) | 12.875 | Jupien | advantage positive, prestige positive, inclusion positive | Jupien gains social status across all three lenses. baron de Charlus gains emotional standing across all three lenses. |
-| v4-p1#p-1-p-5 (1-5) | 11.657 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses overall standing across all three lenses. Jupien loses overall standing across all three lenses. |
-| v4-p1#p-6-p-10 (6-10) | 4.76 | baron de Charlus | advantage positive, prestige positive, inclusion positive | baron de Charlus gains emotional standing across all three lenses. Jupien shows mixed emotional standing in advantage and inclusion. |
-| v4-p1#p-11-p-15 (11-15) | 3.558 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses overall standing across all three lenses. |
-| v4-p1#p-21 (21-21) | 0.0 | baron de Charlus | advantage balanced, prestige balanced, inclusion balanced | Jupien remains neutral across all three lenses. |
+| v4-p1#p-6-p-10 (6-10) | 17.188 | baron de Charlus | advantage positive, prestige positive, inclusion positive | baron de Charlus gains inclusion standing across all three lenses. Jupien gains inclusion standing across all three lenses. |
+| v4-p1#p-16-p-20 (16-20) | 13.839 | Jupien | advantage positive, prestige positive, inclusion positive | Jupien gains social status across all three lenses. baron de Charlus gains social status across all three lenses. |
+| v4-p1#p-1-p-5 (1-5) | 12.558 | baron de Charlus | advantage positive, prestige positive, inclusion positive | baron de Charlus gains inclusion standing across all three lenses. Jupien gains inclusion standing across all three lenses. |
+| v4-p1#p-11-p-15 (11-15) | 8.867 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses overall standing across all three lenses. Jupien gains emotional standing across all three lenses. |
 
 ## v4-p2
 
 - Title: `Sodome et Gomorrhe — II`
-- Unit count: `82`
+- Unit count: `77`
 - Reader link: `/projects/islt/fr-original/v4-p2`
 - Tonal archetype: `Totalizing`
-- Strongest split: `baron de Charlus`
+- Strongest split: `duchesse de Guermantes`
 
 This chapter moves through salons, humiliations, and uneasy encounters, with Swann, Albertine, Vaugoubert, and Charlus all caught in a social world that keeps turning against them. The strongest pressure is not just embarrassment but repeated public diminishment, especially in the scenes around Swann and the smaller cruelties inflicted on figures like Saniette and Saint-Euverte. Even when someone briefly recovers, the larger impression is of a chapter that strips people of ease, dignity, and welcome.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -4.034 | 4.536 | 15 (18th) |
-| prestige | negative | -3.588 | 4.027 | 15 (18th) |
-| inclusion | negative | -3.856 | 4.199 | 15 (18th) |
+| advantage | negative | -2.837 | 3.838 | 14 (24th) |
+| prestige | negative | -2.193 | 3.237 | 14 (24th) |
+| inclusion | negative | -2.887 | 3.418 | 16 (12th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| Swann | 15 | 77.139 | advantage | advantage negative, prestige negative, inclusion negative |
-| Albertine | 19 | 65.981 | advantage | advantage negative, prestige negative, inclusion negative |
-| marquise de Saint-Euverte | 7 | 55.723 | advantage | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 28 | 50.371 | inclusion | advantage negative, prestige negative, inclusion negative |
-| baron de Charlus | 33 | 43.125 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Saniette | 4 | 41.805 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Mme de Cambremer | 8 | 38.401 | advantage | advantage negative, prestige negative, inclusion negative |
-| duc de Guermantes | 13 | 35.356 | advantage | advantage negative, prestige negative, inclusion negative |
+| Swann | 11 | 57.431 | advantage | advantage negative, prestige negative, inclusion negative |
+| marquise de Saint-Euverte | 6 | 54.42 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme de Cambremer | 9 | 50.799 | advantage | advantage negative, prestige negative, inclusion negative |
+| Saniette | 5 | 46.221 | advantage | advantage negative, prestige negative, inclusion negative |
+| Albertine | 15 | 40.888 | advantage | advantage negative, prestige negative, inclusion negative |
+| duc de Guermantes | 13 | 40.406 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme Verdurin | 13 | 32.62 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Morel | 12 | 32.137 | advantage | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v4-p2#p-71-p-75 (71-75) | 54.664 | colonel de Froberville | advantage negative, prestige negative, inclusion negative | colonel de Froberville loses overall standing across all three lenses. Swann loses social status across all three lenses. |
-| v4-p2#p-26-p-30 (26-30) | 40.657 | Mme d'Arpajon | advantage negative, prestige negative, inclusion negative | Mme d'Arpajon loses social status across all three lenses. le narrateur loses inclusion standing across all three lenses. |
-| v4-p2#p-386-p-390 (386-390) | 39.619 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses social status across all three lenses. princesse Sherbatoff loses overall standing across all three lenses. |
-| v4-p2#p-406-p-410 (406-410) | 38.354 | Mme de Cambremer | advantage negative, prestige negative, inclusion negative | Mme de Cambremer loses social status across all three lenses. le narrateur loses overall standing across all three lenses. |
-| v4-p2#p-61-p-65 (61-65) | 34.574 | marquise de Saint-Euverte | advantage negative, prestige negative, inclusion negative | marquise de Saint-Euverte loses social status across all three lenses. duchesse de Guermantes gains social status across all three lenses. |
+| v4-p2#p-336-p-340 (336-340) | 48.989 | Saniette | advantage negative, prestige negative, inclusion negative | Saniette loses social status across all three lenses. Brichot loses social status across all three lenses. |
+| v4-p2#p-31-p-35 (31-35) | 40.444 | le vicomte de Courvoisier | advantage negative, prestige negative, inclusion negative | le vicomte de Courvoisier loses inclusion standing across all three lenses. baron de Charlus loses social status across all three lenses. |
+| v4-p2#p-61-p-65 (61-65) | 39.211 | marquise de Saint-Euverte | advantage negative, prestige negative, inclusion negative | la marquise douairière de Cambremer loses inclusion standing across all three lenses. marquise de Saint-Euverte loses social status across all three lenses. |
+| v4-p2#p-26-p-30 (26-30) | 37.76 | Mme d'Arpajon | advantage negative, prestige positive, inclusion negative | baron de Charlus gains social status across all three lenses. Mme d'Arpajon loses overall standing across all three lenses. |
+| v4-p2#p-86-p-90 (86-90) | 32.457 | marquise de Saint-Euverte | advantage negative, prestige negative, inclusion negative | M. d'Herweck loses inclusion standing across all three lenses. marquise de Saint-Euverte loses social status across all three lenses. |
 
 ## v5
 
@@ -322,139 +319,139 @@ This chapter moves through salons, humiliations, and uneasy encounters, with Swa
 - Unit count: `76`
 - Reader link: `/projects/islt/fr-original/v5`
 - Tonal archetype: `Totalizing`
-- Strongest split: `duchesse de Guermantes`
+- Strongest split: `Brichot`
 
 This chapter is overwhelmingly organized around Albertine, with Charlus and Morel forming a secondary line of strain around her. The most striking feature is how relentlessly Albertine is placed under suspicion, confinement, and emotional pressure, so that nearly every temporary recovery gives way to another loss of ground. The chapter is shaped less by one scandal than by sustained possession, surveillance, and attrition.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -3.243 | 3.622 | 13 (29th) |
-| prestige | negative | -2.875 | 3.193 | 13 (29th) |
-| inclusion | negative | -3.191 | 3.414 | 13 (29th) |
+| advantage | negative | -2.078 | 2.749 | 12 (35th) |
+| prestige | negative | -1.582 | 2.232 | 12 (35th) |
+| inclusion | negative | -2.121 | 2.534 | 12 (35th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| Albertine | 57 | 196.567 | advantage | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 38 | 138.881 | advantage | advantage negative, prestige negative, inclusion negative |
-| baron de Charlus | 18 | 63.43 | advantage | advantage negative, prestige negative, inclusion negative |
-| Morel | 13 | 54.961 | advantage | advantage negative, prestige negative, inclusion negative |
-| Andrée | 14 | 44.389 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Mme Verdurin | 9 | 39.581 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Françoise | 13 | 18.732 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Brichot | 6 | 15.788 | advantage | advantage negative, prestige negative, inclusion negative |
+| Albertine | 54 | 137.791 | advantage | advantage negative, prestige negative, inclusion negative |
+| baron de Charlus | 15 | 92.684 | advantage | advantage negative, prestige negative, inclusion negative |
+| le narrateur | 38 | 61.187 | advantage | advantage negative, prestige negative, inclusion negative |
+| Morel | 13 | 47.048 | advantage | advantage negative, prestige negative, inclusion negative |
+| Andrée | 10 | 22.844 | advantage | advantage negative, prestige negative, inclusion negative |
+| comtesse Molé | 3 | 22.534 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme Verdurin | 5 | 19.691 | inclusion | advantage negative, prestige negative, inclusion negative |
+| duc de Guermantes | 1 | 16.967 | advantage | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v5#p-356-p-360 (356-360) | 35.09 | Albertine | advantage negative, prestige negative, inclusion negative | Albertine loses social status across all three lenses. le narrateur gains social status in prestige; shows mixed social status in advantage. |
-| v5#p-141-p-145 (141-145) | 33.991 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. Albertine loses overall standing across all three lenses. |
-| v5#p-301-p-305 (301-305) | 32.541 | Mme Verdurin | advantage negative, prestige negative, inclusion negative | Mme Verdurin loses inclusion standing across all three lenses. la reine de Naples gains overall standing in advantage; shows mixed overall standing in inclusion and prestige. |
-| v5#p-86-p-90 (86-90) | 29.31 | Morel | advantage negative, prestige negative, inclusion negative | Morel loses overall standing across all three lenses. le narrateur loses emotional standing across all three lenses. |
-| v5#p-146-p-150 (146-150) | 28.519 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. Albertine gains emotional standing in advantage; shows mixed emotional standing in inclusion and prestige. |
+| v5#p-311-p-315 (311-315) | 45.977 | Mme Verdurin | advantage negative, prestige negative, inclusion negative | Mme Verdurin loses social status across all three lenses. Mme de Mortemart loses rhetorical authority across all three lenses. |
+| v5#p-296-p-300 (296-300) | 35.647 | comtesse Molé | advantage negative, prestige negative, inclusion negative | comtesse Molé loses inclusion standing across all three lenses. princesse de Guermantes loses social status across all three lenses. |
+| v5#p-71-p-75 (71-75) | 34.416 | duc de Guermantes | advantage negative, prestige negative, inclusion negative | duc de Guermantes loses social status across all three lenses. M. de Chaussepierre gains social status across all three lenses. |
+| v5#p-326-p-330 (326-330) | 28.348 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses social status across all three lenses. Mme Verdurin gains emotional standing across all three lenses. |
+| v5#p-286-p-290 (286-290) | 27.156 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses social status across all three lenses. comtesse Molé loses social status across all three lenses. |
 
 ## v6-p1
 
 - Title: `Albertine disparue — I`
-- Unit count: `22`
+- Unit count: `21`
 - Reader link: `/projects/islt/fr-original/v6-p1`
-- Tonal archetype: `Totalizing`
-- Strongest split: `Françoise`
+- Tonal archetype: `Diffuse`
+- Strongest split: `Albertine`
 
 This chapter centers on Albertine in absence, with Saint-Loup and a few others entering a field shaped by memory, inquiry, and grief after her disappearance. The pressure is quieter and more uneven than in the previous chapter: Albertine still absorbs the deepest losses, especially around intimacy and belonging, but the chapter keeps wavering between recollection, idealization, and renewed hurt. It feels like mourning that cannot settle into a single story.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -3.01 | 3.01 | 11 (41st) |
-| prestige | negative | -2.649 | 2.649 | 11 (41st) |
-| inclusion | negative | -2.923 | 2.923 | 12 (35th) |
+| advantage | negative | -1.67 | 1.934 | 11 (41st) |
+| prestige | negative | -1.478 | 1.657 | 11 (41st) |
+| inclusion | negative | -1.534 | 1.707 | 9 (53rd) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| le narrateur | 15 | 77.473 | advantage | advantage negative, prestige negative, inclusion negative |
-| Albertine | 21 | 53.47 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Robert de Saint-Loup | 4 | 11.806 | advantage | advantage negative, prestige negative, inclusion negative |
-| Bloch | 1 | 7.915 | advantage | advantage negative, prestige negative, inclusion negative |
-| la grand-mère | 3 | 7.2 | prestige | advantage negative, prestige negative, inclusion negative |
-| Aimé | 5 | 6.68 | prestige | advantage negative, prestige negative, inclusion negative |
-| Andrée | 3 | 4.18 | prestige | advantage negative, prestige negative, inclusion negative |
-| Odette | 2 | 3.6 | prestige | advantage negative, prestige negative, inclusion negative |
+| Albertine | 20 | 39.793 | advantage | advantage negative, prestige negative, inclusion negative |
+| le narrateur | 10 | 38.55 | advantage | advantage negative, prestige negative, inclusion negative |
+| Robert de Saint-Loup | 3 | 10.45 | advantage | advantage negative, prestige negative, inclusion negative |
+| Françoise | 4 | 7.445 | advantage | advantage negative, prestige negative, inclusion negative |
+| Bloch | 1 | 4.958 | advantage | advantage negative, prestige negative, inclusion negative |
+| Andrée | 1 | 4.266 | advantage | advantage positive, prestige positive, inclusion positive |
+| Elstir | 1 | 2.204 | advantage | advantage positive, prestige positive, inclusion positive |
+| Gilberte | 1 | 1.2 | prestige | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v6-p1#p-81-p-85 (81-85) | 39.556 | Albertine | advantage negative, prestige negative, inclusion negative | Albertine loses inclusion standing across all three lenses. le narrateur loses emotional standing across all three lenses. |
-| v6-p1#p-96-p-100 (96-100) | 25.655 | Albertine | advantage negative, prestige negative, inclusion negative | Albertine loses overall standing across all three lenses. Aimé loses standing across all three lenses. |
-| v6-p1#p-46-p-50 (46-50) | 19.206 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. Albertine loses overall standing across all three lenses. |
-| v6-p1#p-56-p-60 (56-60) | 18.707 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. Albertine gains overall standing in advantage; shows mixed overall standing in inclusion and prestige. |
-| v6-p1#p-16-p-20 (16-20) | 17.19 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses social status across all three lenses. Bloch loses overall standing across all three lenses. |
+| v6-p1#p-106-p-110 (106-110) | 16.943 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses rhetorical authority across all three lenses. Albertine loses overall standing across all three lenses. |
+| v6-p1#p-16-p-20 (16-20) | 15.593 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses social status across all three lenses. Bloch loses overall standing across all three lenses. |
+| v6-p1#p-101-p-105 (101-105) | 13.024 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. Albertine loses overall standing across all three lenses. |
+| v6-p1#p-51-p-55 (51-55) | 11.05 | Robert de Saint-Loup | advantage negative, prestige negative, inclusion negative | Robert de Saint-Loup loses overall standing across all three lenses. Albertine gains emotional standing across all three lenses. |
+| v6-p1#p-46-p-50 (46-50) | 10.381 | Albertine | advantage negative, prestige negative, inclusion negative | Albertine loses overall standing across all three lenses. Françoise loses overall standing across all three lenses. |
 
 ## v6-p2
 
 - Title: `Albertine disparue — II`
-- Unit count: `14`
+- Unit count: `13`
 - Reader link: `/projects/islt/fr-original/v6-p2`
 - Tonal archetype: `Totalizing`
-- Strongest split: `le narrateur`
+- Strongest split: `Gilberte`
 
 This chapter turns around Swann, Albertine, and Gilberte, with Gilberte especially moving in and out of favor as the social mood shifts around her. Its most revealing pattern is the contrast between brief moments of renewed brightness and the stronger undertow of estrangement, particularly for Swann and Albertine. The chapter feels like one of unstable remembrance, where recognition and loss keep interrupting one another.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -4.036 | 4.927 | 16 (12th) |
-| prestige | negative | -3.546 | 4.213 | 14 (24th) |
-| inclusion | negative | -4.146 | 4.77 | 16 (12th) |
+| advantage | negative | -2.885 | 3.542 | 16 (12th) |
+| prestige | negative | -1.925 | 2.586 | 13 (29th) |
+| inclusion | negative | -3.352 | 3.741 | 17 (6th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| Swann | 7 | 41.851 | advantage | advantage negative, prestige negative, inclusion negative |
-| Gilberte | 8 | 21.516 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Albertine | 3 | 18.548 | advantage | advantage negative, prestige negative, inclusion negative |
-| duchesse de Guermantes | 7 | 11.66 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Françoise | 2 | 10.95 | inclusion | advantage negative, prestige negative, inclusion negative |
-| duc de Guermantes | 5 | 10.532 | advantage | advantage negative, prestige negative, inclusion negative |
-| Bloch | 1 | 9.905 | advantage | advantage negative, prestige negative, inclusion negative |
-| Andrée | 3 | 6.865 | advantage | advantage negative, prestige negative, inclusion negative |
+| Swann | 7 | 59.598 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Octave | 1 | 10.368 | prestige | advantage positive, prestige positive, inclusion positive |
+| Andrée | 2 | 9.51 | advantage | advantage negative, prestige negative, inclusion negative |
+| Morel | 1 | 6.715 | advantage | advantage negative, prestige negative, inclusion negative |
+| Bloch | 1 | 6.455 | advantage | advantage negative, prestige negative, inclusion negative |
+| Françoise | 1 | 6.23 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Albertine | 3 | 5.501 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Gilberte | 7 | 5.445 | inclusion | advantage negative, prestige positive, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v6-p2#p-46-p-50 (46-50) | 40.753 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses inclusion standing across all three lenses. Bloch loses overall standing across all three lenses. |
-| v6-p2#p-16-p-20 (16-20) | 35.542 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses social status across all three lenses. Gilberte gains social status across all three lenses. |
-| v6-p2#p-41-p-45 (41-45) | 27.278 | Gilberte | advantage negative, prestige negative, inclusion negative | Gilberte loses overall standing across all three lenses. M. de Chateaubriand loses standing across all three lenses. |
-| v6-p2#p-31-p-35 (31-35) | 18.974 | Gilberte | advantage negative, prestige negative, inclusion negative | Gilberte loses overall standing across all three lenses. Swann loses inclusion standing across all three lenses. |
-| v6-p2#p-26-p-30 (26-30) | 18.928 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses overall standing across all three lenses. Gilberte gains overall standing across all three lenses. |
+| v6-p2#p-66-p-69 (66-69) | 30.759 | Octave | advantage negative, prestige negative, inclusion negative | Octave gains social status across all three lenses. Andrée loses overall standing across all three lenses. |
+| v6-p2#p-16-p-20 (16-20) | 29.357 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses inclusion standing across all three lenses. Gilberte gains social status across all three lenses. |
+| v6-p2#p-26-p-30 (26-30) | 18.764 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses overall standing across all three lenses. Gilberte gains overall standing across all three lenses. |
+| v6-p2#p-31-p-35 (31-35) | 18.48 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses overall standing across all three lenses. duc de Guermantes loses overall standing across all three lenses. |
+| v6-p2#p-46-p-50 (46-50) | 14.7 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses inclusion standing across all three lenses. Bloch loses overall standing across all three lenses. |
 
 ## v6-p3
 
 - Title: `Albertine disparue — III`
-- Unit count: `12`
+- Unit count: `11`
 - Reader link: `/projects/islt/fr-original/v6-p3`
 - Tonal archetype: `Diffuse`
-- Strongest split: `Norpois`
+- Strongest split: `le narrateur`
 
 This chapter is organized around Albertine's absence, the narrator's family world, and a smaller set of recurring figures such as Norpois and Mme de Villeparisis. What stands out is the contrast between private consolation and lingering damage: the narrator's mother can still steady the scene, while Albertine and Villeparisis keep pulling it back toward loss and diminishment. The effect is quieter than the surrounding chapters, but the grief remains active beneath the surface.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -2.595 | 2.595 | 9 (53rd) |
-| prestige | negative | -2.204 | 2.204 | 9 (53rd) |
-| inclusion | negative | -2.241 | 2.241 | 5 (76th) |
+| advantage | negative | -1.29 | 1.29 | 8 (59th) |
+| prestige | negative | -1.034 | 1.034 | 8 (59th) |
+| inclusion | negative | -1.192 | 1.192 | 6 (71st) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| Norpois | 7 | 28.477 | advantage | advantage negative, prestige negative, inclusion negative |
-| Mme de Villeparisis | 5 | 23.536 | advantage | advantage negative, prestige negative, inclusion negative |
-| Albertine | 2 | 9.604 | advantage | advantage negative, prestige negative, inclusion negative |
-| Mme Sazerat | 3 | 7.79 | advantage | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 3 | 5.652 | advantage | advantage negative, prestige negative, inclusion negative |
-| prince Foggi | 1 | 4.858 | advantage | advantage negative, prestige negative, inclusion negative |
-| M. Barrère | 1 | 4.343 | advantage | advantage negative, prestige negative, inclusion negative |
-| la mère du narrateur | 3 | 0.225 | prestige | advantage negative, prestige negative, inclusion negative |
+| Norpois | 6 | 13.452 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme de Villeparisis | 5 | 8.374 | advantage | advantage negative, prestige negative, inclusion negative |
+| Albertine | 1 | 5.769 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme Sazerat | 2 | 4.53 | advantage | advantage negative, prestige negative, inclusion negative |
+| M. Barrère | 1 | 3.686 | advantage | advantage negative, prestige negative, inclusion negative |
+| le narrateur | 2 | 1.664 | inclusion | advantage negative, prestige negative, inclusion negative |
+| la mère du narrateur | 2 | 1.2 | prestige | advantage negative, prestige negative, inclusion negative |
+| prince Foggi | 1 | 0.0 | prestige | advantage mixed, prestige mixed, inclusion mixed |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v6-p3#p-6-p-10 (6-10) | 26.111 | Mme de Villeparisis | advantage negative, prestige negative, inclusion negative | Mme de Villeparisis loses social status across all three lenses. Norpois loses social status across all three lenses. |
-| v6-p3#p-51-p-55 (51-55) | 12.95 | Albertine | advantage negative, prestige negative, inclusion negative | Albertine loses overall standing across all three lenses. Norpois loses overall standing across all three lenses. |
-| v6-p3#p-46-p-50 (46-50) | 8.911 | Norpois | advantage negative, prestige negative, inclusion negative | Norpois loses overall standing across all three lenses. M. Barrère loses overall standing across all three lenses. |
-| v6-p3#p-11-p-15 (11-15) | 8.589 | Norpois | advantage negative, prestige negative, inclusion negative | Norpois loses overall standing across all three lenses. |
-| v6-p3#p-26-p-30 (26-30) | 8.32 | Mme de Villeparisis | advantage negative, prestige negative, inclusion negative | Mme de Villeparisis loses rhetorical authority across all three lenses. |
+| v6-p3#p-51-p-55 (51-55) | 12.224 | Norpois | advantage negative, prestige negative, inclusion negative | Norpois loses overall standing across all three lenses. Albertine loses overall standing across all three lenses. |
+| v6-p3#p-46-p-50 (46-50) | 7.372 | Norpois | advantage negative, prestige negative, inclusion negative | M. Barrère loses overall standing across all three lenses. Norpois loses overall standing across all three lenses. |
+| v6-p3#p-61-p-65 (61-65) | 7.344 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses emotional standing across all three lenses. la mère du narrateur shows mixed standing across all three lenses. |
+| v6-p3#p-26-p-30 (26-30) | 6.292 | Mme de Villeparisis | advantage negative, prestige negative, inclusion negative | Mme de Villeparisis loses emotional standing across all three lenses. |
+| v6-p3#p-36-p-40 (36-40) | 5.31 | Mme Sazerat | advantage negative, prestige negative, inclusion negative | Mme Sazerat loses emotional standing across all three lenses. Mme de Villeparisis loses overall standing in advantage; shows mixed overall standing in inclusion and prestige. |
 
 ## v6-p4
 
@@ -468,28 +465,28 @@ This short section centers on Legrandin, Robert de Saint-Loup, and Gilberte. Its
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -6.432 | 7.14 | 17 (6th) |
-| prestige | negative | -5.651 | 6.819 | 17 (6th) |
-| inclusion | negative | -7.061 | 7.217 | 17 (6th) |
+| advantage | negative | -2.771 | 6.868 | 13 (29th) |
+| prestige | negative | -2.251 | 6.265 | 15 (18th) |
+| inclusion | negative | -2.455 | 5.609 | 13 (29th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| Robert de Saint-Loup | 4 | 17.123 | advantage | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 4 | 14.568 | advantage | advantage negative, prestige negative, inclusion negative |
-| baron de Charlus | 3 | 7.2 | prestige | advantage negative, prestige negative, inclusion negative |
-| Jupien | 2 | 6.0 | prestige | advantage negative, prestige negative, inclusion negative |
-| Mme de Marsantes | 2 | 6.0 | prestige | advantage negative, prestige negative, inclusion negative |
-| Odette | 2 | 5.07 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Gilberte | 5 | 4.709 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Mlle d'Oloron | 1 | 3.72 | prestige | advantage positive, prestige positive, inclusion positive |
+| Robert de Saint-Loup | 5 | 17.636 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mlle d'Oloron | 2 | 15.495 | advantage | advantage positive, prestige positive, inclusion positive |
+| Mme de Marsantes | 3 | 9.695 | advantage | advantage negative, prestige negative, inclusion negative |
+| Bloch | 1 | 8.206 | advantage | advantage negative, prestige negative, inclusion negative |
+| Morel | 2 | 8.025 | advantage | advantage negative, prestige negative, inclusion negative |
+| Odette | 3 | 6.196 | advantage | advantage negative, prestige negative, inclusion negative |
+| Legrandin | 1 | 6.038 | prestige | advantage positive, prestige positive, inclusion positive |
+| le jeune marquis de Cambremer | 1 | 4.949 | inclusion | advantage positive, prestige positive, inclusion positive |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v6-p4#p-11-p-15 (11-15) | 53.949 | Robert de Saint-Loup | advantage negative, prestige negative, inclusion negative | Robert de Saint-Loup loses overall standing across all three lenses. Gilberte loses emotional standing across all three lenses. |
-| v6-p4#p-1-p-5 (1-5) | 36.996 | Mlle d'Oloron | advantage negative, prestige negative, inclusion negative | Mlle d'Oloron gains social status in advantage and prestige; shows mixed social status in inclusion. Gilberte gains social status in advantage and prestige. |
-| v6-p4#p-21-p-23 (21-23) | 13.413 | Gilberte | advantage negative, prestige negative, inclusion negative | Gilberte loses overall standing across all three lenses. Mlle de l’Orgeville loses standing across all three lenses. |
-| v6-p4#p-6-p-10 (6-10) | 9.99 | Gilberte | advantage positive, prestige positive, inclusion positive | Legrandin gains social status in advantage and prestige; shows mixed social status in inclusion. Gilberte gains rhetorical authority across all three lenses. |
-| v6-p4#p-16-p-20 (16-20) | 9.68 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses overall standing across all three lenses. Robert de Saint-Loup loses overall standing across all three lenses. |
+| v6-p4#p-1-p-5 (1-5) | 44.429 | Mlle d'Oloron | advantage positive, prestige positive, inclusion positive | Mlle d'Oloron gains social status across all three lenses. Gilberte gains social status across all three lenses. |
+| v6-p4#p-11-p-15 (11-15) | 34.87 | Bloch | advantage negative, prestige negative, inclusion negative | Bloch loses overall standing across all three lenses. Robert de Saint-Loup loses overall standing across all three lenses. |
+| v6-p4#p-6-p-10 (6-10) | 23.837 | Gilberte | advantage negative, prestige negative, inclusion negative | Gilberte loses social status across all three lenses. Legrandin gains social status across all three lenses. |
+| v6-p4#p-16-p-20 (16-20) | 9.329 | Morel | advantage negative, prestige negative, inclusion negative | Morel loses overall standing across all three lenses. Robert de Saint-Loup loses emotional standing across all three lenses. |
+| v6-p4#p-21-p-23 (21-23) | 0.0 | Robert de Saint-Loup | advantage balanced, prestige balanced, inclusion balanced | Gilberte remains neutral across all three lenses. |
 
 ## v7-p1-a-tansonville
 
@@ -497,34 +494,34 @@ This short section centers on Legrandin, Robert de Saint-Loup, and Gilberte. Its
 - Unit count: `5`
 - Reader link: `/projects/islt/fr-original/v7-p1-a-tansonville`
 - Tonal archetype: `Totalizing`
-- Strongest split: `Mme Verdurin`
+- Strongest split: `M. Verdurin`
 
 This chapter is organized around Robert de Saint-Loup, Mme Bontemps, Swann, and the lingering afterlife of earlier attachments. What dominates is not brilliance but loss: even when Swann briefly brightens the scene, Saint-Loup and those around him are pulled back toward diminishment and damage. The chapter feels like a return under shadow, with memory and decline arriving together.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -7.349 | 7.349 | 18 (0th) |
-| prestige | negative | -6.395 | 6.395 | 18 (0th) |
-| inclusion | negative | -7.114 | 7.114 | 18 (0th) |
+| advantage | negative | -4.215 | 4.762 | 18 (0th) |
+| prestige | negative | -3.84 | 4.239 | 18 (0th) |
+| inclusion | negative | -3.961 | 4.186 | 18 (0th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| Robert de Saint-Loup | 4 | 25.726 | advantage | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 3 | 17.553 | advantage | advantage negative, prestige negative, inclusion negative |
-| Gilberte | 4 | 14.385 | advantage | advantage negative, prestige negative, inclusion negative |
-| Albertine | 1 | 6.721 | advantage | advantage negative, prestige negative, inclusion negative |
-| Mme Verdurin | 2 | 6.087 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Swann | 2 | 6.0 | prestige | advantage negative, prestige negative, inclusion negative |
-| baron de Charlus | 1 | 4.376 | advantage | advantage negative, prestige negative, inclusion negative |
-| Brichot | 1 | 3.6 | prestige | advantage negative, prestige negative, inclusion negative |
+| Robert de Saint-Loup | 3 | 16.907 | advantage | advantage negative, prestige negative, inclusion negative |
+| le narrateur | 1 | 6.775 | advantage | advantage negative, prestige negative, inclusion negative |
+| M. de Goncourt | 1 | 6.6 | advantage | advantage negative, prestige negative, inclusion negative |
+| Gilberte | 3 | 6.075 | advantage | advantage negative, prestige negative, inclusion negative |
+| Elstir | 1 | 5.795 | advantage | advantage negative, prestige negative, inclusion negative |
+| M. Verdurin | 2 | 5.03 | advantage | advantage negative, prestige negative, inclusion negative |
+| baron de Charlus | 2 | 4.92 | prestige | advantage negative, prestige negative, inclusion negative |
+| Brichot | 1 | 4.35 | advantage | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v7-p1-a-tansonville#p-21-p-24 (21-24) | 34.567 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses overall standing across all three lenses. Mme Verdurin loses social status in advantage and inclusion; shows mixed social status in prestige. |
-| v7-p1-a-tansonville#p-1-p-5 (1-5) | 29.226 | Robert de Saint-Loup | advantage negative, prestige negative, inclusion negative | Robert de Saint-Loup loses overall standing across all three lenses. Albertine loses overall standing across all three lenses. |
-| v7-p1-a-tansonville#p-16-p-20 (16-20) | 22.149 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses overall standing across all three lenses. M. Verdurin gains social status in prestige; shows mixed social status in advantage. |
-| v7-p1-a-tansonville#p-6-p-10 (6-10) | 15.361 | Robert de Saint-Loup | advantage negative, prestige negative, inclusion negative | Robert de Saint-Loup loses overall standing across all three lenses. Gilberte loses emotional standing across all three lenses. |
-| v7-p1-a-tansonville#p-11-p-15 (11-15) | 6.501 | Robert de Saint-Loup | advantage negative, prestige negative, inclusion negative | Robert de Saint-Loup loses overall standing across all three lenses. Gilberte loses emotional standing in advantage and inclusion; shows mixed emotional standing in prestige. |
+| v7-p1-a-tansonville#p-21-p-24 (21-24) | 32.193 | le narrateur | advantage negative, prestige negative, inclusion negative | le narrateur loses overall standing across all three lenses. M. de Goncourt loses social status across all three lenses. |
+| v7-p1-a-tansonville#p-11-p-15 (11-15) | 13.23 | Robert de Saint-Loup | advantage negative, prestige negative, inclusion negative | Robert de Saint-Loup loses social status across all three lenses. baron de Charlus loses overall standing across all three lenses. |
+| v7-p1-a-tansonville#p-6-p-10 (6-10) | 9.768 | Robert de Saint-Loup | advantage negative, prestige negative, inclusion negative | Robert de Saint-Loup loses overall standing across all three lenses. Gilberte loses emotional standing in advantage; shows mixed emotional standing in inclusion and prestige. |
+| v7-p1-a-tansonville#p-1-p-5 (1-5) | 8.114 | Robert de Saint-Loup | advantage negative, prestige negative, inclusion negative | Robert de Saint-Loup loses overall standing across all three lenses. Gilberte shows mixed emotional standing across all three lenses. |
+| v7-p1-a-tansonville#p-16-p-20 (16-20) | 2.63 | M. Verdurin | advantage negative, prestige negative, inclusion negative | M. Verdurin loses overall standing across all three lenses. |
 
 ## v7-p2-m-de-charlus-pendant-la-guerre
 
@@ -532,74 +529,74 @@ This chapter is organized around Robert de Saint-Loup, Mme Bontemps, Swann, and 
 - Unit count: `14`
 - Reader link: `/projects/islt/fr-original/v7-p2-m-de-charlus-pendant-la-guerre`
 - Tonal archetype: `Totalizing`
-- Strongest split: `Mme Verdurin`
+- Strongest split: `Brichot`
 
 This chapter is dominated by Charlus in wartime, with Gilberte and Mme Verdurin forming the most important counterweights around him. Charlus absorbs the heaviest damage, but the chapter is not flatly downward: figures like Gilberte and Mme Verdurin can still rise sharply inside the same harsh field. The result is a wartime chapter of exposure and reversal, where ruin and sudden social advantage coexist.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -2.012 | 4.928 | 5 (76th) |
-| prestige | negative | -1.903 | 4.425 | 6 (71st) |
-| inclusion | negative | -2.278 | 4.117 | 7 (65th) |
+| advantage | negative | -1.593 | 5.522 | 9 (53rd) |
+| prestige | negative | -1.366 | 5.137 | 10 (47th) |
+| inclusion | negative | -1.819 | 4.388 | 11 (41st) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| baron de Charlus | 7 | 64.222 | advantage | advantage negative, prestige negative, inclusion negative |
-| Robert de Saint-Loup | 5 | 21.814 | advantage | advantage positive, prestige positive, inclusion positive |
-| Brichot | 2 | 13.468 | advantage | advantage negative, prestige negative, inclusion negative |
-| Maurice | 1 | 7.347 | inclusion | advantage negative, prestige negative, inclusion negative |
-| Swann | 1 | 7.012 | advantage | advantage negative, prestige negative, inclusion negative |
-| Bloch | 1 | 6.952 | advantage | advantage negative, prestige negative, inclusion negative |
-| M. Bontemps | 1 | 6.926 | advantage | advantage positive, prestige positive, inclusion positive |
-| M. Verdurin | 1 | 5.43 | advantage | advantage positive, prestige positive, inclusion positive |
+| baron de Charlus | 8 | 59.832 | advantage | advantage negative, prestige negative, inclusion negative |
+| Robert de Saint-Loup | 5 | 23.214 | advantage | advantage positive, prestige positive, inclusion positive |
+| Mme Bontemps | 2 | 14.617 | advantage | advantage positive, prestige positive, inclusion positive |
+| Gilberte | 3 | 13.2 | advantage | advantage positive, prestige positive, inclusion positive |
+| Bloch | 1 | 9.51 | advantage | advantage negative, prestige negative, inclusion negative |
+| Odette | 2 | 9.069 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme Verdurin | 5 | 7.574 | prestige | advantage positive, prestige positive, inclusion positive |
+| le narrateur | 2 | 7.17 | advantage | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v7-p2-m-de-charlus-pendant-la-guerre#p-51-p-55 (51-55) | 32.871 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses overall standing across all three lenses. Maurice loses inclusion standing across all three lenses. |
-| v7-p2-m-de-charlus-pendant-la-guerre#p-1-p-5 (1-5) | 31.304 | Swann | advantage negative, prestige negative, inclusion negative | Swann loses overall standing across all three lenses. Elstir gains overall standing across all three lenses. |
-| v7-p2-m-de-charlus-pendant-la-guerre#p-66 (66-66) | 26.683 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses social status across all three lenses. M. d'Argencourt loses social status across all three lenses. |
-| v7-p2-m-de-charlus-pendant-la-guerre#p-36-p-40 (36-40) | 23.194 | Brichot | advantage negative, prestige negative, inclusion negative | Brichot loses overall standing across all three lenses. baron de Charlus loses overall standing across all three lenses. |
-| v7-p2-m-de-charlus-pendant-la-guerre#p-6-p-10 (6-10) | 19.962 | M. Bontemps | advantage positive, prestige positive, inclusion positive | Mme Verdurin gains social status across all three lenses. M. Bontemps gains overall standing across all three lenses. |
+| v7-p2-m-de-charlus-pendant-la-guerre#p-16-p-20 (16-20) | 35.406 | Bloch | advantage negative, prestige negative, inclusion negative | Bloch loses overall standing across all three lenses. Françoise loses overall standing across all three lenses. |
+| v7-p2-m-de-charlus-pendant-la-guerre#p-6-p-10 (6-10) | 35.207 | Mme Bontemps | advantage positive, prestige positive, inclusion positive | Mme Bontemps gains social status across all three lenses. Gilberte gains inclusion standing across all three lenses. |
+| v7-p2-m-de-charlus-pendant-la-guerre#p-36-p-40 (36-40) | 27.074 | baron de Charlus | advantage negative, prestige negative, inclusion negative | Brichot loses social status across all three lenses. baron de Charlus loses overall standing across all three lenses. |
+| v7-p2-m-de-charlus-pendant-la-guerre#p-66 (66-66) | 23.581 | baron de Charlus | advantage negative, prestige negative, inclusion negative | Morel gains social status across all three lenses. baron de Charlus loses emotional standing across all three lenses. |
+| v7-p2-m-de-charlus-pendant-la-guerre#p-26-p-30 (26-30) | 22.413 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses social status across all three lenses. Robert de Saint-Loup gains overall standing across all three lenses. |
 
 ## v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle
 
 - Title: `Le Temps retrouvé — III. Matinée chez la princesse de Guermantes. L'Adoration perpétuelle`
-- Unit count: `8`
+- Unit count: `6`
 - Reader link: `/projects/islt/fr-original/v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle`
 - Tonal archetype: `Totalizing`
-- Strongest split: `Swann`
+- Strongest split: `baron de Charlus`
 
 This chapter returns to the high society world in a late, exhausted form, with Charlus, the duc de Guermantes, Swann, and other major figures appearing under the sign of decline. What matters most is the cumulative sense of diminishment: prestige remains visible, but it is no longer renewing anyone, and even the most famous figures now appear worn down. The chapter reads like an inventory of faded greatness rather than a fresh social ascent.
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -3.057 | 3.356 | 12 (35th) |
-| prestige | negative | -2.788 | 3.099 | 12 (35th) |
-| inclusion | negative | -2.726 | 2.875 | 11 (41st) |
+| advantage | negative | -3.197 | 3.41 | 17 (6th) |
+| prestige | negative | -2.745 | 3.038 | 17 (6th) |
+| inclusion | negative | -2.632 | 2.685 | 14 (24th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| baron de Charlus | 2 | 24.475 | advantage | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 2 | 14.52 | advantage | advantage negative, prestige negative, inclusion negative |
-| duc de Guermantes | 1 | 5.705 | advantage | advantage negative, prestige negative, inclusion negative |
-| Mme de Cambremer | 1 | 5.575 | advantage | advantage negative, prestige negative, inclusion negative |
-| Bloch | 1 | 4.115 | advantage | advantage negative, prestige negative, inclusion negative |
-| Jupien | 2 | 3.6 | prestige | advantage negative, prestige negative, inclusion negative |
-| duchesse de Létourville | 1 | 2.4 | prestige | advantage negative, prestige negative, inclusion negative |
-| prince de Guermantes | 1 | 2.4 | prestige | advantage negative, prestige negative, inclusion negative |
+| baron de Charlus | 2 | 28.368 | advantage | advantage negative, prestige negative, inclusion negative |
+| Bergotte | 2 | 7.057 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme de Cambremer | 1 | 4.427 | advantage | advantage negative, prestige negative, inclusion negative |
+| duc de Guermantes | 1 | 3.897 | advantage | advantage negative, prestige negative, inclusion negative |
+| Sainte-Beuve | 1 | 3.658 | advantage | advantage negative, prestige negative, inclusion negative |
+| Bloch | 1 | 3.315 | advantage | advantage negative, prestige negative, inclusion negative |
+| marquise de Saint-Euverte | 1 | 1.68 | prestige | advantage positive, prestige positive, inclusion positive |
+| Jupien | 2 | 1.2 | prestige | advantage negative, prestige negative, inclusion negative |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-1-p-5 (1-5) | 31.628 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses social status across all three lenses. le narrateur loses overall standing across all three lenses. |
-| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-6-p-10 (6-10) | 13.015 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses overall standing across all three lenses. Jupien shows mixed standing across all three lenses. |
-| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-26-p-30 (26-30) | 11.731 | Mme de Cambremer | advantage negative, prestige negative, inclusion negative | Mme de Cambremer loses overall standing across all three lenses. le narrateur loses emotional standing across all three lenses. |
-| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-36-p-39 (36-39) | 8.275 | duc de Guermantes | advantage negative, prestige negative, inclusion negative | duc de Guermantes loses overall standing across all three lenses. Swann gains overall standing in advantage and prestige; shows mixed overall standing in inclusion. |
-| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-16-p-20 (16-20) | 6.355 | Bloch | advantage negative, prestige negative, inclusion negative | Bloch loses overall standing across all three lenses. Norpois loses overall standing in advantage; shows mixed overall standing in inclusion and prestige. |
+| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-1-p-5 (1-5) | 25.733 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses overall standing across all three lenses. marquise de Saint-Euverte gains social status in prestige; shows mixed social status in advantage. |
+| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-16-p-20 (16-20) | 9.874 | Bergotte | advantage negative, prestige negative, inclusion negative | Bergotte loses overall standing across all three lenses. Bloch loses overall standing across all three lenses. |
+| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-26-p-30 (26-30) | 8.085 | Mme de Cambremer | advantage negative, prestige negative, inclusion negative | Mme de Cambremer loses overall standing across all three lenses. Sainte-Beuve loses overall standing across all three lenses. |
+| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-6-p-10 (6-10) | 6.715 | baron de Charlus | advantage negative, prestige negative, inclusion negative | baron de Charlus loses overall standing across all three lenses. |
+| v7-p3-matinee-chez-la-princesse-de-guermantes-ladoration-perpetuelle#p-36-p-39 (36-39) | 3.897 | duc de Guermantes | advantage negative, prestige negative, inclusion negative | duc de Guermantes loses overall standing across all three lenses. |
 
 ## v7-p4-le-bal-de-tetes
 
 - Title: `Le Temps retrouvé — IV. Le Bal de têtes`
-- Unit count: `23`
+- Unit count: `21`
 - Reader link: `/projects/islt/fr-original/v7-p4-le-bal-de-tetes`
 - Tonal archetype: `Totalizing`
 - Strongest split: `Rachel`
@@ -608,25 +605,25 @@ The final chapter is centered on the spectacle of aging and reappearance, with t
 
 | Lens | Direction | Signed Density | Intensity Density | Chapter Rank |
 | --- | --- | --- | --- | --- |
-| advantage | negative | -3.898 | 5.189 | 14 (24th) |
-| prestige | negative | -3.637 | 4.968 | 16 (12th) |
-| inclusion | negative | -3.712 | 4.452 | 14 (24th) |
+| advantage | negative | -2.884 | 4.548 | 15 (18th) |
+| prestige | negative | -2.349 | 4.022 | 16 (12th) |
+| inclusion | negative | -2.879 | 3.935 | 15 (18th) |
 
 | Character | Units | Impact Mass | Dominant Lens | Signature |
 | --- | --- | --- | --- | --- |
-| duchesse de Guermantes | 11 | 43.387 | advantage | advantage negative, prestige negative, inclusion negative |
-| duc de Guermantes | 3 | 28.318 | prestige | advantage negative, prestige negative, inclusion negative |
-| Gilberte | 6 | 25.444 | advantage | advantage negative, prestige negative, inclusion negative |
-| la Berma | 4 | 23.821 | prestige | advantage negative, prestige negative, inclusion negative |
-| le narrateur | 6 | 22.48 | advantage | advantage negative, prestige negative, inclusion negative |
-| Odette | 5 | 21.72 | prestige | advantage negative, prestige negative, inclusion negative |
-| Bloch | 9 | 16.578 | inclusion | advantage negative, prestige negative, inclusion negative |
-| princesse de Guermantes | 3 | 12.728 | prestige | advantage negative, prestige negative, inclusion negative |
+| duchesse de Guermantes | 9 | 34.55 | advantage | advantage negative, prestige negative, inclusion negative |
+| la Berma | 4 | 30.241 | advantage | advantage negative, prestige negative, inclusion negative |
+| Odette | 4 | 20.122 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Gilberte | 5 | 17.115 | advantage | advantage negative, prestige negative, inclusion negative |
+| Bloch | 7 | 17.003 | advantage | advantage negative, prestige negative, inclusion negative |
+| duc de Guermantes | 3 | 15.868 | advantage | advantage negative, prestige negative, inclusion negative |
+| Mme Verdurin | 4 | 11.485 | inclusion | advantage negative, prestige negative, inclusion negative |
+| Andrée | 1 | 10.656 | prestige | advantage positive, prestige positive, inclusion positive |
 
 | Passage | Impact Mass | Dominant Character | Lens Signature | Summary |
 | --- | --- | --- | --- | --- |
-| v7-p4-le-bal-de-tetes#p-91-p-95 (91-95) | 60.359 | duc de Guermantes | advantage negative, prestige negative, inclusion negative | duc de Guermantes loses social status across all three lenses. duchesse de Guermantes loses overall standing across all three lenses. |
-| v7-p4-le-bal-de-tetes#p-66-p-70 (66-70) | 37.194 | la Berma | advantage negative, prestige negative, inclusion negative | la Berma loses social status across all three lenses. Rachel gains social status across all three lenses. |
-| v7-p4-le-bal-de-tetes#p-16-p-20 (16-20) | 36.28 | Mme de Franquetot | advantage negative, prestige negative, inclusion negative | Mme de Franquetot loses overall standing across all three lenses. Bloch loses standing across all three lenses. |
-| v7-p4-le-bal-de-tetes#p-96-p-100 (96-100) | 30.202 | Gilberte | advantage negative, prestige negative, inclusion negative | Gilberte loses overall standing across all three lenses. Robert de Saint-Loup loses overall standing across all three lenses. |
-| v7-p4-le-bal-de-tetes#p-81-p-85 (81-85) | 24.165 | la Berma | advantage negative, prestige negative, inclusion negative | la Berma loses social status across all three lenses. marquis de Bréauté loses social status across all three lenses. |
+| v7-p4-le-bal-de-tetes#p-66-p-70 (66-70) | 49.11 | la Berma | advantage negative, prestige negative, inclusion negative | la Berma loses social status across all three lenses. duchesse de Guermantes loses social status across all three lenses. |
+| v7-p4-le-bal-de-tetes#p-61-p-65 (61-65) | 27.366 | Andrée | advantage positive, prestige positive, inclusion positive | Andrée gains social status across all three lenses. Robert de Saint-Loup gains overall standing across all three lenses. |
+| v7-p4-le-bal-de-tetes#p-81-p-85 (81-85) | 27.253 | la Berma | advantage negative, prestige negative, inclusion negative | la Berma loses social status across all three lenses. marquis de Bréauté loses overall standing across all three lenses. |
+| v7-p4-le-bal-de-tetes#p-91-p-95 (91-95) | 26.758 | duchesse de Guermantes | advantage negative, prestige negative, inclusion negative | duchesse de Guermantes loses emotional standing across all three lenses. duc de Guermantes loses emotional standing across all three lenses. |
+| v7-p4-le-bal-de-tetes#p-76-p-80 (76-80) | 23.887 | duchesse de Guermantes | advantage negative, prestige negative, inclusion negative | duchesse de Guermantes loses social status across all three lenses. la Berma gains overall standing across all three lenses. |

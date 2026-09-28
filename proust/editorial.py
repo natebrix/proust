@@ -382,7 +382,7 @@ CHAPTER_SUMMARY_EDITORIAL = {
     "v2-p2-noms-de-pays-le-pays": (
         "Balbec is organized around new encounters and shifting attractions, especially Elstir, Albertine, Charlus, Saint-Loup, and the narrator's movements among them. "
         "The chapter's most striking pattern is its mixed social weather: artistic and social arrival on one side, awkwardness and exclusion on the other, so that discovery and discomfort keep alternating. "
-        "Elstir emerges as the clearest source of uplift, while the narrator's own footing remains noticeably less secure."
+        "Elstir, Charlus, and Albertine emerge as the clearest sources of uplift, while the narrator's own footing remains noticeably less secure."
     ),
     "v3-p1": (
         "This chapter is centered on entry into the Guermantes world, with the duchesse, Saint-Loup, Bloch, Charlus, and Odette all helping define its social landscape. "
@@ -396,8 +396,8 @@ CHAPTER_SUMMARY_EDITORIAL = {
     ),
     "v4-p1": (
         "This short chapter is centered almost entirely on the charged encounter between Charlus and Jupien. "
-        "Its interest lies in the abrupt swing from Charlus's initial excitement to his loss of footing, while Jupien emerges unexpectedly strengthened. "
-        "The scene reads like a compressed seduction and reversal, with power passing more quickly than the surface first suggests."
+        "Its interest lies in how both men come out ahead: Charlus's pursuit succeeds, and Jupien, the waistcoat-maker, emerges strengthened even more than the baron. "
+        "The scene reads like a compressed seduction in which recognition and advantage pass between the two more quickly than the surface first suggests."
     ),
     "v4-p2": (
         "This chapter moves through salons, humiliations, and uneasy encounters, with Swann, Albertine, Vaugoubert, and Charlus all caught in a social world that keeps turning against them. "
