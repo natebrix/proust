@@ -186,8 +186,10 @@ def v1_matches(units, lens, epsilon=V1_EPSILON):
     return matches
 
 
-def v2_matches(units, lens, registry=None, merge_map=None, view="name"):
-    comparisons = build_module.build_comparisons(units, lens, registry=registry, merge_map=merge_map)
+def v2_matches(units, lens, registry=None, merge_map=None, view="name", pair_weighting=v2.DEFAULT_PAIR_WEIGHTING):
+    comparisons = build_module.build_comparisons(
+        units, lens, registry=registry, merge_map=merge_map, pair_weighting=pair_weighting
+    )
     matches, _dropped = build_module.view_matches(comparisons, view)
     return matches
 
@@ -226,6 +228,7 @@ def bootstrap_stability(
     samples=DEFAULT_BOOTSTRAP_SAMPLES,
     seed=BOOTSTRAP_SEED,
     progress=None,
+    pair_weighting=v2.DEFAULT_PAIR_WEIGHTING,
 ):
     """Resample units with replacement; how far do the standings move?
 
@@ -246,7 +249,9 @@ def bootstrap_stability(
         drawn = [units[generator.randrange(len(units))] for _ in range(len(units))]
         for formula in ("v2", "v1"):
             if formula == "v2":
-                matches = v2_matches(drawn, lens, registry=registry, merge_map=merge_map)
+                matches = v2_matches(
+                    drawn, lens, registry=registry, merge_map=merge_map, pair_weighting=pair_weighting
+                )
             else:
                 matches = v1_matches(drawn, lens)
             ratings = _conservative_ratings(matches, w2_by_formula[formula], weighted=(formula == "v2"))
@@ -723,6 +728,7 @@ def build_validation_report(
             merge_map=merge_map,
             samples=bootstrap_samples,
             progress=progress,
+            pair_weighting=manifest.get("pair_weighting", v2.DEFAULT_PAIR_WEIGHTING),
         )
         stability[lens]["v2_non_provisional_count"] = len(v2_non_provisional)
         stability[lens]["v1_non_provisional_count"] = len(v1_non_provisional)
