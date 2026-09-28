@@ -1,10 +1,15 @@
 # Fortune arcs
 
 Each character's own arc: a smoothed level of their scoring v2 movements, passage by
-passage, from `proust/fortune.py`. A level of +0.5 means that around this point of the novel
-the passages involving the character tend to leave them half a step up. Levels carry ± one
-posterior standard deviation. Drift and noise are chosen once per lens by pooled marginal
+passage, from `proust/fortune.py`, in the PERSON view (registry entities; names and titles
+of one person pooled). Drift and noise are chosen once per lens by pooled marginal
 likelihood; nothing is tuned per character.
+
+Ratings are Elo-style: 1500 is a level of 0 (passages leave the character where they were),
+and the points-per-level factor comes from the fitted passage noise, so a gap of D points
+means one character's next passage goes better than the other's about as often as a
+D-point Elo favourite wins (100 points ≈ 64%, 200 ≈ 76%, 400 ≈ 91%). `±` is one posterior
+standard deviation.
 
 `order p` asks whether the ORDER of a character's passages made the arc: the share of
 random reshufflings of their outcomes in time that give an equal or bigger move. Around
@@ -12,136 +17,141 @@ random reshufflings of their outcomes in time that give an equal or bigger move.
 the ones near 0.01.
 
 `arc evidence` is how much better (in log-likelihood) the fitted model explains the
-movements than one in which no character's fortune ever changes. Several points is strong
-evidence that arcs are real; under one point means the lens cannot see arcs.
+movements than one in which no character's fortune ever changes.
 
-| lens | observations | characters | q | sigma² | arc evidence |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| overall | 1874 | 170 | 0.016 | 0.9 | 32.8 |
-| advantage | 1610 | 153 | 0.004 | 0.7 | 11.9 |
-| prestige | 356 | 79 | 0.008 | 0.7 | 7.7 |
-| inclusion | 200 | 52 | 0.004 | 0.9 | 0.5 |
+| lens | observations | people | q | sigma² | points per level | arc evidence |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| overall | 1874 | 168 | 0.016 | 0.9 | 220 | 32.4 |
+| advantage | 1610 | 151 | 0.004 | 0.7 | 250 | 11.9 |
+| prestige | 356 | 78 | 0.008 | 0.7 | 250 | 7.7 |
+| inclusion | 200 | 52 | 0.004 | 0.9 | 220 | 0.5 |
+
+## Person view rulings
+
+- merged by `person_view_merge`: le peintre → Elstir, prince des Laumes → duc de Guermantes
+- reviewed passage ruling: "princesse de Guermantes" in `v7-p4-le-bal-de-tetes#p-61-p-65` → Mme Verdurin
+- no names left ambiguous by chapter-scoped registry forms
 
 ## overall
 
-Characters with at least 8 appearances.
+People with at least 8 appearances.
 
 ### Biggest falls
 
 | character | n | order p | move |
 | --- | ---: | ---: | --- |
-| baron de Charlus | 89 | 0.003 | +0.58 ± 0.31 → -1.59 ± 0.33 (2.17) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Le Temps retrouvé — III. Matinée chez la princesse de Guermantes. L'Adoration perpétuelle |
-| la Berma | 13 | 0.030 | +0.71 ± 0.38 → -0.91 ± 0.52 (1.62) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Le Temps retrouvé — IV. Le Bal de têtes |
-| Swann | 147 | 0.027 | -0.13 ± 0.26 → -1.43 ± 0.35 (1.30) · Du Côté de Chez Swann — I. Combray → Albertine disparue — II |
-| Saniette | 11 | 0.196 | -0.84 ± 0.36 → -2.05 ± 0.57 (1.20) · Du Côté de Chez Swann — II. Un amour de Swann → La Prisonnière |
-| Albertine | 103 | 0.007 | +0.41 ± 0.27 → -0.75 ± 0.24 (1.16) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → La Prisonnière |
-| duchesse de Guermantes | 132 | 0.020 | +0.62 ± 0.27 → -0.48 ± 0.37 (1.10) · Le Côté de Guermantes — I → Le Temps retrouvé — IV. Le Bal de têtes |
-| le narrateur | 182 | 0.033 | +0.41 ± 0.20 → -0.61 ± 0.24 (1.02) · Le Côté de Guermantes — II → La Prisonnière |
-| duc de Guermantes | 63 | 0.023 | -0.54 ± 0.31 → -1.54 ± 0.45 (1.00) · Le Côté de Guermantes — I → La Prisonnière |
-| marquise de Saint-Euverte | 8 | 0.538 | -0.68 ± 0.41 → -1.58 ± 0.40 (0.90) · Du Côté de Chez Swann — II. Un amour de Swann → Sodome et Gomorrhe — II |
-| princesse de Guermantes | 16 | 0.063 | +0.33 ± 0.34 → -0.53 ± 0.75 (0.86) · Le Côté de Guermantes — I → Le Temps retrouvé — IV. Le Bal de têtes |
+| baron de Charlus | 89 | 0.001 | 1627 ± 68 → 1149 ± 73 (479 pts) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Le Temps retrouvé — III. Matinée chez la princesse de Guermantes. L'Adoration perpétuelle |
+| la Berma | 13 | 0.051 | 1657 ± 83 → 1300 ± 114 (358 pts) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Le Temps retrouvé — IV. Le Bal de têtes |
+| Swann | 147 | 0.033 | 1472 ± 57 → 1185 ± 78 (287 pts) · Du Côté de Chez Swann — I. Combray → Albertine disparue — II |
+| Saniette | 11 | 0.200 | 1314 ± 79 → 1049 ± 126 (265 pts) · Du Côté de Chez Swann — II. Un amour de Swann → La Prisonnière |
+| Albertine | 103 | 0.005 | 1590 ± 60 → 1334 ± 53 (256 pts) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → La Prisonnière |
+| duchesse de Guermantes | 132 | 0.016 | 1638 ± 60 → 1395 ± 82 (243 pts) · Le Côté de Guermantes — I → Le Temps retrouvé — IV. Le Bal de têtes |
+| le narrateur | 182 | 0.033 | 1589 ± 45 → 1365 ± 53 (224 pts) · Le Côté de Guermantes — II → La Prisonnière |
+| duc de Guermantes | 64 | 0.058 | 1379 ± 86 → 1160 ± 98 (219 pts) · Du Côté de Chez Swann — II. Un amour de Swann → La Prisonnière |
+| marquise de Saint-Euverte | 8 | 0.511 | 1349 ± 91 → 1151 ± 88 (198 pts) · Du Côté de Chez Swann — II. Un amour de Swann → Sodome et Gomorrhe — II |
+| Brichot | 15 | 0.145 | 1512 ± 82 → 1333 ± 132 (179 pts) · Du Côté de Chez Swann — II. Un amour de Swann → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
 
 ### Biggest rises
 
 | character | n | order p | move |
 | --- | ---: | ---: | --- |
-| M. Vinteuil | 8 | 0.007 | -0.23 ± 0.33 → +1.89 ± 0.82 (2.12) · Du Côté de Chez Swann — I. Combray → La Prisonnière |
-| Mme Bontemps | 8 | 0.007 | -0.33 ± 0.38 → +0.91 ± 0.62 (1.24) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
-| la grand-mère | 36 | 0.033 | -0.16 ± 0.32 → +0.82 ± 0.48 (0.98) · Du Côté de Chez Swann — I. Combray → Sodome et Gomorrhe — II |
-| Morel | 33 | 0.020 | -0.91 ± 0.28 → -0.01 ± 0.46 (0.90) · La Prisonnière → Le Temps retrouvé — IV. Le Bal de têtes |
-| marquise de Saint-Euverte | 8 | 0.036 | -1.58 ± 0.40 → -0.70 ± 0.76 (0.88) · Sodome et Gomorrhe — II → Le Temps retrouvé — III. Matinée chez la princesse de Guermantes. L'Adoration perpétuelle |
-| Robert de Saint-Loup | 105 | 0.073 | -0.41 ± 0.18 → +0.38 ± 0.44 (0.79) · Le Côté de Guermantes — I → Le Temps retrouvé — IV. Le Bal de têtes |
-| Jupien | 9 | 0.525 | +0.41 ± 0.37 → +1.18 ± 0.42 (0.77) · Le Côté de Guermantes — I → Sodome et Gomorrhe — I |
-| Mme Verdurin | 48 | 0.100 | -0.59 ± 0.34 → +0.08 ± 0.39 (0.67) · Sodome et Gomorrhe — II → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
-| Andrée | 19 | 0.246 | -0.36 ± 0.39 → +0.28 ± 0.63 (0.64) · La Prisonnière → Le Temps retrouvé — IV. Le Bal de têtes |
-| Françoise | 39 | 0.429 | +0.02 ± 0.32 → +0.64 ± 0.34 (0.62) · Du Côté de Chez Swann — I. Combray → À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann |
+| M. Vinteuil | 8 | 0.004 | 1449 ± 72 → 1917 ± 180 (468 pts) · Du Côté de Chez Swann — I. Combray → La Prisonnière |
+| Mme Bontemps | 8 | 0.008 | 1427 ± 84 → 1701 ± 138 (274 pts) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
+| la grand-mère | 36 | 0.043 | 1465 ± 71 → 1682 ± 106 (216 pts) · Du Côté de Chez Swann — I. Combray → Sodome et Gomorrhe — II |
+| Morel | 33 | 0.019 | 1299 ± 62 → 1497 ± 101 (198 pts) · La Prisonnière → Le Temps retrouvé — IV. Le Bal de têtes |
+| marquise de Saint-Euverte | 8 | 0.035 | 1151 ± 88 → 1345 ± 167 (194 pts) · Sodome et Gomorrhe — II → Le Temps retrouvé — III. Matinée chez la princesse de Guermantes. L'Adoration perpétuelle |
+| Robert de Saint-Loup | 105 | 0.075 | 1410 ± 40 → 1584 ± 97 (174 pts) · Le Côté de Guermantes — I → Le Temps retrouvé — IV. Le Bal de têtes |
+| Jupien | 9 | 0.562 | 1589 ± 82 → 1759 ± 93 (170 pts) · Le Côté de Guermantes — I → Sodome et Gomorrhe — I |
+| Andrée | 19 | 0.201 | 1420 ± 86 → 1561 ± 139 (140 pts) · La Prisonnière → Le Temps retrouvé — IV. Le Bal de têtes |
+| Mme Verdurin | 49 | 0.117 | 1370 ± 74 → 1509 ± 83 (139 pts) · Sodome et Gomorrhe — II → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
+| Françoise | 39 | 0.429 | 1504 ± 70 → 1641 ± 74 (137 pts) · Du Côté de Chez Swann — I. Combray → À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann |
 
 
 ## advantage
 
-Characters with at least 8 appearances.
+People with at least 8 appearances.
 
 ### Biggest falls
 
 | character | n | order p | move |
 | --- | ---: | ---: | --- |
-| baron de Charlus | 79 | 0.003 | +0.20 ± 0.24 → -1.09 ± 0.25 (1.28) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Le Temps retrouvé — III. Matinée chez la princesse de Guermantes. L'Adoration perpétuelle |
-| Gilberte | 30 | 0.003 | +0.30 ± 0.24 → -0.50 ± 0.32 (0.80) · Du Côté de Chez Swann — III. Noms de pays : le nom → Le Temps retrouvé — IV. Le Bal de têtes |
-| Albertine | 100 | 0.007 | +0.15 ± 0.20 → -0.59 ± 0.22 (0.75) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Albertine disparue — III |
-| Odette | 68 | 0.027 | -0.04 ± 0.15 → -0.65 ± 0.32 (0.61) · Du Côté de Chez Swann — II. Un amour de Swann → Albertine disparue — IV |
-| duchesse de Guermantes | 111 | 0.040 | +0.22 ± 0.16 → -0.32 ± 0.30 (0.54) · Le Côté de Guermantes — I → Le Temps retrouvé — IV. Le Bal de têtes |
-| Saniette | 10 | 0.239 | -0.69 ± 0.32 → -1.09 ± 0.33 (0.40) · Du Côté de Chez Swann — II. Un amour de Swann → Sodome et Gomorrhe — II |
-| Andrée | 18 | 0.110 | +0.04 ± 0.26 → -0.31 ± 0.30 (0.35) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → La Prisonnière |
-| Swann | 132 | 0.339 | -0.34 ± 0.19 → -0.68 ± 0.35 (0.34) · Le Côté de Guermantes — II → Le Temps retrouvé — IV. Le Bal de têtes |
-| Norpois | 34 | 0.103 | -0.01 ± 0.22 → -0.34 ± 0.32 (0.34) · Le Côté de Guermantes — I → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
-| Mme de Marsantes | 13 | 0.046 | -0.54 ± 0.31 → -0.88 ± 0.48 (0.34) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Albertine disparue — IV |
+| baron de Charlus | 79 | 0.001 | 1549 ± 61 → 1228 ± 63 (321 pts) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Le Temps retrouvé — III. Matinée chez la princesse de Guermantes. L'Adoration perpétuelle |
+| Gilberte | 30 | 0.002 | 1575 ± 61 → 1375 ± 79 (200 pts) · Du Côté de Chez Swann — III. Noms de pays : le nom → Le Temps retrouvé — IV. Le Bal de têtes |
+| Albertine | 100 | 0.003 | 1539 ± 50 → 1352 ± 56 (187 pts) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Albertine disparue — III |
+| Odette | 68 | 0.042 | 1491 ± 37 → 1338 ± 80 (152 pts) · Du Côté de Chez Swann — II. Un amour de Swann → Albertine disparue — IV |
+| duchesse de Guermantes | 111 | 0.038 | 1554 ± 40 → 1420 ± 74 (134 pts) · Le Côté de Guermantes — I → Le Temps retrouvé — IV. Le Bal de têtes |
+| Saniette | 10 | 0.220 | 1327 ± 80 → 1228 ± 83 (99 pts) · Du Côté de Chez Swann — II. Un amour de Swann → Sodome et Gomorrhe — II |
+| Andrée | 18 | 0.110 | 1510 ± 66 → 1424 ± 75 (86 pts) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → La Prisonnière |
+| Swann | 132 | 0.277 | 1416 ± 48 → 1331 ± 87 (85 pts) · Le Côté de Guermantes — II → Le Temps retrouvé — IV. Le Bal de têtes |
+| Norpois | 34 | 0.122 | 1498 ± 55 → 1414 ± 81 (85 pts) · Le Côté de Guermantes — I → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
+| Mme de Marsantes | 13 | 0.041 | 1366 ± 78 → 1281 ± 120 (84 pts) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Albertine disparue — IV |
 
 ### Biggest rises
 
 | character | n | order p | move |
 | --- | ---: | ---: | --- |
-| M. Vinteuil | 8 | 0.010 | -0.16 ± 0.30 → +0.47 ± 0.54 (0.62) · Du Côté de Chez Swann — I. Combray → La Prisonnière |
-| la grand-mère | 31 | 0.053 | -0.04 ± 0.26 → +0.57 ± 0.32 (0.60) · Du Côté de Chez Swann — I. Combray → Sodome et Gomorrhe — II |
-| Robert de Saint-Loup | 97 | 0.053 | -0.31 ± 0.13 → +0.15 ± 0.30 (0.47) · Le Côté de Guermantes — I → Le Temps retrouvé — IV. Le Bal de têtes |
-| le narrateur | 134 | 0.432 | -0.39 ± 0.17 → -0.12 ± 0.19 (0.27) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Sodome et Gomorrhe — II |
-| le père du narrateur | 9 | 0.146 | -0.01 ± 0.34 → +0.26 ± 0.46 (0.27) · Du Côté de Chez Swann — I. Combray → Sodome et Gomorrhe — II |
-| M. Verdurin | 13 | 0.043 | -0.48 ± 0.28 → -0.23 ± 0.45 (0.25) · Du Côté de Chez Swann — II. Un amour de Swann → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
-| Françoise | 37 | 0.611 | +0.06 ± 0.25 → +0.28 ± 0.23 (0.22) · Du Côté de Chez Swann — I. Combray → À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann |
-| docteur Cottard | 29 | 0.332 | -0.28 ± 0.20 → -0.06 ± 0.45 (0.22) · Du Côté de Chez Swann — II. Un amour de Swann → Le Temps retrouvé — I. A Tansonville |
-| Morel | 27 | 0.066 | -1.07 ± 0.22 → -0.87 ± 0.30 (0.21) · La Prisonnière → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
-| la mère du narrateur | 10 | 0.515 | +0.47 ± 0.29 → +0.68 ± 0.40 (0.21) · Du Côté de Chez Swann — I. Combray → Le Côté de Guermantes — II |
+| M. Vinteuil | 8 | 0.003 | 1460 ± 74 → 1616 ± 135 (156 pts) · Du Côté de Chez Swann — I. Combray → La Prisonnière |
+| la grand-mère | 31 | 0.040 | 1491 ± 64 → 1642 ± 79 (151 pts) · Du Côté de Chez Swann — I. Combray → Sodome et Gomorrhe — II |
+| Robert de Saint-Loup | 97 | 0.079 | 1421 ± 32 → 1538 ± 76 (116 pts) · Le Côté de Guermantes — I → Le Temps retrouvé — IV. Le Bal de têtes |
+| le narrateur | 134 | 0.437 | 1403 ± 41 → 1470 ± 47 (67 pts) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Sodome et Gomorrhe — II |
+| le père du narrateur | 9 | 0.176 | 1497 ± 85 → 1564 ± 114 (66 pts) · Du Côté de Chez Swann — I. Combray → Sodome et Gomorrhe — II |
+| M. Verdurin | 13 | 0.021 | 1381 ± 70 → 1443 ± 111 (63 pts) · Du Côté de Chez Swann — II. Un amour de Swann → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
+| Elstir | 19 | 0.639 | 1566 ± 71 → 1623 ± 62 (57 pts) · Du Côté de Chez Swann — II. Un amour de Swann → À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays |
+| Françoise | 37 | 0.626 | 1514 ± 63 → 1570 ± 58 (56 pts) · Du Côté de Chez Swann — I. Combray → À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann |
+| docteur Cottard | 29 | 0.342 | 1430 ± 50 → 1485 ± 113 (55 pts) · Du Côté de Chez Swann — II. Un amour de Swann → Le Temps retrouvé — I. A Tansonville |
+| Morel | 27 | 0.090 | 1231 ± 55 → 1284 ± 75 (52 pts) · La Prisonnière → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
 
 
 ## prestige
 
-Characters with at least 8 appearances.
+People with at least 8 appearances.
 
 ### Biggest falls
 
 | character | n | order p | move |
 | --- | ---: | ---: | --- |
-| baron de Charlus | 28 | 0.007 | +0.60 ± 0.32 → -0.57 ± 0.39 (1.17) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Le Temps retrouvé — IV. Le Bal de têtes |
-| duchesse de Guermantes | 42 | 0.007 | +1.14 ± 0.20 → +0.19 ± 0.39 (0.95) · Le Côté de Guermantes — II → Le Temps retrouvé — IV. Le Bal de têtes |
-| Swann | 32 | 0.106 | +0.33 ± 0.24 → -0.31 ± 0.63 (0.65) · Du Côté de Chez Swann — I. Combray → Albertine disparue — II |
-| Robert de Saint-Loup | 18 | 0.106 | +0.60 ± 0.31 → +0.09 ± 0.44 (0.51) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Albertine disparue — IV |
-| le narrateur | 22 | 0.076 | +0.72 ± 0.28 → +0.23 ± 0.49 (0.50) · Le Côté de Guermantes — II → Albertine disparue — I |
-| Mme de Villeparisis | 16 | 0.253 | +0.18 ± 0.30 → -0.03 ± 0.38 (0.21) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Le Côté de Guermantes — II |
-| Odette | 18 | 0.684 | +0.98 ± 0.40 → +0.86 ± 0.58 (0.13) · Sodome et Gomorrhe — II → Le Temps retrouvé — IV. Le Bal de têtes |
-| Gilberte | 8 | 0.492 | +0.52 ± 0.37 → +0.41 ± 0.44 (0.12) · Albertine disparue — II → Le Temps retrouvé — IV. Le Bal de têtes |
-| Mme Verdurin | 17 | 0.774 | +0.63 ± 0.37 → +0.54 ± 0.33 (0.09) · Sodome et Gomorrhe — II → La Prisonnière |
+| baron de Charlus | 28 | 0.002 | 1649 ± 80 → 1357 ± 98 (293 pts) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Le Temps retrouvé — IV. Le Bal de têtes |
+| duchesse de Guermantes | 42 | 0.003 | 1785 ± 51 → 1548 ± 97 (237 pts) · Le Côté de Guermantes — II → Le Temps retrouvé — IV. Le Bal de têtes |
+| Swann | 32 | 0.120 | 1583 ± 60 → 1422 ± 157 (161 pts) · Du Côté de Chez Swann — I. Combray → Albertine disparue — II |
+| Robert de Saint-Loup | 18 | 0.103 | 1650 ± 77 → 1523 ± 111 (127 pts) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Albertine disparue — IV |
+| le narrateur | 22 | 0.065 | 1681 ± 70 → 1557 ± 123 (124 pts) · Le Côté de Guermantes — II → Albertine disparue — I |
+| Mme de Villeparisis | 16 | 0.320 | 1545 ± 74 → 1492 ± 94 (54 pts) · À l'Ombre des Jeunes Filles en Fleurs — II. Noms de pays : le pays → Le Côté de Guermantes — II |
+| Odette | 18 | 0.661 | 1746 ± 99 → 1714 ± 144 (32 pts) · Sodome et Gomorrhe — II → Le Temps retrouvé — IV. Le Bal de têtes |
+| Gilberte | 8 | 0.479 | 1631 ± 93 → 1602 ± 110 (29 pts) · Albertine disparue — II → Le Temps retrouvé — IV. Le Bal de têtes |
+| Mme Verdurin | 17 | 0.732 | 1656 ± 92 → 1634 ± 82 (23 pts) · Sodome et Gomorrhe — II → La Prisonnière |
 
 ### Biggest rises
 
 | character | n | order p | move |
 | --- | ---: | ---: | --- |
-| Odette | 18 | 0.449 | +0.58 ± 0.32 → +0.98 ± 0.40 (0.40) · Du Côté de Chez Swann — I. Combray → Sodome et Gomorrhe — II |
-| Mme Verdurin | 17 | 0.352 | +0.43 ± 0.32 → +0.81 ± 0.43 (0.39) · Du Côté de Chez Swann — II. Un amour de Swann → Le Temps retrouvé — IV. Le Bal de têtes |
-| duchesse de Guermantes | 42 | 0.631 | +0.82 ± 0.32 → +1.14 ± 0.20 (0.32) · Du Côté de Chez Swann — I. Combray → Le Côté de Guermantes — II |
-| le narrateur | 22 | 0.605 | +0.55 ± 0.31 → +0.72 ± 0.28 (0.17) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Le Côté de Guermantes — II |
-| Gilberte | 8 | 0.767 | +0.47 ± 0.40 → +0.52 ± 0.37 (0.05) · Du Côté de Chez Swann — III. Noms de pays : le nom → Albertine disparue — II |
-| Robert de Saint-Loup | 18 | 0.917 | +0.09 ± 0.44 → +0.12 ± 0.47 (0.03) · Albertine disparue — IV → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
-| Mme de Villeparisis | 16 | 0.751 | +0.00 ± 0.27 → +0.02 ± 0.28 (0.02) · Le Côté de Guermantes — I → Le Côté de Guermantes — I |
-| Swann | 32 | 0.987 | +0.28 ± 0.22 → +0.29 ± 0.21 (0.01) · Du Côté de Chez Swann — I. Combray → Du Côté de Chez Swann — II. Un amour de Swann |
-| baron de Charlus | 28 | 0.997 | +0.43 ± 0.28 → +0.43 ± 0.27 (0.00) · Sodome et Gomorrhe — II → Sodome et Gomorrhe — II |
+| Odette | 18 | 0.511 | 1646 ± 79 → 1746 ± 99 (100 pts) · Du Côté de Chez Swann — I. Combray → Sodome et Gomorrhe — II |
+| Mme Verdurin | 17 | 0.349 | 1607 ± 80 → 1703 ± 108 (96 pts) · Du Côté de Chez Swann — II. Un amour de Swann → Le Temps retrouvé — IV. Le Bal de têtes |
+| duchesse de Guermantes | 42 | 0.669 | 1705 ± 79 → 1785 ± 51 (80 pts) · Du Côté de Chez Swann — I. Combray → Le Côté de Guermantes — II |
+| le narrateur | 22 | 0.602 | 1638 ± 77 → 1681 ± 70 (43 pts) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Le Côté de Guermantes — II |
+| Gilberte | 8 | 0.830 | 1619 ± 100 → 1631 ± 93 (12 pts) · Du Côté de Chez Swann — III. Noms de pays : le nom → Albertine disparue — II |
+| Robert de Saint-Loup | 18 | 0.931 | 1523 ± 111 → 1530 ± 119 (8 pts) · Albertine disparue — IV → Le Temps retrouvé — II. M. de Charlus pendant la guerre |
+| Mme de Villeparisis | 16 | 0.704 | 1501 ± 67 → 1505 ± 70 (4 pts) · Le Côté de Guermantes — I → Le Côté de Guermantes — I |
+| Swann | 32 | 0.974 | 1571 ± 54 → 1573 ± 52 (2 pts) · Du Côté de Chez Swann — I. Combray → Du Côté de Chez Swann — II. Un amour de Swann |
+| baron de Charlus | 28 | 0.994 | 1607 ± 69 → 1607 ± 68 (0 pts) · Sodome et Gomorrhe — II → Sodome et Gomorrhe — II |
 
 
 ## inclusion
 
-Characters with at least 8 appearances.
+People with at least 8 appearances.
 
 ### Biggest falls
 
 | character | n | order p | move |
 | --- | ---: | ---: | --- |
-| Swann | 28 | 0.076 | -0.58 ± 0.25 → -1.08 ± 0.39 (0.50) · Du Côté de Chez Swann — I. Combray → Albertine disparue — II |
-| Odette | 9 | 0.233 | -0.84 ± 0.32 → -1.27 ± 0.57 (0.42) · Du Côté de Chez Swann — I. Combray → Le Temps retrouvé — IV. Le Bal de têtes |
-| le narrateur | 63 | 0.160 | +0.32 ± 0.20 → +0.08 ± 0.33 (0.24) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Sodome et Gomorrhe — II |
-| Bloch | 13 | 0.987 | -0.73 ± 0.31 → -0.73 ± 0.31 (0.00) · Le Côté de Guermantes — I → Le Côté de Guermantes — I |
+| Swann | 28 | 0.088 | 1372 ± 56 → 1261 ± 86 (111 pts) · Du Côté de Chez Swann — I. Combray → Albertine disparue — II |
+| Odette | 9 | 0.201 | 1314 ± 71 → 1220 ± 127 (94 pts) · Du Côté de Chez Swann — I. Combray → Le Temps retrouvé — IV. Le Bal de têtes |
+| le narrateur | 63 | 0.171 | 1571 ± 43 → 1518 ± 73 (53 pts) · À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann → Sodome et Gomorrhe — II |
+| Bloch | 13 | 0.982 | 1339 ± 68 → 1338 ± 69 (1 pts) · Le Côté de Guermantes — I → Le Côté de Guermantes — I |
 
 ### Biggest rises
 
 | character | n | order p | move |
 | --- | ---: | ---: | --- |
-| Bloch | 13 | 0.057 | -0.79 ± 0.32 → -0.40 ± 0.49 (0.39) · Du Côté de Chez Swann — I. Combray → Le Temps retrouvé — IV. Le Bal de têtes |
-| le narrateur | 63 | 0.824 | +0.19 ± 0.27 → +0.32 ± 0.20 (0.14) · Du Côté de Chez Swann — I. Combray → À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann |
+| Bloch | 13 | 0.045 | 1327 ± 71 → 1412 ± 109 (85 pts) · Du Côté de Chez Swann — I. Combray → Le Temps retrouvé — IV. Le Bal de têtes |
+| le narrateur | 63 | 0.856 | 1541 ± 59 → 1571 ± 43 (30 pts) · Du Côté de Chez Swann — I. Combray → À l'Ombre des Jeunes Filles en Fleurs — I. Autour de Mme Swann |
 

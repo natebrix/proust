@@ -36,6 +36,7 @@ from collections import defaultdict
 import math
 
 from . import scoring_v2 as v2
+from .registry import normalize_text
 
 # The three scoring v2 lenses plus their sum: a character's whole movement
 # in a passage, whichever dimension carried it.
@@ -98,18 +99,135 @@ def unit_observations(annotation, lens):
     }
 
 
-def character_series(units, lens):
+# ---------------------------------------------------------------------------
+# Person view: follow a person across names and titles.
+# ---------------------------------------------------------------------------
+
+# Passage-level rulings for names the registry itself declares ambiguous in
+# a chapter. Each entry is (unit_id, annotation name) -> entity id, and
+# each must say why.
+REVIEWED_UNIT_RESOLUTIONS = {
+    # "nous ferons clan!" in a tinny voice from her dentures: the petit clan
+    # is Mme Verdurin's own phrase, and Marie-Gilbert is dead by the Bal de
+    # tetes. The registry scopes "princesse de Guermantes" to mme-verdurin
+    # in this chapter and calls the bare form ambiguous; this passage is not.
+    ("v7-p4-le-bal-de-tetes#p-61-p-65", "princesse de Guermantes"): "mme-verdurin",
+}
+
+NAME_KEY_PREFIX = "name:"
+
+
+class PersonKeyer:
+    """Maps an annotation name in a passage to the person it refers to.
+
+    Keys are registry entity ids (after `person_view_merge` links, so "le
+    peintre" is Elstir and the prince des Laumes is the duc de Guermantes)
+    or, for names the registry cannot place, `name:<name>`, so an
+    unresolved name never pools with anyone.
+
+    One rule goes beyond `Registry.resolve`: when another entity carries a
+    CHAPTER-SCOPED form with the same text in this chapter, the name is
+    ambiguous there, as the registry's own notes intend ("princesse de
+    Guermantes" in the late Temps retrouve chapters may be Mme Verdurin).
+    `Registry.resolve` answers exact annotation names before it looks at
+    scoped forms, so it never reports that ambiguity. Ambiguous names key
+    on the name unless `REVIEWED_UNIT_RESOLUTIONS` settles the passage.
+    Global forms shared by two entities are not treated this way: those are
+    duplicates in the registry, not rulings.
+    """
+
+    def __init__(self, registry, reviewed=None):
+        self.registry = registry
+        self.merge_map = v2.person_view_merge_map(registry)
+        self.reviewed = REVIEWED_UNIT_RESOLUTIONS if reviewed is None else reviewed
+        self._scoped = defaultdict(list)
+        for form in registry.forms:
+            if form.scope_kind == "chapters":
+                self._scoped[normalize_text(form.form)].append(form)
+        self.ambiguous_hits = defaultdict(int)
+        self.reviewed_hits = defaultdict(int)
+
+    def _merged(self, entity_id):
+        return self.merge_map.get(entity_id, entity_id)
+
+    def key(self, name, unit_id=None, chapter_id=None):
+        if name in v2.NON_CHARACTER_NAMES:
+            return NAME_KEY_PREFIX + name
+        reviewed = self.reviewed.get((unit_id, name))
+        if reviewed:
+            self.reviewed_hits[(unit_id, name)] += 1
+            return self._merged(reviewed)
+        resolution = self.registry.resolve(name, chapter_id=chapter_id)
+        if resolution.status != "resolved":
+            return NAME_KEY_PREFIX + name
+        rivals = {
+            form.entity_id
+            for form in self._scoped.get(normalize_text(name), ())
+            if form.applies_in(chapter_id, ()) and form.entity_id != resolution.entity_id
+        }
+        if rivals:
+            self.ambiguous_hits[(chapter_id, name)] += 1
+            return NAME_KEY_PREFIX + name
+        return self._merged(resolution.entity_id)
+
+    def display(self, key):
+        if key.startswith(NAME_KEY_PREFIX):
+            return key[len(NAME_KEY_PREFIX):]
+        entity = self.registry.entities.get(key)
+        return entity.display_name if entity else key
+
+
+def character_series(units, lens, keyer=None):
     """{character: [(time, movement, weight), ...]} in narrative order.
 
     `units` are `scoring_v2_build.load_scored_units` rows (each carrying
-    `annotation` and `corpus_position`).
+    `annotation`, `corpus_position`, `unit_id` and `chapter_id`). Without a
+    `keyer` characters are annotation names (the name view). With a
+    `PersonKeyer` they are person keys, and two names for one person in the
+    same passage become one observation: their movements add, since both
+    are movements of that person, and the weight is their mean.
     """
     series = defaultdict(list)
     for unit in sorted(units, key=lambda row: row["time"]):
         time = unit_time(unit["corpus_position"])
+        merged = defaultdict(list)
         for character, (movement, weight) in unit_observations(unit["annotation"], lens).items():
-            series[character].append((time, movement, weight))
+            key = character if keyer is None else keyer.key(
+                character, unit_id=unit.get("unit_id"), chapter_id=unit.get("chapter_id")
+            )
+            merged[key].append((movement, weight))
+        for key, parts in merged.items():
+            movement = sum(value for value, _weight in parts)
+            weight = sum(w for _value, w in parts) / len(parts)
+            series[key].append((time, movement, weight))
     return dict(series)
+
+
+# ---------------------------------------------------------------------------
+# Elo-style display scale.
+# ---------------------------------------------------------------------------
+
+FORTUNE_RATING_CENTER = 1500.0
+
+# Phi(z) is within 0.01 of logistic(1.702 z) everywhere.
+PROBIT_TO_LOGIT = 1.702
+
+
+def elo_points_per_level(sigma2):
+    """Display points per unit of fortune level, derived from the fitted noise.
+
+    Two characters at levels a and b each have their next passage drawn
+    around their level with variance sigma2, so A's passage beats B's with
+    probability Phi((a - b) / sqrt(2 sigma2)). Matching that to Elo's
+    1 / (1 + 10^(-D/400)) fixes the scale: a gap of D points means what it
+    means in chess, "wins about this often", with passages as the games.
+    """
+    return (400.0 / math.log(10.0)) * PROBIT_TO_LOGIT / math.sqrt(2.0 * sigma2)
+
+
+def fortune_rating(level, sigma2):
+    """Level on the Elo-style scale. 1500 is a level of 0: passages leave you where you were."""
+    return FORTUNE_RATING_CENTER + elo_points_per_level(sigma2) * level
 
 
 def filter_and_smooth(observations, q, sigma2, prior_mean=0.0, prior_sd=DEFAULT_PRIOR_SD):
@@ -216,7 +334,7 @@ def select_hyperparameters(
     return best["q"], best["sigma2"], table
 
 
-def arc_summary(nodes, volume_of_time=None):
+def arc_summary(nodes):
     """Numbers a reader can hold onto: start, end, peak, trough, biggest fall and rise.
 
     `biggest_fall` is the largest drop from any earlier smoothed level to
@@ -295,10 +413,16 @@ __all__ = [
     "DEFAULT_Q_GRID",
     "DEFAULT_SIGMA2_GRID",
     "FORTUNE_LENS_ORDER",
+    "FORTUNE_RATING_CENTER",
+    "NAME_KEY_PREFIX",
+    "PersonKeyer",
+    "REVIEWED_UNIT_RESOLUTIONS",
     "OVERALL_LENS",
     "WORDS_PER_TIME_UNIT",
     "arc_summary",
     "character_series",
+    "elo_points_per_level",
+    "fortune_rating",
     "filter_and_smooth",
     "order_permutation_p_values",
     "pooled_log_likelihood",

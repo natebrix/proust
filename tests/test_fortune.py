@@ -125,3 +125,70 @@ def test_unit_observations_only_lens_participants_and_overall_sums():
     assert math.isclose(overall["Charlus"][0], -2.0)
     assert math.isclose(overall["Charlus"][1], 0.8 * (0.5 + 1.0) / 2)
     assert math.isclose(overall["Morel"][0], 1.0)
+
+
+# ---------------------------------------------------------------------------
+# Person view and the Elo-style scale.
+# ---------------------------------------------------------------------------
+
+from proust.registry import Registry  # noqa: E402
+
+BAL = "v7-p4-le-bal-de-tetes"
+VERDURIN_PRINCESSE_UNIT = "v7-p4-le-bal-de-tetes#p-61-p-65"
+
+
+def test_person_keyer_follows_merges_scoped_rulings_and_reviews():
+    keyer = fortune.PersonKeyer(Registry.load())
+
+    assert keyer.key("le peintre", chapter_id="v2-p2-noms-de-pays-le-pays") == "elstir"
+    assert keyer.key("princesse de Guermantes", chapter_id="v3-p2") == "princesse-de-guermantes"
+    # In the late chapters the registry scopes the same text to Mme Verdurin,
+    # so the bare name is ambiguous there and must not feed Marie-Gilbert.
+    assert keyer.key("princesse de Guermantes", unit_id=f"{BAL}#p-1-p-5", chapter_id=BAL) == (
+        fortune.NAME_KEY_PREFIX + "princesse de Guermantes"
+    )
+    assert keyer.key("princesse de Guermantes", unit_id=VERDURIN_PRINCESSE_UNIT, chapter_id=BAL) == "mme-verdurin"
+    assert keyer.key("Nobody Proust Wrote", chapter_id=BAL) == fortune.NAME_KEY_PREFIX + "Nobody Proust Wrote"
+    assert keyer.key("narrator") == fortune.NAME_KEY_PREFIX + "narrator"
+    assert keyer.display("mme-verdurin") == "Mme Verdurin"
+    assert keyer.display(fortune.NAME_KEY_PREFIX + "Alix") == "Alix"
+
+
+def test_character_series_pools_two_names_for_one_person_in_a_passage():
+    annotation = {
+        "characters_present": [
+            {"canonical_name": "le peintre", "presence_confidence": 1.0},
+            {"canonical_name": "Elstir", "presence_confidence": 1.0},
+        ],
+        "appraisal_events": [],
+        "status_effects": [
+            {"character": "le peintre", "dimension": "general_appraisal", "delta": 1, "confidence": 1.0},
+            {"character": "Elstir", "dimension": "general_appraisal", "delta": 2, "confidence": 0.5},
+        ],
+        "ambiguities": [],
+    }
+    unit = {
+        "unit_id": "v2-p2-noms-de-pays-le-pays#p-1-p-5",
+        "chapter_id": "v2-p2-noms-de-pays-le-pays",
+        "time": 1,
+        "corpus_position": {"cumulative_word_count": 0, "cumulative_word_count_end": 20000},
+        "annotation": annotation,
+    }
+    names = fortune.character_series([unit], "advantage")
+    people = fortune.character_series([unit], "advantage", keyer=fortune.PersonKeyer(Registry.load()))
+    assert set(names) == {"le peintre", "Elstir"}
+    assert set(people) == {"elstir"}
+    [(time, movement, weight)] = people["elstir"]
+    assert time == 1.0
+    assert math.isclose(movement, 1.0 + 2 * 0.5)
+    assert math.isclose(weight, (1.0 + 0.5) / 2)
+
+
+def test_elo_scale_matches_passage_win_probability():
+    sigma2 = 0.9
+    gap = 0.6
+    points = fortune.elo_points_per_level(sigma2) * gap
+    elo_win = 1.0 / (1.0 + 10.0 ** (-points / 400.0))
+    passage_win = 0.5 * (1.0 + math.erf(gap / math.sqrt(2.0 * sigma2) / math.sqrt(2.0)))
+    assert abs(elo_win - passage_win) < 0.01
+    assert fortune.fortune_rating(0.0, sigma2) == fortune.FORTUNE_RATING_CENTER
